@@ -4,22 +4,18 @@ node_js:
   - "10"
 deploy:
   - provider: azure_web_apps
-    site: kcd-web-live-dev
-    slot: staging
+    site: kcd-web-live-dev-staging
     verbose: true
     on: develop
   - provider: azure_web_apps
-    site: kcd-web-preview-dev
-    slot: staging
+    site: kcd-web-preview-dev-staging
     verbose: true
     on: develop
   - provider: azure_web_apps
-    site: kcd-web-live-master
-    slot: staging
+    site: kcd-web-live-master-staging
     verbose: true
     on: master
   - provider: azure_web_apps
-    site: kcd-web-preview-master
-    slot: staging
+    site: kcd-web-preview-master-staging
     verbose: true
     on: master
