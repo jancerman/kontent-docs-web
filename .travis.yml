@@ -11,3 +11,11 @@ deploy:
     site: kcd-web-preview-dev
     verbose: true
     on: develop
+  - provider: azure_web_apps
+    site: kcd-web-live-master
+    verbose: true
+    on: master
+  - provider: azure_web_apps
+    site: kcd-web-preview-master
+    verbose: true
+    on: master
