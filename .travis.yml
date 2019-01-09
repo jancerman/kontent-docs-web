@@ -1,0 +1,13 @@
+sudo: required
+language: node_js
+node_js:
+  - "10"
+deploy:
+  - provider: azure_web_apps
+    site: kcd-web-live-dev
+    verbose: true
+    on: develop
+  - provider: azure_web_apps
+    site: kcd-web-preview-dev
+    verbose: true
+    on: develop
