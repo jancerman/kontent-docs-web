@@ -4,9 +4,9 @@
  * Module dependencies.
  */
 
-var { app } = require('../app');
-var { port, graphQLPath, host } = require('../config')
-var debug = require('debug')('cloud-boilerplate-express-apollo:server');
+var { app } = require('./app');
+var { port, graphQLPath, host } = require('./config')
+var debug = require('debug')('kentico-cloud-docs-web:server');
 var http = require('http');
 
 /**
