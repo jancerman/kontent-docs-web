@@ -6,8 +6,9 @@ const apolloClient = require('../apolloClient');
 
 /* GET home page. */
 router.get('/', async function (_req, res, _next) {
-  
-  const result = await apolloClient.query({
+  const client = apolloClient(_req);
+
+  const result = await client.query({
     query: gql`
     {
       itemsByType(type: "navigation_item", limit: 50, depth: 5, order: "elements.title") {

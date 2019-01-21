@@ -6,8 +6,5 @@
       "value": "kentico-cloud-docs-web;1.0.0-beta"
     }]
   },
-  "protocol": "http://",
-  "host": "127.0.0.1",
-  "graphQLPath": "/graphql",
-  "port": 3000
+  "graphQLPath": "/graphql"
 }

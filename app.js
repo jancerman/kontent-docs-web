@@ -2,6 +2,8 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const compression = require('compression');
 const logger = require('morgan');
 const { ApolloServer } = require('apollo-server-express');
 
@@ -15,7 +17,7 @@ const app = express();
 // Apollo Server setup
 const apolloServer = new ApolloServer({
   introspection: true,
-  playground: true,
+  playground: false,
   typeDefs: [
     TYPE_DEFINITION,
     queryTypes
@@ -31,11 +33,16 @@ apolloServer.applyMiddleware({
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+app.use(compression());
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), {
+  maxAge: 86400000
+}));
 
 app.use('/', indexRouter);
 
@@ -73,6 +80,4 @@ app.use(function (err, req, res, _next) {
   });
 });
 
-module.exports = {
-  app
-};
+module.exports = app;
