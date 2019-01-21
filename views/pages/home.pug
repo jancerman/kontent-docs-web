@@ -1,0 +1,103 @@
+extends ../includes/layout.pug
+block content
+    .hero
+        .hero__wrapper
+            .hero__left
+                h1.hero__heading One Help Portal
+                form.hero__search
+                    .hero__search-icon(aria-hidden='true')
+                    label.sr-only(for='nav-search') Search for guides, how to's and more
+                    input(type='search', id='nav-search', name='nav-search', autocomplete="off", placeholder='Search for guides, how to\'s and more')
+                #searchbox
+                a.hero__note-link(href="#") What is headless CMS?
+            .hero__right
+                .hero__screen
+    main(id='main').presentation
+        section.presentation__section
+            h2.presentation__heading Develop apps
+            h3.presentation__sub-heading Choose your platform
+            ul.platforms
+                li.platforms__item
+                    a.platforms__link(href="#")
+                        .platforms__img.platforms__img--js(aria-hidden='true')
+                        .platforms__title Javascript
+                li.platforms__item
+                    a.platforms__link(href="#")
+                        .platforms__img.platforms__img--net(aria-hidden='true')
+                        .platforms__title .NET
+                li.platforms__item
+                    a.platforms__link(href="#")
+                        .platforms__img.platforms__img--android(aria-hidden='true')
+                        .platforms__title Android
+                li.platforms__item
+                    a.platforms__link(href="#")
+                        .platforms__img.platforms__img--ios(aria-hidden='true')
+                        .platforms__title iOS
+                li.platforms__item
+                    a.platforms__link(href="#")
+                        .platforms__img.platforms__img--php(aria-hidden='true')
+                        .platforms__title PHP
+                li.platforms__item
+                    a.platforms__link(href="#")
+                        .platforms__img.platforms__img--ssg(aria-hidden='true')
+                        .platforms__title Gatsby / SSG
+
+                li.platforms__item
+                    a.platforms__link(href="#")
+                        .platforms__img.platforms__img--java(aria-hidden='true')
+                        .platforms__title Java
+        section.presentation__section
+            h2.presentation__heading Setup projects
+            ul.selection
+                li.selection__item
+                    a.selection__link(href="#")
+                        img.selection__img(src='https://plchldr.co/i/290x168?&bg=ededed&text=Image')
+                        .selection__title Create content types
+                li.selection__item
+                    a.selection__link(href="#")
+                        img.selection__img(src='https://plchldr.co/i/290x168?&bg=ededed&text=Image')
+                        .selection__title Create taxonomies
+                li.selection__item
+                    a.selection__link(href="#")
+                        img.selection__img(src='https://plchldr.co/i/290x168?&bg=ededed&text=Image')
+                        .selection__title Set up languages
+                li.selection__item
+                    a.selection__link(href="#")
+                        img.selection__img(src='https://plchldr.co/i/290x168?&bg=ededed&text=Image')
+                        .selection__title Set up roles and workflow
+                li.selection__item
+                    a.selection__link(href="#")
+                        img.selection__img(src='https://plchldr.co/i/290x168?&bg=ededed&text=Image')
+                        .selection__title Invite team
+        section.presentation__section
+            h2.presentation__heading Write and collaborate
+            ul.selection
+                li.selection__item
+                    a.selection__link(href="#")
+                        img.selection__img(src='https://plchldr.co/i/290x168?&bg=ededed&text=Image')
+                        .selection__title Search and filter
+                li.selection__item
+                    a.selection__link(href="#")
+                        img.selection__img(src='https://plchldr.co/i/290x168?&bg=ededed&text=Image')
+                        .selection__title Write in editor
+                li.selection__item
+                    a.selection__link(href="#")
+                        img.selection__img(src='https://plchldr.co/i/290x168?&bg=ededed&text=Image')
+                        .selection__title Compose content
+                li.selection__item
+                    a.selection__link(href="#")
+                        img.selection__img(src='https://plchldr.co/i/290x168?&bg=ededed&text=Image')
+                        .selection__title Comment and suggest
+                li.selection__item
+                    a.selection__link(href="#")
+                        img.selection__img(src='https://plchldr.co/i/290x168?&bg=ededed&text=Image')
+                        .selection__title Publish
+    aside.border-top
+        .cta
+            h2.cta__heading Still don’t know what to do?
+            div
+                a.button(href="#") Contact our support
+            div
+                a.cta__link(href="#") Join our developer community
+        
+    

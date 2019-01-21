@@ -1,0 +1,17 @@
+[data-toggle-trigger] {
+    transition: background-color .2s;
+}
+
+[data-toggle-target] {
+    opacity: 0;
+    max-height: 0;
+    visibility: hidden;
+    transition: visibility 0s linear 0.25s, opacity .25s, max-height 0.25s ease-out;
+
+    &.toggle-active {
+        opacity: 1;
+        max-height: 5000px;
+        visibility: visible;
+        transition: opacity .25s, max-height 0.25s ease-in;
+    }
+}

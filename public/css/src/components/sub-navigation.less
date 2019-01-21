@@ -1,0 +1,128 @@
+.sub-navigation {
+    &.sub-navigation--level-1 {
+        background-color: #fff;
+        transition: all .25s ease 0s;
+
+        &::-webkit-scrollbar-track {
+            background-color: #e5e5e5;
+            border-radius: 4px;
+        }
+    
+        &::-webkit-scrollbar {
+            width: 8px;
+            border-radius: 4px;
+            background-color: #F5F5F5;
+        }
+    
+        &::-webkit-scrollbar-thumb {
+            border-radius: 4px;
+            background-color: #adadad;
+        }
+
+        @media screen and (min-width: 768px) {
+            opacity: 1 !important;
+            z-index: 3000 !important;
+            max-height: none !important;
+            visibility: visible !important;
+            overflow: auto;
+            padding-right: .5em;
+            top: 0;
+            bottom: 0;
+            width: 242px;
+            position: fixed;
+            margin: 0;
+
+            &.sub-navigation--top {
+                top: 108px;
+            }
+    
+            &.sub-navigation--bottom {
+                bottom: 92px;
+            }
+        }
+    }
+
+    &.sub-navigation--level-3 {
+        max-height: 0;
+        transition: max-height 0.25s ease-out;
+        overflow: hidden;
+
+        .sub-navigation__link--active + & {
+            max-height: 1200px;
+            transition: max-height 0.25s ease-in;
+        }
+    }
+
+	&__item {
+
+	}
+
+	&__link {
+        color: #3c3c3c;
+        font-size: 1.25em;
+        text-decoration: none;
+        line-height: 1.125em;
+        padding: .5em 0;
+        display: block;
+        position: relative;
+
+        &:hover,
+        &:active {
+            color: #22a361;
+        }
+
+        .sub-navigation--level-2 & {
+            font-size: 1em;
+            padding: .5em 0 .5em 1.5em;
+
+            &:before {
+                font-family: 'kentico-icons';
+                content: @icon-chevron-right;
+                display: inline-block;
+                width: 1.75em;
+                text-align: center;
+                font-size: .75em;
+                position: absolute;
+                top: .75em;
+                left: 0;
+            }
+        }
+
+        .sub-navigation--level-3 & {
+            font-size: 1em;
+            margin: 0 0 .25em 1.5em;
+            padding: .375em .875em;
+            background-color: #fafafa;
+
+            &:before {
+                content: '';
+                display: none;
+            }
+        }
+
+        &--active {
+            font-weight: 700;
+
+            &:hover,
+            &:active {
+                color: #3c3c3c;
+            }
+
+            .sub-navigation--level-2 & {
+                &:before {
+                    content: @icon-chevron-down;
+                    font-weight: 400;
+                }
+            }
+
+            .sub-navigation--level-3 & {    
+                color: #22a361;
+
+                &:before {
+                    content: '';
+                }
+            }
+        }
+	}
+
+}

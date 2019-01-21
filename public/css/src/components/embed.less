@@ -1,0 +1,41 @@
+.embed, .lazy {
+    margin: 0 0 1em;
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 25px;
+    height: 0;
+    background-color: #fafafa;
+    width: 100%;
+
+    &:before {
+        content: '';
+        width: 32px;
+        height: 32px;
+        background-image: url('/img/loader.gif');
+        background-size: cover;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -16px 0 0 -16px;
+
+        @media screen and (min-width: 768px) {
+            margin: -32px 0 0 -32px;
+            width: 64px;
+            height: 64px;
+        }
+    }
+
+    iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    iframe.lazy {
+        height: auto;
+        margin: 0;
+        padding-bottom: 0;
+    }
+}

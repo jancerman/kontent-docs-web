@@ -1,0 +1,77 @@
+.callout {
+    border-left: .25em solid;
+    padding: 1em 1.25em 1.25em;
+    margin: 0 0 1em;
+
+    &--tip {
+        background-color: #ebf9f1;
+        border-color: #22a361;
+
+        .callout__title {
+            color: #22a361;
+
+            &:before {
+                content: @icon-check-circle;
+            }
+        }    
+    }
+
+    &--warning {
+        background-color: #fff4ed;
+        border-color: #f6843f;
+
+        .callout__title {
+            color: #f6843f;
+
+            &:before {
+                content: @icon-times-circle;
+            }
+        }
+    }
+
+    &--note {
+        background-color: #fafafa;
+        border-color: #737373;
+
+        .callout__title {
+            color: #737373;
+
+            &:before {
+                content: @icon-exclamation-triangle;
+            }
+        }
+    }
+
+    &--info {
+        background-color: #edf6ff;
+        border-color: #3f97f5;
+
+        .callout__title {
+            color: #3f97f5;
+
+            &:before {
+                content: @icon-i-circle;
+            }
+        }
+    }
+
+    &__title {
+        font-weight: 700;
+
+        &:before {
+            font-family: 'kentico-icons';
+            display: inline-block;
+            padding: 0 .5em 0 0;
+            width: 1em;
+        }
+    }
+
+    p {
+        padding: 0 0 0 1.5em;
+
+        &:last-child {
+            padding-bottom: 0;
+        }
+    }
+}
+

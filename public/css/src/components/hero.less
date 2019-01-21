@@ -1,0 +1,177 @@
+.hero {
+    background-color: #f6f6f6;
+    background-image: url('/img/hero-bg.svg');
+    background-position: bottom center;
+    background-size: cover;
+    padding: .5em 0 0;
+
+    @media screen and (min-width: 768px) {
+        padding: 1em 0 0;
+    }
+
+    @media screen and (min-width: 992px) {
+        padding: 2em 0 0;
+    }
+
+    @media screen and (min-width: 1200px) {
+        padding: 5em 0 0;
+    }
+
+    &__wrapper {
+        margin: 0 auto;
+        padding: 0 1em;
+        max-width: 1200px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__heading {
+        font-size: 2.25em;
+        font-weight: 300;
+        margin: .5em 0;
+        font-weight: 300;
+
+        @media screen and (min-width: 768px) {
+            font-size: 2.875em;
+            margin: .75em 0;
+        }
+
+        @media screen and (min-width: 1200px) {
+            font-size: 3.125em;
+        }
+    }
+
+    &__left {
+    }
+
+    &__search {
+        position: relative;
+        margin: 0 0 1em;
+
+        @media screen and (min-width: 480px) {
+            margin: 0 0 2em;
+        }
+
+        @media screen and (min-width: 768px) {
+            margin: 0 0 3em;
+        }
+
+        @media screen and (min-width: 992px) {
+            margin: 0 0 5em;
+        }
+
+        @media screen and (min-width: 1200px) {
+            margin: 0 0 6.5em;
+        }
+
+        input {
+            font-size: 1.25em;
+            border-radius: 0;
+            -webkit-appearance: none;
+            border: 2px solid #dfdfdf;
+            color: #3d3d3d;
+            font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+            padding: .5em .5em .5em 2.25em;
+            line-height: 1.25em;
+            max-width: 100%;
+            margin: 0;
+            box-sizing: border-box;
+            transition: all .25s;
+            width: 290px;
+            font-size: 1.075em;
+            background-color: #fff !important;
+            box-sizing: border-box;
+
+            @media screen and (min-width: 420px) {
+                width: 390px;
+                font-size: 1.25em;
+            }
+
+            @media screen and (min-width: 510px) {
+                width: 480px;
+            }
+
+            @media screen and (min-width: 992px) {
+                width: 420px;
+            }
+
+            @media screen and (min-width: 1200px) {
+                font-size: 1.375em;
+                width: 480px;
+            }
+
+            &::placeholder {
+                line-height: 1.25em;
+                color: #b8b8b8;
+            }
+        }
+    }
+
+    &__note-link {
+        color: #8c8c8c;
+        margin: 0 0 1.25em;
+        display: inline-block;
+
+        &:hover,
+        &:active {
+            text-decoration: none;
+        }
+    }
+
+    &__search-icon {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 2.25em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.075em;
+        z-index: 1000;
+
+        @media screen and (min-width: 420px) {
+            font-size: 1.25em;
+        }
+
+        @media screen and (min-width: 1200px) {
+            font-size: 1.375em;
+        }
+
+        &:before {
+            content: @icon-magnifier;
+            font-family: 'kentico-icons';
+            color: #9a9a9a;
+            margin-top: 1px;
+        }
+    }
+
+    &__right {
+        @media screen and (min-width: 992px) {
+            width: 100%;
+            max-width: 730px;
+            position: relative;
+            right: -6%;
+        }
+
+        @media screen and (min-width: 1200px) {
+            right: -10%;
+        }
+    }
+
+    &__screen {
+        @media screen and (min-width: 992px) {
+            width: 100%;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            background-image: url('/img/mark-header@1x.png');
+            background-size: cover;
+            background-position: top center;
+        }
+
+        @media (-webkit-min-device-pixel-ratio: 1.5) and (min-width: 992px), (min-resolution: 144dpi) and (min-width: 992px){ 
+            background-image: url('/img/mark-header@2x.png');
+        }
+    }
+}

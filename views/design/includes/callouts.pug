@@ -1,0 +1,14 @@
+mixin callout(type)
+    div(class=`callout callout--${type.toLowerCase()}`)
+        .callout__title !{type}
+        p If you need to add the same elements to a lot of content types, use 
+            a(href='#') Content snippets
+            | .
+            br
+            | In this case, you can wrap the 
+            i Publish until 
+            |  date element in a Publishing period content snippet.
++callout('Tip')
++callout('Warning')
++callout('Note')
++callout('Info')

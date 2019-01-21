@@ -1,0 +1,117 @@
+.table-of-contents {
+    padding: 0 0 1em;
+    box-sizing: border-box;
+    max-width: 320px;
+    transition: all .25s ease 0s;
+
+    &::-webkit-scrollbar-track {
+        background-color: #e5e5e5;
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar {
+        width: 8px;
+        border-radius: 4px;
+        background-color: #F5F5F5;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        background-color: #adadad;
+    }
+
+    h2&__heading {
+        text-transform: uppercase;
+        color: #6b6b6b;
+        font-size: 1em;
+        background-color: #fff;
+        cursor: pointer;
+
+        &:before {
+            font-family: 'kentico-icons';
+            content: @icon-list;
+            display: inline-block;
+            padding: 0 .675em 0 0;
+            position: relative;
+            top: 1px;
+        }
+
+        &:after {
+            font-family: 'kentico-icons';
+            content: @icon-chevron-right;
+            display: inline-block;
+            padding: 0 0 0 .5em;
+            font-size: .875em;
+        }
+
+        &.trigger-active {
+            &:after {
+                content: @icon-chevron-down;
+            }
+        }
+
+        .table-of-contents--fixed & {
+            cursor: default;
+            
+            &:after {
+                display: none;
+            }
+        }
+    }
+
+    ul&__list {
+        padding: 0 0 0 1em;
+        background-color: #fff;
+
+        li {
+            list-style-type: none;
+            a {
+                color: #6b6b6b;
+                margin: 0 0 .125em;
+                display: block;
+                padding: .125em .675em;
+                line-height: 1.375em;
+
+                &:hover,
+                &:active {
+                    background-color: #fafafa;
+                    color: #6b6b6b;
+                }
+            }
+        }
+
+        ul {
+            padding: 0 0 0 1.125em;
+        }
+    }
+
+    &--fixed {
+        z-index: 3000;
+        overflow: auto;
+        top: .5em;
+        bottom: 0;
+        width: 280px;
+        position: fixed;
+        margin: 0;
+        padding: 0;
+
+        &.table-of-contents--top {
+            top: 108px;
+        }
+
+        &.table-of-contents--bottom {
+            bottom: 120px;
+        }
+
+        h2.table-of-contents__heading {
+            padding: .5em .5em .5em .5em
+        }
+
+        ul.table-of-contents__list {
+            padding: 0 .5em .5em 1.5em;
+            opacity: 1 !important;
+            max-height: 5000px !important;
+            visibility: visible !important;
+        }
+    }
+}

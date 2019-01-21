@@ -1,11 +1,58 @@
 {
-    "name": "app-service-hello-world",
-    "description": "Simple Hello World Node.js sample for Azure App Service",
-    "version": "0.0.1",
-    "private": true,
-    "license": "MIT",
-    "author": "Microsoft",
-    "scripts": {
-        "start": "node index.js"
-    }
+  "name": "kentico-cloud-docs-web",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node ./bin/www",
+    "debug": "npm run generate-schema && cross-env DEBUG=kentico-cloud-docs-web:* node ./bin/www",
+    "generate-schema": "kc-generate-gql-schema --projectId ad858591-7c5b-00e9-52c1-796f3aebc535 --createModule --outputFile graphQL/types.js",
+    "predeploy": "node ./predeploy.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kentico/kentico-cloud-docs-web.git"
+  },
+  "engines": {
+    "node": ">=10.14.1"
+  },
+  "keywords": [
+    "graphql",
+    "express",
+    "pug",
+    "MVC",
+    "apollo",
+    "web",
+    "server",
+    "kentico",
+    "kentico-cloud",
+    "headless",
+    "cms"
+  ],
+  "author": "Milan Lund <hello@milanlund.com> (kentico-cloud-docs-web)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Kentico/kentico-cloud-docs-web/issues"
+  },
+  "homepage": "https://github.com/Kentico/kentico-cloud-docs-web#readme",
+  "dependencies": {
+    "apollo-cache-inmemory": "^1.3.11",
+    "apollo-client": "^2.4.7",
+    "apollo-link-http": "^1.5.9",
+    "apollo-server-express": "^2.2.6",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "graphql": "^0.13.2",
+    "graphql-tag": "^2.10.0",
+    "http-errors": "~1.6.2",
+    "kentico-cloud-delivery": "^5.2.1",
+    "morgan": "~1.9.0",
+    "node-fetch": "^2.3.0",
+    "node-sass-middleware": "0.11.0",
+    "pug": "2.0.0-beta11",
+    "rxjs": "^6.3.3"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "kentico-cloud-graphql-schema-generator": "1.0.0"
+  }
 }

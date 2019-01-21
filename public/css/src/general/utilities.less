@@ -1,0 +1,138 @@
+html,
+body {
+    font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+    color: #262524;
+    font-size: 14px;
+    font-weight: 400;
+    background-color: #fff; 
+    overflow-x: hidden;
+
+    @media screen and (min-width: 480px) {
+        font-size: 16px;
+    }
+}
+
+em,
+i {
+    font-style: italic;
+}
+
+[href="#main"] {
+    position: absolute;
+    top: 0;
+    right: 100%;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.img,
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+a {
+    transition: background-color .25s, color .25s;
+}
+
+.align-left {
+    text-align: left;
+}
+
+strong {
+    font-weight: 700;
+}
+
+.align-center {
+    text-align: center;
+}
+
+main {
+    margin: 1.5em auto 0;
+    max-width: 1200px;
+    padding: 0 1em;
+    min-height: ~"calc(100vh - 175px)";
+    display: block;
+
+    @media screen and (min-width: 480px) {
+        min-height: ~"calc(100vh - 256px)";
+        margin: 2em auto 0;
+    }
+
+    @media screen and (min-width: 768px) {
+        min-height: ~"calc(100vh - 296px)";
+    }
+}
+
+aside {
+
+}
+
+.border-top {
+    border-top: 1px solid #dedede;
+}
+
+select, 
+textarea, 
+input[type="text"], 
+input[type="password"], 
+input[type="datetime"], 
+input[type="datetime-local"], 
+input[type="date"], 
+input[type="month"], 
+input[type="time"], 
+input[type="week"], 
+input[type="number"], 
+input[type="email"], 
+input[type="url"], 
+input[type="search"], 
+input[type="tel"], 
+input[type="color"] { 
+    font-size: 16px; 
+    outline-color: #e75810;
+}
+
+p code {
+    display: inline-block;
+    padding: 0 0.375em;
+    background-color: #fafafa; 
+    font-family: Inconsolata, Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-size: .875em;
+    line-height: 1.375em;
+}
+
+.aa-dropdown-menu {
+    background: #fff;
+    right: 0 !important;
+    text-align: left;
+    box-shadow: 0px 24px 24px 6px rgba(0,0,0,.15);
+}
+
+.algolia-autocomplete {
+    width: 100%;     
+}
+
+.aa-suggestion {
+    padding: .375em .875em;
+    border: .125em solid #dfdfdf;
+    border-top: none;
+    cursor: pointer;
+
+    @media screen and (min-width: 480px) {
+        padding: .5em 1.125em;
+    }
+}
+
+.aa-suggestion:hover, .aa-suggestion.aa-cursor {
+    background-color: #fafafa;
+}
