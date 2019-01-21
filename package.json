@@ -4,8 +4,7 @@
   "scripts": {
     "start": "node ./server.js",
     "debug": "npm run generate-schema && cross-env DEBUG=kentico-cloud-docs-web:* node ./server.js",
-    "generate-schema": "kc-generate-gql-schema --projectId ad858591-7c5b-00e9-52c1-796f3aebc535 --createModule --outputFile graphQL/types.js",
-    "predeploy": "node ./predeploy.js"
+    "generate-schema": "kc-generate-gql-schema --projectId ad858591-7c5b-00e9-52c1-796f3aebc535 --createModule --outputFile graphQL/types.js"
   },
   "repository": {
     "type": "git",
