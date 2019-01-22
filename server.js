@@ -2,7 +2,6 @@ const app = require('./app');
 const debug = require('debug')('app:server');
 const http = require('http');
 
-
 //Normalize a port into a number, string, or false.
 const normalizePort = val => {
     var port = parseInt(val, 10);

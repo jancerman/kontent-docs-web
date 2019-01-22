@@ -1,5 +1,4 @@
 const { DeliveryClient } = require('kentico-cloud-delivery');
-
 const { deliveryConfig } = require('../config');
 
 const queryTypes = `
@@ -10,7 +9,10 @@ type Query {
 }
 `;
 
-deliveryConfig.enablePreviewMode = (process.env.NODE_ENV || 'development')  === 'development';
+deliveryConfig.projectId = process.env['KC.ProjectId'];
+deliveryConfig.previewApiKey = process.env['KC.PreviewApiKey'];
+
+deliveryConfig.enablePreviewMode = deliveryConfig.previewApiKey !== '';
 
 const deliveryClient = new DeliveryClient(deliveryConfig);
 const resolvers = {
