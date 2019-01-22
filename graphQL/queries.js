@@ -13,7 +13,7 @@ deliveryConfig.projectId = process.env['KC.ProjectId'];
 
 if (process.env['KC.PreviewApiKey']) {
   deliveryConfig.previewApiKey = process.env['KC.PreviewApiKey'];
-  deliveryConfig.enablePreviewMode = deliveryConfig.previewApiKey !== '';
+  deliveryConfig.enablePreviewMode = true;
 }
 
 const deliveryClient = new DeliveryClient(deliveryConfig);
