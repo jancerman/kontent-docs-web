@@ -37,6 +37,7 @@
     "apollo-client": "^2.4.7",
     "apollo-link-http": "^1.5.9",
     "apollo-server-express": "^2.2.6",
+    "applicationinsights": "^1.0.8",
     "compression": "^1.7.3",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",

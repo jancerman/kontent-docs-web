@@ -1,5 +1,5 @@
 require('dotenv').config();
-const createError = require('http-errors');
+let appInsights = require('applicationinsights');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -13,9 +13,15 @@ const { queryTypes, resolvers } = require('./graphQL/queries')
 const { graphQLPath } = require('./config');
 
 const home = require('./routes/home');
-const article = require('./routes/article');
+const tutorials = require('./routes/tutorials');
 
 const app = express();
+
+// Azure Application Insights monitors
+if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
+  appInsights.setup();
+}
+
 
 // Apollo Server setup
 const apolloServer = new ApolloServer({
@@ -48,7 +54,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 app.use('/', home);
-app.use('/article', article);
+app.use('/tutorials', tutorials);
 
 //Routes
 app.get('/design/home', (req, res, next) => {
