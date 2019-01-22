@@ -20,8 +20,8 @@ const queries = {
     `,
     subNavigation: `
     {
-        itemsByType(type: "scenario", limit: 0, depth: 2, order: "") {
-            ... on ScenarioContentType {
+        itemsByType(type: "navigation_item", limit: 0, depth: 3, order: "", urlSlug: "tutorials") {
+            ... on NavigationItemContentType {
                 title {
                     value
                 }
@@ -29,7 +29,7 @@ const queries = {
                     value
                 }
                 children {
-                    ... on TopicContentType {
+                    ... on ScenarioContentType {
                         title {
                             value
                         }
@@ -37,12 +37,22 @@ const queries = {
                             value
                         }
                         children {
-                            ... on ArticleContentType {
+                            ... on TopicContentType {
                                 title {
                                     value
                                 }
                                 url {
                                     value
+                                }
+                                children {
+                                    ... on ArticleContentType {
+                                        title {
+                                            value
+                                        }
+                                        url {
+                                            value
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -50,8 +60,84 @@ const queries = {
                 }
             }
         }
-    } 
-    `
+    }
+    `,
+    navigationItem: (urlSlug) => {
+        return `
+        {
+            itemsByType(type: "navigation_item", limit: 1, depth: 0, order: "", urlSlug: "${urlSlug}") {
+                ... on NavigationItemContentType {
+                    title {
+                        value
+                    }
+                    url {
+                        value
+                    }
+                    children {
+                        ... on ScenarioContentType {
+                            url {
+                                value
+                            }
+                        }
+                    }
+                }
+                
+            }
+        } 
+        `
+    },
+    scenario: (urlSlug) => {
+        return `
+        {
+            itemsByType(type: "scenario", limit: 0, depth: 1, order: "", urlSlug: "${urlSlug}") {
+                ... on ScenarioContentType {
+                    title {
+                        value
+                    }
+                    url {
+                        value
+                    }
+                }
+            }
+        } 
+        `
+    },
+    topic: (urlSlug) => {
+        return `
+        {
+            itemsByType(type: "topic", limit: 0, depth: 1, order: "", urlSlug: "${urlSlug}") {
+                ... on TopicContentType {
+                    url {
+                        value
+                    }
+                    children {
+                        ... on ArticleContentType {
+                            url {
+                                value
+                            }
+                        }
+                    }
+                }
+            }
+        } 
+        `
+    },
+    article: (urlSlug) => {
+        return `
+        {
+            itemsByType(type: "article", limit: 0, depth: 1, order: "", urlSlug: "${urlSlug}") {
+                ... on ArticleContentType {
+                    title {
+                        value
+                    }
+                    url {
+                        value
+                    }
+                }
+            }
+        } 
+        `
+    }
 }
 
 

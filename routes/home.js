@@ -37,8 +37,6 @@ router.get('/', async function (req, res, next) {
     `
   });
 
-  console.dir(result.data.itemsByType[0], {depth: null});
-
   res.render('pages/home', {
     req: req,
     title: home.data.itemsByType[0].title.value,

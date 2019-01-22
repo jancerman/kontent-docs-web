@@ -3,17 +3,8 @@ block content
     main(id='main')
         .article
             .article__left
-                .article__sub-navigation-trigger(data-toggle-trigger='sub-navigation', aria-hidden='true')
-                ul.sub-navigation.sub-navigation--level-1.sub-navigation--top(data-toggle-target='sub-navigation')
-                    each scenario in subNavigation
-                        li.sub-navigation__item
-                            a(href=`/tutorials/${scenario.url.value}`, class=`sub-navigation__link${subNavigationLevels[0] === scenario.url.value ? ' sub-navigation__link--active' : ''}`) !{scenario.title.value}
-                            if (subNavigationLevels[0] === scenario.url.value)
-                                ul.sub-navigation.sub-navigation--level-2
-                                    each topic in scenario.children
-                                        li.sub-navigation__item
-                                            a(href=`#`, class=`sub-navigation__link${subNavigationLevels[1] === topic.url.value ? ' sub-navigation__link--active' : ''}`) !{topic.title.value}
-                                            ul.sub-navigation.sub-navigation--level-3
-                                                each article in topic.children
-                                                    li.sub-navigation__item
-                                                        a(href=`/tutorials/${scenario.url.value}/${topic.url.value}/${article.url.value}`, class=`sub-navigation__link${subNavigationLevels[2] === article.url.value ? ' sub-navigation__link--active' : ''}`) !{article.title.value}
+                include ../includes/sub-navigation.pug
+            .article__right
+                .article__content
+                    h1 !{content.title.value}
+                

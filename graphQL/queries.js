@@ -5,7 +5,7 @@ const queryTypes = `
 # The "Query" type is the root of all GraphQL queries.
 type Query {
   items: [ContentItem],
-  itemsByType(type: String!, limit: Int, depth: Int, order: String): [ContentItem]
+  itemsByType(type: String!, limit: Int, depth: Int, order: String, urlSlug: String): [ContentItem]
 }
 `;
 
@@ -28,12 +28,13 @@ const resolvers = {
         .getPromise();
       return response.items;
     },
-    itemsByType: async (_, { type, limit, depth, order }) => {
+    itemsByType: async (_, { type, limit, depth, order, urlSlug }) => {
       const query = deliveryClient.items()
         .type(type);
       limit && query.limitParameter(limit);
       depth && query.depthParameter(depth);
       order && query.orderParameter(order);
+      urlSlug && query.equalsFilter('elements.url', urlSlug)
 
       const response = await query
         .getPromise();
