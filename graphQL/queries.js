@@ -10,9 +10,11 @@ type Query {
 `;
 
 deliveryConfig.projectId = process.env['KC.ProjectId'];
-deliveryConfig.previewApiKey = process.env['KC.PreviewApiKey'];
 
-deliveryConfig.enablePreviewMode = deliveryConfig.previewApiKey !== '';
+if (process.env['KC.PreviewApiKey']) {
+  deliveryConfig.previewApiKey = process.env['KC.PreviewApiKey'];
+  deliveryConfig.enablePreviewMode = deliveryConfig.previewApiKey !== '';
+}
 
 const deliveryClient = new DeliveryClient(deliveryConfig);
 const resolvers = {

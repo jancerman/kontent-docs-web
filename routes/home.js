@@ -39,8 +39,8 @@ router.get('/', async function (req, res, next) {
 
   res.render('pages/home', {
     req: req,
-    title: home.data.itemsByType[0].title.value,
-    navigation: home.data.itemsByType[0].navigation
+    title: typeof home.data.itemsByType[0] !== 'undefined' ? home.data.itemsByType[0].title.value : '',
+    navigation: typeof home.data.itemsByType[0] !== 'undefined' ? home.data.itemsByType[0].navigation : []
   });
 });
 

@@ -31,7 +31,9 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         content = await client.query({
             query: gql `${queries.navigationItem(req.originalUrl.split('/')[1])}`
         });
-        return res.redirect(`/tutorials/${content.data.itemsByType[0].children[0].url.value}`);
+        if (typeof content.data.itemsByType[0] !== 'undefined') {
+            return res.redirect(`/tutorials/${content.data.itemsByType[0].children[0].url.value}`);
+        }
     } else if (currentLevel === 0) {
         content = await client.query({
             query: gql `${queries.scenario(subNavigationLevels[currentLevel])}`
@@ -57,11 +59,11 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
 
     return res.render('pages/tutorials', {
         req: req,
-        title: content.data.itemsByType[0].title.value,
-        navigation: navigation.data.itemsByType[0].navigation,
-        subNavigation: subNavigation.data.itemsByType[0].children,
+        title: typeof content.data.itemsByType[0] !== 'undefined' ? content.data.itemsByType[0].title.value : '',
+        navigation: typeof navigation.data.itemsByType[0] !== 'undefined' ? navigation.data.itemsByType[0].navigation : [],
+        subNavigation: typeof subNavigation.data.itemsByType[0] !== 'undefined' ? subNavigation.data.itemsByType[0].children : [],
         subNavigationLevels: subNavigationLevels,
-        content: content.data.itemsByType[0]
+        content: typeof content.data.itemsByType[0] !== 'undefined' ? content.data.itemsByType[0]  : {}
     });
 }));
 
