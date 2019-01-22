@@ -1,4 +1,4 @@
-const { DeliveryClient } = require('kentico-cloud-delivery');
+const { DeliveryClient} = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
 
 const queryTypes = `
@@ -37,7 +37,7 @@ const resolvers = {
 
       const response = await query
         .getPromise();
-      
+      //console.dir(response.items, {depth: null});
       return response.items;
     }
   },

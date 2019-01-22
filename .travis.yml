@@ -2,8 +2,6 @@ sudo: required
 language: node_js
 node_js:
   - "10"
-before_script:
-  - npm install pm2 -g
 deploy:
   - provider: azure_web_apps
     site: kcd-web-live-dev

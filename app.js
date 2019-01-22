@@ -10,8 +10,10 @@ const { ApolloServer } = require('apollo-server-express');
 
 const { TYPE_DEFINITION } = require('./graphQL/types');
 const { queryTypes, resolvers } = require('./graphQL/queries')
-const indexRouter = require('./routes/index');
 const { graphQLPath } = require('./config');
+
+const home = require('./routes/home');
+const article = require('./routes/article');
 
 const app = express();
 
@@ -45,7 +47,8 @@ app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: 86400000
 }));
 
-app.use('/', indexRouter);
+app.use('/', home);
+app.use('/article', article);
 
 //Routes
 app.get('/design/home', (req, res, next) => {
@@ -63,16 +66,18 @@ app.get('/design/article', (req, res, next) => {
 });
 
 // catch 404 and forward to error handler
-app.use(function (_req, _res, next) {
-  next(createError(404));
+app.use((req, res, next) => {
+  const err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 // error handler
-app.use(function (err, req, res, _next) {
+app.use((err, req, res, _next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
+  console.error(err.stack);
   // render the error page
   res.status(err.status || 500);
   res.render('pages/error', { 

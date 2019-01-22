@@ -2,8 +2,8 @@
   "name": "kentico-cloud-docs-web",
   "version": "1.0.0",
   "scripts": {
-    "start": "pm2 start process.json && pm2 logs",
-    "debug": "npm run generate-schema && cross-env DEBUG=kentico-cloud-docs-web:* pm2 start process.json",
+    "start": "nodemon ./server.js",
+    "debug": "npm run generate-schema && cross-env DEBUG=kentico-cloud-docs-web:* nodemon ./server.js",
     "generate-schema": "kc-generate-gql-schema --projectId ad858591-7c5b-00e9-52c1-796f3aebc535 --createModule --outputFile graphQL/types.js"
   },
   "repository": {
@@ -42,6 +42,7 @@
     "debug": "~2.6.9",
     "dotenv": "^6.2.0",
     "express": "~4.16.0",
+    "express-async-handler": "^1.1.4",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.10.0",
     "http-errors": "~1.6.2",
@@ -49,6 +50,7 @@
     "morgan": "~1.9.0",
     "node-fetch": "^2.3.0",
     "node-sass-middleware": "0.11.0",
+    "nodemon": "^1.18.9",
     "pug": "2.0.0-beta11",
     "rxjs": "^6.3.3"
   },
