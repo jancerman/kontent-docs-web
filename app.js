@@ -56,6 +56,10 @@ app.use(express.static(path.join(__dirname, 'public'), {
 app.use('/', home);
 app.use('/tutorials', tutorials);
 
+app.use('/test', (req, res, next) => {
+  res.send(`${process.env.APPINSIGHTS_INSTRUMENTATIONKEY}, ${process.env['KC.ProjectId']}, ${process.env['KC.PreviewApiKey']}`);
+});
+
 //Routes
 app.get('/design/home', (req, res, next) => {
   return res.render('design/home', {
