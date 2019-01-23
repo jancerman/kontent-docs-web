@@ -68,10 +68,10 @@ app.get('*', (req, res, next) => {
 app.use('/', home);
 app.use('/tutorials', tutorials);
 
-/*
+
 app.use('/test', (req, res, next) => {
   res.send(`${process.env.APPINSIGHTS_INSTRUMENTATIONKEY}, ${process.env['KC.ProjectId']}, ${process.env['KC.PreviewApiKey']}`);
-});*/
+});
 
 app.get('/design/home', (req, res, next) => {
   return res.render('design/home', {
