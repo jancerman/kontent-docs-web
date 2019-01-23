@@ -33,6 +33,9 @@ const queries = {
                         title {
                             value
                         }
+                        short_title {
+                            value
+                        }
                         url {
                             value
                         }
@@ -47,6 +50,9 @@ const queries = {
                                 children {
                                     ... on ArticleContentType {
                                         title {
+                                            value
+                                        }
+                                        short_title {
                                             value
                                         }
                                         url {
@@ -97,6 +103,12 @@ const queries = {
                     url {
                         value
                     }
+                    description {
+                        value
+                    }
+                    content {
+                        value
+                    }
                 }
             }
         } 
@@ -127,10 +139,28 @@ const queries = {
         {
             itemsByType(type: "article", limit: 0, depth: 1, order: "", urlSlug: "${urlSlug}") {
                 ... on ArticleContentType {
+                    system {
+                        ... on SystemInfo {
+                            lastModified
+                        }
+                    }
                     title {
                         value
                     }
                     url {
+                        value
+                    }
+                    description {
+                        value
+                    }
+                    author {
+                        ... on AuthorContentType {
+                            name {
+                                value
+                            }
+                        }
+                    }
+                    content {
                         value
                     }
                 }

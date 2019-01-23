@@ -6,6 +6,8 @@ const gql = require('graphql-tag');
 const queries = require('../graphQL/gqlQueries');
 const apolloClient = require('../apolloClient');
 
+const moment = require('moment');
+
 router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
     const client = apolloClient(req);
 
@@ -81,13 +83,17 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         depth: null
     });*/
 
+    console.log(content.data.itemsByType[0]);
+
     return res.render(view, {
         req: req,
+        moment: moment,
         title: content.data.itemsByType[0].title.value,
+        description: content.data.itemsByType[0].description.value,
         navigation: navigation.data.itemsByType[0].navigation,
         subNavigation: subNavigation.data.itemsByType[0].children,
         subNavigationLevels: subNavigationLevels,
-        content: content.data.itemsByType[0]
+        content: content.data.itemsByType[0],
     });
 }));
 
