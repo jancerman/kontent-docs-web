@@ -167,7 +167,34 @@ const queries = {
             }
         } 
         `
-    }
+    },
+    home: `
+    {
+        itemsByType(type: "home", limit: 1, depth: 0, order: "") {
+            ... on HomeContentType {
+                title {
+                    value
+                }
+                description {
+                    value
+                }
+                signposts {
+                    value
+                }
+                navigation {
+                    ... on NavigationItemContentType {
+                        title {
+                            value
+                        }
+                        url {
+                            value
+                        }
+                    }
+                }
+            }
+        }
+    } 
+    `
 }
 
 

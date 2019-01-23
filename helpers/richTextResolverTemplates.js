@@ -40,7 +40,12 @@ const richTextResolverTemplates = {
         return templates[item.provider.value[0].codename];
     },
     signpost: (item) => {
-        return '';
+        return `
+            <section class="presentation__section">
+                <h2 class="presentation__heading">${item.title.value}</h2>
+                ${item.description.value ? '<h3 class="presentation__sub-heading">'+ item.description.value +'</h3>' : ''}
+            </section>
+        `;
     }
 };
 
