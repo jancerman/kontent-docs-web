@@ -1,0 +1,10 @@
+extends ../includes/layout.pug
+block content
+    main(id='main')
+        .article
+            .article__left
+                include ../includes/sub-navigation.pug
+            .article__right
+                .article__content
+                    h1 !{content.title.value}
+                

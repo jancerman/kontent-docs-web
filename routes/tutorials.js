@@ -25,12 +25,17 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
 
     const currentLevel = subNavigationLevels.filter( item => item !== null ).length - 1;
 
-    let content;
+    let content, view;
 
     if (currentLevel === -1) {
         content = await client.query({
             query: gql `${queries.navigationItem(req.originalUrl.split('/')[1])}`
         });
+
+        if (typeof content.data.itemsByType[0] === 'undefined') {
+            return next();
+        }
+
         if (typeof content.data.itemsByType[0] !== 'undefined') {
             return res.redirect(`/tutorials/${content.data.itemsByType[0].children[0].url.value}`);
         }
@@ -38,15 +43,34 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         content = await client.query({
             query: gql `${queries.scenario(subNavigationLevels[currentLevel])}`
         });
+
+        if (typeof content.data.itemsByType[0] === 'undefined') {
+            return next();
+        }
+
+        view = 'pages/scenario';
     } else if (currentLevel === 1) {
         content = await client.query({
             query: gql `${queries.topic(subNavigationLevels[currentLevel])}`
         });
+
+        if (typeof content.data.itemsByType[0] === 'undefined') {
+            return next();
+        }
+
         return res.redirect(`/tutorials/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content.data.itemsByType[0].children[0].url.value}`);
     } else if (currentLevel === 2) {
         content = await client.query({
             query: gql `${queries.article(subNavigationLevels[currentLevel])}`
         });
+
+        if (typeof content.data.itemsByType[0] === 'undefined') {
+            return next();
+        }
+
+        view = 'pages/article';
+    } else {
+        return next();
     }
 
     /*console.dir(content.data.itemsByType, {
@@ -57,13 +81,13 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         depth: null
     });*/
 
-    return res.render('pages/tutorials', {
+    return res.render(view, {
         req: req,
-        title: typeof content.data.itemsByType[0] !== 'undefined' ? content.data.itemsByType[0].title.value : '',
-        navigation: typeof navigation.data.itemsByType[0] !== 'undefined' ? navigation.data.itemsByType[0].navigation : [],
-        subNavigation: typeof subNavigation.data.itemsByType[0] !== 'undefined' ? subNavigation.data.itemsByType[0].children : [],
+        title: content.data.itemsByType[0].title.value,
+        navigation: navigation.data.itemsByType[0].navigation,
+        subNavigation: subNavigation.data.itemsByType[0].children,
         subNavigationLevels: subNavigationLevels,
-        content: typeof content.data.itemsByType[0] !== 'undefined' ? content.data.itemsByType[0]  : {}
+        content: content.data.itemsByType[0]
     });
 }));
 
