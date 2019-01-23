@@ -4,18 +4,15 @@ const router = express.Router();
 
 const gql = require('graphql-tag');
 const queries = require('../graphQL/gqlQueries');
-const apolloClient = require('../apolloClient');
 
 const moment = require('moment');
 
 router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
-    const client = apolloClient(req);
-
-    const navigation = await client.query({
+    const navigation = await req.app.locals.apolloClient.query({
         query: gql `${queries.navigation}`
     });
 
-    const subNavigation = await client.query({
+    const subNavigation = await req.app.locals.apolloClient.query({
         query: gql `${queries.subNavigation}`
     });
 
@@ -30,7 +27,7 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
     let content, view;
 
     if (currentLevel === -1) {
-        content = await client.query({
+        content = await req.app.locals.apolloClient.query({
             query: gql `${queries.navigationItem(req.originalUrl.split('/')[1])}`
         });
 
@@ -42,7 +39,7 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
             return res.redirect(`/tutorials/${content.data.itemsByType[0].children[0].url.value}`);
         }
     } else if (currentLevel === 0) {
-        content = await client.query({
+        content = await req.app.locals.apolloClient.query({
             query: gql `${queries.scenario(subNavigationLevels[currentLevel])}`
         });
 
@@ -52,7 +49,7 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
 
         view = 'pages/scenario';
     } else if (currentLevel === 1) {
-        content = await client.query({
+        content = await req.app.locals.apolloClient.query({
             query: gql `${queries.topic(subNavigationLevels[currentLevel])}`
         });
 
@@ -62,7 +59,7 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
 
         return res.redirect(`/tutorials/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content.data.itemsByType[0].children[0].url.value}`);
     } else if (currentLevel === 2) {
-        content = await client.query({
+        content = await req.app.locals.apolloClient.query({
             query: gql `${queries.article(subNavigationLevels[currentLevel])}`
         });
 

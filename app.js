@@ -11,6 +11,7 @@ const { ApolloServer } = require('apollo-server-express');
 const { TYPE_DEFINITION } = require('./graphQL/types');
 const { queryTypes, resolvers } = require('./graphQL/queries')
 const { graphQLPath } = require('./config');
+const apolloClient = require('./apolloClient');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -21,7 +22,6 @@ const app = express();
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   appInsights.setup();
 }
-
 
 // Apollo Server setup
 const apolloServer = new ApolloServer({
@@ -38,6 +38,9 @@ apolloServer.applyMiddleware({
   path: graphQLPath
 });
 
+app.locals.apolloClient;
+app.locals.deployVersion = (new Date).getTime();
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -53,16 +56,23 @@ app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: 86400000
 }));
 
+//Routes
+app.get('*', (req, res, next) => {
+  if (!app.locals.apolloClient) {
+    app.locals.apolloClient = apolloClient(req);
+  }
+
+  return next();
+});
+
 app.use('/', home);
 app.use('/tutorials', tutorials);
 
-
+/*
 app.use('/test', (req, res, next) => {
   res.send(`${process.env.APPINSIGHTS_INSTRUMENTATIONKEY}, ${process.env['KC.ProjectId']}, ${process.env['KC.PreviewApiKey']}`);
-});
+});*/
 
-
-//Routes
 app.get('/design/home', (req, res, next) => {
   return res.render('design/home', {
       title: 'Home',

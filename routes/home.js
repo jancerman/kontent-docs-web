@@ -3,12 +3,9 @@ const router = express.Router();
 
 const queries = require('../graphQL/gqlQueries');
 const gql = require('graphql-tag');
-const apolloClient = require('../apolloClient');
 
 router.get('/', async function (req, res, next) {
-  const client = apolloClient(req);
-
-  const home = await client.query({
+  const home = await req.app.locals.apolloClient.query({
     query: gql `${queries.home}`
   });
 

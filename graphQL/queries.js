@@ -6,6 +6,8 @@ const {
 } = require('../config');
 
 const richTextResolverTemplates = require('../helpers/richTextResolverTemplates');
+const linksResolverTemplates = require('../helpers/linksResolverTemplates');
+const getUrlMap = require('../helpers/urlMap');
 
 const queryTypes = `
 # The "Query" type is the root of all GraphQL queries.
@@ -43,6 +45,9 @@ const resolvers = {
       order,
       urlSlug
     }) => {
+
+      const urlMap = await getUrlMap(); 
+
       const query = deliveryClient.items()
         .type(type);
       limit && query.limitParameter(limit);
@@ -57,6 +62,11 @@ const resolvers = {
           }
           if (item.system.type === 'signpost') {
             return richTextResolverTemplates.signpost(item);
+          }
+        },
+        linkResolver: (link) => {
+          if (link.type === 'article') {
+            return linksResolverTemplates.article(link, urlMap);
           }
         }
       });
