@@ -83,7 +83,7 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         depth: null
     });*/
 
-    console.log(content.data.itemsByType[0]);
+    //console.log(content.data.itemsByType[0].content);
 
     return res.render(view, {
         req: req,
@@ -93,7 +93,7 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         navigation: navigation.data.itemsByType[0].navigation,
         subNavigation: subNavigation.data.itemsByType[0].children,
         subNavigationLevels: subNavigationLevels,
-        content: content.data.itemsByType[0],
+        content: content.data.itemsByType[0]
     });
 }));
 

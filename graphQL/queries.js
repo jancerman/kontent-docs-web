@@ -1,5 +1,11 @@
-const { DeliveryClient} = require('kentico-cloud-delivery');
-const { deliveryConfig } = require('../config');
+const {
+  DeliveryClient
+} = require('kentico-cloud-delivery');
+const {
+  deliveryConfig
+} = require('../config');
+
+const richTextResolverTemplates = require('../helpers/richTextResolverTemplates');
 
 const queryTypes = `
 # The "Query" type is the root of all GraphQL queries.
@@ -30,17 +36,43 @@ const resolvers = {
         .getPromise();
       return response.items;
     },
-    itemsByType: async (_, { type, limit, depth, order, urlSlug }) => {
+    itemsByType: async (_, {
+      type,
+      limit,
+      depth,
+      order,
+      urlSlug
+    }) => {
       const query = deliveryClient.items()
         .type(type);
       limit && query.limitParameter(limit);
       depth && query.depthParameter(depth);
       order && query.orderParameter(order);
-      urlSlug && query.equalsFilter('elements.url', urlSlug)
+      urlSlug && query.equalsFilter('elements.url', urlSlug);
+
+      query.queryConfig({
+        richTextResolver: (item, context) => {
+          if (item.system.type === 'embedded_content') {
+            return richTextResolverTemplates.embeddedContent(item);
+          }
+          if (item.system.type === 'signpost') {
+            return richTextResolverTemplates.signpost(item);
+          }
+        }
+      });
 
       const response = await query
         .getPromise();
-      //console.dir(response.items, {depth: null});
+
+      response.items.forEach((elem) => {
+        Object.keys(elem)
+          .filter((key) => elem.hasOwnProperty(key) && elem[key].hasOwnProperty('type') && elem[key].type === `rich_text`)
+          .forEach((key) => {
+            elem[key].getHtml();
+            elem[key].value = elem[key].resolvedHtml;
+          });
+      });
+      
       return response.items;
     }
   },
@@ -57,4 +89,3 @@ module.exports = {
   resolvers,
   queryTypes
 }
-

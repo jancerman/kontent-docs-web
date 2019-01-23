@@ -46,15 +46,13 @@
     "express-async-handler": "^1.1.4",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.10.0",
-    "http-errors": "~1.6.2",
     "kentico-cloud-delivery": "^5.2.1",
     "moment": "^2.24.0",
     "morgan": "~1.9.0",
     "node-fetch": "^2.3.0",
     "node-sass-middleware": "0.11.0",
     "nodemon": "^1.18.9",
-    "pug": "2.0.0-beta11",
-    "rxjs": "^6.3.3"
+    "pug": "2.0.0-beta11"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
