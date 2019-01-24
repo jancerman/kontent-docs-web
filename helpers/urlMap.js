@@ -1,16 +1,17 @@
 const { DeliveryClient } = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
 
-deliveryConfig.projectId = process.env['KC.ProjectId'];
+const getUrlMap = async (config) => {
+    deliveryConfig.projectId = (typeof config.projectid !== 'undefined' && config.projectid !== null) ? config.projectid : process.env['KC.ProjectId'];
+    const previewApiKey = (typeof config.previewapikey !== 'undefined' && config.previewapikey !== null) ? config.previewapikey : process.env['KC.PreviewApiKey'];
 
-if (process.env['KC.PreviewApiKey']) {
-    deliveryConfig.previewApiKey = process.env['KC.PreviewApiKey'];
-    deliveryConfig.enablePreviewMode = true;
-}
+    if (previewApiKey) {
+        deliveryConfig.previewApiKey = previewApiKey;
+        deliveryConfig.enablePreviewMode = true;
+    }
 
-const deliveryClient = new DeliveryClient(deliveryConfig);
+    const deliveryClient = new DeliveryClient(deliveryConfig);
 
-const getUrlMap = async () => {
     const query = deliveryClient.items()
         .type('home')
         .depthParameter(5);

@@ -3,6 +3,17 @@
         const client = algoliasearch('X1CQ8FTSIU', 'd9791ce948da2ec73fe36a62d7c9b7bd')
         const tutorials = client.initIndex('ohp_articles');
         const url = window.location;
+        const projectIdUrl = helper.getParameterByName('projectid');
+        const previewApiKeyUrl = helper.getParameterByName('previewapikey');
+
+        const queryString = (() => {
+            let qString = '';
+            qString += (typeof projectIdUrl !== 'undefined' && projectIdUrl !== null) ? `projectid=${projectIdUrl}&` : '';
+            qString += (typeof previewApiKeyUrl !== 'undefined' && previewApiKeyUrl !== null) ? `previewapikey=${previewApiKeyUrl}&` : '';
+            qString = qString.slice(0, -1);
+            qString = qString ? `?${qString}` : '';
+            return qString;
+        })();
 
         const initAutocomplete = (urlMap) => {
             var hitsSource = autocomplete.sources.hits(tutorials, {
@@ -94,7 +105,7 @@
             })
         };
 
-        helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap`, (urlMap) => {
+        helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
             initAutocomplete(urlMap);
         });
     };

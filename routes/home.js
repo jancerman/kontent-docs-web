@@ -8,7 +8,9 @@ router.get('/', asyncHandler(async (req, res, next) => {
   const tree = await requestDelivery({
     type: 'home',
     depth: 1,
-    resolveRichText: true
+    resolveRichText: true,
+    projectid: res.locals.projectid,
+    previewapikey: res.locals.previewapikey
   });
 
   if (!tree[0]) {

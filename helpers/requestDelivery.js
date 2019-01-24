@@ -3,17 +3,18 @@ const { deliveryConfig } = require('../config');
 
 const richTextResolverTemplates = require('./richTextResolverTemplates');
 const linksResolverTemplates = require('./linksResolverTemplates');
-    
-deliveryConfig.projectId = process.env['KC.ProjectId'];
-
-if (process.env['KC.PreviewApiKey']) {
-    deliveryConfig.previewApiKey = process.env['KC.PreviewApiKey'];
-    deliveryConfig.enablePreviewMode = true;
-}
-  
-const deliveryClient = new DeliveryClient(deliveryConfig);
 
 const requestDelivery = async (config) => {
+    deliveryConfig.projectId = (typeof config.projectid !== 'undefined' && config.projectid !== null) ? config.projectid : process.env['KC.ProjectId'];
+    const previewApiKey = (typeof config.previewapikey !== 'undefined' && config.previewapikey !== null) ? config.previewapikey : process.env['KC.PreviewApiKey'];
+
+    if (previewApiKey) {
+        deliveryConfig.previewApiKey = previewApiKey;
+        deliveryConfig.enablePreviewMode = true;
+    }
+  
+    const deliveryClient = new DeliveryClient(deliveryConfig);
+
     const query = deliveryClient.items()
         .type(config.type);
     

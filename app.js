@@ -39,11 +39,21 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 //Routes
+app.get('*', (req, res, next) => {
+  res.locals.projectid = typeof req.query.projectid !== 'undefined' ? req.query.projectid : null;
+  res.locals.previewapikey = typeof req.query.previewapikey !== 'undefined' ? req.query.previewapikey : null;
+  
+  return next();
+});
+
 app.use('/', home);
 app.use('/tutorials', tutorials);
 
 app.get('/urlmap', asyncHandler(async (req, res, next) => {
-  const urlMap = await getUrlMap();
+  const urlMap = await getUrlMap({
+    projectid: res.locals.projectid,
+    previewapikey: res.locals.previewapikey 
+  });
   return res.json(urlMap);
 }));
 

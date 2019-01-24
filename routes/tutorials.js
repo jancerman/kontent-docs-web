@@ -10,13 +10,17 @@ const moment = require('moment');
 router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
     const navigation = await requestDelivery({
         type: 'home',
-        depth: 1
+        depth: 1,
+        projectid: res.locals.projectid,
+        previewapikey: res.locals.previewapikey
     });
 
     const subNavigation = await requestDelivery({
         type: 'navigation_item',
         depth: 3,
-        slug: 'tutorials'
+        slug: 'tutorials',
+        projectid: res.locals.projectid,
+        previewapikey: res.locals.previewapikey
     });
 
     const subNavigationLevels = [
@@ -32,7 +36,9 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
     if (currentLevel === -1) {
         content = await requestDelivery({
             type: 'navigation_item',
-            slug: req.originalUrl.split('/')[1]
+            slug: req.originalUrl.split('/')[1],
+            projectid: res.locals.projectid,
+            previewapikey: res.locals.previewapikey
         });
 
         if (content[0]) {
@@ -46,7 +52,12 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
             depth: 1,
             slug: subNavigationLevels[currentLevel],
             resolveRichText: true,
-            urlMap: await getUrlMap()
+            urlMap: await getUrlMap({
+                projectid: res.locals.projectid,
+                previewapikey: res.locals.previewapikey 
+            }),
+            projectid: res.locals.projectid,
+            previewapikey: res.locals.previewapikey
         });
 
         if (!content[0]) {
@@ -58,7 +69,9 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         content = await requestDelivery({
             type: 'topic',
             depth: 1,
-            slug: subNavigationLevels[currentLevel]
+            slug: subNavigationLevels[currentLevel],
+            projectid: res.locals.projectid,
+            previewapikey: res.locals.previewapikey
         });
 
         if (content[0]) {
@@ -72,7 +85,12 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
             depth: 1,
             slug: subNavigationLevels[currentLevel],
             resolveRichText: true,
-            urlMap: await getUrlMap()
+            urlMap: await getUrlMap({
+                projectid: res.locals.projectid,
+                previewapikey: res.locals.previewapikey 
+            }),
+            projectid: res.locals.projectid,
+            previewapikey: res.locals.previewapikey
         });
 
         if (!content[0]) {
