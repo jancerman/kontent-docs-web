@@ -1,5 +1,5 @@
 require('dotenv').config();
-let appInsights = require('applicationinsights');
+const appInsights = require('applicationinsights');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -19,9 +19,8 @@ const tutorials = require('./routes/tutorials');
 const app = express();
 
 // Azure Application Insights monitors
-if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
-  appInsights.setup();
-}
+appInsights.setup();
+appInsights.start();
 
 // Apollo Server setup
 const apolloServer = new ApolloServer({
