@@ -1,19 +1,22 @@
 const express = require('express');
-const asyncHandler = require('express-async-handler')
+const asyncHandler = require('express-async-handler');
 const router = express.Router();
 
-const gql = require('graphql-tag');
-const queries = require('../graphQL/gqlQueries');
+const requestDelivery = require('../helpers/requestDelivery');
+const getUrlMap = require('../helpers/urlMap');
 
 const moment = require('moment');
 
 router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
-    const navigation = await req.app.locals.apolloClient.query({
-        query: gql `${queries.navigation}`
+    const navigation = await requestDelivery({
+        type: 'home',
+        depth: 1
     });
 
-    const subNavigation = await req.app.locals.apolloClient.query({
-        query: gql `${queries.subNavigation}`
+    const subNavigation = await requestDelivery({
+        type: 'navigation_item',
+        depth: 3,
+        slug: 'tutorials'
     });
 
     const subNavigationLevels = [
@@ -27,43 +30,52 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
     let content, view;
 
     if (currentLevel === -1) {
-        content = await req.app.locals.apolloClient.query({
-            query: gql `${queries.navigationItem(req.originalUrl.split('/')[1])}`
+        content = await requestDelivery({
+            type: 'navigation_item',
+            slug: req.originalUrl.split('/')[1]
         });
 
-        if (typeof content.data.itemsByType[0] === 'undefined') {
-            return next();
+        if (content[0]) {
+            return res.redirect(`/tutorials/${content[0].children[0].url.value}`);
         }
 
-        if (typeof content.data.itemsByType[0] !== 'undefined') {
-            return res.redirect(`/tutorials/${content.data.itemsByType[0].children[0].url.value}`);
-        }
+        return next();
     } else if (currentLevel === 0) {
-        content = await req.app.locals.apolloClient.query({
-            query: gql `${queries.scenario(subNavigationLevels[currentLevel])}`
+        content = await requestDelivery({
+            type: 'scenario',
+            depth: 1,
+            slug: subNavigationLevels[currentLevel],
+            resolveRichText: true,
+            urlMap: await getUrlMap()
         });
 
-        if (typeof content.data.itemsByType[0] === 'undefined') {
+        if (!content[0]) {
             return next();
         }
 
         view = 'pages/scenario';
     } else if (currentLevel === 1) {
-        content = await req.app.locals.apolloClient.query({
-            query: gql `${queries.topic(subNavigationLevels[currentLevel])}`
+        content = await requestDelivery({
+            type: 'topic',
+            depth: 1,
+            slug: subNavigationLevels[currentLevel]
         });
 
-        if (typeof content.data.itemsByType[0] === 'undefined') {
-            return next();
+        if (content[0]) {
+            return res.redirect(`/tutorials/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}`);
         }
 
-        return res.redirect(`/tutorials/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content.data.itemsByType[0].children[0].url.value}`);
+        return next();
     } else if (currentLevel === 2) {
-        content = await req.app.locals.apolloClient.query({
-            query: gql `${queries.article(subNavigationLevels[currentLevel])}`
+        content = await requestDelivery({
+            type: 'article',
+            depth: 1,
+            slug: subNavigationLevels[currentLevel],
+            resolveRichText: true,
+            urlMap: await getUrlMap()
         });
 
-        if (typeof content.data.itemsByType[0] === 'undefined') {
+        if (!content[0]) {
             return next();
         }
 
@@ -72,25 +84,15 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         return next();
     }
 
-    /*console.dir(content.data.itemsByType, {
-        depth: null
-    })
-
-    console.dir(subNavigation.data.itemsByType, {
-        depth: null
-    });*/
-
-    //console.log(content.data.itemsByType[0].content);
-
     return res.render(view, {
         req: req,
         moment: moment,
-        title: content.data.itemsByType[0].title.value,
-        description: content.data.itemsByType[0].description.value,
-        navigation: navigation.data.itemsByType[0].navigation,
-        subNavigation: subNavigation.data.itemsByType[0].children,
+        title: content[0].title.value,
+        description: content[0].description.value,
+        navigation: navigation[0] ? navigation[0].navigation : [],
+        subNavigation: subNavigation[0] ? subNavigation[0].children : [],
         subNavigationLevels: subNavigationLevels,
-        content: content.data.itemsByType[0]
+        content: content[0]
     });
 }));
 

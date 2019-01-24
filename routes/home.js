@@ -1,24 +1,26 @@
 const express = require('express');
+const asyncHandler = require('express-async-handler');
 const router = express.Router();
 
-const queries = require('../graphQL/gqlQueries');
-const gql = require('graphql-tag');
+const requestDelivery = require('../helpers/requestDelivery');
 
-router.get('/', async function (req, res, next) {
-  const home = await req.app.locals.apolloClient.query({
-    query: gql `${queries.home}`
+router.get('/', asyncHandler(async (req, res, next) => {
+  const tree = await requestDelivery({
+    type: 'home',
+    depth: 1,
+    resolveRichText: true
   });
 
-  if (!home.data.itemsByType[0]) {
+  if (!tree[0]) {
     return next();
   }
 
   return res.render('pages/home', {
     req: req,
-    title: home.data.itemsByType[0].title.value,
-    navigation: home.data.itemsByType[0].navigation,
-    signposts: home.data.itemsByType[0].signposts.value
+    title: tree[0].title.value,
+    navigation: tree[0].navigation,
+    signposts: tree[0].signposts.value
   });
-});
+}));
 
 module.exports = router;

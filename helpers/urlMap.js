@@ -1,9 +1,5 @@
-const {
-    DeliveryClient
-} = require('kentico-cloud-delivery');
-const {
-    deliveryConfig
-} = require('../config');
+const { DeliveryClient } = require('kentico-cloud-delivery');
+const { deliveryConfig } = require('../config');
 
 deliveryConfig.projectId = process.env['KC.ProjectId'];
 
@@ -65,8 +61,6 @@ const getUrlMap = async () => {
     });
 
     return urlMap;
-}
-
-
+};
 
 module.exports = getUrlMap;

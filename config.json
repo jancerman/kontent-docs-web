@@ -5,6 +5,5 @@
       "header": "X-KC-SOURCE",
       "value": "kentico-cloud-docs-web;1.0.0-beta"
     }]
-  },
-  "graphQLPath": "/graphql"
+  }
 }

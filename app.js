@@ -6,12 +6,6 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const compression = require('compression');
 const logger = require('morgan');
-const { ApolloServer } = require('apollo-server-express');
-
-const { TYPE_DEFINITION } = require('./graphQL/types');
-const { queryTypes, resolvers } = require('./graphQL/queries')
-const { graphQLPath } = require('./config');
-const apolloClient = require('./apolloClient');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -19,25 +13,11 @@ const tutorials = require('./routes/tutorials');
 const app = express();
 
 // Azure Application Insights monitors
-appInsights.setup();
-appInsights.start();
+if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
+  appInsights.setup();
+  appInsights.start();
+}
 
-// Apollo Server setup
-const apolloServer = new ApolloServer({
-  introspection: true,
-  playground: false,
-  typeDefs: [
-    TYPE_DEFINITION,
-    queryTypes
-  ],
-  resolvers
-});
-apolloServer.applyMiddleware({
-  app,
-  path: graphQLPath
-});
-
-app.locals.apolloClient;
 app.locals.deployVersion = (new Date).getTime();
 
 // view engine setup
@@ -56,33 +36,24 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 //Routes
-app.get('*', (req, res, next) => {
-  if (!app.locals.apolloClient) {
-    app.locals.apolloClient = apolloClient(req);
-  }
-
-  return next();
-});
-
 app.use('/', home);
 app.use('/tutorials', tutorials);
 
-
 app.use('/test', (req, res, next) => {
-  res.send(`${process.env.APPINSIGHTS_INSTRUMENTATIONKEY}, ${process.env['KC.ProjectId']}, ${process.env['KC.PreviewApiKey']}`);
+  return res.send(`${process.env.APPINSIGHTS_INSTRUMENTATIONKEY}, ${process.env['KC.ProjectId']}, ${process.env['KC.PreviewApiKey']}`);
 });
 
 app.get('/design/home', (req, res, next) => {
   return res.render('design/home', {
-      title: 'Home',
-      req: req
+    title: 'Home',
+    req: req
   });
 });
 
 app.get('/design/article', (req, res, next) => {
   return res.render('design/article', {
-      title: 'Article',
-      req: req
+    title: 'Article',
+    req: req
   });
 });
 

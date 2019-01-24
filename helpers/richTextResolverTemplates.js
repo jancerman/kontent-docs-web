@@ -46,6 +46,9 @@ const richTextResolverTemplates = {
                 ${item.description.value ? '<h3 class="presentation__sub-heading">'+ item.description.value +'</h3>' : ''}
             </section>
         `;
+    },
+    callout: (item) => {
+        return ``;
     }
 };
 
