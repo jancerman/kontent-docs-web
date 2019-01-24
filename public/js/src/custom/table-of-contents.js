@@ -12,7 +12,7 @@
     const copyAnchorClipboard = () => {
         let anchors = document.querySelectorAll('.anchor-copy');
 
-        anchors.forEach((item, index) => {
+        anchors.forEach((item) => {
             item.addEventListener('click', (event) => {
                 let hash = item.parentElement.getAttribute('id');
                 let url = window.location.href.split('#')[0];

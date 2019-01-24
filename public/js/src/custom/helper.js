@@ -47,7 +47,7 @@ window.helper = (() => {
 
         // Change this to div.childNodes to support multiple top-level nodes
         return div.firstChild;
-    }
+    };
 
     const copyToClipboard = (text) => {
         var textArea = document.createElement("textarea");
@@ -102,14 +102,32 @@ window.helper = (() => {
         }
 
         document.body.removeChild(textArea);
-    }
+    };
+
+    const ajaxGet = (url, callback) => {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                try {
+                    var data = JSON.parse(xmlhttp.responseText);
+                } catch(err) {
+                    return;
+                }
+                callback(data);
+            }
+        };
+     
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    };
 
     return {
         getParents: getParents,
         outerHeight: outerHeight,
         debounce: debounce,
         createElementFromHTML: createElementFromHTML,
-        copyToClipboard: copyToClipboard
+        copyToClipboard: copyToClipboard,
+        ajaxGet: ajaxGet
     }
 })();
 

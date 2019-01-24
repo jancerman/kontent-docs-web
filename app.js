@@ -6,6 +6,9 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const compression = require('compression');
 const logger = require('morgan');
+const asyncHandler = require('express-async-handler');
+
+const getUrlMap = require('./helpers/urlMap');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -38,6 +41,11 @@ app.use(express.static(path.join(__dirname, 'public'), {
 //Routes
 app.use('/', home);
 app.use('/tutorials', tutorials);
+
+app.get('/urlmap', asyncHandler(async (req, res, next) => {
+  const urlMap = await getUrlMap();
+  return res.json(urlMap);
+}));
 
 app.use('/test', (req, res, next) => {
   return res.send(`${process.env.APPINSIGHTS_INSTRUMENTATIONKEY}, ${process.env['KC.ProjectId']}, ${process.env['KC.PreviewApiKey']}`);
