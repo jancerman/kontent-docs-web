@@ -48,7 +48,10 @@ const richTextResolverTemplates = {
         `;
     },
     callout: (item) => {
-        return ``;
+        return `
+            <div class="callout callout--${item.type.value[0].codename}">
+                ${item.content.value}
+            </div>`;
     }
 };
 
