@@ -5,7 +5,7 @@ const minifierOptions = {
 };
 
 const minify = (text) => {
-    return text; //minifier(text, minifierOptions);
+    return minifier(text, minifierOptions);
 };
 
 module.exports = minify;

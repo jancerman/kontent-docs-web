@@ -1,5 +1,6 @@
 const { DeliveryClient } = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
+const stripWrapperPLinkedElements = require('./stripWrapperPLinkedElements')
 
 const richTextResolverTemplates = require('./richTextResolverTemplates');
 const linksResolverTemplates = require('./linksResolverTemplates');
@@ -56,7 +57,7 @@ const requestDelivery = async (config) => {
                 .filter((key) => elem.hasOwnProperty(key) && elem[key].hasOwnProperty('type') && elem[key].type === `rich_text`)
                 .forEach((key) => {
                     elem[key].getHtml();
-                    elem[key].value = elem[key].resolvedHtml;
+                    elem[key].value = stripWrapperPLinkedElements(elem[key].resolvedHtml);
                 });
         });
     }

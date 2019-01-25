@@ -1,4 +1,3 @@
-
 const richTextResolverTemplates = {
     embeddedContent: (item) => {
         const templates = {
