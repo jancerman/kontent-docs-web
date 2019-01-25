@@ -3,12 +3,17 @@ const asyncHandler = require('express-async-handler');
 const router = express.Router();
 
 const requestDelivery = require('../helpers/requestDelivery');
+const getUrlMap = require('../helpers/urlMap');
 
 router.get('/', asyncHandler(async (req, res, next) => {
   const tree = await requestDelivery({
     type: 'home',
-    depth: 1,
+    depth: 4,
     resolveRichText: true,
+    urlMap: await getUrlMap({
+      projectid: res.locals.projectid,
+      previewapikey: res.locals.previewapikey 
+    }),
     projectid: res.locals.projectid,
     previewapikey: res.locals.previewapikey
   });

@@ -30,7 +30,10 @@ const requestDelivery = async (config) => {
                     return richTextResolverTemplates.signpost(item);
                 } else if (item.system.type === 'callout') {
                     return richTextResolverTemplates.callout(item);
-                } else {
+                } else if (item.system.type === 'home__link_to_content_item') {
+                    return richTextResolverTemplates.homeLinkToContentItem(item, config.urlMap);
+                } 
+                else {
                     return `Missing Rich text resolver for the ${item.system.type} type.`;
                 }
             },
