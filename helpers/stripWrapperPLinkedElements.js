@@ -9,7 +9,6 @@ const stripWrapperPLinkedElements = (text) => {
     });
 
     let output = $.html();
-    console.log(output);
     return output.replace('<html><head></head><body>', '').replace('</body></html>', '');
 };
 
