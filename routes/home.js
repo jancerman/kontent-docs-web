@@ -4,6 +4,7 @@ const router = express.Router();
 
 const requestDelivery = require('../helpers/requestDelivery');
 const getUrlMap = require('../helpers/urlMap');
+const minify = require('../helpers/minify');
 
 router.get('/', asyncHandler(async (req, res, next) => {
   const tree = await requestDelivery({
@@ -24,6 +25,7 @@ router.get('/', asyncHandler(async (req, res, next) => {
 
   return res.render('pages/home', {
     req: req,
+    minify: minify,
     title: tree[0].title.value,
     navigation: tree[0].navigation,
     signposts: tree[0].signposts.value

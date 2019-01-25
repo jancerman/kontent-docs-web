@@ -8,5 +8,5 @@ block content
                 .article__content
                     h1 !{content.title.value}
                     include ../includes/table-of-contents.pug
-                    | !{content.content.value}
+                    | !{minify(content.content.value)}
                 

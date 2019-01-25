@@ -1,3 +1,4 @@
+
 const richTextResolverTemplates = {
     embeddedContent: (item) => {
         const templates = {
@@ -11,7 +12,6 @@ const richTextResolverTemplates = {
                 <p class="print-only"> 
                     <i>Play video on <a href="https://www.youtube.com/watch?v=${item.id.value}"> https://www.youtube.com/watch?v=${item.id.value}</a></i>
                 </p>
-                
                 `,
             codepen: `
                 <div class="embed">
@@ -58,12 +58,12 @@ const richTextResolverTemplates = {
         }
 
         return `
-        <li class="selection__item">
-            ${resolvedUrl ? '<a class="selection__link" href="'+ resolvedUrl + '">' : '<div class="selection__link">'}
-                <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
-                <div class="selection__title">${item.title.value}</div>
-            ${resolvedUrl ? '</a>' : '</div>'}
-        </li>
+            <li class="selection__item">
+                ${resolvedUrl ? '<a class="selection__link" href="'+ resolvedUrl + '">' : '<div class="selection__link">'}
+                    <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
+                    <div class="selection__title">${item.title.value}</div>
+                ${resolvedUrl ? '</a>' : '</div>'}
+            </li>
         `;
     },
     callout: (item) => {

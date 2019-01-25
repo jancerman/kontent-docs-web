@@ -4,6 +4,7 @@ const router = express.Router();
 
 const requestDelivery = require('../helpers/requestDelivery');
 const getUrlMap = require('../helpers/urlMap');
+const minify = require('../helpers/minify');
 
 const moment = require('moment');
 
@@ -105,6 +106,7 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
     return res.render(view, {
         req: req,
         moment: moment,
+        minify: minify,
         title: content[0].title.value,
         description: content[0].description.value,
         navigation: navigation[0] ? navigation[0].navigation : [],
