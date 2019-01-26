@@ -5,6 +5,7 @@ const router = express.Router();
 const requestDelivery = require('../helpers/requestDelivery');
 const getUrlMap = require('../helpers/urlMap');
 const minify = require('../helpers/minify');
+const isPreview = require('../helpers/isPreview');
 
 const moment = require('moment');
 
@@ -107,6 +108,8 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         req: req,
         moment: moment,
         minify: minify,
+        isPreview: isPreview(res.locals.previewapikey),
+        projectId: res.locals.projectid || process.env['KC.ProjectId'],
         title: content[0].title.value,
         description: content[0].description.value,
         navigation: navigation[0] ? navigation[0].navigation : [],
