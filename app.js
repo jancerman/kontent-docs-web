@@ -12,6 +12,8 @@ const getUrlMap = require('./helpers/urlMap');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
+const sitemap = require('./routes/sitemap');
+const robots = require('./routes/robots');
 
 const app = express();
 
@@ -48,6 +50,9 @@ app.get('*', (req, res, next) => {
 
 app.use('/', home);
 app.use('/tutorials', tutorials);
+
+app.use('/sitemap.xml', sitemap);
+app.use('/robots.txt', robots);
 
 app.get('/urlmap', asyncHandler(async (req, res, next) => {
   const urlMap = await getUrlMap({

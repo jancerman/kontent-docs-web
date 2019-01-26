@@ -21,35 +21,66 @@ const getUrlMap = async (config) => {
 
     let urlMap = [];
 
-    response.items.forEach(home => {
-        urlMap.push({
-            codename: home.system.codename,
-            url: `/`
+    const getMapItem = (data, fields) => {
+        let item = {};
+
+        fields.forEach(field => {
+            switch (field) {
+                case 'codename':
+                    item.codename = data.codename;
+                    break;
+                case 'url':
+                    item.url = data.url;
+                    break;
+                case 'date': 
+                    item.date = data.date;
+                    break;
+            }; 
         });
 
+        return item;
+    };
+
+    let fields = ['codename', 'url'];
+
+    if (config.isSitemap) {
+        fields = ['url', 'date'];
+    }
+
+    response.items.forEach(home => {
+        urlMap.push(getMapItem({
+            codename: home.system.codename,
+            url: `/`,
+            date: home.system.last_modified
+        }, fields));
+
         home.navigation.forEach(navigationItem => {
-            urlMap.push({
+            urlMap.push(getMapItem({
                 codename: navigationItem.system.codename,
-                url: `/${navigationItem.elements.url.value}`
-            });
+                url: `/${navigationItem.elements.url.value}`,
+                date: navigationItem.system.last_modified
+            }, fields));
 
             navigationItem.children.forEach(scenario => {
-                urlMap.push({
+                urlMap.push(getMapItem({
                     codename: scenario.system.codename,
-                    url: `/${navigationItem.elements.url.value}/${scenario.elements.url.value}`
-                });
+                    url: `/${navigationItem.elements.url.value}/${scenario.elements.url.value}`,
+                    date: scenario.system.last_modified
+                }, fields));
 
                 scenario.children.forEach(topic => {
-                    urlMap.push({
+                    urlMap.push(getMapItem({
                         codename: topic.system.codename,
-                        url: `/${navigationItem.elements.url.value}/${scenario.elements.url.value}/${topic.elements.url.value}`
-                    });
+                        url: `/${navigationItem.elements.url.value}/${scenario.elements.url.value}/${topic.elements.url.value}`,
+                        date: topic.system.last_modified
+                    }, fields));
 
                     topic.children.forEach(article => {
-                        urlMap.push({
+                        urlMap.push(getMapItem({
                             codename: article.system.codename,
-                            url: `/${navigationItem.elements.url.value}/${scenario.elements.url.value}/${topic.elements.url.value}/${article.elements.url.value}`
-                        });
+                            url: `/${navigationItem.elements.url.value}/${scenario.elements.url.value}/${topic.elements.url.value}/${article.elements.url.value}`,
+                            date: article.system.last_modified
+                        }, fields));
                     });
                 });
             });
