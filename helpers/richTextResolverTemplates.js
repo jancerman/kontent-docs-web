@@ -39,7 +39,24 @@ const richTextResolverTemplates = {
         return templates[item.provider.value[0].codename];
     },
     signpost: (item) => {
-        return `
+        let type = '';
+
+        if (item.type.value[0]) {
+            type = item.type.value[0].codename;
+        }
+
+        if (type === 'platform_selection') {
+            return `
+            <section class="presentation__section">
+                <h2 class="presentation__heading">${item.title.value}</h2>
+                ${item.description.value && item.description.value !== '<p><br></p>' ? '<h3 class="presentation__sub-heading">'+ item.description.value +'</h3>' : ''}
+                <ul class="selection selection--platforms">
+                    ${item.content.value}
+                </ul>
+            </section>
+        `;
+        } else {
+            return `
             <section class="presentation__section">
                 <h2 class="presentation__heading">${item.title.value}</h2>
                 ${item.description.value && item.description.value !== '<p><br></p>' ? '<h3 class="presentation__sub-heading">'+ item.description.value +'</h3>' : ''}
@@ -48,6 +65,7 @@ const richTextResolverTemplates = {
                 </ul>
             </section>
         `;
+        }
     },
     homeLinkToContentItem: (item, urlMap) => {
         let resolvedUrl = '';
