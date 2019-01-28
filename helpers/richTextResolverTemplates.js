@@ -40,32 +40,20 @@ const richTextResolverTemplates = {
     },
     signpost: (item) => {
         let type = '';
+        let listClass = '';
 
-        if (item.type.value[0]) {
-            type = item.type.value[0].codename;
-        }
+        if (item.type.value[0]) type = item.type.value[0].codename;
+        if (type === 'platform_selection') listClass = ' selection--platforms';
 
-        if (type === 'platform_selection') {
-            return `
+        return `
             <section class="presentation__section">
                 <h2 class="presentation__heading">${item.title.value}</h2>
                 ${item.description.value && item.description.value !== '<p><br></p>' ? '<h3 class="presentation__sub-heading">'+ item.description.value +'</h3>' : ''}
-                <ul class="selection selection--platforms">
+                <ul class="selection${listClass}">
                     ${item.content.value}
                 </ul>
             </section>
         `;
-        } else {
-            return `
-            <section class="presentation__section">
-                <h2 class="presentation__heading">${item.title.value}</h2>
-                ${item.description.value && item.description.value !== '<p><br></p>' ? '<h3 class="presentation__sub-heading">'+ item.description.value +'</h3>' : ''}
-                <ul class="selection">
-                    ${item.content.value}
-                </ul>
-            </section>
-        `;
-        }
     },
     homeLinkToContentItem: (item, urlMap) => {
         let resolvedUrl = '';
