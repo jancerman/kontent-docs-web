@@ -1,5 +1,5 @@
-const isPreview = (injectedApiKey) => {
-    return (typeof process.env['KC.PreviewApiKey'] !== 'undefined' || injectedApiKey !== null);
+const isPreview = (apiKey) => {
+    return !!(apiKey);
 };
 
 module.exports = isPreview;

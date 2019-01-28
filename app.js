@@ -42,9 +42,8 @@ app.use(express.static(path.join(__dirname, 'public'), {
 
 //Routes
 app.get('*', (req, res, next) => {
-  res.locals.projectid = typeof req.query.projectid !== 'undefined' ? req.query.projectid : null;
-  res.locals.previewapikey = typeof req.query.previewapikey !== 'undefined' ? req.query.previewapikey : null;
-  
+  res.locals.projectid = typeof req.query.projectid !== 'undefined' ? req.query.projectid : process.env['KC.ProjectId'];
+  res.locals.previewapikey = typeof req.query.previewapikey !== 'undefined' ? req.query.previewapikey : process.env['KC.PreviewApiKey'];
   return next();
 });
 

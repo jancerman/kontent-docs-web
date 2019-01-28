@@ -92,7 +92,7 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         moment: moment,
         minify: minify,
         isPreview: isPreview(res.locals.previewapikey),
-        projectId: res.locals.projectid || process.env['KC.ProjectId'],
+        projectId: res.locals.projectid,
         title: content[0].title.value,
         description: content[0].description.value,
         navigation: navigation[0] ? navigation[0].navigation : [],

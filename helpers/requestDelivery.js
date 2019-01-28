@@ -6,8 +6,8 @@ const richTextResolverTemplates = require('./richTextResolverTemplates');
 const linksResolverTemplates = require('./linksResolverTemplates');
 
 const requestDelivery = async (config) => {
-    deliveryConfig.projectId = (typeof config.projectid !== 'undefined' && config.projectid !== null) ? config.projectid : process.env['KC.ProjectId'];
-    const previewApiKey = (typeof config.previewapikey !== 'undefined' && config.previewapikey !== null) ? config.previewapikey : process.env['KC.PreviewApiKey'];
+    deliveryConfig.projectId = config.projectid;
+    const previewApiKey = config.previewapikey;
 
     if (previewApiKey) {
         deliveryConfig.previewApiKey = previewApiKey;
