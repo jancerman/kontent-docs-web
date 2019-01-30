@@ -1,0 +1,15 @@
+extends ../includes/layout.pug
+block content
+    main(id='main')
+        .article
+            .article__left
+                include ../includes/sub-navigation.pug
+            .article__right
+                .article__content
+                    if isPreview
+                        .align-right
+                            a(href=`https://app.kenticocloud.com/goto/edit-item/project/${projectId}/variant-codename/default/item/${content.system.id}`, target='_blank') Edit
+                    h1 !{content.title.value}
+                    include ../includes/table-of-contents.pug
+                    | !{minify(content.content.value)}
+                

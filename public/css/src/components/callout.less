@@ -7,7 +7,7 @@
         background-color: #ebf9f1;
         border-color: #22a361;
 
-        .callout__title {
+        .callout__title, & > p:first-child > strong {
             color: #22a361;
 
             &:before {
@@ -20,7 +20,7 @@
         background-color: #fff4ed;
         border-color: #f6843f;
 
-        .callout__title {
+        .callout__title, & > p:first-child > strong {
             color: #f6843f;
 
             &:before {
@@ -33,7 +33,7 @@
         background-color: #fafafa;
         border-color: #737373;
 
-        .callout__title {
+        .callout__title, & > p:first-child > strong {
             color: #737373;
 
             &:before {
@@ -46,7 +46,7 @@
         background-color: #edf6ff;
         border-color: #3f97f5;
 
-        .callout__title {
+        .callout__title, & > p:first-child > strong {
             color: #3f97f5;
 
             &:before {
@@ -55,7 +55,7 @@
         }
     }
 
-    &__title {
+    &__title, & > p:first-child > strong {
         font-weight: 700;
 
         &:before {
@@ -64,6 +64,10 @@
             padding: 0 .5em 0 0;
             width: 1em;
         }
+    }
+
+    & > p:first-child > strong {
+        margin-left: -1.5em;
     }
 
     p {

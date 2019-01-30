@@ -2,8 +2,8 @@
     const createAnchors = () => {
         let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading), h3, h4');
 
-        headings.forEach((item, index) => {
-            let anchorName = item.innerHTML.toLowerCase().replace(/\W/g,'-') + `-${index}`;
+        headings.forEach((item) => {
+            let anchorName = item.innerHTML.toLowerCase().replace(/\W/g,'-');
             item.setAttribute('id', anchorName);
             item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip">Copy URL</span></span>`;
         });
@@ -12,7 +12,7 @@
     const copyAnchorClipboard = () => {
         let anchors = document.querySelectorAll('.anchor-copy');
 
-        anchors.forEach((item, index) => {
+        anchors.forEach((item) => {
             item.addEventListener('click', (event) => {
                 let hash = item.parentElement.getAttribute('id');
                 let url = window.location.href.split('#')[0];
@@ -68,6 +68,10 @@
         });
 
         tableOfContentsWrapper.innerHTML = tableOfContents;
+
+        if (!tableOfContentsWrapper.innerHTML) {
+            document.querySelector('.table-of-contents').classList.add('table-of-contents--empty')
+        }
     };
 
     const bindSmothScroll = () => {

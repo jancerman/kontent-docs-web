@@ -47,7 +47,7 @@ window.helper = (() => {
 
         // Change this to div.childNodes to support multiple top-level nodes
         return div.firstChild;
-    }
+    };
 
     const copyToClipboard = (text) => {
         var textArea = document.createElement("textarea");
@@ -102,14 +102,43 @@ window.helper = (() => {
         }
 
         document.body.removeChild(textArea);
-    }
+    };
+
+    const ajaxGet = (url, callback) => {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                try {
+                    var data = JSON.parse(xmlhttp.responseText);
+                } catch(err) {
+                    return;
+                }
+                callback(data);
+            }
+        };
+     
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    };
+
+    const getParameterByName = (name, url) => {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    };
 
     return {
         getParents: getParents,
         outerHeight: outerHeight,
         debounce: debounce,
         createElementFromHTML: createElementFromHTML,
-        copyToClipboard: copyToClipboard
+        copyToClipboard: copyToClipboard,
+        ajaxGet: ajaxGet,
+        getParameterByName: getParameterByName
     }
 })();
 
