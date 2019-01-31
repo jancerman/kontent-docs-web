@@ -137,6 +137,13 @@ window.helper = (() => {
         return decodeURIComponent(results[2].replace(/\+/g, ' '));
     };
 
+    const addStylesheet = (url) => {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = url;
+        document.head.appendChild(link);
+    };
+
     const loadStylesheet = (url) => {
         ajaxGet(url, css => {
             css = css.replace(/}/g, 'font-display: swap; }');
@@ -146,7 +153,7 @@ window.helper = (() => {
             style.appendChild(document.createTextNode(css));
             head.appendChild(style);
         });
-    }
+    };
 
     return {
         getParents: getParents,
@@ -156,7 +163,8 @@ window.helper = (() => {
         copyToClipboard: copyToClipboard,
         ajaxGet: ajaxGet,
         getParameterByName: getParameterByName,
-        loadStylesheet: loadStylesheet
+        loadStylesheet: loadStylesheet,
+        addStylesheet: addStylesheet
     }
 })();
 

@@ -58,10 +58,10 @@ const loadOnScroll = () => {
 };
 
 const loadFonts = () => {
-    helper.loadStylesheet('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700');
+    helper.addStylesheet('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700');
 
     if (document.querySelector('code, pre')) {
-        helper.loadStylesheet('https://fonts.googleapis.com/css?family=Inconsolata');
+        helper.addStylesheet('https://fonts.googleapis.com/css?family=Inconsolata');
     }
 };
 
