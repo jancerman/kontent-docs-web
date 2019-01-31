@@ -57,11 +57,15 @@ const loadOnScroll = () => {
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    helper.addStylesheet('//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700');
-    loadOnScroll();
-});
+const loadFonts = () => {
+    helper.loadStylesheet('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700');
 
-window.addEventListener('load', () => {
-    helper.addStylesheet('//fonts.googleapis.com/css?family=Inconsolata');
+    if (document.querySelector('code, pre')) {
+        helper.loadStylesheet('https://fonts.googleapis.com/css?family=Inconsolata');
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadFonts();
+    loadOnScroll();
 });

@@ -111,7 +111,7 @@
 
         helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
             initAutocomplete(urlMap);
-        });
+        }, 'json');
     };
 
     const resizeNavSearch = () => {

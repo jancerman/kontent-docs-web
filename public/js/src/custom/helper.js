@@ -104,20 +104,26 @@ window.helper = (() => {
         document.body.removeChild(textArea);
     };
 
-    const ajaxGet = (url, callback) => {
+    const ajaxGet = (url, callback, type) => {
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() {
+        xmlhttp.open("GET", url, true);
+        xmlhttp.onreadystatechange = () => {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                 try {
-                    var data = JSON.parse(xmlhttp.responseText);
-                } catch(err) {
+                    var data;
+
+                    if (type === 'json') {
+                        data = JSON.parse(xmlhttp.responseText);
+                    } else {
+                        data = xmlhttp.responseText
+                    }   
+                } catch (err) {
                     return;
                 }
                 callback(data);
             }
         };
-     
-        xmlhttp.open("GET", url, true);
+
         xmlhttp.send();
     };
 
@@ -131,13 +137,16 @@ window.helper = (() => {
         return decodeURIComponent(results[2].replace(/\+/g, ' '));
     };
 
-    const addStylesheet = (url) => {
-        var link = document.createElement('link');
-        var script = document.getElementsByTagName("script")[0];
-        link.rel = 'stylesheet';
-        link.href = url;
-        script.parentNode.insertBefore(link, script);
-    };
+    const loadStylesheet = (url) => {
+        ajaxGet(url, css => {
+            css = css.replace(/}/g, 'font-display: swap; }');
+
+            const head = document.getElementsByTagName('head')[0];
+            const style = document.createElement('style');
+            style.appendChild(document.createTextNode(css));
+            head.appendChild(style);
+        });
+    }
 
     return {
         getParents: getParents,
@@ -147,7 +156,7 @@ window.helper = (() => {
         copyToClipboard: copyToClipboard,
         ajaxGet: ajaxGet,
         getParameterByName: getParameterByName,
-        addStylesheet: addStylesheet
+        loadStylesheet: loadStylesheet
     }
 })();
 
