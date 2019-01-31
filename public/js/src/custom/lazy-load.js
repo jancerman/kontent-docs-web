@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+const loadOnScroll = () => {
     var lazyloadElems;
 
     if ('IntersectionObserver' in window) {
@@ -51,8 +51,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 20);
         }
 
-        document.addEventListener('scroll', lazyload);
+        document.addEventListener('scroll', lazyload, supportsPassive ? { passive: true } : false);
         window.addEventListener('resize', lazyload);
         window.addEventListener('orientationChange', lazyload);
     }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    helper.addStylesheet('//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700');
+    loadOnScroll();
+});
+
+window.addEventListener('load', () => {
+    helper.addStylesheet('//fonts.googleapis.com/css?family=Inconsolata');
 });

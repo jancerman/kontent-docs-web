@@ -131,6 +131,14 @@ window.helper = (() => {
         return decodeURIComponent(results[2].replace(/\+/g, ' '));
     };
 
+    const addStylesheet = (url) => {
+        var link = document.createElement('link');
+        var script = document.getElementsByTagName("script")[0];
+        link.rel = 'stylesheet';
+        link.href = url;
+        script.parentNode.insertBefore(link, script);
+    };
+
     return {
         getParents: getParents,
         outerHeight: outerHeight,
@@ -138,7 +146,8 @@ window.helper = (() => {
         createElementFromHTML: createElementFromHTML,
         copyToClipboard: copyToClipboard,
         ajaxGet: ajaxGet,
-        getParameterByName: getParameterByName
+        getParameterByName: getParameterByName,
+        addStylesheet: addStylesheet
     }
 })();
 

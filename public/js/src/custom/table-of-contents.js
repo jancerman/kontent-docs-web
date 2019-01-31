@@ -129,7 +129,7 @@
             anchorOnLoad();
             copyAnchorClipboard();
     
-            window.addEventListener('scroll', fixTableOfContents);
+            window.addEventListener('scroll', fixTableOfContents, supportsPassive ? { passive: true } : false);
             window.addEventListener('resize', fixTableOfContents);
         }, 0);
     }

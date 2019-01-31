@@ -1,8 +1,12 @@
 meta(name='viewport', content='width=device-width, initial-scale=1')
 meta(charset='utf-8')
-meta(name='robots', content='noindex,follow')
-link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700')
+if isPreview
+    meta(name='robots', content='noindex,nofollow')
+if !isPreview
+    meta(name='robots', content='index,follow')
 link(rel='stylesheet', href='/css/app.min.css?v=' + deployVersion)
+link(rel='preconnect', href='//fonts.gstatic.com')
+link(rel='preconnect', href='//fonts.googleapis.com')
 script var searchAPI={appid:"#{process.env['Search.AppId']}",apikey:"#{process.env['Search.ApiKey']}",indexname:"#{process.env['Search.IndexName']}"};
 script(src='https://cdn.jsdelivr.net/npm/algoliasearch@3.32.0/dist/algoliasearchLite.min.js', defer='')
 script(src='https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js', defer='')
@@ -28,4 +32,3 @@ meta(name='msapplication-TileColor', content='#ffffff')
 meta(name='msapplication-TileImage', content='/img/favicon/ms-icon-144x144.png')
 meta(name='theme-color', content='#ffffff')
 meta(name='format-detection', content='telephone=no')
-link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Inconsolata')

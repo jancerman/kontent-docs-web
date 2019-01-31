@@ -54,5 +54,5 @@
     toggleLevel2();
     fixSubNav();
 
-    window.addEventListener('scroll', fixSubNav);
+    window.addEventListener('scroll', fixSubNav, supportsPassive ? { passive: true } : false);
 })();
