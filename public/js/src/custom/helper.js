@@ -1,4 +1,9 @@
+/**
+ * Helper functions used in other JS files in the ../custom folder
+ */
 window.helper = (() => {
+
+    // Find a parent of the "el" element specified by the "parentSelector" param
     const getParents = (el, parentSelector) => {
         if (parentSelector === undefined) {
             parentSelector = document;
@@ -17,6 +22,7 @@ window.helper = (() => {
         return parents;
     };
 
+    // Get full height of an element
     const outerHeight = (el) => {
         var height = el.offsetHeight;
         var style = getComputedStyle(el);
@@ -25,6 +31,7 @@ window.helper = (() => {
         return height;
     };
 
+    // Helper function for event listeners bind to scroll events that makes them fire on setTimeout
     const debounce = (func, wait, immediate) => {
         var timeout;
         return function () {
@@ -41,6 +48,7 @@ window.helper = (() => {
         };
     };
 
+    // COnverts string to node
     const createElementFromHTML = (htmlString) => {
         var div = document.createElement('div');
         div.innerHTML = htmlString.trim();
@@ -49,6 +57,7 @@ window.helper = (() => {
         return div.firstChild;
     };
 
+    // Stores text in a clipboard
     const copyToClipboard = (text) => {
         var textArea = document.createElement("textarea");
 
@@ -104,6 +113,7 @@ window.helper = (() => {
         document.body.removeChild(textArea);
     };
 
+    // Ajax GET call
     const ajaxGet = (url, callback, type) => {
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.open("GET", url, true);
@@ -111,8 +121,9 @@ window.helper = (() => {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                 try {
                     var data;
-
+                   
                     if (type === 'json') {
+                         // Parse JSON if specified in the "type" param
                         data = JSON.parse(xmlhttp.responseText);
                     } else {
                         data = xmlhttp.responseText
@@ -127,6 +138,7 @@ window.helper = (() => {
         xmlhttp.send();
     };
 
+    // Get url parameter by its name
     const getParameterByName = (name, url) => {
         if (!url) url = window.location.href;
         name = name.replace(/[\[\]]/g, '\\$&');
@@ -137,6 +149,7 @@ window.helper = (() => {
         return decodeURIComponent(results[2].replace(/\+/g, ' '));
     };
 
+    // Add link tag to page head and make it load and behave as stylesheet
     const addStylesheet = (url) => {
         var link = document.createElement('link');
         link.rel = 'stylesheet';
@@ -144,6 +157,7 @@ window.helper = (() => {
         document.head.appendChild(link);
     };
 
+    // Request stylesheet, append additional font-display property and in-line it in page head
     const loadStylesheet = (url) => {
         ajaxGet(url, css => {
             css = css.replace(/}/g, 'font-display: swap; }');
@@ -168,6 +182,7 @@ window.helper = (() => {
     }
 })();
 
+// Adds forEach function to NodeList class prototype
 (() => {
     if (typeof NodeList.prototype.forEach === "function") {
         return false;

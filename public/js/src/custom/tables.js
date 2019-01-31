@@ -1,4 +1,9 @@
+/**
+ * Make tables spread reasonably it the page content
+ */
 (() => {
+
+    // Set a wrapper to all tables
     const wrapTables = () => {
         let tables = document.querySelectorAll('table');
 
@@ -17,6 +22,7 @@
         }
     };
 
+    // Force size of table to the very right of the viewport if number of cells if more than 5
     const setWrapperSize = helper.debounce(() => {
         let tables = document.querySelectorAll('.table');
 
@@ -36,6 +42,7 @@
         }   
     }, 250);
 
+    // If cell count is lower than 6, set a max-size to them to prevent overflowing the table from the website container 
     const setCellMaxWidth = () => {
         let tables = document.querySelectorAll('table');
         let contentWidth = document.querySelector('.article__content').offsetWidth;

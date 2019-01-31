@@ -1,5 +1,11 @@
+/**
+ * Initializes Algolia search with use of autocomplete.js
+ */
+
 (() => {
     const initAlgoliaSearch = () => {
+        // Get Algolia API details from object in the global scope (should be present in the page head)
+        // Or use API detail injected with url parameters
         searchAPI.appid = helper.getParameterByName('searchappid') || searchAPI.appid;
         searchAPI.apikey = helper.getParameterByName('searchapikey') || searchAPI.apikey;
         searchAPI.indexname = helper.getParameterByName('searchindexname') || searchAPI.indexname;
@@ -7,9 +13,12 @@
         const client = algoliasearch(searchAPI.appid, searchAPI.apikey)
         const tutorials = client.initIndex(searchAPI.indexname);
         const url = window.location;
+
+        // Get injected KC API details 
         const projectIdUrl = helper.getParameterByName('projectid');
         const previewApiKeyUrl = helper.getParameterByName('previewapikey');
 
+        // Build query string with injected KC API details for the urlMap 
         const queryString = (() => {
             let qString = '';
             qString += (typeof projectIdUrl !== 'undefined' && projectIdUrl !== null) ? `projectid=${projectIdUrl}&` : '';
@@ -19,7 +28,9 @@
             return qString;
         })();
 
+        // Init Algolia
         const initAutocomplete = (urlMap) => {
+            // Init autocomplete and set maximum of suggested search items 
             var hitsSource = autocomplete.sources.hits(tutorials, {
                 hitsPerPage: 8
             });
@@ -87,10 +98,14 @@
                 displayKey: 'title',
                 templates: {
                     suggestion: (suggestion) => {
+                        // Get url from the urlMap
                         const suggestionUrl = urlMap.filter(item => item.codename === suggestion.codename);
+
+                        // Add an anchor to the url if available
                         const anchor = suggestion._highlightResult.heading.value ? `#${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g,'-')}` : '';
                         suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}${anchor}` : '';
 
+                        // Template for a single search result suggestion
                         return `<a href="${suggestion.resolvedUrl}" class="suggestion">
                                     <span class="suggestion__heading">${suggestion._highlightResult.title.value}</span><span class="suggestion__category">Tutorials</span>
                                     ${suggestion._highlightResult.heading.value ? '<span class="suggestion__sub-heading">'+ suggestion._highlightResult.heading.value +'</span>' : ''}
@@ -100,20 +115,22 @@
                 }
             }])
             .on('autocomplete:selected', (event, suggestion, dataset, context) => {
-                // Do nothing on click, as the browser will already do it
+                // Do nothing on click, as the browser will handle <a> tag by default 
                 if (context.selectionMethod === 'click') {
                   return;
                 }
-                // Change the page, for example, on other events
+                // Change the page (for example, when enter key gets hit)
                 window.location.assign(`${suggestion.resolvedUrl}`);
             })
         };
 
+        // Get urlMap and init the autocomplete
         helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
             initAutocomplete(urlMap);
         }, 'json');
     };
 
+    // In the header handle re-sizing the search input on focus/blur
     const resizeNavSearch = () => {
         let searchElem = document.querySelector('#nav-search');
         let navElem = document.querySelector('.navigation__right');
