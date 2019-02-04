@@ -14,13 +14,13 @@ const richTextResolverTemplates = {
                 `,
             codepen: `
                 <div class="embed">
-                    <iframe class="lazy" height="265" scrolling="no" data-src="https://codepen.io/milanlund/embed/${item.id.value}/?height=265&amp;theme-id=0&amp;default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
+                    <iframe class="lazy" height="265" scrolling="no" data-src="https://codepen.io/${item.id.value.replace('/pen/', '/embed/')}/?height=265&amp;theme-id=0&amp;default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
                     <noscript>
-                        <iframe height="265" scrolling="no" src="https://codepen.io/milanlund/embed/${item.id.value}/?height=265&amp;theme-id=0&amp;default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
+                        <iframe height="265" scrolling="no" src="https://codepen.io/${item.id.value}/?height=265&amp;theme-id=0&amp;default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
                     </noscript>
                 </div>
                 <p class="print-only"> 
-                    <i>See the code example on <a href="https://codepen.io/nathantaylor/pen/${item.id.value}">https://codepen.io/nathantaylor/pen/${item.id.value}</a></i>
+                    <i>See the code example on <a href="https://codepen.io/${item.id.value}">https://codepen.io/${item.id.value}</a></i>
                 </p>
                 `,
             stackblitz: `
@@ -32,6 +32,17 @@ const richTextResolverTemplates = {
                 </div>
                 <p class="print-only"> 
                     <i>See the code example on <a href="https://stackblitz.com/edit/${item.id.value}">https://stackblitz.com/edit/${item.id.value}</a></i>
+                </p>
+                `,
+            codesandbox: `
+                <div class="embed">
+                    <iframe class="lazy" data-src="https://codesandbox.io/embed/${item.id.value}"></iframe>
+                    <noscript>
+                        <iframe src="https://codesandbox.io/embed/${item.id.value}"></iframe>
+                    </noscript>
+                </div>
+                <p class="print-only"> 
+                    <i>See the code example on <a href="https://codesandbox.io/s/${item.id.value}">https://codesandbox.io/s/${item.id.value}</a></i>
                 </p>
                 `
         };

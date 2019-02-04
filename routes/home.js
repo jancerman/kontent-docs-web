@@ -6,6 +6,7 @@ const requestDelivery = require('../helpers/requestDelivery');
 const getUrlMap = require('../helpers/urlMap');
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
+const commonContent = require('../helpers/commonContent');
 
 router.get('/', asyncHandler(async (req, res, next) => {
   const tree = await requestDelivery({
@@ -24,13 +25,16 @@ router.get('/', asyncHandler(async (req, res, next) => {
     return next();
   }
 
+  const footer = await commonContent.getFooter(res);
+  
   return res.render('pages/home', {
     req: req,
     minify: minify,
     isPreview: isPreview(res.locals.previewapikey),
     title: tree[0].title.value,
     navigation: tree[0].navigation,
-    signposts: tree[0].signposts.value
+    signposts: tree[0].signposts.value,
+    footer: footer[0]
   });
 }));
 

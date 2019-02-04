@@ -6,6 +6,7 @@ const requestDelivery = require('../helpers/requestDelivery');
 const getUrlMap = require('../helpers/urlMap');
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
+const commonContent = require('../helpers/commonContent');
 
 const moment = require('moment');
 
@@ -73,6 +74,7 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
     const subNavigationLevels = getSubNavigationLevels(req);
     const currentLevel = subNavigationLevels.filter( item => item !== null ).length - 1;
     const content = await getContentLevel(currentLevel, req, res);
+    const footer = await commonContent.getFooter(res);
     let view = 'pages/article';
 
     if (content[0]) {
@@ -94,11 +96,13 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         isPreview: isPreview(res.locals.previewapikey),
         projectId: res.locals.projectid,
         title: content[0].title.value,
-        description: content[0].introduction ? content[0].introduction.value : content[0].description.value,
+        introduction: content[0].introduction ? content[0].introduction.value : content[0].description.value,
+        nextStep: content[0].next_step && content[0].next_step.length ? content[0].next_step : '',
         navigation: navigation[0] ? navigation[0].navigation : [],
         subNavigation: subNavigation[0] ? subNavigation[0].children : [],
         subNavigationLevels: subNavigationLevels,
-        content: content[0]
+        content: content[0],
+        footer: footer[0]
     });
 }));
 

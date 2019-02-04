@@ -9,6 +9,8 @@ const logger = require('morgan');
 const asyncHandler = require('express-async-handler');
 
 const getUrlMap = require('./helpers/urlMap');
+const commonContent = require('./helpers/commonContent');
+const minify = require('./helpers/minify');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -87,16 +89,21 @@ app.use((req, res, next) => {
 });
 
 // error handler
-app.use((err, req, res, _next) => {
+app.use(async (err, req, res, _next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   console.error(err.stack);
   // render the error page
   res.status(err.status || 500);
+
+  const footer = await commonContent.getFooter(res);
+
   res.render('pages/error', { 
     req: req,
-    navigation: [] 
+    minify: minify,
+    navigation: [],
+    footer: footer[0]
   });
 });
 
