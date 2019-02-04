@@ -13,7 +13,8 @@ block content
                     .article__notes
                         time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
                         .article__author !{content.author[0].name.value}
-                    | !{minify(introduction)}
+                    if (introduction !== '<p><br></p>')
+                        | !{minify(introduction)}
                     include ../includes/table-of-contents.pug
                     | !{minify(content.content.value)}
                     | !{minify(nextStep)}

@@ -54,7 +54,7 @@
 
     // For all sub-headings create a list cascade representing table of contents and append it to the appropriate element
     const createTableOfContents = () => {
-        let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading)');
+        let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading), h3, h4');
         let tableOfContentsWrapper = document.querySelector('.table-of-contents__list');
         let tableOfContents = '';
         let prevHeadingLevel = 2;
@@ -93,13 +93,54 @@
         });
     };
 
+    // Make table of contents fixed to top/bottom of the screen, or header/footer
+    // When enough space position the table of contents on the right hand side of the screen. Otherwise, position in under the article heading
+    const fixTableOfContents = () => {
+        let tableOfContents = document.querySelector('.table-of-contents');
+        let viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        let webWidth = document.querySelector('main').offsetWidth;
+        let remainingSpace = (viewportWidth - webWidth) / 2;
+
+        if (remainingSpace >= 280) {
+            if (tableOfContents) {
+                let topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
+                let isTop = topOffset <= document.querySelector('.navigation').offsetHeight;
+
+                let isBottom = (window.innerHeight + window.pageYOffset + helper.outerHeight(document.querySelector('.footer'))) >= document.body.offsetHeight;
+
+                tableOfContents.classList.add('table-of-contents--fixed');
+                tableOfContents.style.left = `${viewportWidth - remainingSpace}px`;
+
+                if (isTop) {
+                    tableOfContents.classList.add('table-of-contents--top');
+                } else {
+                    tableOfContents.classList.remove('table-of-contents--top');
+                }
+
+                if (isBottom) {
+                    tableOfContents.classList.add('table-of-contents--bottom');
+                } else {
+                    tableOfContents.classList.remove('table-of-contents--bottom');
+                }
+            }
+        } else {
+            tableOfContents.classList.remove('table-of-contents--top');
+            tableOfContents.classList.remove('table-of-contents--bottom');
+            tableOfContents.classList.remove('table-of-contents--fixed');
+        }
+    };
+
     if (document.querySelector('.table-of-contents')) {
         setTimeout(() => {
             createAnchors();
             createTableOfContents();
             bindSmothScroll();
+            fixTableOfContents();
             anchorOnLoad();
             copyAnchorClipboard();
+    
+            window.addEventListener('scroll', fixTableOfContents, supportsPassive ? { passive: true } : false);
+            window.addEventListener('resize', fixTableOfContents);
         }, 0);
     }
 })();

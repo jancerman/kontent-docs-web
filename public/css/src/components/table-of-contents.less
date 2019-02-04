@@ -41,12 +41,14 @@
             top: 1px;
         }
 
-        &:after {
-            font-family: 'kentico-icons';
-            content: @icon-chevron-right;
-            display: inline-block;
-            padding: 0 0 0 .5em;
-            font-size: .875em;
+        &[data-toggle-trigger] {
+            &:after {
+                font-family: 'kentico-icons';
+                content: @icon-chevron-right;
+                display: inline-block;
+                padding: 0 0 0 .5em;
+                font-size: .875em;
+            }
         }
 
         &.trigger-active {
