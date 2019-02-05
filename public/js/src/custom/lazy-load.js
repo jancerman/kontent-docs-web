@@ -63,10 +63,30 @@ const loadOnScroll = () => {
     }
 };
 
+const loadOnClick = () => {
+    let lazy = document.querySelectorAll('.lazy');
+
+    lazy.forEach(item => {
+        let wrapper = helper.getParents(item);
+        wrapper[0].insertBefore(helper.createElementFromHTML('<div class="embed__dnt-enable">Load embed content</div>'), wrapper[0].firstChild);
+    });
+
+    document.querySelector('body').addEventListener('click', e => {
+        if (e.target && e.target.matches('div.embed__dnt-enable')) {
+            let el = e.target.nextElementSibling;
+
+            if (el.classList.contains('lazy') && el.hasAttribute('data-src')) {
+                el.src = el.dataset.src;
+                el.classList.remove('lazy');
+                el.removeAttribute('data-src');
+                e.target.parentNode.removeChild(e.target);
+            }
+        }
+    });
+};
+
 // Conditionally load stylesheets
 const loadFonts = () => {
-    //helper.addStylesheet('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700');
-
     if (document.querySelector('code, pre')) {
         helper.addStylesheet('https://fonts.googleapis.com/css?family=Inconsolata');
     }
@@ -75,5 +95,16 @@ const loadFonts = () => {
 // Fire on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
     loadFonts();
-    loadOnScroll();
+
+    // Check if "Do not flag" is enabled in the browser settings
+    // If yes, make embeds load on click, otherwise lazyload on scroll
+    if (window.doNotTrack || navigator.doNotTrack || navigator.msDoNotTrack || 'msTrackingProtectionEnabled' in window.external) {
+        if (window.doNotTrack == '1' || navigator.doNotTrack === 'yes' || navigator.doNotTrack == '1' || navigator.msDoNotTrack == '1' || window.external.msTrackingProtectionEnabled()) {
+            loadOnClick();    
+        } else {
+            loadOnScroll();
+        }
+    } else {
+        loadOnScroll();
+    }
 });

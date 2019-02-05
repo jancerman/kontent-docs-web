@@ -38,4 +38,28 @@
         margin: 0;
         padding-bottom: 0;
     }
+
+    &__dnt-enable {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: #fafafa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: .25s background-color;
+        color: #2196f3;
+        text-decoration: underline;
+        z-index: 1000;
+
+        &:hover,
+        &:active,
+        &:focus {
+            background-color: #eee; 
+            color: #0960a5;
+        }
+    }
 }
