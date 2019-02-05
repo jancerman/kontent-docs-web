@@ -20,12 +20,12 @@
             })();
 
             if (captionElem !== null) {
-                figcaption = `<p>${captionElem.innerHTML}</p>`;
+                figcaption = `<div class="basicLightbox__description">${captionElem.innerHTML}</div>`;
             }
             
             // Init lighbox with caption
             item.addEventListener('click', event => {
-                basicLightbox.create(`<img src="${item.getAttribute('src')}">${figcaption}`).show();
+                basicLightbox.create(`<img src="${item.getAttribute('src').split("?")[0] + '?w=1600'}">${figcaption}`).show();
             });
         });
     }, 0);

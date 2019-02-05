@@ -1,6 +1,6 @@
 const cheerio = require('cheerio');
 
-const stripWrapperPLinkedElements = (text) => {
+const enhanceMarkup = (text) => {
     const $ = cheerio.load(text);
 
     $('p.kc-linked-item-wrapper, p:empty').each(function(i,elem) {
@@ -8,8 +8,13 @@ const stripWrapperPLinkedElements = (text) => {
         $(this).replaceWith(contents);
     });
 
+    $('img[data-asset-id]').each(function(i,elem) {
+        var $that = $(this);
+        $that.attr('src', $that.attr('src') + '?w=926');
+    });
+
     let output = $.html();
     return output.replace('<html><head></head><body>', '').replace('</body></html>', '');
 };
 
-module.exports = stripWrapperPLinkedElements;
+module.exports = enhanceMarkup;

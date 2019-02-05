@@ -76,7 +76,9 @@ const richTextResolverTemplates = {
         return `
             <li class="selection__item">
                 ${resolvedUrl ? '<a class="selection__link" href="'+ resolvedUrl + '">' : '<div class="selection__link">'}
-                    <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
+                    <div class="selection__img-sizer">
+                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + '?w=290' : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
+                    </div>
                     <div class="selection__title">${item.title.value}</div>
                 ${resolvedUrl ? '</a>' : '</div>'}
             </li>
@@ -87,6 +89,42 @@ const richTextResolverTemplates = {
             <div class="callout callout--${item.type.value[0].codename}">
                 ${item.content.value}
             </div>`;
+    },
+    image: (item) => {
+        if (item.image.value[0]) {
+            let alt = item.image.value[0].description ? item.image.value[0].description : '';
+            let transformationQueryString = '?w=';
+            let cssClass = item.border.value[0].codename === 'show' ? ' article__image-border' : '';
+            cssClass += item.zoomable.value[0].codename === 'true' ? ' article__add-lightbox' : '';
+
+            switch (item.image_width.value[0].codename) {
+                case 'n25_':
+                    cssClass += ' article__image--25';
+                    transformationQueryString += '463';
+                    break;
+                case 'n50_':
+                    cssClass += ' article__image--50';
+                    transformationQueryString += '463';
+                    break;
+                case 'n75_':
+                    cssClass += ' article__image--75';
+                    transformationQueryString += '695';
+                    break;
+                default:
+                    transformationQueryString += '926';
+            };
+
+            return `
+                <figure>
+                    <img class="${cssClass}" alt="${alt}" src="${item.image.value[0].url}${transformationQueryString}">
+                    <noscript>
+                        <img class="article__image-border" alt="${alt}" src="${item.image.value[0].url}${transformationQueryString}">
+                    </noscript>
+                    ${item.description.value ? '<figcaption>'+ item.description.value +'</figcaption>' : ''}
+                </figure>`;
+        }
+
+        return ``;   
     }
 };
 

@@ -146,6 +146,8 @@
         }
     };
 
-    initAlgoliaSearch();
-    resizeNavSearch();
+    if (searchAPI) {
+        initAlgoliaSearch();
+        resizeNavSearch();
+    }
 })();

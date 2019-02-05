@@ -1,6 +1,6 @@
 const { DeliveryClient } = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
-const stripWrapperPLinkedElements = require('./stripWrapperPLinkedElements')
+const enhanceMarkup = require('./enhanceMarkup')
 
 const richTextResolverTemplates = require('./richTextResolverTemplates');
 const linksResolverTemplates = require('./linksResolverTemplates');
@@ -33,8 +33,9 @@ const requestDelivery = async (config) => {
                     return richTextResolverTemplates.callout(item);
                 } else if (item.system.type === 'home__link_to_content_item') {
                     return richTextResolverTemplates.homeLinkToContentItem(item, config.urlMap);
-                } 
-                else {
+                } else if (item.system.type === 'image') {
+                    return richTextResolverTemplates.image(item);
+                } else {
                     return `Missing Rich text resolver for the ${item.system.type} type.`;
                 }
             },
@@ -57,7 +58,7 @@ const requestDelivery = async (config) => {
                 .filter((key) => elem.hasOwnProperty(key) && elem[key].hasOwnProperty('type') && elem[key].type === `rich_text`)
                 .forEach((key) => {
                     elem[key].getHtml();
-                    elem[key].value = stripWrapperPLinkedElements(elem[key].resolvedHtml);
+                    elem[key].value = enhanceMarkup(elem[key].resolvedHtml);
                 });
         });
     }
