@@ -10,11 +10,15 @@ nav.navigation
                     a(href=`/article`, class=`navigation__link${req.originalUrl === '/article' ? ' navigation__link--active' : ''}`) Tutorials
                 li.navigation__item
                     a.navigation__link(href=`#`) API Reference
-        if(req.originalUrl !== '/')
-            .navigation__right(data-toggle-target='search')
-                form.navigation__search
-                    .navigation__search-icon(aria-hidden='true')
-                    label.sr-only(for='nav-search') Search for guides, how to's and more
-                    input(type='search', id='nav-search', name='nav-search', autocomplete="off", placeholder='Search for guides, how to\'s and more')
-                #searchbox
+        .navigation__right(data-toggle-target='search')
+            if(req.originalUrl !== '/' && req.originalUrl !== '/design/home')
+                .navigation__search-wrapper
+                    form.navigation__search
+                        .navigation__search-icon(aria-hidden='true')
+                        label.sr-only(for='nav-search') Search for guides, how to's and more
+                        input(type='search', id='nav-search', name='nav-search', autocomplete="off", placeholder='Search for guides, how to\'s and more')
+                    #searchbox
+            a.navigation__app(href='https://app.kenticocloud.com', target='_blank', title='To the app')
+                i.icon-arrow-enter-square
+        if(req.originalUrl !== '/' && req.originalUrl !== '/design/home')
             .navigation__trigger(data-toggle-trigger='search', aria-hidden='true')
