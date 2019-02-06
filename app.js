@@ -16,6 +16,7 @@ const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
 const sitemap = require('./routes/sitemap');
 const robots = require('./routes/robots');
+const urlAliases = require('./routes/urlAliases');
 
 const app = express();
 
@@ -81,11 +82,10 @@ app.get('/design/article', (req, res, next) => {
   });
 });
 
+
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
-  const err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.use(async (req, res, next) => {
+  return await urlAliases(req, res, next);
 });
 
 // error handler

@@ -45,22 +45,24 @@ const createUrlMap = (response, fields, url, urlMap = []) => {
     if (response.items) node = 'items';
     if (response.navigation) node = 'navigation';
     if (response.children) node = 'children';
-
-    response[node].forEach(item => {
-        if (item.elements.url) {
-            url.length = typeLevels[item.system.type].urlLength;
-            url[url.length - 1] = item.elements.url.value;
-        }
-
-        urlMap.push(getMapItem({
-            codename: item.system.codename,
-            url: `/${url.join('/')}`,
-            date: item.system.last_modified
-        }, fields));
-
-        createUrlMap(item, fields, url, urlMap);         
-    });
-
+   
+    if (response[node]) {
+        response[node].forEach(item => {
+            if (item.elements.url) {
+                url.length = typeLevels[item.system.type].urlLength;
+                url[url.length - 1] = item.elements.url.value;
+            }
+    
+            urlMap.push(getMapItem({
+                codename: item.system.codename,
+                url: `/${url.join('/')}`,
+                date: item.system.last_modified
+            }, fields));
+    
+            createUrlMap(item, fields, url, urlMap);         
+        });
+    }
+    
     return urlMap;
 };
 
