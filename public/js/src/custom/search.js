@@ -101,16 +101,16 @@
                     suggestion: (suggestion) => {
                         // Store current search input value for use of querystring that is used in Google Analytics search terms
                         searchTerm = encodeURIComponent(document.querySelector('#nav-search').value);
-
+                        
                         // Get url from the urlMap
                         const suggestionUrl = urlMap.filter(item => item.codename === suggestion.codename);
 
                         // Add an anchor to the url if available
                         const anchor = suggestion._highlightResult.heading.value ? `#${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g,'-')}` : '';
-                        suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}${anchor}` : '';
-
+                        suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}?searchterm=${searchTerm}${anchor}` : '';
+                        
                         // Template for a single search result suggestion
-                        return `<a href="${suggestion.resolvedUrl}?searchterm=${searchTerm}" class="suggestion">
+                        return `<a href="${suggestion.resolvedUrl}" class="suggestion">
                                     <span class="suggestion__heading">${suggestion._highlightResult.title.value}</span><span class="suggestion__category">Tutorials</span>
                                     ${suggestion._highlightResult.heading.value ? '<span class="suggestion__sub-heading">'+ suggestion._highlightResult.heading.value +'</span>' : ''}
                                     <p class="suggestion__text">${suggestion._highlightResult.content.value}</p>
@@ -123,9 +123,9 @@
                 if (context.selectionMethod === 'click') {
                   return;
                 }
-                
+
                 // Change the page (for example, when enter key gets hit)
-                window.location.assign(`${suggestion.resolvedUrl}?searchterm=${searchTerm}`);
+                window.location.assign(`${suggestion.resolvedUrl}`);
             })
         };
 
