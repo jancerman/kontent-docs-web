@@ -24,10 +24,6 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 main () {
-    declare -r TMP_DIR_PREVIEW="$(mktemp -d XXXXX)"
-    declare -r TMP_DIR_LIVE="$(mktemp -d XXXXX)"
-
-    cd "$TMP_DIR_PREVIEW"
     {
         git config --global user.email "$GIT_USER_EMAIL" \
           && git config --global user.name "$GIT_USER_NAME" \
@@ -39,7 +35,8 @@ main () {
         exit 1
     }
 
-    cd "$TMP_DIR_LIVE"
+    rm -rf .git
+
     {
         git init \
           && git add -A \
@@ -48,9 +45,6 @@ main () {
     } || {
         exit 1
     }
-
-    rm -rf "$TMP_DIR_PREVIEW"
-    rm -rf "$TMP_DIR_LIVE"
 }
 
 main "$@"
