@@ -17,4 +17,6 @@ block content
                         | !{minify(introduction)}
                     include ../includes/table-of-contents.pug
                     | !{minify(content.content.value)}
-                    | !{minify(nextStep)}
+                    if nextSteps.value
+                        h2 Next steps
+                        | !{minify(nextSteps.value)}

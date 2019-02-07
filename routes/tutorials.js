@@ -97,7 +97,7 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         projectId: res.locals.projectid,
         title: content[0].title.value,
         introduction: content[0].introduction ? content[0].introduction.value : content[0].description.value,
-        nextStep: content[0].next_step && content[0].next_step.length ? content[0].next_step : '',
+        nextSteps: content[0].next_steps ? content[0].next_steps : '',
         navigation: navigation[0] ? navigation[0].navigation : [],
         subNavigation: subNavigation[0] ? subNavigation[0].children : [],
         subNavigationLevels: subNavigationLevels,
