@@ -39,6 +39,8 @@ const requestDelivery = async (config) => {
                     return richTextResolverTemplates.callToAction(item);
                 } else if (item.system.type === 'home__link_to_external_url') {
                     return richTextResolverTemplates.homeLinkToExternalUrl(item);
+                } else if (item.system.type === 'code_sample') {
+                    return richTextResolverTemplates.codeSample(item);
                 } else {
                     return `Missing Rich text resolver for the ${item.system.type} type.`;
                 }
