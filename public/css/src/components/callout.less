@@ -70,11 +70,17 @@
         margin-left: -1.5em;
     }
 
-    p {
+    p, figure {
         padding: 0 0 .5em 1.5em;
 
         &:first-child, &:last-child {
             padding-bottom: 0;
+        }
+    }
+
+    figcaption {
+        p {
+            padding-left: 0; 
         }
     }
 

@@ -24,24 +24,22 @@ const urlAliases = asyncHandler(async (req, res, next) => {
     
     const articles = await getArticles(res);
     const urlMap = await getUrlMap(urlMapSettings);
-    let redirectUrl = '';
+    let redirectUrl = [];
 
     articles.forEach(item => {
         aliases = item.vanity_urls.value.trim().split(';');
         aliases.forEach(alias => {
             alias = alias.trim().toLowerCase().replace(/\/\s*$/, '');
             if (alias === originalUrl) {
-                urlMap.forEach(url => {
-                    if (url.codename === item.system.codename) {
-                        redirectUrl = url.url;
-                    }
+                redirectUrl = urlMap.filter(url => {
+                    return url.codename === item.system.codename;
                 });
             }
         });   
     });
 
-    if (redirectUrl) {
-        return res.redirect(`${redirectUrl}${queryParamater ? '?' + queryParamater : ''}`);
+    if (redirectUrl.length) {
+        return res.redirect(301, `${redirectUrl[0].url}${queryParamater ? '?' + queryParamater : ''}`);
     } else {
         const err = new Error('Not Found');
         err.status = 404;

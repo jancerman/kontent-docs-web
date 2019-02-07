@@ -79,11 +79,11 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
 
     if (content[0]) {
         if (currentLevel === -1) {
-            return res.redirect(`/tutorials/${content[0].children[0].url.value}`);
+            return res.redirect(301, `/tutorials/${content[0].children[0].url.value}`);
         } else if (currentLevel === 0) {
             view = 'pages/scenario';
         } else if (currentLevel === 1) {
-            return res.redirect(`/tutorials/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}`);
+            return res.redirect(301, `/tutorials/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}`);
         }
     } else {
         return next();

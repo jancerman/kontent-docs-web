@@ -36,7 +36,7 @@
     }
 
     // Traverse article content
-    let articleContent = document.querySelector('.article__content');
+    let articleContent = document.querySelector('#main');
 
     if (articleContent) {
         traverse(articleContent);
