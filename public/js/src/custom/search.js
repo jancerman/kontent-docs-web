@@ -13,6 +13,7 @@
         const client = algoliasearch(searchAPI.appid, searchAPI.apikey)
         const tutorials = client.initIndex(searchAPI.indexname);
         const url = window.location;
+        let searchTerm = '';
 
         // Get injected KC API details 
         const projectIdUrl = helper.getParameterByName('projectid');
@@ -98,6 +99,9 @@
                 displayKey: 'title',
                 templates: {
                     suggestion: (suggestion) => {
+                        // Store current search input value for use of querystring that is used in Google Analytics search terms
+                        searchTerm = encodeURIComponent(document.querySelector('#nav-search').value);
+
                         // Get url from the urlMap
                         const suggestionUrl = urlMap.filter(item => item.codename === suggestion.codename);
 
@@ -106,7 +110,7 @@
                         suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}${anchor}` : '';
 
                         // Template for a single search result suggestion
-                        return `<a href="${suggestion.resolvedUrl}" class="suggestion">
+                        return `<a href="${suggestion.resolvedUrl}?searchterm=${searchTerm}" class="suggestion">
                                     <span class="suggestion__heading">${suggestion._highlightResult.title.value}</span><span class="suggestion__category">Tutorials</span>
                                     ${suggestion._highlightResult.heading.value ? '<span class="suggestion__sub-heading">'+ suggestion._highlightResult.heading.value +'</span>' : ''}
                                     <p class="suggestion__text">${suggestion._highlightResult.content.value}</p>
@@ -119,8 +123,9 @@
                 if (context.selectionMethod === 'click') {
                   return;
                 }
+                
                 // Change the page (for example, when enter key gets hit)
-                window.location.assign(`${suggestion.resolvedUrl}`);
+                window.location.assign(`${suggestion.resolvedUrl}?searchterm=${searchTerm}`);
             })
         };
 
