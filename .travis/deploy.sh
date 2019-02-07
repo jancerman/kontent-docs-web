@@ -24,8 +24,8 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 main () {
-    declare -r TMP_DIR_PREVIEW="$(mktemp -d xxx_preview)"
-    declare -r TMP_DIR_LIVE="$(mktemp -d xxx_live)"
+    declare -r TMP_DIR_PREVIEW="$(mktemp -d XXXXX)"
+    declare -r TMP_DIR_LIVE="$(mktemp -d XXXXX)"
 
     cd "$TMP_DIR_PREVIEW"
     {
