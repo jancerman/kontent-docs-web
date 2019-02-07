@@ -24,6 +24,7 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 main () {
+    rm -rf .git
     {
         git config --global user.email "$GIT_USER_EMAIL" \
           && git config --global user.name "$GIT_USER_NAME" \
@@ -36,7 +37,6 @@ main () {
     }
 
     rm -rf .git
-
     {
         git init \
           && git add -A \
