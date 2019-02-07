@@ -125,6 +125,25 @@ const richTextResolverTemplates = {
         }
 
         return ``;   
+    },
+    callToAction: (item) => {
+        return `
+            <div>
+                <a class="button" href="#">${item.text.value}</a>
+            </div>
+            `;    
+    },
+    homeLinkToExternalUrl: (item) => {
+        return `
+            <li class="selection__item">
+                <a class="selection__link" href="${item.url.value}">
+                    <div class="selection__img-sizer">
+                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + '?w=290' : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
+                    </div>
+                    <div class="selection__title">${item.title.value}</div>
+                </a>
+            </li>
+        `;
     }
 };
 

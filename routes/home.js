@@ -34,7 +34,9 @@ router.get('/', asyncHandler(async (req, res, next) => {
     isPreview: isPreview(res.locals.previewapikey),
     title: tree[0].title.value,
     navigation: tree[0].navigation,
+    introNote: tree[0].intro_note.value,
     signposts: tree[0].signposts.value,
+    support: tree[0].support.value,
     footer: footer[0],
     UIMessages: UIMessages[0]
   });
