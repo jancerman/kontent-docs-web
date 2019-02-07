@@ -17,6 +17,6 @@ block content
                         | !{minify(introduction)}
                     include ../includes/table-of-contents.pug
                     | !{minify(content.content.value)}
-                    if nextSteps.value
+                    if (nextSteps.value !== '<p><br></p>')
                         h2 !{UIMessages.article___next_steps.value}
                         | !{minify(nextSteps.value)}
