@@ -9,7 +9,7 @@
         headings.forEach((item) => {
             let anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig,'').replace(/\W/g,'-');
             item.setAttribute('id', anchorName);
-            item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip">Copy URL</span></span>`;
+            item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip">${UIMessages.copyUrl}</span></span>`;
         });
     };
 
@@ -25,7 +25,7 @@
 
                 let tooltip = item.querySelector('.anchor-copy__tooltip');
                 let tooltipText = tooltip.innerHTML;
-                tooltip.innerHTML = 'URL copied to clipboard';
+                tooltip.innerHTML = UIMessages.copyUrlActive;
                 setTimeout(() => {
                     tooltip.innerHTML = tooltipText;
                 }, 1500);

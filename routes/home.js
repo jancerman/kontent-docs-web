@@ -26,6 +26,7 @@ router.get('/', asyncHandler(async (req, res, next) => {
   }
 
   const footer = await commonContent.getFooter(res);
+  const UIMessages = await commonContent.getUIMessages(res);
   
   return res.render('pages/home', {
     req: req,
@@ -34,7 +35,8 @@ router.get('/', asyncHandler(async (req, res, next) => {
     title: tree[0].title.value,
     navigation: tree[0].navigation,
     signposts: tree[0].signposts.value,
-    footer: footer[0]
+    footer: footer[0],
+    UIMessages: UIMessages[0]
   });
 }));
 

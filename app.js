@@ -98,12 +98,14 @@ app.use(async (err, req, res, _next) => {
   res.status(err.status || 500);
 
   const footer = await commonContent.getFooter(res);
+  const UIMessages = await commonContent.getUIMessages(res);
 
   res.render('pages/error', { 
     req: req,
     minify: minify,
     navigation: [],
-    footer: footer[0]
+    footer: footer[0],
+    UIMessages: UIMessages[0]
   });
 });
 

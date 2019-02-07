@@ -115,6 +115,12 @@
                                     ${suggestion._highlightResult.heading.value ? '<span class="suggestion__sub-heading">'+ suggestion._highlightResult.heading.value +'</span>' : ''}
                                     <p class="suggestion__text">${suggestion._highlightResult.content.value}</p>
                                 </a>`;
+                    },
+                    empty: () => {
+                        // Template for a empty result
+                        return `<div class="suggestion suggestion--empty">
+                                    <span class="suggestion__heading">${UIMessages.searchNoResults}</span>
+                                </div>`;
                     }
                 }
             }])

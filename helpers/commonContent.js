@@ -7,6 +7,13 @@ const commonContent = {
             projectid: res.locals.projectid,
             previewapikey: res.locals.previewapikey
         });
+    },
+    getUIMessages: async (res) => {
+        return await requestDelivery({
+            type: 'ui_messages',
+            projectid: res.locals.projectid,
+            previewapikey: res.locals.previewapikey
+        });
     }
 }
 

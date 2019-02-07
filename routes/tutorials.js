@@ -75,6 +75,7 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
     const currentLevel = subNavigationLevels.filter( item => item !== null ).length - 1;
     const content = await getContentLevel(currentLevel, req, res);
     const footer = await commonContent.getFooter(res);
+    const UIMessages = await commonContent.getUIMessages(res);
     let view = 'pages/article';
 
     if (content[0]) {
@@ -102,7 +103,8 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         subNavigation: subNavigation[0] ? subNavigation[0].children : [],
         subNavigationLevels: subNavigationLevels,
         content: content[0],
-        footer: footer[0]
+        footer: footer[0],
+        UIMessages: UIMessages[0]
     });
 }));
 
