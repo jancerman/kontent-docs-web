@@ -55,7 +55,7 @@
 
     // For all sub-headings create a list cascade representing table of contents and append it to the appropriate element
     const createTableOfContents = () => {
-        let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading)');
+        let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading):not(.table-of-contents__whatsnext)');
         let tableOfContentsWrapper = document.querySelector('.table-of-contents__list');
         let tableOfContents = '';
         let prevHeadingLevel = 2;

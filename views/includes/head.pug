@@ -6,7 +6,8 @@ if !isPreview
     meta(name='robots', content='index,follow')
 link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700')
 link(rel='stylesheet', href='/css/app.min.css?v=' + deployVersion)
-script var searchAPI={appid:"#{process.env['Search.AppId']}",apikey:"#{process.env['Search.ApiKey']}",indexname:"#{process.env['Search.IndexName']}"};var UIMessages={copyUrl:"#{UIMessages.heading___copy_url_hover.value}",copyUrlActive:"#{UIMessages.heading___copy_url_active.value}",searchNoResults:"#{UIMessages.search___no_results.value}",dntLabel:"#{helper.removeNewLines(UIMessages.embedded_content_dnt_notice.value)}"};
+if helper
+    script var searchAPI={appid:"#{process.env['Search.AppId']}",apikey:"#{process.env['Search.ApiKey']}",indexname:"#{process.env['Search.IndexName']}"};var UIMessages={copyUrl:"#{UIMessages.heading___copy_url_hover.value}",copyUrlActive:"#{UIMessages.heading___copy_url_active.value}",searchNoResults:"#{UIMessages.search___no_results.value}",dntLabel:"#{helper.removeNewLines(UIMessages.embedded_content_dnt_notice.value)}"};
 script(src='https://cdn.jsdelivr.net/npm/algoliasearch@3.32.0/dist/algoliasearchLite.min.js', defer='')
 script(src='https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js', defer='')
 script(src='/js/app.min.js?v=' + deployVersion, defer='')

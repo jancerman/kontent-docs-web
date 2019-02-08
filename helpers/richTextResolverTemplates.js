@@ -95,26 +95,30 @@ const richTextResolverTemplates = {
     image: (item) => {
         if (item.image.value[0]) {
             let alt = item.image.value[0].description ? item.image.value[0].description : '';
-            let transformationQueryString = '?w=';
+            let transformationQueryString = '';
             let cssClass = item.border.value[0].codename === 'show' ? ' article__image-border' : '';
             cssClass += item.zoomable.value[0].codename === 'true' ? ' article__add-lightbox' : '';
 
-            switch (item.image_width.value[0].codename) {
-                case 'n25_':
-                    cssClass += ' article__image--25';
-                    transformationQueryString += '463';
-                    break;
-                case 'n50_':
-                    cssClass += ' article__image--50';
-                    transformationQueryString += '463';
-                    break;
-                case 'n75_':
-                    cssClass += ' article__image--75';
-                    transformationQueryString += '695';
-                    break;
-                default:
-                    transformationQueryString += '926';
-            };
+            if (!item.image.value[0].url.endsWith('.gif')) {
+                transformationQueryString = '?w=';
+
+                switch (item.image_width.value[0].codename) {
+                    case 'n25_':
+                        cssClass += ' article__image--25';
+                        transformationQueryString += '463';
+                        break;
+                    case 'n50_':
+                        cssClass += ' article__image--50';
+                        transformationQueryString += '463';
+                        break;
+                    case 'n75_':
+                        cssClass += ' article__image--75';
+                        transformationQueryString += '695';
+                        break;
+                    default:
+                        transformationQueryString += '926';
+                };
+            }
 
             return `
                 <figure>
@@ -130,6 +134,9 @@ const richTextResolverTemplates = {
     },
     callToAction: (item) => {
         return `<div class="call-to-action">${item.text.value}</div>`;    
+    },
+    contentChunk: (item) => {
+        return `${item.content.value}`;    
     },
     homeLinkToExternalUrl: (item) => {
         return `

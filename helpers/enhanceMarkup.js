@@ -10,7 +10,9 @@ const enhanceMarkup = (text) => {
 
     $('img[data-asset-id]').each(function(i,elem) {
         var $that = $(this);
-        $that.attr('src', $that.attr('src') + '?w=926');
+        if (!$that.attr('src').endsWith('.gif')) {
+            $that.attr('src', $that.attr('src') + '?w=926');
+        }
     });
 
     let output = $.html();

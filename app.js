@@ -11,12 +11,14 @@ const asyncHandler = require('express-async-handler');
 const getUrlMap = require('./helpers/urlMap');
 const commonContent = require('./helpers/commonContent');
 const minify = require('./helpers/minify');
+const helper = require('./helpers/helperFunctions');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
 const sitemap = require('./routes/sitemap');
 const robots = require('./routes/robots');
 const urlAliases = require('./routes/urlAliases');
+const vanityUrls = require('./routes/vanityUrls');
 
 const app = express();
 
@@ -52,6 +54,7 @@ app.get('*', (req, res, next) => {
 
 app.use('/', home);
 app.use('/tutorials', tutorials);
+app.use('/vanity-urls', vanityUrls);
 
 app.use('/sitemap.xml', sitemap);
 app.use('/robots.txt', robots);
@@ -105,7 +108,8 @@ app.use(async (err, req, res, _next) => {
     minify: minify,
     navigation: [],
     footer: footer[0],
-    UIMessages: UIMessages[0]
+    UIMessages: UIMessages[0],
+    helper: helper
   });
 });
 

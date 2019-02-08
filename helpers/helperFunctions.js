@@ -1,5 +1,5 @@
 const helper = {
-    escapeHtml(unsafe) {
+    escapeHtml: (unsafe) => {
         return unsafe
              .replace(/&/g, '&amp;')
              .replace(/</g, '&lt;')
@@ -8,7 +8,7 @@ const helper = {
              .replace(/"/g, '&quot;')
              .replace(/'/g, '&#039;');
      },
-     removeNewLines(unsafe) {
+     removeNewLines: (unsafe) => {
         return unsafe.replace(/\r?\n|\r/g, '');
      }
 };
