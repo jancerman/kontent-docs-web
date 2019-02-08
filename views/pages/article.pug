@@ -12,7 +12,8 @@ block content
                     h1 !{content.title.value}
                     .article__notes
                         time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
-                        .article__author !{content.author[0].name.value}
+                        if (content.author && content.author.length)
+                            .article__author !{content.author[0].name.value}
                     if (introduction !== '<p><br></p>')
                         | !{minify(introduction)}
                     include ../includes/table-of-contents.pug

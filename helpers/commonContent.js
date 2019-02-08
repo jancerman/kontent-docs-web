@@ -11,6 +11,7 @@ const commonContent = {
     getUIMessages: async (res) => {
         return await requestDelivery({
             type: 'ui_messages',
+            resolveRichText: true,
             projectid: res.locals.projectid,
             previewapikey: res.locals.previewapikey
         });

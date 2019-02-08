@@ -1,3 +1,5 @@
+const helper = require('./helperFunctions');
+
 const richTextResolverTemplates = {
     embeddedContent: (item) => {
         const templates = {
@@ -127,11 +129,7 @@ const richTextResolverTemplates = {
         return ``;   
     },
     callToAction: (item) => {
-        return `
-            <div>
-                <a class="button" href="#">${item.text.value}</a>
-            </div>
-            `;    
+        return `<div class="call-to-action">${item.text.value}</div>`;    
     },
     homeLinkToExternalUrl: (item) => {
         return `
@@ -186,7 +184,7 @@ const richTextResolverTemplates = {
         };
 
         return `
-            <pre><code class="${lang}">${item.code.value}</code></pre>
+            <pre><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>
         `;
     }
 };

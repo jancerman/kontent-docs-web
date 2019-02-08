@@ -7,6 +7,7 @@ const getUrlMap = require('../helpers/urlMap');
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
+const helper = require('../helpers/helperFunctions');
 
 const moment = require('moment');
 
@@ -104,7 +105,8 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         subNavigationLevels: subNavigationLevels,
         content: content[0],
         footer: footer[0],
-        UIMessages: UIMessages[0]
+        UIMessages: UIMessages[0],
+        helper: helper
     });
 }));
 

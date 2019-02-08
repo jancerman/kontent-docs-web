@@ -68,7 +68,7 @@ const loadOnClick = () => {
 
     lazy.forEach(item => {
         let wrapper = helper.getParents(item);
-        wrapper[0].insertBefore(helper.createElementFromHTML('<div class="embed__dnt-enable">Load embed content</div>'), wrapper[0].firstChild);
+        wrapper[0].insertBefore(helper.createElementFromHTML(`<div class="embed__dnt-enable">${helper.decodeHTMLEntities(UIMessages.dntLabel)}</div>`), wrapper[0].firstChild);
     });
 
     document.querySelector('body').addEventListener('click', e => {

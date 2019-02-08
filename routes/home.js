@@ -7,6 +7,7 @@ const getUrlMap = require('../helpers/urlMap');
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
+const helper = require('../helpers/helperFunctions');
 
 router.get('/', asyncHandler(async (req, res, next) => {
   const tree = await requestDelivery({
@@ -38,7 +39,8 @@ router.get('/', asyncHandler(async (req, res, next) => {
     signposts: tree[0].signposts.value,
     support: tree[0].support.value,
     footer: footer[0],
-    UIMessages: UIMessages[0]
+    UIMessages: UIMessages[0],
+    helper: helper
   });
 }));
 

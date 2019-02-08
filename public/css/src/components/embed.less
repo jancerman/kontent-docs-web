@@ -47,18 +47,29 @@
         left: 0;
         background-color: #fafafa;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         cursor: pointer;
         transition: .25s background-color;
-        color: #2196f3;
-        text-decoration: underline;
         z-index: 1000;
+        text-align: center;
+
+        p {
+            padding: 0 2em .5em;
+        }
+
+        .call-to-action {
+            color: #2196f3;
+            text-decoration: underline;
+        }
 
         &:hover,
         &:active {
             background-color: #eee; 
-            color: #0960a5;
-        }
+            .call-to-action {
+                color: #0960a5;
+            }
+        } 
     }
 }
