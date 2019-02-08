@@ -60,7 +60,7 @@ router.get('/', asyncHandler(async (req, res, next) => {
     title: 'Vanity URLs',
     navigation: navigation[0] ? navigation[0].navigation : [],
     vanityMap: vanityMap,
-    footer: footer[0],
+    footer: footer[0] ? footer[0] : {},
     UIMessages: UIMessages[0],
     helper: helper
   });

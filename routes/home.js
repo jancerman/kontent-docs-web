@@ -38,7 +38,7 @@ router.get('/', asyncHandler(async (req, res, next) => {
     introNote: tree[0].intro_note.value,
     signposts: tree[0].signposts.value,
     support: tree[0].support.value,
-    footer: footer[0],
+    footer: footer[0] ? footer[0] : {},
     UIMessages: UIMessages[0],
     helper: helper
   });

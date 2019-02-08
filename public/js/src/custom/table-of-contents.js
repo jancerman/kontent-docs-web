@@ -8,7 +8,7 @@
 
         headings.forEach((item) => {
             let anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig,'').replace(/\W/g,'-');
-            item.setAttribute('id', anchorName);
+            item.setAttribute('id', `a-${anchorName}`);
             item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip">${UIMessages.copyUrl}</span></span>`;
         });
     };

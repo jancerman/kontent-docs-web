@@ -9,9 +9,6 @@ const logger = require('morgan');
 const asyncHandler = require('express-async-handler');
 
 const getUrlMap = require('./helpers/urlMap');
-const commonContent = require('./helpers/commonContent');
-const minify = require('./helpers/minify');
-const helper = require('./helpers/helperFunctions');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -19,6 +16,7 @@ const sitemap = require('./routes/sitemap');
 const robots = require('./routes/robots');
 const urlAliases = require('./routes/urlAliases');
 const vanityUrls = require('./routes/vanityUrls');
+const error = require('./routes/error');
 
 const app = express();
 
@@ -100,17 +98,7 @@ app.use(async (err, req, res, _next) => {
   // render the error page
   res.status(err.status || 500);
 
-  const footer = await commonContent.getFooter(res);
-  const UIMessages = await commonContent.getUIMessages(res);
-
-  res.render('pages/error', { 
-    req: req,
-    minify: minify,
-    navigation: [],
-    footer: footer[0],
-    UIMessages: UIMessages[0],
-    helper: helper
-  });
+  return await error(req, res);
 });
 
 module.exports = app;
