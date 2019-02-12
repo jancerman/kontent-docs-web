@@ -3,12 +3,12 @@ const cheerio = require('cheerio');
 const enhanceMarkup = (text) => {
     const $ = cheerio.load(text);
 
-    $('p.kc-linked-item-wrapper, p:empty').each(function(i,elem) {
+    $('p.kc-linked-item-wrapper, p:empty').each(function(i, elem) {
         var contents = $(this).contents();
         $(this).replaceWith(contents);
     });
 
-    $('img[data-asset-id]').each(function(i,elem) {
+    $('img[data-asset-id]').each(function(i, elem) {
         var $that = $(this);
         if (!$that.attr('src').endsWith('.gif')) {
             $that.attr('src', $that.attr('src') + '?w=926');

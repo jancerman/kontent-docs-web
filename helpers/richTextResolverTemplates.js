@@ -130,13 +130,13 @@ const richTextResolverTemplates = {
                 </figure>`;
         }
 
-        return ``;   
+        return ``;
     },
     callToAction: (item) => {
-        return `<div class="call-to-action">${item.text.value}</div>`;    
+        return `<div class="call-to-action">${item.text.value}</div>`;
     },
     contentChunk: (item) => {
-        return `${item.content.value}`;    
+        return `${item.content.value}`;
     },
     homeLinkToExternalUrl: (item) => {
         return `

@@ -26,7 +26,7 @@ router.get('/', asyncHandler(async (req, res, next) => {
 
   const footer = await commonContent.getFooter(res);
   const UIMessages = await commonContent.getUIMessages(res);
-  
+
   return res.render('pages/home', {
     req: req,
     minify: minify,

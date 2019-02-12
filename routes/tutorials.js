@@ -72,7 +72,7 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
     const navigation = await getNavigation(res);
     const subNavigation = await getSubNavigation(res);
     const subNavigationLevels = getSubNavigationLevels(req);
-    const currentLevel = subNavigationLevels.filter( item => item !== null ).length - 1;
+    const currentLevel = subNavigationLevels.filter(item => item !== null).length - 1;
     const content = await getContentLevel(currentLevel, req, res);
     const footer = await commonContent.getFooter(res);
     const UIMessages = await commonContent.getUIMessages(res);

@@ -6,7 +6,7 @@ const commonContent = require('../helpers/commonContent');
 
 const getArticles = async (res) => {
     const KCDetails = commonContent.getKCDetails(res);
-    
+
     return await requestDelivery({
         type: 'article',
         ...KCDetails
@@ -18,13 +18,12 @@ const urlAliases = asyncHandler(async (req, res, next) => {
     const queryParamater = urlSplit[1] ? urlSplit[1] : '';
     const originalUrl = urlSplit[0].trim().toLowerCase().replace(/\/\s*$/, '');
     const KCDetails = commonContent.getKCDetails(res);
-    
     const articles = await getArticles(res);
     const urlMap = await getUrlMap(KCDetails);
     let redirectUrl = [];
 
     articles.forEach(item => {
-        aliases = item.vanity_urls.value.trim().split(';');
+        const aliases = item.vanity_urls.value.trim().split(';');
         aliases.forEach(alias => {
             alias = alias.trim().toLowerCase().replace(/\/\s*$/, '');
             if (alias === originalUrl) {
@@ -32,7 +31,7 @@ const urlAliases = asyncHandler(async (req, res, next) => {
                     return url.codename === item.system.codename;
                 });
             }
-        });   
+        });
     });
 
     if (redirectUrl.length) {
@@ -41,7 +40,7 @@ const urlAliases = asyncHandler(async (req, res, next) => {
         const err = new Error('Not Found');
         err.status = 404;
         return next(err);
-    } 
+    }
 });
 
 module.exports = urlAliases;

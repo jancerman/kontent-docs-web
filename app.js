@@ -29,7 +29,7 @@ if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   appInsights.start();
 }
 
-app.locals.deployVersion = (new Date).getTime();
+app.locals.deployVersion = (new Date()).getTime();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -46,7 +46,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: 86400000
 }));
 
-//Routes
+// Routes
 app.get('*', (req, res, next) => {
   res.locals.projectid = typeof req.query.projectid !== 'undefined' ? req.query.projectid : process.env['KC.ProjectId'];
   res.locals.previewapikey = typeof req.query.previewapikey !== 'undefined' ? req.query.previewapikey : process.env['KC.PreviewApiKey'];
@@ -84,7 +84,6 @@ app.get('/design/article', (req, res, next) => {
     req: req
   });
 });
-
 
 // catch 404 and forward to error handler
 app.use(async (req, res, next) => {

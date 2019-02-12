@@ -24,7 +24,7 @@ const requestDelivery = async (config) => {
 
     const query = deliveryClient.items()
         .type(config.type);
-    
+
         config.depth && query.depthParameter(config.depth);
         config.slug && query.equalsFilter('elements.url', config.slug);
 
@@ -79,7 +79,7 @@ const requestDelivery = async (config) => {
                 });
         });
     }
-      
+
     return response ? response.items : response;
 };
 
