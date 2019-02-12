@@ -2,6 +2,9 @@
  * Lazy loading
  */
 
+// Bring UIMessages from the global scope inlined in HTML head
+let UIMessages = UIMessages ? UIMessages : null;
+
 // On scroll, check elements with the "lazy" class name and transform their data-src attribute into src
 // Implementation uses IntersectionObserver if is available, otherwise fallbacks to using scroll, resize and orientationChange events
 const loadOnScroll = () => {
@@ -57,16 +60,15 @@ const loadOnScroll = () => {
             }, 20);
         }
 
-        document.addEventListener('scroll', lazyload, supportsPassive ? { passive: true } : false);
+        document.addEventListener('scroll', lazyload, supportsPassive ? {
+            passive: true
+        } : false);
         window.addEventListener('resize', lazyload);
         window.addEventListener('orientationChange', lazyload);
     }
 };
 
 const loadOnClick = () => {
-    // Bring UIMessages from the global scope inlined in HTML head
-    let UIMessages = UIMessages ? UIMessages : null;
-
     let lazy = document.querySelectorAll('.lazy');
     let label = UIMessages ? UIMessages.dntLabel : '';
 
@@ -76,14 +78,27 @@ const loadOnClick = () => {
     });
 
     document.querySelector('body').addEventListener('click', e => {
-        if (e.target && e.target.matches('div.embed__dnt-enable')) {
-            let el = e.target.nextElementSibling;
+        e.stopPropagation();
+        if (e.target && e.target.matches('div.embed__dnt-enable, div.embed__dnt-enable *')) {
+            let target = e.target;
 
+            // If embed wrapper element child gets clicked, find the parent embed wrapper
+            if (!target.classList.contains('embed__dnt-enable')) {
+                target = helper.getParents(target).filter(item => {
+                    let isEmbedWrapper = false;
+                    if (item.classList) {
+                        isEmbedWrapper = item.classList.contains('embed__dnt-enable');
+                    }
+                    return isEmbedWrapper;
+                })[0];
+            }
+
+            let el = target.nextElementSibling;
             if (el.classList.contains('lazy') && el.hasAttribute('data-src')) {
                 el.src = el.dataset.src;
                 el.classList.remove('lazy');
                 el.removeAttribute('data-src');
-                e.target.parentNode.removeChild(e.target);
+                target.parentNode.removeChild(target);
             }
         }
     });
@@ -104,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // If yes, make embeds load on click, otherwise lazyload on scroll
     if (window.doNotTrack || navigator.doNotTrack || navigator.msDoNotTrack || 'msTrackingProtectionEnabled' in window.external) {
         if (window.doNotTrack == '1' || navigator.doNotTrack === 'yes' || navigator.doNotTrack == '1' || navigator.msDoNotTrack == '1' || window.external.msTrackingProtectionEnabled()) {
-            loadOnClick();    
+            loadOnClick();
         } else {
             loadOnScroll();
         }

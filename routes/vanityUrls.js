@@ -28,14 +28,10 @@ const getArticles = async (res) => {
   });
 };
 
-router.get('/', asyncHandler(async (req, res, next) => {
-  const footer = await commonContent.getFooter(res);
-  const UIMessages = await commonContent.getUIMessages(res);
-  const navigation = await getNavigation(res);
+const getVanityUrls = async (res) => {
   const articles = await getArticles(res);
   const KCDetails = commonContent.getKCDetails(res);
   const urlMap = await getUrlMap(KCDetails);
-
   let vanityMap = [];
 
   articles.forEach(article => {
@@ -50,6 +46,15 @@ router.get('/', asyncHandler(async (req, res, next) => {
       }
     }
   });
+
+  return vanityMap;
+}
+
+router.get('/', asyncHandler(async (req, res, next) => {
+  const footer = await commonContent.getFooter(res);
+  const UIMessages = await commonContent.getUIMessages(res);
+  const navigation = await getNavigation(res);
+  const vanityMap = await getVanityUrls(res);
 
   return res.render('pages/vanityUrls', {
     req: req,

@@ -32,5 +32,6 @@ meta(name='msapplication-TileColor', content='#ffffff')
 meta(name='msapplication-TileImage', content='/img/favicon/ms-icon-144x144.png')
 meta(name='theme-color', content='#ffffff')
 meta(name='format-detection', content='telephone=no')
-script(async='', src='https://www.googletagmanager.com/gtag/js?id=UA-134087903-1')
-script window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-134087903-1', { 'anonymize_ip': true });
+if (process.env['GA.id'])
+    script(async='', src=`https://www.googletagmanager.com/gtag/js?id=${process.env['GA.id']}`)
+    script window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '#{process.env['GA.id']}', { 'anonymize_ip': true });
