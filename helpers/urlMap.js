@@ -74,6 +74,11 @@ const getUrlMap = async (config) => {
         deliveryConfig.enablePreviewMode = true;
     }
 
+    if (config.securedapikey) {
+        deliveryConfig.securedApiKey = config.securedapikey;
+        deliveryConfig.enableSecuredMode = true;
+    }
+
     const deliveryClient = new DeliveryClient(deliveryConfig);
 
     const query = deliveryClient.items()

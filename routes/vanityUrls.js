@@ -10,33 +10,31 @@ const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 
 const getNavigation = async (res) => {
+  const KCDetails = commonContent.getKCDetails(res);
+
   return await requestDelivery({
       type: 'home',
       depth: 1,
-      projectid: res.locals.projectid,
-      previewapikey: res.locals.previewapikey
+      ...KCDetails
   });
 };
 
 const getArticles = async (res) => {
+  const KCDetails = commonContent.getKCDetails(res);
+
   return await requestDelivery({
       type: 'article',
-      projectid: res.locals.projectid,
-      previewapikey: res.locals.previewapikey
+      ...KCDetails
   });
 };
 
 router.get('/', asyncHandler(async (req, res, next) => {
-  const urlMapSettings = {
-    projectid: res.locals.projectid,
-    previewapikey: res.locals.previewapikey,
-  };
-
   const footer = await commonContent.getFooter(res);
   const UIMessages = await commonContent.getUIMessages(res);
   const navigation = await getNavigation(res);
   const articles = await getArticles(res);
-  const urlMap = await getUrlMap(urlMapSettings);
+  const KCDetails = commonContent.getKCDetails(res);
+  const urlMap = await getUrlMap(KCDetails);
 
   let vanityMap = [];
 

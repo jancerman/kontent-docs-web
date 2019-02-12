@@ -8,12 +8,18 @@ const linksResolverTemplates = require('./linksResolverTemplates');
 const requestDelivery = async (config) => {
     deliveryConfig.projectId = config.projectid;
     const previewApiKey = config.previewapikey;
+    const securedApiKey = config.securedapikey;
 
     if (previewApiKey) {
         deliveryConfig.previewApiKey = previewApiKey;
         deliveryConfig.enablePreviewMode = true;
     }
-  
+
+    if (securedApiKey) {
+        deliveryConfig.securedApiKey = securedApiKey;
+        deliveryConfig.enableSecuredMode = true;
+    }
+
     const deliveryClient = new DeliveryClient(deliveryConfig);
 
     const query = deliveryClient.items()
@@ -58,9 +64,12 @@ const requestDelivery = async (config) => {
     }
 
     const response = await query
-        .getPromise();
+        .getPromise()
+        .catch(err => {
+            console.error(err);
+        });
 
-    if (config.resolveRichText) {
+    if (config.resolveRichText && response) {
         response.items.forEach((elem) => {
             Object.keys(elem)
                 .filter((key) => elem.hasOwnProperty(key) && elem[key].hasOwnProperty('type') && elem[key].type === `rich_text`)
@@ -71,7 +80,7 @@ const requestDelivery = async (config) => {
         });
     }
       
-    return response.items;
+    return response ? response.items : response;
 };
 
 module.exports = requestDelivery;

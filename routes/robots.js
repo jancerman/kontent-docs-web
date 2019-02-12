@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const isPreview = require('../helpers/isPreview');
 
 router.get('/', (req, res, next) => {
     res.header('Content-Type', 'text/plain');
-    res.render('pages/robots');
+    res.render('pages/robots', { isPreview: isPreview(res.locals.previewapikey) });
 });
 
 module.exports = router;

@@ -1,7 +1,11 @@
 /**
- * Tbale of contents, heading anchros, copy anchor URL to clipboard
+ * Table of contents, heading anchros, copy anchor URL to clipboard
  */
+
 (() => {
+    // Bring UIMessages from the global scope inlined in HTML head
+    let UIMessages = UIMessages ? UIMessages : null;
+
     // For all sub-headings set their id and create the copy to clipboard icon
     const createAnchors = () => {
         let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading), h3, h4');
@@ -9,7 +13,7 @@
         headings.forEach((item) => {
             let anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig,'').replace(/\W/g,'-');
             item.setAttribute('id', `a-${anchorName}`);
-            item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip">${UIMessages.copyUrl}</span></span>`;
+            item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip">${UIMessages ? UIMessages.copyUrl : ''}</span></span>`;
         });
     };
 
@@ -25,7 +29,7 @@
 
                 let tooltip = item.querySelector('.anchor-copy__tooltip');
                 let tooltipText = tooltip.innerHTML;
-                tooltip.innerHTML = UIMessages.copyUrlActive;
+                tooltip.innerHTML = UIMessages ? UIMessages.copyUrlActive : '';
                 setTimeout(() => {
                     tooltip.innerHTML = tooltipText;
                 }, 1500);

@@ -12,21 +12,23 @@ const helper = require('../helpers/helperFunctions');
 const moment = require('moment');
 
 const getNavigation = async (res) => {
+    const KCDetails = commonContent.getKCDetails(res);
+
     return await requestDelivery({
         type: 'home',
         depth: 1,
-        projectid: res.locals.projectid,
-        previewapikey: res.locals.previewapikey
+        ...KCDetails
     });
 };
 
 const getSubNavigation = async (res) => {
+    const KCDetails = commonContent.getKCDetails(res);
+
     return await requestDelivery({
         type: 'navigation_item',
         depth: 3,
         slug: 'tutorials',
-        projectid: res.locals.projectid,
-        previewapikey: res.locals.previewapikey
+        ...KCDetails
     });
 };
 
@@ -39,16 +41,13 @@ const getSubNavigationLevels = (req) => {
 };
 
 const getContentLevel = async (currentLevel, req, res) => {
+    const KCDetails = commonContent.getKCDetails(res);
+
     let settings = {
-        projectid: res.locals.projectid,
-        previewapikey: res.locals.previewapikey,
         slug: getSubNavigationLevels(req)[currentLevel],
-        depth: 1
+        depth: 1,
+        ...KCDetails
     };
-    let urlMapSettings = {
-        projectid: res.locals.projectid,
-        previewapikey: res.locals.previewapikey,
-    }
 
     if (currentLevel === -1) {
         settings.type = 'navigation_item';
@@ -57,13 +56,13 @@ const getContentLevel = async (currentLevel, req, res) => {
     } else if (currentLevel === 0) {
         settings.type = 'scenario';
         settings.resolveRichText = true;
-        settings.urlMap = await getUrlMap(urlMapSettings);
+        settings.urlMap = await getUrlMap(KCDetails);
     } else if (currentLevel === 1) {
         settings.type = 'topic';
     } else if (currentLevel === 2) {
         settings.type = 'article';
         settings.resolveRichText = true;
-        settings.urlMap = await getUrlMap(urlMapSettings);
+        settings.urlMap = await getUrlMap(KCDetails);
     }
 
     return await requestDelivery(settings);

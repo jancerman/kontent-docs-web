@@ -6,18 +6,21 @@ const requestDelivery = require('../helpers/requestDelivery');
 const error = async (req, res) => {
     const footer = await commonContent.getFooter(res);
     const UIMessages = await commonContent.getUIMessages(res);
+    const KCDetails = commonContent.getKCDetails(res);
+
+    if (!footer) {
+        return res.status(500).send('Unexpected error, please check site logs.');
+    }
 
     const content = await requestDelivery({
         type: 'not_found',
-        projectid: res.locals.projectid,
-        previewapikey: res.locals.previewapikey
+        ...KCDetails
     });
 
     const navigation = await requestDelivery({
         type: 'home',
         depth: 1,
-        projectid: res.locals.projectid,
-        previewapikey: res.locals.previewapikey
+        ...KCDetails
     });
 
     return res.render('pages/error', {

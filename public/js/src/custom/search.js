@@ -3,6 +3,9 @@
  */
 
 (() => {
+     // Bring UIMessages from the global scope inlined in HTML head
+    let UIMessages = UIMessages ? UIMessages : null;
+    
     const initAlgoliaSearch = () => {
         // Get Algolia API details from object in the global scope (should be present in the page head)
         // Or use API detail injected with url parameters
@@ -125,7 +128,7 @@
 
                         // Template for a empty result
                         return `<div class="suggestion suggestion--empty">
-                                    <span class="suggestion__heading">${UIMessages.searchNoResults}</span>
+                                    <span class="suggestion__heading">${UIMessages ? UIMessages.searchNoResults : ''}</span>
                                 </div>`;
                     }
                 }

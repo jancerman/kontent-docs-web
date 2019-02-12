@@ -9,6 +9,7 @@ const logger = require('morgan');
 const asyncHandler = require('express-async-handler');
 
 const getUrlMap = require('./helpers/urlMap');
+const commonContent = require('./helpers/commonContent');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -19,6 +20,8 @@ const vanityUrls = require('./routes/vanityUrls');
 const error = require('./routes/error');
 
 const app = express();
+
+let KCDetails = {};
 
 // Azure Application Insights monitors
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
@@ -47,6 +50,8 @@ app.use(express.static(path.join(__dirname, 'public'), {
 app.get('*', (req, res, next) => {
   res.locals.projectid = typeof req.query.projectid !== 'undefined' ? req.query.projectid : process.env['KC.ProjectId'];
   res.locals.previewapikey = typeof req.query.previewapikey !== 'undefined' ? req.query.previewapikey : process.env['KC.PreviewApiKey'];
+  res.locals.securedapikey = typeof req.query.securedapikey !== 'undefined' ? req.query.securedapikey : process.env['KC.SecuredApiKey'];
+  KCDetails = commonContent.getKCDetails(res);
   return next();
 });
 
@@ -58,10 +63,7 @@ app.use('/sitemap.xml', sitemap);
 app.use('/robots.txt', robots);
 
 app.get('/urlmap', asyncHandler(async (req, res, next) => {
-  const urlMap = await getUrlMap({
-    projectid: res.locals.projectid,
-    previewapikey: res.locals.previewapikey 
-  });
+  const urlMap = await getUrlMap(KCDetails);
   return res.json(urlMap);
 }));
 

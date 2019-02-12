@@ -64,11 +64,15 @@ const loadOnScroll = () => {
 };
 
 const loadOnClick = () => {
+    // Bring UIMessages from the global scope inlined in HTML head
+    let UIMessages = UIMessages ? UIMessages : null;
+
     let lazy = document.querySelectorAll('.lazy');
+    let label = UIMessages ? UIMessages.dntLabel : '';
 
     lazy.forEach(item => {
         let wrapper = helper.getParents(item);
-        wrapper[0].insertBefore(helper.createElementFromHTML(`<div class="embed__dnt-enable">${helper.decodeHTMLEntities(UIMessages.dntLabel)}</div>`), wrapper[0].firstChild);
+        wrapper[0].insertBefore(helper.createElementFromHTML(`<div class="embed__dnt-enable">${helper.decodeHTMLEntities(label)}</div>`), wrapper[0].firstChild);
     });
 
     document.querySelector('body').addEventListener('click', e => {

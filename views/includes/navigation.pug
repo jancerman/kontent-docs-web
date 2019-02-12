@@ -14,10 +14,10 @@ nav.navigation
                 .navigation__search-wrapper
                     form.navigation__search
                         .navigation__search-icon(aria-hidden='true')
-                        label.sr-only(for='nav-search') !{UIMessages.search___placeholder.value}
-                        input(type='search', id='nav-search', name='nav-search', autocomplete="off", placeholder= UIMessages.search___placeholder.value)
+                        label.sr-only(for='nav-search') !{UIMessages ? UIMessages.search___placeholder.value : ''}
+                        input(type='search', id='nav-search', name='nav-search', autocomplete="off", placeholder= UIMessages ? UIMessages.search___placeholder.value : '')
                     #searchbox
-            a.navigation__app(href='https://app.kenticocloud.com', target='_blank', title= UIMessages.link_to_app_tooltip.value)
+            a.navigation__app(href='https://app.kenticocloud.com', target='_blank', title= UIMessages ? UIMessages.link_to_app_tooltip.value : '')
                 i.icon-arrow-enter-square
         if(req.originalUrl !== '/' && req.originalUrl !== '/design/home')
             .navigation__trigger(data-toggle-trigger='search', aria-hidden='true')

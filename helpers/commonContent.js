@@ -1,6 +1,13 @@
 const requestDelivery = require('../helpers/requestDelivery');
 
 const commonContent = {
+    getKCDetails: (res) => {
+        return {
+            projectid: res.locals.projectid,
+            previewapikey: res.locals.previewapikey,
+            securedapikey: res.locals.securedapikey
+        };
+    },
     getFooter: async (res) => {
         return await requestDelivery({
             type: 'footer',

@@ -10,16 +10,14 @@ const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 
 router.get('/', asyncHandler(async (req, res, next) => {
+  const KCDetails = commonContent.getKCDetails(res);
+
   const tree = await requestDelivery({
     type: 'home',
     depth: 4,
     resolveRichText: true,
-    urlMap: await getUrlMap({
-      projectid: res.locals.projectid,
-      previewapikey: res.locals.previewapikey 
-    }),
-    projectid: res.locals.projectid,
-    previewapikey: res.locals.previewapikey
+    urlMap: await getUrlMap(KCDetails),
+    ...KCDetails
   });
 
   if (!tree[0]) {
