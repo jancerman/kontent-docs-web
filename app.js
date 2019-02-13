@@ -56,7 +56,7 @@ app.get('*', (req, res, next) => {
 });
 
 app.use('/', home);
-app.use('/tutorials', tutorials);
+app.use('/', tutorials);
 app.use('/vanity-urls', vanityUrls);
 
 app.use('/sitemap.xml', sitemap);

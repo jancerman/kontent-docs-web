@@ -56,7 +56,7 @@ const getContentLevel = async (currentLevel, req, res) => {
     } else if (currentLevel === 0) {
         settings.type = 'scenario';
         settings.resolveRichText = true;
-        settings.urlMap = await getUrlMap(KCDetails);
+        settings.urlMap = await getUrlMap(KCDetails) ;
     } else if (currentLevel === 1) {
         settings.type = 'topic';
     } else if (currentLevel === 2) {
@@ -68,11 +68,18 @@ const getContentLevel = async (currentLevel, req, res) => {
     return await requestDelivery(settings);
 };
 
-router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
+const getCurrentLevel = (levels) => {
+    let index = levels.length;
+    // Get last non-null array item index
+    while (index-- && !levels[index]);
+    return index;
+};
+
+router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/other/:article'], asyncHandler(async (req, res, next) => {
     const navigation = await getNavigation(res);
     const subNavigation = await getSubNavigation(res);
     const subNavigationLevels = getSubNavigationLevels(req);
-    const currentLevel = subNavigationLevels.filter(item => item !== null).length - 1;
+    const currentLevel = getCurrentLevel(subNavigationLevels);
     const content = await getContentLevel(currentLevel, req, res);
     const footer = await commonContent.getFooter(res);
     const UIMessages = await commonContent.getUIMessages(res);
@@ -90,6 +97,14 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         return next();
     }
 
+    // If only article url slug in passed and item is present in the navigation, do not render the article
+    const KCDetails = commonContent.getKCDetails(res);
+    const urlMap = await getUrlMap(KCDetails);
+    let isIncludedNavigation = urlMap.filter(item => item.codename === content[0].system.codename).length > 0;
+    if (!req.params.scenario && !req.params.topic && req.params.article && isIncludedNavigation) {
+        return next();
+    }
+
     return res.render(view, {
         req: req,
         moment: moment,
@@ -97,7 +112,7 @@ router.get(['/', '/:scenario', '/:scenario/:topic', '/:scenario/:topic/:article'
         isPreview: isPreview(res.locals.previewapikey),
         projectId: res.locals.projectid,
         title: content[0].title.value,
-        introduction: content[0].introduction ? content[0].introduction.value : content[0].description.value,
+        introduction: content[0].introduction ? content[0].introduction.value : null,
         nextSteps: content[0].next_steps ? content[0].next_steps : '',
         navigation: navigation[0] ? navigation[0].navigation : [],
         subNavigation: subNavigation[0] ? subNavigation[0].children : [],
