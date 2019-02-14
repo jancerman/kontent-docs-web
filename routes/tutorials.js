@@ -11,9 +11,7 @@ const helper = require('../helpers/helperFunctions');
 
 const moment = require('moment');
 
-const getNavigation = async (res) => {
-    const KCDetails = commonContent.getKCDetails(res);
-
+const getNavigation = async (KCDetails) => {
     return await requestDelivery({
         type: 'home',
         depth: 1,
@@ -21,9 +19,7 @@ const getNavigation = async (res) => {
     });
 };
 
-const getSubNavigation = async (res) => {
-    const KCDetails = commonContent.getKCDetails(res);
-
+const getSubNavigation = async (KCDetails) => {
     return await requestDelivery({
         type: 'navigation_item',
         depth: 3,
@@ -40,9 +36,7 @@ const getSubNavigationLevels = (req) => {
     ];
 };
 
-const getContentLevel = async (currentLevel, req, res) => {
-    const KCDetails = commonContent.getKCDetails(res);
-
+const getContentLevel = async (currentLevel, KCDetails, urlMap, req) => {
     let settings = {
         slug: getSubNavigationLevels(req)[currentLevel],
         depth: 1,
@@ -56,13 +50,13 @@ const getContentLevel = async (currentLevel, req, res) => {
     } else if (currentLevel === 0) {
         settings.type = 'scenario';
         settings.resolveRichText = true;
-        settings.urlMap = await getUrlMap(KCDetails) ;
+        settings.urlMap = urlMap;
     } else if (currentLevel === 1) {
         settings.type = 'topic';
     } else if (currentLevel === 2) {
         settings.type = 'article';
         settings.resolveRichText = true;
-        settings.urlMap = await getUrlMap(KCDetails);
+        settings.urlMap = urlMap;
     }
 
     return await requestDelivery(settings);
@@ -76,11 +70,13 @@ const getCurrentLevel = (levels) => {
 };
 
 router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/other/:article'], asyncHandler(async (req, res, next) => {
-    const navigation = await getNavigation(res);
-    const subNavigation = await getSubNavigation(res);
+    const KCDetails = commonContent.getKCDetails(res);
+    const urlMap = await getUrlMap(KCDetails);
+    const navigation = await getNavigation(KCDetails);
+    const subNavigation = await getSubNavigation(KCDetails);
     const subNavigationLevels = getSubNavigationLevels(req);
     const currentLevel = getCurrentLevel(subNavigationLevels);
-    const content = await getContentLevel(currentLevel, req, res);
+    const content = await getContentLevel(currentLevel, KCDetails, urlMap, req);
     const footer = await commonContent.getFooter(res);
     const UIMessages = await commonContent.getUIMessages(res);
     let view = 'pages/article';
@@ -98,8 +94,6 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
     }
 
     // If only article url slug in passed and item is present in the navigation, do not render the article
-    const KCDetails = commonContent.getKCDetails(res);
-    const urlMap = await getUrlMap(KCDetails);
     let isIncludedNavigation = urlMap.filter(item => item.codename === content[0].system.codename).length > 0;
     if (!req.params.scenario && !req.params.topic && req.params.article && isIncludedNavigation) {
         return next();
