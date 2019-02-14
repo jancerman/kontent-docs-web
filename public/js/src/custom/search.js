@@ -107,7 +107,7 @@
                         const suggestionUrl = urlMap.filter(item => item.codename === suggestion.codename);
 
                         // Add an anchor to the url if available
-                        const anchor = suggestion._highlightResult.heading.value ? `#${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g,'-')}` : '';
+                        const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g,'-')}` : '';
                         suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}?searchterm=${searchTerm}${anchor}` : '';
                         
                         // Template for a single search result suggestion

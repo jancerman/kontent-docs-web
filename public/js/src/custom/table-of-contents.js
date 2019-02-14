@@ -48,7 +48,6 @@
             });
 
             setTimeout(() => {
-                console.log(hash);
                 document.getElementById(hash).scrollIntoView({ block: 'start',  behavior: 'smooth' });
             }, 200);
         }
