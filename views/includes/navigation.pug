@@ -1,3 +1,4 @@
+- var isNotHome = req.originalUrl !== '/' && req.originalUrl !== '/design/home'
 .print-only
     img.logo(src='/img/kc-logo.png', alt='Kentico Cloud logo')
 nav.navigation
@@ -5,12 +6,12 @@ nav.navigation
         .navigation__left
             a.navigation__logo(href='/')
                 img(src='/img/kc-logo.svg', alt='Kentico Cloud logo')
-            ul.navigation__list
+            ul(class= `navigation__list${isNotHome ? '' : ' navigation__list--full'}`)
                 each item in navigation
                     li.navigation__item
                         a(href=`/${item.url.value}`, class=`navigation__link${req.originalUrl.startsWith(`/${item.url.value}`) ? ' navigation__link--active' : ''}`) !{item.title.value}
         .navigation__right(data-toggle-target='search')
-            if(req.originalUrl !== '/' && req.originalUrl !== '/design/home')
+            if isNotHome
                 .navigation__search-wrapper
                     form.navigation__search
                         .navigation__search-icon(aria-hidden='true')
@@ -19,5 +20,5 @@ nav.navigation
                     #searchbox
             a.navigation__app(href='https://app.kenticocloud.com', target='_blank', title= UIMessages ? UIMessages.link_to_app_tooltip.value : '')
                 i.icon-arrow-enter-square
-        if(req.originalUrl !== '/' && req.originalUrl !== '/design/home')
+        if isNotHome
             .navigation__trigger(data-toggle-trigger='search', aria-hidden='true')

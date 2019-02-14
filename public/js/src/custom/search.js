@@ -3,8 +3,6 @@
  */
 
 (() => {
-     // Bring UIMessages from the global scope inlined in HTML head
-    let UIMessages = UIMessages ? UIMessages : null;
     
     const initAlgoliaSearch = () => {
         // Get Algolia API details from object in the global scope (should be present in the page head)

@@ -2,9 +2,6 @@
  * Lazy loading
  */
 
-// Bring UIMessages from the global scope inlined in HTML head
-let UIMessages = UIMessages ? UIMessages : null;
-
 // On scroll, check elements with the "lazy" class name and transform their data-src attribute into src
 // Implementation uses IntersectionObserver if is available, otherwise fallbacks to using scroll, resize and orientationChange events
 const loadOnScroll = () => {

@@ -3,9 +3,6 @@
  */
 
 (() => {
-    // Bring UIMessages from the global scope inlined in HTML head
-    let UIMessages = UIMessages ? UIMessages : null;
-
     // For all sub-headings set their id and create the copy to clipboard icon
     const createAnchors = () => {
         let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading), h3, h4');
