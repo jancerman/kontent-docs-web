@@ -3,7 +3,6 @@
  */
 
 (() => {
-    
     const initAlgoliaSearch = () => {
         // Get Algolia API details from object in the global scope (should be present in the page head)
         // Or use API detail injected with url parameters
@@ -149,7 +148,7 @@
     };
 
     // In the header handle re-sizing the search input on focus/blur
-    const resizeNavSearch = () => {
+    /*const resizeNavSearch = () => {
         let searchElem = document.querySelector('#nav-search');
         let navElem = document.querySelector('.navigation__right');
 
@@ -162,10 +161,23 @@
                 navElem.classList.remove('navigation__right--full');
             });
         }
+    };*/
+
+    const setFocusOnMagnifier = (prefix) => {
+        let search = document.querySelector(`.${prefix}__search`);
+        if (search) {
+            let icon = search.querySelector(`.${prefix}__search-icon`);
+            let input = search.querySelector(`#nav-search`);
+            icon.addEventListener('click', () => {
+                input.focus();
+            });
+        }
     };
 
     if (searchAPI) {
         initAlgoliaSearch();
-        resizeNavSearch();
+        //resizeNavSearch();
+        setFocusOnMagnifier('navigation');
+        setFocusOnMagnifier('hero');
     }
 })();

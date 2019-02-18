@@ -21,9 +21,13 @@
                 elemToToggle.classList.add('toggle-active');
 
                 // In case target contains input, set focus on it
-                let input = elemToToggle.querySelector('input');
+                let input = elemToToggle.querySelector('#nav-search');
+                
                 if (input) {
-                    input.focus();
+                    setTimeout(() => {
+                        input.focus();
+                    }, 50);
+                    
                 }
             }
         });
