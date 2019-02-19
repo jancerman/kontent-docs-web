@@ -69,7 +69,7 @@ const getCurrentLevel = (levels) => {
     return index;
 };
 
-router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/other/:article'], asyncHandler(async (req, res, next) => {
+router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/other/:article', '/article/:article', '/scenario/:scenario'], asyncHandler(async (req, res, next) => {
     const KCDetails = commonContent.getKCDetails(res);
     const urlMap = await getUrlMap(KCDetails);
     const navigation = await getNavigation(KCDetails);
@@ -95,7 +95,7 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
 
     // If only article url slug in passed and item is present in the navigation, do not render the article
     let isIncludedNavigation = urlMap.filter(item => item.codename === content[0].system.codename).length > 0;
-    if (!req.params.scenario && !req.params.topic && req.params.article && isIncludedNavigation) {
+    if (!req.params.scenario && !req.params.topic && req.params.article && isIncludedNavigation && req.originalUrl.indexOf('/article/') < 0) {
         return next();
     }
 

@@ -27,7 +27,6 @@
                     setTimeout(() => {
                         input.focus();
                     }, 50);
-                    
                 }
             }
         });
