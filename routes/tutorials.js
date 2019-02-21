@@ -19,11 +19,11 @@ const getNavigation = async (KCDetails) => {
     });
 };
 
-const getSubNavigation = async (KCDetails) => {
+const getSubNavigation = async (KCDetails, slug) => {
     return await requestDelivery({
         type: 'navigation_item',
         depth: 3,
-        slug: 'tutorials',
+        slug: slug,
         ...KCDetails
     });
 };
@@ -69,11 +69,12 @@ const getCurrentLevel = (levels) => {
     return index;
 };
 
-router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/other/:article', '/article/:article', '/scenario/:scenario'], asyncHandler(async (req, res, next) => {
+router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/other/:article', '/whats-new', '/whats-new/:scenario', '/whats-new/:scenario/:topic', '/whats-new/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
     const KCDetails = commonContent.getKCDetails(res);
     const urlMap = await getUrlMap(KCDetails);
     const navigation = await getNavigation(KCDetails);
-    const subNavigation = await getSubNavigation(KCDetails);
+    const slug = req.originalUrl.split('/')[1];
+    const subNavigation = await getSubNavigation(KCDetails, slug);
     const subNavigationLevels = getSubNavigationLevels(req);
     const currentLevel = getCurrentLevel(subNavigationLevels);
     const content = await getContentLevel(currentLevel, KCDetails, urlMap, req);
@@ -83,11 +84,11 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
 
     if (content[0]) {
         if (currentLevel === -1) {
-            return res.redirect(301, `/tutorials/${content[0].children[0].url.value}`);
+            return res.redirect(301, `/${slug}/${content[0].children[0].url.value}`);
         } else if (currentLevel === 0) {
             view = 'pages/scenario';
         } else if (currentLevel === 1) {
-            return res.redirect(301, `/tutorials/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}`);
+            return res.redirect(301, `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}`);
         }
     } else {
         return next();
@@ -95,7 +96,7 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
 
     // If only article url slug in passed and item is present in the navigation, do not render the article
     let isIncludedNavigation = urlMap.filter(item => item.codename === content[0].system.codename).length > 0;
-    if (!req.params.scenario && !req.params.topic && req.params.article && isIncludedNavigation && req.originalUrl.indexOf('/article/') < 0) {
+    if (!req.params.scenario && !req.params.topic && req.params.article && isIncludedNavigation) {
         return next();
     }
 

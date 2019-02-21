@@ -17,6 +17,7 @@ const sitemap = require('./routes/sitemap');
 const robots = require('./routes/robots');
 const urlAliases = require('./routes/urlAliases');
 const vanityUrls = require('./routes/vanityUrls');
+const previewUrls = require('./routes/previewUrls');
 const error = require('./routes/error');
 
 const app = express();
@@ -57,6 +58,7 @@ app.get('*', (req, res, next) => {
 
 app.use('/', home);
 app.use('/', tutorials);
+app.use('/', previewUrls);
 app.use('/vanity-urls', vanityUrls);
 
 app.use('/sitemap.xml', sitemap);
