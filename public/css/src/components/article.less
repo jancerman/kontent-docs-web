@@ -9,25 +9,29 @@
         @media screen and (min-width: 768px) {
             width: 250px;
         }
+
+        @media screen and (min-width: 1024px) {
+            width: 280px;
+        }
 	}
 
 	&__right {
-        padding: 2em 0 0 0;
-
-        @media screen and (min-width: 480px) {
-            padding: 0 2em 0 1em;
-        }
+        padding: 1em 0 0 0;
 
         @media screen and (min-width: 768px) {
             width: ~"calc(100% - 250px)";
             padding: 0 0 0 1.5em;
             box-sizing: border-box;
         }
+
+        @media screen and (min-width: 1024px) {
+            width: ~"calc(100% - 280px)";
+        }
     }
     
     &__sub-navigation-trigger {
         position: absolute;
-        top: -1.5em;
+        top: -1.75em;
         right: -1em;
         width: 48px;
         height: 48px;
@@ -36,15 +40,19 @@
         align-items: center;
         cursor: pointer;
         transition: background-color .2s;
-        background-color: #fafafa;
+        background-color: #fff;
         z-index: 3000;
 
         @media screen and (min-width: 480px) {
-            top: -2em;
+            top: -1.75em;
         }
 
         @media screen and (min-width: 768px) {
             display: none;
+        }
+
+        @media screen and (min-width: 1024px) {
+            top: -3.5em;
         }
 
         &.trigger-active,
@@ -56,7 +64,7 @@
             content: @icon-menu;
             font-family: 'kentico-icons';
             font-size: 1.5em;
-            color: #9a9a9a;
+            color: #6B7C85;
         }
 
         &.trigger-active {
@@ -264,12 +272,10 @@
     }
 
     &__edit {
-        position: relative;
-        top: -1em;
-
         @media screen and (min-width: 768px) {
-            text-align: right;
-            top: auto;
+            position: absolute;
+            top: -1em;
+            right: 0;
         }
     }
 }
