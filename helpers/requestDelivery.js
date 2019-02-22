@@ -74,7 +74,7 @@ const requestDelivery = async (config) => {
             Object.keys(elem)
                 .filter((key) => elem.hasOwnProperty(key) && elem[key].hasOwnProperty('type') && elem[key].type === `rich_text`)
                 .forEach((key) => {
-                    elem[key].getHtml();            
+                    elem[key].getHtml();
                     elem[key].value = enhanceMarkup(elem[key].resolvedHtml);
                 });
         });

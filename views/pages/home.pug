@@ -2,16 +2,13 @@ extends ../includes/layout.pug
 block content
     .hero
         .hero__wrapper
-            .hero__left
-                h1.hero__heading !{title}
-                form.hero__search
-                    .hero__search-icon(aria-hidden='true')
-                    label.sr-only(for='nav-search') !{UIMessages.search___placeholder.value}
-                    input(type='search', id='nav-search', name='nav-search', autocomplete="off", placeholder= UIMessages.search___placeholder.value)
-                #searchbox
-                div.hero__note-link(href="#") !{introNote}
-            .hero__right
-                .hero__screen
+            h1.hero__heading !{title}
+            form.hero__search
+                .hero__search-icon(aria-hidden='true')
+                label.sr-only(for='nav-search') !{UIMessages.search___placeholder.value}
+                input(type='search', id='nav-search', name='nav-search', autocomplete="off", placeholder= UIMessages.search___placeholder.value)
+            #searchbox
+            div.hero__note-link(href="#") !{introNote}
     main(id='main').presentation
         | !{minify(signposts)}
     aside.border-top
