@@ -98,7 +98,11 @@
             }
 
             &:focus {
-                box-shadow: inset 15px 0px 0px 0px rgba(237,106,86,1);
+                box-shadow: inset 6px 0px 0px 0px rgba(237,106,86,1);
+
+                @media screen and (min-width: 480px) {
+                    box-shadow: inset 15px 0px 0px 0px rgba(237,106,86,1);
+                }
             }
         }
     }
