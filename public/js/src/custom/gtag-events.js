@@ -1,4 +1,5 @@
 (() => {
+    // Iframes
     var monitor = setInterval(intervals, 100);
 
     function intervals() {
@@ -23,5 +24,16 @@
             clearInterval(monitor);
             monitor = setInterval(intervals, 100);
         }
+    }
+
+    // Search number of results
+    const searchTerm = helper.getParameterByName('searchterm');
+    const searchNumber = helper.getParameterByName('searchnumber');
+    if (searchTerm && searchNumber) {
+        gtag('event', 'search', {
+            'event_category': 'Search result number',
+            'event_label': searchNumber,
+            'event_action': searchTerm
+        });
     }
 })();

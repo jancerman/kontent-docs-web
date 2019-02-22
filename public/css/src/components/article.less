@@ -180,6 +180,12 @@
             ul, ol {
                 padding: .125em 0 0;
             }
+
+            ul, ol {
+                & > {
+                    margin-left: .5em;
+                }
+            }
         }
 
         ul {
@@ -220,7 +226,7 @@
             margin: 0 0 1.5em;
 
             img {
-                margin: 0 0 1.25em;
+                margin: 0 0 .75em;
             }
 
             figcaption {
@@ -270,7 +276,6 @@
                 font-family: 'kentico-icons';
                 display: inline-block;
                 padding: 0 1.5em;
-                color: #7C909B;
                 font-size: .375em;
                 position: relative;
                 top: -.5em;
@@ -286,13 +291,5 @@
 
     &__add-lightbox {
         cursor: pointer;
-    }
-
-    &__edit {
-        @media screen and (min-width: 768px) {
-            position: absolute;
-            top: -1em;
-            right: 0;
-        }
     }
 }

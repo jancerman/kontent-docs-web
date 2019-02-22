@@ -14,6 +14,7 @@
         const tutorials = client.initIndex(searchAPI.indexname);
         const url = window.location;
         let searchTerm = '';
+        let searchResultsNumber = 0;
 
         // Get injected KC API details 
         const projectIdUrl = helper.getParameterByName('projectid');
@@ -33,7 +34,7 @@
         const initAutocomplete = (urlMap) => {
             // Init autocomplete and set maximum of suggested search items 
             var hitsSource = autocomplete.sources.hits(tutorials, {
-                hitsPerPage: 8
+                hitsPerPage: 1000
             });
     
             autocomplete('#nav-search', {
@@ -42,58 +43,63 @@
             }, [{
                 source: (query, callback) => {
                     hitsSource(query, (suggestions) => {
-                        suggestions.forEach(item => {
+                        searchResultsNumber = suggestions.length;
+                        let limitedSuggestions = [];
+                        let limit = suggestions.length <= 8 ? suggestions.length : 8;
+
+                        for (let i = 0; i < limit; i++) {
                             // Get content with highlighted markup
-                            let content = item._highlightResult.content.value;
+                            let content = suggestions[i]._highlightResult.content.value;
                             // Remove inline icon, code macros and newlines
                             content = content.replace(/{@[a-z,0-9,-]+@}/g, '');
                             content = content.replace(/{~[^~]+~}/g, '');
                             content = content.replace(/\r?\n|\r/g, '');
-    
+
                             // Get start and end idexes of the first highlighted match
                             let indexStart = content.indexOf('<em>');
                             let indexEnd = content.indexOf('</em>') + 5;
-    
+
                             // Get highlighted string
                             let highlighted = content.substring(indexStart, indexEnd);
-    
+
                             // Number of chars before and after the highlighted string to be rendered
                             let numCharsBefore = 20;
                             let numCharsAfter = 150;
-    
+
                             // Get desired number of chars before and after
                             let contentBefore = content.substring(indexStart - numCharsBefore, indexStart);
                             let contentAfter = content.substring(indexEnd, indexEnd + numCharsAfter);
-    
+
                             // Add hellip before the text in case the highlighed string is somewhere in the the middle of the search result content
                             if (contentBefore.length === numCharsBefore) {
                                 contentBefore = `&hellip;${contentBefore}`;
                             }
-    
+
                             // Strip tags and unfinished tags at the end of the sting in after text
                             contentAfter = contentAfter.replace(/(<([^>]+)>)/ig,'');
                             contentAfter = contentAfter.replace(/(<([^>]+)$)/ig,'');
-    
+
                             /*
                             // Find out whether there is another highighted text in the after text
                             let contentAfterStartIndex = contentAfter.indexOf('<em>');
                             let contentAfterEndIndex = contentAfter.indexOf('</em>');
-    
+
                             // If there is unclosed em tag in teh after text, add closing em tag
                             if (contentAfterStartIndex > -1 && contentAfterEndIndex === -1) {
                                 contentAfter = `${contentAfter}</em>`;
                             }
                             */
-    
+
                             // Add hellip after the text in case the highlighed string is somewhere in the the middle of the search result content
                             if (contentAfter.length === numCharsAfter) {
                                 contentAfter = `${contentAfter}&hellip;`;
                             }
-    
-                            item._highlightResult.content.value = `${contentBefore}${highlighted}${contentAfter}`;
-                        });
-        
-                        callback(suggestions);
+
+                            suggestions[i]._highlightResult.content.value = `${contentBefore}${highlighted}${contentAfter}`;
+                            limitedSuggestions.push(suggestions[i]);
+                        }
+
+                        callback(limitedSuggestions);
                     });
                 },
                 displayKey: 'title',
@@ -107,7 +113,7 @@
 
                         // Add an anchor to the url if available
                         const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g,'-')}` : '';
-                        suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}?searchterm=${searchTerm}${anchor}` : '';
+                        suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}?searchterm=${searchTerm}${anchor}&searchnumber=${searchResultsNumber}` : '';
                         
                         // Template for a single search result suggestion
                         return `<a href="${suggestion.resolvedUrl}" class="suggestion">

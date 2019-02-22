@@ -6,9 +6,6 @@ block content
                 include ../includes/sub-navigation.pug
             .article__right
                 .article__content
-                    if isPreview
-                        .article__edit
-                            a(href=`https://app.kenticocloud.com/goto/edit-item/project/${projectId}/variant-codename/default/item/${content.system.id}`, target='_blank', rel='noopener') Edit
                     h1 !{content.title.value}
                     .article__notes
                         time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
@@ -17,6 +14,8 @@ block content
                                 | !{content.author[0].name.value}
                             else
                                 | !{UIMessages.article___no_author.value}
+                        if isPreview 
+                            a(href=`https://app.kenticocloud.com/goto/edit-item/project/${projectId}/variant-codename/default/item/${content.system.id}`, target='_blank', rel='noopener') Edit
                     if (introduction !== '<p><br></p>')
                         | !{minify(introduction)}
                     include ../includes/table-of-contents.pug
