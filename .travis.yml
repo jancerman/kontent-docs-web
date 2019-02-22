@@ -11,6 +11,6 @@ jobs:
       name: "Test"
       script: npm test
     - stage: "Deployment"
-      if: branch = master OR branch = develop
+      if: type != pull_request AND (branch = master OR branch = develop)
       before_install: chmod +rx .travis/deploy.sh
       script: .travis/deploy.sh
