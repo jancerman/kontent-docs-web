@@ -4,7 +4,7 @@
 nav.navigation
     .navigation__wrapper
         .navigation__left
-            a.navigation__logo(href='/')
+            a.navigation__logo(href='https://kenticocloud.com/')
                 img(src='/img/kc-logo.svg', alt='Kentico Cloud logo')
             a.navigation__title(href='/') Docs
             ul(class= `navigation__list${isNotHome ? '' : ' navigation__list--full'}`)
@@ -20,7 +20,7 @@ nav.navigation
                         input(type='search', id='nav-search', name='nav-search', autocomplete="off", placeholder= UIMessages ? UIMessages.search___placeholder.value : '')
                     #searchbox
             a.navigation__app(href='https://app.kenticocloud.com', target='_blank')
-                i.icon-arrow-enter-square
+                i.icon-kentico
                 .navigation__app-tooltip !{UIMessages ? UIMessages.link_to_app_tooltip.value : ''}
         if isNotHome
             .navigation__trigger(data-toggle-trigger='search', aria-hidden='true')

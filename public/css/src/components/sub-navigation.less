@@ -130,9 +130,10 @@
             }
 
             .sub-navigation--level-2 & {
+                font-weight: 400;
+
                 &:before {
                     content: @icon-chevron-down;
-                    font-weight: 400;
                 }
             }
 
@@ -143,6 +144,12 @@
                 &:before {
                     content: '';
                 }
+            }
+        }
+
+        &--on-path {
+            .sub-navigation--level-2 & {
+                font-weight: 700;
             }
         }
 	}

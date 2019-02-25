@@ -7,7 +7,7 @@ ul.sub-navigation.sub-navigation--level-1.sub-navigation--top(data-toggle-target
                 ul.sub-navigation.sub-navigation--level-2
                     each topic in scenario.children
                         li.sub-navigation__item
-                            a(href=`#`, class=`sub-navigation__link${subNavigationLevels[1] === topic.url.value ? ' sub-navigation__link--active' : ''}`) !{topic.title.value}
+                            a(href=`#`, class=`sub-navigation__link${subNavigationLevels[1] === topic.url.value ? ' sub-navigation__link--active sub-navigation__link--on-path' : ''}`) !{topic.title.value}
                             ul.sub-navigation.sub-navigation--level-3
                                 each article in topic.children
                                     if (!article.visibility.value.filter(item => item.codename === 'excluded_from_navigation').length)
