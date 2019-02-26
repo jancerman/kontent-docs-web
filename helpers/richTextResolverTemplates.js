@@ -126,7 +126,7 @@ const richTextResolverTemplates = {
                     <noscript>
                         <img class="article__image-border" alt="${alt}" src="${item.image.value[0].url}${transformationQueryString}">
                     </noscript>
-                    ${item.description.value ? '<figcaption>'+ item.description.value +'</figcaption>' : ''}
+                    ${item.description.value && item.description.value !== '<p><br></p>' ? '<figcaption>'+ item.description.value +'</figcaption>' : ''}
                 </figure>`;
         }
 
