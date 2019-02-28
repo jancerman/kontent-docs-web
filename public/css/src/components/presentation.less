@@ -1,10 +1,13 @@
 .presentation {
-
 	&__section {
         padding: 1em 0;
 
         @media screen and (min-width: 768px) {
             padding: 1.5em 0;
+        }
+
+        &:first-child {
+            padding: 0;
         }
 	}
 
@@ -20,10 +23,11 @@
 
 	&__sub-heading {
         font-size: 1em;
-        color: #6b6b6b;
+        color: #8C9EA9;
         margin: 0;
         padding: 0 0 1.25em;
         text-transform: uppercase;
+        letter-spacing: .5px;
 
         @media screen and (min-width: 768px) {
             font-size: 1.125em;

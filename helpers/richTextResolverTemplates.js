@@ -1,3 +1,5 @@
+const helper = require('./helperFunctions');
+
 const richTextResolverTemplates = {
     embeddedContent: (item) => {
         const templates = {
@@ -14,13 +16,13 @@ const richTextResolverTemplates = {
                 `,
             codepen: `
                 <div class="embed">
-                    <iframe class="lazy" height="265" scrolling="no" data-src="https://codepen.io/milanlund/embed/${item.id.value}/?height=265&amp;theme-id=0&amp;default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
+                    <iframe class="lazy" height="265" scrolling="no" data-src="https://codepen.io/${item.id.value.replace('/pen/', '/embed/')}/?height=265&amp;theme-id=0&amp;default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
                     <noscript>
-                        <iframe height="265" scrolling="no" src="https://codepen.io/milanlund/embed/${item.id.value}/?height=265&amp;theme-id=0&amp;default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
+                        <iframe height="265" scrolling="no" src="https://codepen.io/${item.id.value}/?height=265&amp;theme-id=0&amp;default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
                     </noscript>
                 </div>
                 <p class="print-only"> 
-                    <i>See the code example on <a href="https://codepen.io/nathantaylor/pen/${item.id.value}">https://codepen.io/nathantaylor/pen/${item.id.value}</a></i>
+                    <i>See the code example on <a href="https://codepen.io/${item.id.value}">https://codepen.io/${item.id.value}</a></i>
                 </p>
                 `,
             stackblitz: `
@@ -32,6 +34,17 @@ const richTextResolverTemplates = {
                 </div>
                 <p class="print-only"> 
                     <i>See the code example on <a href="https://stackblitz.com/edit/${item.id.value}">https://stackblitz.com/edit/${item.id.value}</a></i>
+                </p>
+                `,
+            codesandbox: `
+                <div class="embed">
+                    <iframe class="lazy" data-src="https://codesandbox.io/embed/${item.id.value}"></iframe>
+                    <noscript>
+                        <iframe src="https://codesandbox.io/embed/${item.id.value}"></iframe>
+                    </noscript>
+                </div>
+                <p class="print-only"> 
+                    <i>See the code example on <a href="https://codesandbox.io/s/${item.id.value}">https://codesandbox.io/s/${item.id.value}</a></i>
                 </p>
                 `
         };
@@ -65,7 +78,9 @@ const richTextResolverTemplates = {
         return `
             <li class="selection__item">
                 ${resolvedUrl ? '<a class="selection__link" href="'+ resolvedUrl + '">' : '<div class="selection__link">'}
-                    <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
+                    <div class="selection__img-sizer">
+                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + '?w=290' : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
+                    </div>
                     <div class="selection__title">${item.title.value}</div>
                 ${resolvedUrl ? '</a>' : '</div>'}
             </li>
@@ -76,6 +91,108 @@ const richTextResolverTemplates = {
             <div class="callout callout--${item.type.value[0].codename}">
                 ${item.content.value}
             </div>`;
+    },
+    image: (item) => {
+        if (item.image.value[0]) {
+            let alt = item.image.value[0].description ? item.image.value[0].description : '';
+            let transformationQueryString = '';
+            let cssClass = item.border.value[0].codename === 'show' ? ' article__image-border' : '';
+            cssClass += item.zoomable.value[0].codename === 'true' ? ' article__add-lightbox' : '';
+
+            if (!item.image.value[0].url.endsWith('.gif')) {
+                transformationQueryString = '?w=';
+
+                switch (item.image_width.value[0].codename) {
+                    case 'n25_':
+                        cssClass += ' article__image--25';
+                        transformationQueryString += '463';
+                        break;
+                    case 'n50_':
+                        cssClass += ' article__image--50';
+                        transformationQueryString += '463';
+                        break;
+                    case 'n75_':
+                        cssClass += ' article__image--75';
+                        transformationQueryString += '695';
+                        break;
+                    default:
+                        transformationQueryString += '926';
+                };
+            }
+
+            return `
+                <figure>
+                    <img class="${cssClass}" alt="${alt}" src="${item.image.value[0].url}${transformationQueryString}">
+                    <noscript>
+                        <img class="article__image-border" alt="${alt}" src="${item.image.value[0].url}${transformationQueryString}">
+                    </noscript>
+                    ${item.description.value && item.description.value !== '<p><br></p>' ? '<figcaption>'+ item.description.value +'</figcaption>' : ''}
+                </figure>`;
+        }
+
+        return ``;
+    },
+    callToAction: (item) => {
+        return `<div class="call-to-action" data-click="support">${item.text.value}</div>`;
+    },
+    contentChunk: (item) => {
+        return `${item.content.value}`;
+    },
+    homeLinkToExternalUrl: (item) => {
+        return `
+            <li class="selection__item">
+                <a class="selection__link" href="${item.url.value}">
+                    <div class="selection__img-sizer">
+                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + '?w=290' : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
+                    </div>
+                    <div class="selection__title">${item.title.value}</div>
+                </a>
+            </li>
+        `;
+    },
+    codeSample: (item) => {
+        let lang = 'lang-';
+        switch (item.programming_language.value[0].codename) {
+            case 'shell':
+                lang += 'shell';
+                break;
+            case 'curl':
+                lang += 'shell';
+                break;
+            case '_net':
+                lang += 'dotnet';
+                break;
+            case 'javascript':
+                lang += 'js';
+                break;
+            case 'typescript':
+                lang += 'ts';
+                break;
+            case 'java':
+                lang += 'java';
+                break;
+            case 'javarx':
+                lang += 'java';
+                break;
+            case 'php':
+                lang += 'php';
+                break;
+            case 'swift':
+                lang += 'swift';
+                break;
+            case 'python':
+                lang += 'python';
+                break;
+            case 'ruby':
+                lang += 'ruby';
+                break;
+            default:
+                lang += 'clike';
+        };
+
+        return `
+            <pre><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>
+        `;
     }
 };
 

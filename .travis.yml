@@ -2,24 +2,15 @@ sudo: required
 language: node_js
 node_js:
   - "10"
-deploy:
-  - provider: azure_web_apps
-    site: kcd-web-live-dev
-    slot: kcd-web-live-dev-staging
-    verbose: true
-    on: develop
-  - provider: azure_web_apps
-    site: kcd-web-preview-dev
-    slot: kcd-web-preview-dev-staging
-    verbose: true
-    on: develop
-  - provider: azure_web_apps
-    site: kcd-web-live-master
-    slot: kcd-web-live-master-staging
-    verbose: true
-    on: master
-  - provider: azure_web_apps
-    site: kcd-web-preview-master
-    slot: kcd-web-preview-master-staging
-    verbose: true
-    on: master
+jobs:
+  include:
+    - stage: "Tests"
+      name: "ESLint"
+      script: npm run eslint
+    - stage: "Tests"
+      name: "Test"
+      script: npm test
+    - stage: "Deployment"
+      if: type != pull_request AND (branch = master OR branch = develop)
+      before_install: chmod +rx .travis/deploy.sh
+      script: .travis/deploy.sh

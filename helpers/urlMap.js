@@ -12,10 +12,10 @@ const getMapItem = (data, fields) => {
             case 'url':
                 item.url = data.url;
                 break;
-            case 'date': 
+            case 'date':
                 item.date = data.date;
                 break;
-        }; 
+        };
     });
 
     return item;
@@ -46,20 +46,22 @@ const createUrlMap = (response, fields, url, urlMap = []) => {
     if (response.navigation) node = 'navigation';
     if (response.children) node = 'children';
 
-    response[node].forEach(item => {
-        if (item.elements.url) {
-            url.length = typeLevels[item.system.type].urlLength;
-            url[url.length - 1] = item.elements.url.value;
-        }
+    if (response[node]) {
+        response[node].forEach(item => {
+            if (item.elements.url) {
+                url.length = typeLevels[item.system.type].urlLength;
+                url[url.length - 1] = item.elements.url.value;
+            }
 
-        urlMap.push(getMapItem({
-            codename: item.system.codename,
-            url: `/${url.join('/')}`,
-            date: item.system.last_modified
-        }, fields));
+            urlMap.push(getMapItem({
+                codename: item.system.codename,
+                url: `/${url.join('/')}`,
+                date: item.system.last_modified
+            }, fields));
 
-        createUrlMap(item, fields, url, urlMap);         
-    });
+            createUrlMap(item, fields, url, urlMap);
+        });
+    }
 
     return urlMap;
 };
@@ -70,6 +72,11 @@ const getUrlMap = async (config) => {
     if (config.previewapikey) {
         deliveryConfig.previewApiKey = config.previewapikey;
         deliveryConfig.enablePreviewMode = true;
+    }
+
+    if (config.securedapikey) {
+        deliveryConfig.securedApiKey = config.securedapikey;
+        deliveryConfig.enableSecuredMode = true;
     }
 
     const deliveryClient = new DeliveryClient(deliveryConfig);

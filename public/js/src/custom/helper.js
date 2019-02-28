@@ -1,4 +1,9 @@
+/**
+ * Helper functions used in other JS files in the ../custom folder
+ */
 window.helper = (() => {
+
+    // Find a parent of the "el" element specified by the "parentSelector" param
     const getParents = (el, parentSelector) => {
         if (parentSelector === undefined) {
             parentSelector = document;
@@ -17,6 +22,7 @@ window.helper = (() => {
         return parents;
     };
 
+    // Get full height of an element
     const outerHeight = (el) => {
         var height = el.offsetHeight;
         var style = getComputedStyle(el);
@@ -25,6 +31,7 @@ window.helper = (() => {
         return height;
     };
 
+    // Helper function for event listeners bind to scroll events that makes them fire on setTimeout
     const debounce = (func, wait, immediate) => {
         var timeout;
         return function () {
@@ -41,6 +48,7 @@ window.helper = (() => {
         };
     };
 
+    // Converts string to node
     const createElementFromHTML = (htmlString) => {
         var div = document.createElement('div');
         div.innerHTML = htmlString.trim();
@@ -49,6 +57,7 @@ window.helper = (() => {
         return div.firstChild;
     };
 
+    // Stores text in a clipboard
     const copyToClipboard = (text) => {
         var textArea = document.createElement("textarea");
 
@@ -104,23 +113,32 @@ window.helper = (() => {
         document.body.removeChild(textArea);
     };
 
-    const ajaxGet = (url, callback) => {
+    // Ajax GET call
+    const ajaxGet = (url, callback, type) => {
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() {
+        xmlhttp.open("GET", url, true);
+        xmlhttp.onreadystatechange = () => {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                 try {
-                    var data = JSON.parse(xmlhttp.responseText);
-                } catch(err) {
+                    var data;
+                   
+                    if (type === 'json') {
+                         // Parse JSON if specified in the "type" param
+                        data = JSON.parse(xmlhttp.responseText);
+                    } else {
+                        data = xmlhttp.responseText
+                    }   
+                } catch (err) {
                     return;
                 }
                 callback(data);
             }
         };
-     
-        xmlhttp.open("GET", url, true);
+
         xmlhttp.send();
     };
 
+    // Get url parameter by its name
     const getParameterByName = (name, url) => {
         if (!url) url = window.location.href;
         name = name.replace(/[\[\]]/g, '\\$&');
@@ -131,6 +149,46 @@ window.helper = (() => {
         return decodeURIComponent(results[2].replace(/\+/g, ' '));
     };
 
+    // Add link tag to page head and make it load and behave as stylesheet
+    const addStylesheet = (url) => {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = url;
+        document.head.appendChild(link);
+    };
+
+    // Request stylesheet, append additional font-display property and in-line it in page head
+    const loadStylesheet = (url) => {
+        ajaxGet(url, css => {
+            css = css.replace(/}/g, 'font-display: swap; }');
+
+            const head = document.getElementsByTagName('head')[0];
+            const style = document.createElement('style');
+            style.appendChild(document.createTextNode(css));
+            head.appendChild(style);
+        });
+    };
+
+    const decodeHTMLEntities = (text) => {
+        var entities = [
+            ['amp', '&'],
+            ['apos', '\''],
+            ['#x27', '\''],
+            ['#x2F', '/'],
+            ['#39', '\''],
+            ['#47', '/'],
+            ['lt', '<'],
+            ['gt', '>'],
+            ['nbsp', ' '],
+            ['quot', '"']
+        ];
+    
+        for (var i = 0, max = entities.length; i < max; ++i) 
+            text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
+    
+        return text;
+    };
+
     return {
         getParents: getParents,
         outerHeight: outerHeight,
@@ -138,10 +196,14 @@ window.helper = (() => {
         createElementFromHTML: createElementFromHTML,
         copyToClipboard: copyToClipboard,
         ajaxGet: ajaxGet,
-        getParameterByName: getParameterByName
+        getParameterByName: getParameterByName,
+        loadStylesheet: loadStylesheet,
+        addStylesheet: addStylesheet,
+        decodeHTMLEntities: decodeHTMLEntities
     }
 })();
 
+// Adds forEach function to NodeList class prototype
 (() => {
     if (typeof NodeList.prototype.forEach === "function") {
         return false;

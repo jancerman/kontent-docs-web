@@ -4,12 +4,14 @@ const router = express.Router();
 const moment = require('moment');
 
 const getUrlMap = require('../helpers/urlMap');
+const commonContent = require('../helpers/commonContent');
 
 router.get('/', asyncHandler(async (req, res, next) => {
+  const KCDetails = commonContent.getKCDetails(res);
+
   const urlMap = await getUrlMap({
-    projectid: res.locals.projectid,
-    previewapikey: res.locals.previewapikey,
-    isSitemap: true
+    isSitemap: true,
+    ...KCDetails
   });
 
   if (!urlMap[0]) {

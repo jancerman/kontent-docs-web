@@ -1,7 +1,7 @@
 .hero {
-    background-color: #f6f6f6;
+    background-color: #6B7C85;
     background-image: url('/img/hero-bg.svg');
-    background-position: bottom center;
+    background-position: bottom left;
     background-size: cover;
     padding: .5em 0 0;
 
@@ -21,100 +21,111 @@
         margin: 0 auto;
         padding: 0 1em;
         max-width: 1200px;
-        display: flex;
-        justify-content: space-between;
+        text-align: center;
     }
 
     &__heading {
-        font-size: 2.25em;
+        font-size: 1.75em;
         font-weight: 300;
         margin: .5em 0;
         font-weight: 300;
+        color: #AEBCC5;
 
         @media screen and (min-width: 768px) {
-            font-size: 2.875em;
+            font-size: 2.25em;
             margin: .75em 0;
         }
 
         @media screen and (min-width: 1200px) {
-            font-size: 3.125em;
+            font-size: 2.5em;
         }
-    }
-
-    &__left {
     }
 
     &__search {
         position: relative;
-        margin: 0 0 1em;
+        width: 100%;
+        margin: 0 auto 1em;
 
         @media screen and (min-width: 480px) {
-            margin: 0 0 2em;
+            margin: 0 auto 2em;
+            width: 420px;
         }
 
         @media screen and (min-width: 768px) {
-            margin: 0 0 3em;
+            margin: 0 auto 3em;
+            width: 520px;
         }
 
         @media screen and (min-width: 992px) {
-            margin: 0 0 5em;
+            margin: 0 auto 5em;
+            width: 600px;
         }
 
         @media screen and (min-width: 1200px) {
-            margin: 0 0 6.5em;
+            margin: 0 auto 6.5em;
+            width: 685px;
         }
 
         input {
             font-size: 1.25em;
             border-radius: 0;
             -webkit-appearance: none;
-            border: 2px solid #dfdfdf;
-            color: #3d3d3d;
+            color: #2D373B;
             font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-            padding: .5em .5em .5em 2.25em;
+            padding: 1em 1em 1em 3em;
             line-height: 1.25em;
-            max-width: 100%;
+            width: 100%;
             margin: 0;
             box-sizing: border-box;
-            //transition: all .25s;
-            width: 290px;
             font-size: 1.075em;
             background-color: #fff !important;
             box-sizing: border-box;
+            border: none;
+            outline-color: #008AE1;
+            transition: box-shadow .25s;
 
-            @media screen and (min-width: 420px) {
-                width: 390px;
-                font-size: 1.25em;
-            }
-
-            @media screen and (min-width: 510px) {
-                width: 480px;
-            }
-
-            @media screen and (min-width: 992px) {
-                width: 420px;
+            @media screen and (min-width: 480px) {
+                padding: 1.5em 1.5em 1.5em 4.3809em;
             }
 
             @media screen and (min-width: 1200px) {
-                font-size: 1.375em;
-                width: 480px;
+                font-size: 1.3125em;
             }
 
             &::placeholder {
-                line-height: 1.25em;
-                color: #b8b8b8;
+                line-height: 1.375em;
+                color: #95A6B1;
+            }
+
+            &:focus {
+                box-shadow: inset 6px 0px 0px 0px rgba(237,106,86,1);
+
+                @media screen and (min-width: 480px) {
+                    box-shadow: inset 15px 0px 0px 0px rgba(237,106,86,1);
+                }
             }
         }
     }
 
     &__note-link {
-        color: #8c8c8c;
-        margin: 0 0 1.25em;
-        display: inline-block;
+        @media screen and (min-width: 1024px) {
+            text-align: right;
+        }
 
-        &:hover,
-        &:active {
-            text-decoration: none;
+        a {
+            color: #AEBCC5;
+            margin: 0 0 1.5em;
+            display: inline-block;
+            font-size: 1.125em;
+    
+            &:hover,
+            &:active {
+                color: #F3F6F7;
+            }
+
+            @media screen and (min-width: 1200px) {
+                font-size: 1.25em;
+            }
         }
     }
 
@@ -123,7 +134,7 @@
         top: 0;
         left: 0;
         bottom: 0;
-        width: 2.25em;
+        width: 3em;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -132,6 +143,7 @@
 
         @media screen and (min-width: 420px) {
             font-size: 1.25em;
+            width: 4.3809em;
         }
 
         @media screen and (min-width: 1200px) {
@@ -141,37 +153,8 @@
         &:before {
             content: @icon-magnifier;
             font-family: 'kentico-icons';
-            color: #9a9a9a;
+            color: #008AE1;
             margin-top: 1px;
-        }
-    }
-
-    &__right {
-        @media screen and (min-width: 992px) {
-            width: 100%;
-            max-width: 730px;
-            position: relative;
-            right: -6%;
-        }
-
-        @media screen and (min-width: 1200px) {
-            right: -10%;
-        }
-    }
-
-    &__screen {
-        @media screen and (min-width: 992px) {
-            width: 100%;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            background-image: url('/img/mark-header@1x.png');
-            background-size: cover;
-            background-position: top center;
-        }
-
-        @media (-webkit-min-device-pixel-ratio: 1.5) and (min-width: 992px), (min-resolution: 144dpi) and (min-width: 992px){ 
-            background-image: url('/img/mark-header@2x.png');
         }
     }
 }

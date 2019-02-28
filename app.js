@@ -9,13 +9,20 @@ const logger = require('morgan');
 const asyncHandler = require('express-async-handler');
 
 const getUrlMap = require('./helpers/urlMap');
+const commonContent = require('./helpers/commonContent');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
 const sitemap = require('./routes/sitemap');
 const robots = require('./routes/robots');
+const urlAliases = require('./routes/urlAliases');
+const vanityUrls = require('./routes/vanityUrls');
+const previewUrls = require('./routes/previewUrls');
+const error = require('./routes/error');
 
 const app = express();
+
+let KCDetails = {};
 
 // Azure Application Insights monitors
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
@@ -23,7 +30,7 @@ if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   appInsights.start();
 }
 
-app.locals.deployVersion = (new Date).getTime();
+app.locals.deployVersion = (new Date()).getTime();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -40,24 +47,25 @@ app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: 86400000
 }));
 
-//Routes
+// Routes
 app.get('*', (req, res, next) => {
   res.locals.projectid = typeof req.query.projectid !== 'undefined' ? req.query.projectid : process.env['KC.ProjectId'];
   res.locals.previewapikey = typeof req.query.previewapikey !== 'undefined' ? req.query.previewapikey : process.env['KC.PreviewApiKey'];
+  res.locals.securedapikey = typeof req.query.securedapikey !== 'undefined' ? req.query.securedapikey : process.env['KC.SecuredApiKey'];
+  KCDetails = commonContent.getKCDetails(res);
   return next();
 });
 
 app.use('/', home);
-app.use('/tutorials', tutorials);
+app.use('/', tutorials);
+app.use('/', previewUrls);
+app.use('/vanity-urls', vanityUrls);
 
 app.use('/sitemap.xml', sitemap);
 app.use('/robots.txt', robots);
 
 app.get('/urlmap', asyncHandler(async (req, res, next) => {
-  const urlMap = await getUrlMap({
-    projectid: res.locals.projectid,
-    previewapikey: res.locals.previewapikey 
-  });
+  const urlMap = await getUrlMap(KCDetails);
   return res.json(urlMap);
 }));
 
@@ -80,24 +88,20 @@ app.get('/design/article', (req, res, next) => {
 });
 
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
-  const err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.use(async (req, res, next) => {
+  return await urlAliases(req, res, next);
 });
 
 // error handler
-app.use((err, req, res, _next) => {
+app.use(async (err, req, res, _next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   console.error(err.stack);
   // render the error page
   res.status(err.status || 500);
-  res.render('pages/error', { 
-    req: req,
-    navigation: [] 
-  });
+
+  return await error(req, res);
 });
 
 module.exports = app;

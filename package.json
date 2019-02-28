@@ -2,7 +2,9 @@
   "name": "kentico-cloud-docs-web",
   "version": "1.0.0",
   "scripts": {
-    "start": "nodemon ./server.js"
+    "start": "pm2-runtime start ecosystem.config.js --env production",
+    "debug": "nodemon server.js",
+    "eslint": "npx eslint ."
   },
   "repository": {
     "type": "git",
@@ -41,7 +43,17 @@
     "moment": "^2.24.0",
     "morgan": "~1.9.0",
     "nodemon": "^1.18.9",
+    "pm2": "^3.2.9",
     "pug": "2.0.0-beta11",
     "rxjs": "^6.3.3"
+  },
+  "devDependencies": {
+    "eslint": "^5.13.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jest": "^22.2.2",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0"
   }
 }

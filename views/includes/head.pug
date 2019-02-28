@@ -1,15 +1,19 @@
 meta(name='viewport', content='width=device-width, initial-scale=1')
 meta(charset='utf-8')
-meta(name='robots', content='noindex,follow')
+if isPreview
+    meta(name='robots', content='noindex,nofollow')
+if !isPreview
+    meta(name='robots', content='index,follow')
 link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700')
 link(rel='stylesheet', href='/css/app.min.css?v=' + deployVersion)
-script var searchAPI={appid:"#{process.env['Search.AppId']}",apikey:"#{process.env['Search.ApiKey']}",indexname:"#{process.env['Search.IndexName']}"};
+if helper
+    script var searchAPI={appid:"#{process.env['Search.AppId']}",apikey:"#{process.env['Search.ApiKey']}",indexname:"#{process.env['Search.IndexName']}"};
+if UIMessages
+    script var UIMessages={copyUrl:"#{UIMessages.heading___copy_url_hover.value}",copyUrlActive:"#{UIMessages.heading___copy_url_active.value}",searchNoResults:"#{UIMessages.search___no_results.value}",dntLabel:"#{helper.removeNewLines(UIMessages.embedded_content_dnt_notice.value)}"};
 script(src='https://cdn.jsdelivr.net/npm/algoliasearch@3.32.0/dist/algoliasearchLite.min.js', defer='')
 script(src='https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js', defer='')
 script(src='/js/app.min.js?v=' + deployVersion, defer='')
 title !{title}
-if (description)
-    meta(name='description', content= description)
 link(rel='apple-touch-icon', sizes='57x57', href='/img/favicon/apple-icon-57x57.png')
 link(rel='apple-touch-icon', sizes='60x60', href='/img/favicon/apple-icon-60x60.png')
 link(rel='apple-touch-icon', sizes='72x72', href='/img/favicon/apple-icon-72x72.png')
@@ -28,4 +32,6 @@ meta(name='msapplication-TileColor', content='#ffffff')
 meta(name='msapplication-TileImage', content='/img/favicon/ms-icon-144x144.png')
 meta(name='theme-color', content='#ffffff')
 meta(name='format-detection', content='telephone=no')
-link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Inconsolata')
+if (process.env['GA.id'])
+    script(async='', src=`https://www.googletagmanager.com/gtag/js?id=${process.env['GA.id']}`)
+    script window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '#{process.env['GA.id']}', { 'anonymize_ip': true });

@@ -1,0 +1,58 @@
+<html>
+      <head>
+        <meta charset="UTF-8">
+        <title>README.md</title>
+      </head>
+      <body>
+        <table>
+<thead>
+<tr>
+<th style="text-align:center"><a href="https://github.com/Kentico/kentico-cloud-docs-web/tree/master">master</a></th>
+<th style="text-align:center"><a href="https://github.com/Kentico/kentico-cloud-docs-web/tree/develop">develop</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><a href="https://travis-ci.com/Kentico/kentico-cloud-docs-web/branches"><img src="https://travis-ci.com/Kentico/kentico-cloud-docs-web.svg?branch=master" alt="Build Status"></a> <a href="https://codebeat.co/projects/github-com-kentico-kentico-cloud-docs-web-master"><img src="https://codebeat.co/badges/64e909ff-b9e2-42e6-84df-6f3509ee3afa" alt="codebeat badge"></a></td>
+<td style="text-align:center"><a href="https://travis-ci.com/Kentico/kentico-cloud-docs-web/branches"><img src="https://travis-ci.com/Kentico/kentico-cloud-docs-web.svg?branch=develop" alt="Build Status"></a> <a href="https://codebeat.co/projects/github-com-kentico-kentico-cloud-docs-web-develop"><img src="https://codebeat.co/badges/4e003da5-2d76-45bd-a137-c71bd80e8c1c" alt="codebeat badge"></a></td>
+</tr>
+</tbody>
+</table>
+<h1 id="kentico-cloud-documentation-website">Kentico Cloud Documentation - Website</h1>
+<p>Kentico Cloud documentation portal, which utilizes <a href="https://app.kenticocloud.com/">Kentico Cloud</a> as a source of its content.</p>
+<h2 id="overview">Overview</h2>
+<ol>
+<li>The website is written in JavaScript.</li>
+<li>It uses <a href="https://expressjs.com/">express.js</a> framework for server-side rendering and <a href="https://github.com/Kentico/kentico-cloud-js/tree/master/packages/delivery">Kentico Cloud Delivery SDK</a> for content retrieval from Kentico Cloud project.</li>
+<li>Additionally, <a href="https://github.com/algolia/autocomplete.js">Autocomplete.js</a> package supports the search box that is connected to the indexed content on Algolia.</li>
+</ol>
+<h2 id="setup">Setup</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<ol>
+<li>Node (+npm) installed</li>
+<li>Any JavaScript IDE installed</li>
+<li>Subscription on Kentico Cloud</li>
+</ol>
+<h3 id="instructions">Instructions</h3>
+<ol>
+<li>Clone the project repository.</li>
+<li>Run <code>npm install</code> in the terminal.</li>
+<li>Run <code>npm start</code> to start a development server.</li>
+<li>The website can be opened in your browser at <a href="http://localhost:3000">http://localhost:3000</a>.</li>
+</ol>
+<h4 id="required-keys">Required Keys</h4>
+<ul>
+<li><code>KC.ProjectId</code> - Kentico Cloud project ID</li>
+<li><code>KC.PreviewApiKey</code> - Kentico Cloud preview API key (set this key to retrieve preview content from Kentico Cloud)</li>
+<li><code>Search.ApiKey</code> - Algolia search-only API key</li>
+<li><code>Search.AppId</code> - Algolia application ID</li>
+<li><code>Search.IndexName</code> - Index name in Algolia application</li>
+<li><code>APPINSIGHTS_INSTRUMENTATIONKEY</code> - Application Insights key</li>
+</ul>
+<h2 id="how-to-contribute">How To Contribute</h2>
+<p>Feel free to open a new issue where you describe your proposed changes, or even create a new pull request from your branch with proposed changes.</p>
+<h2 id="licence">Licence</h2>
+<p>All the source codes are published under MIT licence.</p>
+
+      </body>
+    </html>

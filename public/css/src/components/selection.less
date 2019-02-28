@@ -13,8 +13,8 @@
         position: relative;
         padding: 0 1em;
         display: inline-block;
-        max-width: 290px;
         margin: 0 0 1em;
+        width: 100%;
 
         @media screen and (min-width: 480px) {
             max-width: 208px;   
@@ -23,6 +23,12 @@
         @media all and (min-width: 1200px) and (-ms-high-contrast:none) {
             flex: 0 1 17%;
         }
+    }
+
+    &__link {
+        color: #262524;
+        text-decoration: none;
+        display: block;
 
         &:before {
             counter-increment: section;
@@ -34,27 +40,37 @@
             justify-content: center;
             align-items: center;
             font-weight: 700;
-            color: #e57965;
+            color: #fff;
             width: 1.25em;
             height: 1.25em;
             font-size: 2em;
-            background-color: #fff;
+            background-color: #008AE1;
         }
-    }
-
-    &__link {
-        color: #262524;
-        text-decoration: none;
-        display: block;
 
         &:hover,
         &:active {
-            background-color: #fafafa;
+            background-color: #F3F6F7;
+
+            &:before {
+                background-color: #ED6A56;
+            }
+        }
+
+        .selection--platforms & {
+            padding: 1em 0 .75em;
+
+            &:before {
+                display: none;
+            }
         }
     }
 
     &__img {
+        width: 100%;
 
+        @media screen and (min-width: 480px) {
+            width: auto;
+        }
     }
 
     &__title {
@@ -94,6 +110,7 @@
 
         @media screen and (min-width: 1200px) {
             width: 176px;
+            flex: 1;
         }
 	}
 
@@ -104,18 +121,25 @@
 
         &:hover,
         &:active {
-            background-color: #fff;
+            background-color: #F3F6F7;
 
-            .selection__title {
-                background-color: #fafafa;
+            .selection__img {
+                filter: grayscale(.2) brightness(1.1) hue-rotate(155deg);
             }
         }
-	}
+    }
+    
+    .selection__img-sizer {
+        height: 81px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto .375em;
+        padding: 0 .75em;
+    }
 
 	.selection__img {
-        margin: 0 auto .375em;
-        height: 81px;
-        background-color: #fff;
+        max-height: 81px;
 	}
 
 	.selection__title {

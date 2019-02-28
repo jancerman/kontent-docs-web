@@ -4,7 +4,7 @@
     padding-bottom: 56.25%;
     padding-top: 25px;
     height: 0;
-    background-color: #fafafa;
+    background-color: #F3F6F7;
     width: 100%;
 
     &:before {
@@ -37,5 +37,39 @@
         height: auto;
         margin: 0;
         padding-bottom: 0;
+    }
+
+    &__dnt-enable {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: #F3F6F7;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: .25s background-color;
+        z-index: 1000;
+        text-align: center;
+
+        p {
+            padding: 0 2em .5em;
+        }
+
+        .call-to-action {
+            color: #008AE1;
+            text-decoration: underline;
+        }
+
+        &:hover,
+        &:active {
+            background-color: #e4e8e9; 
+            .call-to-action {
+                color: #e36a57;
+            }
+        } 
     }
 }

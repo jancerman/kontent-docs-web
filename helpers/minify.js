@@ -1,7 +1,6 @@
 const minifier = require('html-minifier').minify;
 const minifierOptions = {
-    collapseWhitespace: true,
-    collapseInlineTagWhitespace: true
+    collapseWhitespace: true
 };
 
 const minify = (text) => {
