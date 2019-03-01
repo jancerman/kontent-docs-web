@@ -1,6 +1,7 @@
 const KenticoCloud = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
-const enhanceMarkup = require('./enhanceMarkup')
+const enhanceMarkup = require('./enhanceMarkup');
+const cheerio = require('cheerio');
 
 const richTextResolverTemplates = require('./richTextResolverTemplates');
 const linksResolverTemplates = require('./linksResolverTemplates');
@@ -19,23 +20,7 @@ const requestDelivery = async (config) => {
         deliveryConfig.securedApiKey = securedApiKey;
         deliveryConfig.enableSecuredMode = true;
     }
-    /*
-    class Image extends KenticoCloud.ContentItem {
-        constructor() {
-            super({
-                linkResolver: (link, context) => {
-                    return `/actors`;
-                  }
-            });
-        }
-    }
 
-    let typeResolvers = [
-        new KenticoCloud.TypeResolver('image', () => new Image()),
-    ];
-
-    deliveryConfig.typeResolvers = typeResolvers;
-    */
     const deliveryClient = new KenticoCloud.DeliveryClient(deliveryConfig);
 
     const query = deliveryClient.items()
@@ -47,6 +32,8 @@ const requestDelivery = async (config) => {
     if (config.resolveRichText) {
         query.queryConfig({
             richTextResolver: (item, context) => {
+                item = linksResolverTemplates.resolveInnerRichTextLinks(item, config.urlMap);
+
                 if (item.system.type === 'embedded_content') {
                     return richTextResolverTemplates.embeddedContent(item);
                 } else if (item.system.type === 'signpost') {
