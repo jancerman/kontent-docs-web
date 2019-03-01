@@ -33,7 +33,7 @@ const requestDelivery = async (config) => {
     let typeResolvers = [
         new KenticoCloud.TypeResolver('image', () => new Image()),
     ];
-    
+
     deliveryConfig.typeResolvers = typeResolvers;
     */
     const deliveryClient = new KenticoCloud.DeliveryClient(deliveryConfig);
@@ -70,7 +70,7 @@ const requestDelivery = async (config) => {
                 }
             },
             linkResolver: (link) => {
-                if ((link.type === 'article' || link.type === 'scenario') && config.urlMap && config.urlMap.length) {         
+                if ((link.type === 'article' || link.type === 'scenario') && config.urlMap && config.urlMap.length) {
                     return linksResolverTemplates.article(link, config.urlMap);
                 } else {
                     return `/`;
