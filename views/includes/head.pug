@@ -34,4 +34,4 @@ meta(name='theme-color', content='#ffffff')
 meta(name='format-detection', content='telephone=no')
 if (process.env['GA.id'])
     script(async='', src=`https://www.googletagmanager.com/gtag/js?id=${process.env['GA.id']}`)
-    script window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '#{process.env['GA.id']}', { 'anonymize_ip': true });
+    script window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '#{process.env['GA.id']}', { 'anonymize_ip': true, 'send_page_view': false });gtag('event', 'page_view', {'event_callback': function() {removeSearchQueryString()}});

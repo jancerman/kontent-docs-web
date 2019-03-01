@@ -48,16 +48,18 @@ const createUrlMap = (response, fields, url, urlMap = []) => {
 
     if (response[node]) {
         response[node].forEach(item => {
-            if (item.elements.url) {
+            if (item.elements.url && typeLevels[item.system.type]) {
                 url.length = typeLevels[item.system.type].urlLength;
                 url[url.length - 1] = item.elements.url.value;
             }
 
-            urlMap.push(getMapItem({
-                codename: item.system.codename,
-                url: `/${url.join('/')}`,
-                date: item.system.last_modified
-            }, fields));
+            if (typeLevels[item.system.type]) {
+                urlMap.push(getMapItem({
+                    codename: item.system.codename,
+                    url: `/${url.join('/')}`,
+                    date: item.system.last_modified
+                }, fields));
+            }
 
             createUrlMap(item, fields, url, urlMap);
         });

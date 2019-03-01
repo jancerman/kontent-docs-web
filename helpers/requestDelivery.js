@@ -1,6 +1,6 @@
-const { DeliveryClient } = require('kentico-cloud-delivery');
+const KenticoCloud = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
-const enhanceMarkup = require('./enhanceMarkup')
+const enhanceMarkup = require('./enhanceMarkup');
 
 const richTextResolverTemplates = require('./richTextResolverTemplates');
 const linksResolverTemplates = require('./linksResolverTemplates');
@@ -20,7 +20,7 @@ const requestDelivery = async (config) => {
         deliveryConfig.enableSecuredMode = true;
     }
 
-    const deliveryClient = new DeliveryClient(deliveryConfig);
+    const deliveryClient = new KenticoCloud.DeliveryClient(deliveryConfig);
 
     const query = deliveryClient.items()
         .type(config.type);
@@ -31,6 +31,8 @@ const requestDelivery = async (config) => {
     if (config.resolveRichText) {
         query.queryConfig({
             richTextResolver: (item, context) => {
+                item = linksResolverTemplates.resolveInnerRichTextLinks(item, config.urlMap);
+
                 if (item.system.type === 'embedded_content') {
                     return richTextResolverTemplates.embeddedContent(item);
                 } else if (item.system.type === 'signpost') {
@@ -40,7 +42,7 @@ const requestDelivery = async (config) => {
                 } else if (item.system.type === 'home__link_to_content_item') {
                     return richTextResolverTemplates.homeLinkToContentItem(item, config.urlMap);
                 } else if (item.system.type === 'image') {
-                    return richTextResolverTemplates.image(item);
+                    return richTextResolverTemplates.image(item, config.urlMap);
                 } else if (item.system.type === 'call_to_action') {
                     return richTextResolverTemplates.callToAction(item);
                 } else if (item.system.type === 'home__link_to_external_url') {

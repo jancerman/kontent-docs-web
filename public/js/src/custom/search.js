@@ -113,7 +113,7 @@
 
                         // Add an anchor to the url if available
                         const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g,'-')}` : '';
-                        suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}?searchterm=${searchTerm}${anchor}&searchnumber=${searchResultsNumber}` : '';
+                        suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}?searchterm=${searchTerm}&searchnumber=${searchResultsNumber}${anchor}` : '';
                         
                         // Template for a single search result suggestion
                         return `<a href="${suggestion.resolvedUrl}" class="suggestion">
@@ -123,11 +123,13 @@
                                 </a>`;
                     },
                     empty: () => {
-                        gtag('event', 'search', {
-                            'event_category': 'Search no results',
-                            'event_label': searchTerm,
-                            'event_action': 'search'
-                        });
+                        if (gtag) {
+                            gtag('event', 'search', {
+                                'event_category': 'Search no results',
+                                'event_label': searchTerm,
+                                'event_action': 'search'
+                            });
+                        }
 
                         // Template for a empty result
                         return `<div class="suggestion suggestion--empty">
@@ -180,6 +182,7 @@
         }
     };
 
+
     if (searchAPI) {
         initAlgoliaSearch();
         //resizeNavSearch();
@@ -187,3 +190,12 @@
         setFocusOnMagnifier('hero');
     }
 })();
+
+const removeSearchQueryString = () => {
+    setTimeout(() => {
+        // Remove search query strings to make sure they will get logged only once
+        if (history && history.replaceState) {
+            history.replaceState({}, null, helper.removeParametersByNames(['searchterm', 'searchnumber']));
+        }
+    }, 1000);
+};

@@ -92,7 +92,7 @@ const richTextResolverTemplates = {
                 ${item.content.value}
             </div>`;
     },
-    image: (item) => {
+    image: (item, urlMap) => {
         if (item.image.value[0]) {
             let alt = item.image.value[0].description ? item.image.value[0].description : '';
             let transformationQueryString = '';
