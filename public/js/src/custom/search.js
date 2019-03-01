@@ -189,9 +189,13 @@
         setFocusOnMagnifier('navigation');
         setFocusOnMagnifier('hero');
     }
-
-    // Remove search query strings to make sure they will get logged only once
-    if (history && history.replaceState) {
-        history.replaceState({}, null, helper.removeParametersByNames(['searchterm', 'searchnumber']));
-    }
 })();
+
+const removeSearchQueryString = () => {
+    setTimeout(() => {
+        // Remove search query strings to make sure they will get logged only once
+        if (history && history.replaceState) {
+            history.replaceState({}, null, helper.removeParametersByNames(['searchterm', 'searchnumber']));
+        }
+    }, 1000);
+};
