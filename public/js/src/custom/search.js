@@ -113,7 +113,7 @@
 
                         // Add an anchor to the url if available
                         const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g,'-')}` : '';
-                        suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}?searchterm=${searchTerm}${anchor}&searchnumber=${searchResultsNumber}` : '';
+                        suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}?searchterm=${searchTerm}&searchnumber=${searchResultsNumber}${anchor}` : '';
                         
                         // Template for a single search result suggestion
                         return `<a href="${suggestion.resolvedUrl}" class="suggestion">
