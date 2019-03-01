@@ -1,7 +1,6 @@
 const KenticoCloud = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
 const enhanceMarkup = require('./enhanceMarkup');
-const cheerio = require('cheerio');
 
 const richTextResolverTemplates = require('./richTextResolverTemplates');
 const linksResolverTemplates = require('./linksResolverTemplates');
