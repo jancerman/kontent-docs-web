@@ -1,4 +1,5 @@
 const helper = require('./helperFunctions');
+const cheerio = require('cheerio');
 
 const richTextResolverTemplates = {
     embeddedContent: (item) => {
@@ -92,7 +93,7 @@ const richTextResolverTemplates = {
                 ${item.content.value}
             </div>`;
     },
-    image: (item) => {
+    image: (item, urlMap) => {
         if (item.image.value[0]) {
             let alt = item.image.value[0].description ? item.image.value[0].description : '';
             let transformationQueryString = '';
@@ -119,6 +120,23 @@ const richTextResolverTemplates = {
                         transformationQueryString += '926';
                 };
             }
+
+            // Custom links resolver in image description
+            /**/item.description.links.forEach((link) => {
+                let resolvedUrl = (urlMap.filter(elem => elem.codename === link.codename)[0].url);
+                
+                if (item.description.value && resolvedUrl) {
+                    const $ = cheerio.load(item.description.value);
+                    $('a[data-item-id]').each(function(i, elem) {
+                        var $that = $(this);
+                        $that.removeAttr('data-item-id');
+                        $that.attr('href', resolvedUrl);
+                    });
+                    
+                    item.description.value = $.html();
+                    item.description.value = item.description.value.replace('<html><head></head><body>', '').replace('</body></html>', '');
+                }
+            });/**/
 
             return `
                 <figure>

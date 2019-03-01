@@ -123,11 +123,13 @@
                                 </a>`;
                     },
                     empty: () => {
-                        gtag('event', 'search', {
-                            'event_category': 'Search no results',
-                            'event_label': searchTerm,
-                            'event_action': 'search'
-                        });
+                        if (gtag) {
+                            gtag('event', 'search', {
+                                'event_category': 'Search no results',
+                                'event_label': searchTerm,
+                                'event_action': 'search'
+                            });
+                        }
 
                         // Template for a empty result
                         return `<div class="suggestion suggestion--empty">

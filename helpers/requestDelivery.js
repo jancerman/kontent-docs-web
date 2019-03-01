@@ -1,4 +1,4 @@
-const { DeliveryClient } = require('kentico-cloud-delivery');
+const KenticoCloud = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
 const enhanceMarkup = require('./enhanceMarkup')
 
@@ -19,8 +19,24 @@ const requestDelivery = async (config) => {
         deliveryConfig.securedApiKey = securedApiKey;
         deliveryConfig.enableSecuredMode = true;
     }
+    /*
+    class Image extends KenticoCloud.ContentItem {
+        constructor() {
+            super({
+                linkResolver: (link, context) => {
+                    return `/actors`;
+                  }
+            });
+        }
+    }
 
-    const deliveryClient = new DeliveryClient(deliveryConfig);
+    let typeResolvers = [
+        new KenticoCloud.TypeResolver('image', () => new Image()),
+    ];
+    
+    deliveryConfig.typeResolvers = typeResolvers;
+    */
+    const deliveryClient = new KenticoCloud.DeliveryClient(deliveryConfig);
 
     const query = deliveryClient.items()
         .type(config.type);
@@ -40,7 +56,7 @@ const requestDelivery = async (config) => {
                 } else if (item.system.type === 'home__link_to_content_item') {
                     return richTextResolverTemplates.homeLinkToContentItem(item, config.urlMap);
                 } else if (item.system.type === 'image') {
-                    return richTextResolverTemplates.image(item);
+                    return richTextResolverTemplates.image(item, config.urlMap);
                 } else if (item.system.type === 'call_to_action') {
                     return richTextResolverTemplates.callToAction(item);
                 } else if (item.system.type === 'home__link_to_external_url') {
@@ -54,7 +70,7 @@ const requestDelivery = async (config) => {
                 }
             },
             linkResolver: (link) => {
-                if ((link.type === 'article' || link.type === 'scenario') && config.urlMap && config.urlMap.length) {
+                if ((link.type === 'article' || link.type === 'scenario') && config.urlMap && config.urlMap.length) {         
                     return linksResolverTemplates.article(link, config.urlMap);
                 } else {
                     return `/`;
