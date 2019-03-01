@@ -121,13 +121,13 @@ window.helper = (() => {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                 try {
                     var data;
-                   
+
                     if (type === 'json') {
-                         // Parse JSON if specified in the "type" param
+                        // Parse JSON if specified in the "type" param
                         data = JSON.parse(xmlhttp.responseText);
                     } else {
                         data = xmlhttp.responseText
-                    }   
+                    }
                 } catch (err) {
                     return;
                 }
@@ -148,6 +148,27 @@ window.helper = (() => {
         if (!results[2]) return '';
         return decodeURIComponent(results[2].replace(/\+/g, ' '));
     };
+
+    // Get page url and remove query string parameters specified in the params array
+    const removeParametersByNames = (params) => {
+        let url = window.location.href.split('#');
+        let hash = url[1] || '';
+        let path = url[0].split('?');
+        let qString = path.length > 1 ? path[1].split('&') : [];
+
+        for(let i = 0; i < qString.length; i++) {
+            let name = qString[i].split('=')[0];
+    
+            for (let j = 0; j < params.length; j++) {
+                if (name === params[j]) {
+                    qString.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+        qString = qString.join('&');
+        return path[0] + (qString ? '?' + qString : '') + (hash ? '#' + hash : '');
+    }
 
     // Add link tag to page head and make it load and behave as stylesheet
     const addStylesheet = (url) => {
@@ -182,10 +203,10 @@ window.helper = (() => {
             ['nbsp', ' '],
             ['quot', '"']
         ];
-    
-        for (var i = 0, max = entities.length; i < max; ++i) 
-            text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
-    
+
+        for (var i = 0, max = entities.length; i < max; ++i)
+            text = text.replace(new RegExp('&' + entities[i][0] + ';', 'g'), entities[i][1]);
+
         return text;
     };
 
@@ -197,6 +218,7 @@ window.helper = (() => {
         copyToClipboard: copyToClipboard,
         ajaxGet: ajaxGet,
         getParameterByName: getParameterByName,
+        removeParametersByNames: removeParametersByNames,
         loadStylesheet: loadStylesheet,
         addStylesheet: addStylesheet,
         decodeHTMLEntities: decodeHTMLEntities
