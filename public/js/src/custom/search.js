@@ -124,13 +124,13 @@
                                 </a>`;
                     },
                     empty: () => {
-                        if (gtag) {
-                            gtag('event', 'search', {
-                                'event_category': 'Search no results',
-                                'event_label': searchTerm,
-                                'event_action': 'search'
-                            });
-                        }
+                        window.dataLayer = window.dataLayer || [];
+                        window.dataLayer.push({
+                            'event': 'search',
+                            'eventCategory': 'Search no results',
+                            'eventAction': 'search',
+                            'eventLabel': searchTerm,
+                        });
 
                         // Template for a empty result
                         return `<div class="suggestion suggestion--empty">

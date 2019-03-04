@@ -12,7 +12,11 @@ if UIMessages
     script var UIMessages={copyUrl:"#{UIMessages.heading___copy_url_hover.value}",copyUrlActive:"#{UIMessages.heading___copy_url_active.value}",searchNoResults:"#{UIMessages.search___no_results.value}",dntLabel:"#{helper.removeNewLines(UIMessages.embedded_content_dnt_notice.value)}"};
 script(src='https://cdn.jsdelivr.net/npm/algoliasearch@3.32.0/dist/algoliasearchLite.min.js', defer='')
 script(src='https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js', defer='')
-script(src='/js/app.min.js?v=' + deployVersion, defer='')
+if (process.env['GTM.id'])
+    script function initGTM(){!function(e,t,a,n,g){e[n]=e[n]||[],e[n].push({"gtm.start":(new Date).getTime(),event:"gtm.js"});var m=t.getElementsByTagName(a)[0],r=t.createElement(a);r.async=!0,r.src="https://www.googletagmanager.com/gtm.js?id=#{process.env['GTM.id']}",r.addEventListener("load",function(){removeSearchQueryString();}),m.parentNode.insertBefore(r,m)}(window,document,"script","dataLayer")};
+else 
+    script function initGTM(){return false;}
+script(src='/js/app.min.js?v=' + deployVersion, defer='', onload='initGTM()')
 title !{title}
 link(rel='apple-touch-icon', sizes='57x57', href='/img/favicon/apple-icon-57x57.png')
 link(rel='apple-touch-icon', sizes='60x60', href='/img/favicon/apple-icon-60x60.png')
@@ -32,6 +36,3 @@ meta(name='msapplication-TileColor', content='#ffffff')
 meta(name='msapplication-TileImage', content='/img/favicon/ms-icon-144x144.png')
 meta(name='theme-color', content='#ffffff')
 meta(name='format-detection', content='telephone=no')
-if (process.env['GA.id'])
-    script(async='', src=`https://www.googletagmanager.com/gtag/js?id=${process.env['GA.id']}`)
-    script window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '#{process.env['GA.id']}', { 'anonymize_ip': true, 'send_page_view': false });gtag('event', 'page_view', {'event_callback': function() {removeSearchQueryString()}});
