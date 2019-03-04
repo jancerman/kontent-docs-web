@@ -50,14 +50,15 @@
                         for (let i = 0; i < limit; i++) {
                             // Get content with highlighted markup
                             let content = suggestions[i]._highlightResult.content.value;
+
                             // Remove inline icon, code macros and newlines
                             content = content.replace(/{@[a-z,0-9,-]+@}/g, '');
                             content = content.replace(/{~[^~]+~}/g, '');
-                            content = content.replace(/\r?\n|\r/g, '');
+                            content = content.replace(/\r?\n|\r/g, ' ');
 
                             // Get start and end idexes of the first highlighted match
                             let indexStart = content.indexOf('<em>');
-                            let indexEnd = content.indexOf('</em>') + 5;
+                            let indexEnd = content.lastIndexOf('</em>') + 5;
 
                             // Get highlighted string
                             let highlighted = content.substring(indexStart, indexEnd);
