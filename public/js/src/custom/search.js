@@ -148,12 +148,55 @@
                 // Change the page (for example, when enter key gets hit)
                 window.location.assign(`${suggestion.resolvedUrl}`);
             })
+            .on('autocomplete:closed', () => {
+                if (searchTerm !== '') {
+                    //Prevent logging twice when ESC key gets pressed
+                    setTimeout(() => {
+                        if (document.getElementById('nav-search').value !== '') {
+                            logSearchTermErased();
+                        }
+                    }, 500);
+                }
+            })
         };
 
         // Get urlMap and init the autocomplete
         helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
             initAutocomplete(urlMap);
         }, 'json');
+
+        // On search input focus set timer that checks updates on the input
+        // If the input gets empty, log it
+        const searchTermErased = () => {
+            let searchInput = document.getElementById('nav-search');
+            let eraseInterval;
+
+            searchInput.addEventListener('focus', (e) => {
+                let prevTerm = '';
+                eraseInterval = setInterval(() => {
+                    if (prevTerm !== '' && e.target.value === '') {
+                        logSearchTermErased();
+                    } 
+                    prevTerm = e.target.value;
+                }, 1000);
+            });
+
+            searchInput.addEventListener('blur', (e) => {
+                clearInterval(eraseInterval);
+            });
+        };
+    
+        const logSearchTermErased = () => {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                'event': 'search',
+                'eventCategory': 'Search not used',
+                'eventAction': 'search',
+                'eventLabel': searchTerm,
+            });
+        };
+    
+        searchTermErased();
     };
 
     // In the header handle re-sizing the search input on focus/blur

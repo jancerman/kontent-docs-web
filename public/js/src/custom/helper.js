@@ -166,7 +166,7 @@ window.helper = (() => {
                 }
             }
         }
-        qString = qString.join('&');
+        qString = qString.join('&');
         return path[0] + (qString ? '?' + qString : '') + (hash ? '#' + hash : '');
     }
 
