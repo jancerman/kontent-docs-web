@@ -32,6 +32,7 @@ router.get('/', asyncHandler(async (req, res, next) => {
     minify: minify,
     isPreview: isPreview(res.locals.previewapikey),
     title: tree[0].title.value,
+    titleSuffix: '',
     navigation: tree[0].navigation,
     introNote: tree[0].intro_note.value,
     signposts: tree[0].signposts.value,

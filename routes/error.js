@@ -28,6 +28,7 @@ const error = async (req, res) => {
         minify: minify,
         navigation: navigation[0] ? navigation[0].navigation : [],
         title: content[0] ? content[0].title.value : '',
+        titleSuffix: ` | ${navigation[0] ? navigation[0].title.value : 'Kentico Cloud Docs'}`,
         content: content[0] ? content[0].content.value : '',
         footer: footer[0] ? footer[0] : {},
         UIMessages: UIMessages[0],

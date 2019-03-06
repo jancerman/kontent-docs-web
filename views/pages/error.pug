@@ -4,3 +4,4 @@ block content
         .article
             .article__content
                 | !{content}
+    script console.log(`#{req.err.stack.replace(/\\/g, '/')}`);

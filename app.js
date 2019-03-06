@@ -100,7 +100,7 @@ app.use(async (err, req, res, _next) => {
   console.error(err.stack);
   // render the error page
   res.status(err.status || 500);
-
+  req.err = err;
   return await error(req, res);
 });
 

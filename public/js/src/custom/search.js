@@ -50,14 +50,15 @@
                         for (let i = 0; i < limit; i++) {
                             // Get content with highlighted markup
                             let content = suggestions[i]._highlightResult.content.value;
+
                             // Remove inline icon, code macros and newlines
                             content = content.replace(/{@[a-z,0-9,-]+@}/g, '');
                             content = content.replace(/{~[^~]+~}/g, '');
-                            content = content.replace(/\r?\n|\r/g, '');
+                            content = content.replace(/\r?\n|\r/g, ' ');
 
                             // Get start and end idexes of the first highlighted match
                             let indexStart = content.indexOf('<em>');
-                            let indexEnd = content.indexOf('</em>') + 5;
+                            let indexEnd = content.lastIndexOf('</em>') + 5;
 
                             // Get highlighted string
                             let highlighted = content.substring(indexStart, indexEnd);
@@ -123,13 +124,13 @@
                                 </a>`;
                     },
                     empty: () => {
-                        if (gtag) {
-                            gtag('event', 'search', {
-                                'event_category': 'Search no results',
-                                'event_label': searchTerm,
-                                'event_action': 'search'
-                            });
-                        }
+                        window.dataLayer = window.dataLayer || [];
+                        window.dataLayer.push({
+                            'event': 'search',
+                            'eventCategory': 'Search no results',
+                            'eventAction': 'search',
+                            'eventLabel': searchTerm,
+                        });
 
                         // Template for a empty result
                         return `<div class="suggestion suggestion--empty">
@@ -147,12 +148,55 @@
                 // Change the page (for example, when enter key gets hit)
                 window.location.assign(`${suggestion.resolvedUrl}`);
             })
+            .on('autocomplete:closed', () => {
+                if (searchTerm !== '') {
+                    //Prevent logging twice when ESC key gets pressed
+                    setTimeout(() => {
+                        if (document.getElementById('nav-search').value !== '') {
+                            logSearchTermErased();
+                        }
+                    }, 500);
+                }
+            })
         };
 
         // Get urlMap and init the autocomplete
         helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
             initAutocomplete(urlMap);
         }, 'json');
+
+        // On search input focus set timer that checks updates on the input
+        // If the input gets empty, log it
+        const searchTermErased = () => {
+            let searchInput = document.getElementById('nav-search');
+            let eraseInterval;
+
+            searchInput.addEventListener('focus', (e) => {
+                let prevTerm = '';
+                eraseInterval = setInterval(() => {
+                    if (prevTerm !== '' && e.target.value === '') {
+                        logSearchTermErased();
+                    } 
+                    prevTerm = e.target.value;
+                }, 1000);
+            });
+
+            searchInput.addEventListener('blur', (e) => {
+                clearInterval(eraseInterval);
+            });
+        };
+    
+        const logSearchTermErased = () => {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                'event': 'search',
+                'eventCategory': 'Search not used',
+                'eventAction': 'search',
+                'eventLabel': searchTerm,
+            });
+        };
+    
+        searchTermErased();
     };
 
     // In the header handle re-sizing the search input on focus/blur
