@@ -1,0 +1,9 @@
+if UIMessages
+    .feedback
+        h2.feedback__heading !{UIMessages.feedback_form___heading.value}
+        .feedback__answer
+            a.feedback__button.feedback__button--yes(href='#yesMsg') !{UIMessages.feedback_form___yes_button.value}
+            a.feedback__button.feedback__button--no(href='#noMsg') !{UIMessages.feedback_form___no_button.value}
+        .feedback__response
+            .feedback__message#yesMsg.feedback__message--yes !{UIMessages.feedback_form___yes_message.value}
+            .feedback__message#noMsg.feedback__message--no !{UIMessages.feedback_form___no_message.value}
