@@ -5,9 +5,10 @@
     let noMsg = document.querySelector('.feedback__message--no');
     let btnArea = document.querySelector('.feedback__answer');
 
-    yesMsg.classList.add('feedback__message--hidden');
-    noMsg.classList.add('feedback__message--hidden');
-
+    if (yesMsg && noMsg) {
+        yesMsg.classList.add('feedback__message--hidden');
+        noMsg.classList.add('feedback__message--hidden');
+    }
     const sendFeedback = (value) => {
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
@@ -27,6 +28,8 @@
         });
     };
 
-    onBtnClick(yesBtn, yesMsg, 'yes');
-    onBtnClick(noBtn, noMsg, 'no');
+    if (yesMsg && noMsg) {
+        onBtnClick(yesBtn, yesMsg, 'yes');
+        onBtnClick(noBtn, noMsg, 'no');
+    }
 })();

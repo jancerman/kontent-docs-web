@@ -30,6 +30,7 @@ router.get('/', asyncHandler(async (req, res, next) => {
   return res.render('pages/home', {
     req: req,
     minify: minify,
+    slug: 'home',
     isPreview: isPreview(res.locals.previewapikey),
     title: tree[0].title.value,
     titleSuffix: '',
