@@ -12,10 +12,11 @@
     const sendFeedback = (value) => {
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
-            'event': 'click',
-            'eventCategory': 'Helpful',
-            'eventAction': window.location.pathname,
-            'value': value
+            'event': 'event',
+            'eventCategory': 'feedback--submitted',
+            'eventAction': 'Click',
+            'eventLabel': window.location.pathname,
+            'eventValue': value
         });
     };
 
@@ -29,7 +30,7 @@
     };
 
     if (yesMsg && noMsg) {
-        onBtnClick(yesBtn, yesMsg, 'yes');
-        onBtnClick(noBtn, noMsg, 'no');
+        onBtnClick(yesBtn, yesMsg, 1);
+        onBtnClick(noBtn, noMsg, 0);
     }
 })();
