@@ -16,7 +16,7 @@ script(src='https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js', def
 if (process.env['GTM.id'])
     script function initGTM(){(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;j.addEventListener('load',function(){removeSearchQueryString();});f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','#{process.env['GTM.id']}');};
 else 
-    script function initGTM(){return false;}
+    script function initGTM(){removeSearchQueryString();return false;}
 script(src='/js/app.min.js?v=' + deployVersion, defer='', onload='initGTM()')
 title !{title}!{titleSuffix}
 link(rel='apple-touch-icon', sizes='57x57', href='/img/favicon/apple-icon-57x57.png')
