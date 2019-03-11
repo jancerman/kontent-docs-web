@@ -11,7 +11,7 @@
                 'eventCategory': 'Embed',
                 'eventAction': 'click',
                 'eventLabel': elem.getAttribute('src'),
-                'eventValue': `${window.location.pathname}`
+                'eventValue': window.location.pathname
             });
 
             clearInterval(monitor);
@@ -33,10 +33,10 @@
     if (searchTerm && searchNumber) {
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
-            'event': 'search',
-            'eventCategory': 'Search results',
-            'eventAction': searchNumber,
-            'eventLabel': searchTerm
+            'event': 'event',
+            'eventCategory': 'search--searched-results',
+            'eventAction': searchTerm,
+            'eventLabel': searchNumber
         });
     }
 })();
