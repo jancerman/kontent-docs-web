@@ -33,6 +33,34 @@
         overflow: hidden;
         clip: rect(0,0,0,0);
         border: 0;
+
+        &:after {
+            font-size: 14px;
+            line-height: 1.25em;
+            background-color: #445055;
+            color: #E3E9EC;
+            white-space: nowrap;
+            text-align: center;
+            padding: .25em .75em;
+            display: block;
+            font-weight: 400;
+            overflow: visible;
+            font-style: normal;
+        }
+
+        &:before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 6px 6px 6px 0;
+            border-color: transparent #445055 transparent transparent;
+            position: absolute;
+            left: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: block;
+        }
     }
 
     &:hover {
@@ -41,33 +69,19 @@
             height: auto;
             left: ~"calc(100% + 10px)";
             clip: auto;
-            font-size: 14px;
-            line-height: 1.25em;
-            background-color: #445055;
-            color: #E3E9EC;
-            white-space: nowrap;
-            text-align: center;
-            top: 50%;
-            margin: -.675em 0 0 0; 
-            padding: .25em .75em;
-            display: block;
-            font-weight: 400;
             overflow: visible;
-            font-style: normal;
-
-            &:before {
-                content: '';
-                width: 0;
-                height: 0;
-                border-style: solid;
-                border-width: 6px 6px 6px 0;
-                border-color: transparent #445055 transparent transparent;
-                position: absolute;
-                left: -6px;
-                top: 50%;
-                transform: translateY(-50%);
-                display: block;
-            }
         }
     }
+}
+
+h2 .anchor-copy:hover .anchor-copy__tooltip {
+    top: 30%;
+}
+
+h3 .anchor-copy:hover .anchor-copy__tooltip {
+    top: 15%;
+}
+
+h4 .anchor-copy:hover .anchor-copy__tooltip {
+    top: 10%;
 }

@@ -9,12 +9,12 @@ block content
                     h1 !{content.title.value}
                     .article__notes
                         time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
-                        .article__author 
+                        .article__author
                             if (content.author && content.author.length)
                                 | !{content.author[0].name.value}
                             else
                                 | !{UIMessages.article___no_author.value}
-                        if isPreview 
+                        if isPreview
                             a(href=`https://app.kenticocloud.com/goto/edit-item/project/${projectId}/variant-codename/default/item/${content.system.id}`, target='_blank', rel='noopener') Edit
                     if (introduction !== '<p><br></p>')
                         | !{minify(introduction)}
@@ -24,4 +24,4 @@ block content
                         h2.table-of-contents__whatsnext !{UIMessages.article___next_steps.value}
                         | !{minify(nextSteps.value)}
                     include ../includes/feedback.pug
-
+                    include ../includes/copy-tooltip.pug

@@ -17,7 +17,7 @@ const sitemap = require('./routes/sitemap');
 const robots = require('./routes/robots');
 const kenticoIcons = require('./routes/kenticoIcons');
 const urlAliases = require('./routes/urlAliases');
-const vanityUrls = require('./routes/vanityUrls');
+const redirectUrls = require('./routes/redirectUrls');
 const previewUrls = require('./routes/previewUrls');
 const error = require('./routes/error');
 
@@ -60,7 +60,7 @@ app.get('*', (req, res, next) => {
 app.use('/', home);
 app.use('/', tutorials);
 app.use('/', previewUrls);
-app.use('/vanity-urls', vanityUrls);
+app.use('/redirect-urls', redirectUrls);
 
 app.use('/kentico-icons.min.css', kenticoIcons);
 app.use('/sitemap.xml', sitemap);
