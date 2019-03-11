@@ -6,6 +6,7 @@ if !isPreview
     meta(name='robots', content='index,follow')
 link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700')
 link(rel='stylesheet', href='/css/app.min.css?v=' + deployVersion)
+link(rel='stylesheet', href='/kentico-icons.min.css?v=' + deployVersion)
 if helper
     script var searchAPI={appid:"#{process.env['Search.AppId']}",apikey:"#{process.env['Search.ApiKey']}",indexname:"#{process.env['Search.IndexName']}"};
 if UIMessages

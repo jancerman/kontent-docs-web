@@ -5,7 +5,7 @@
 (() => {
     // For all sub-headings set their id and create the copy to clipboard icon
     const createAnchors = () => {
-        let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading), h3, h4');
+        let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading):not(.feedback__heading), h3, h4');
 
         headings.forEach((item) => {
             let anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig,'').replace(/\W/g,'-');
@@ -54,7 +54,7 @@
 
     // For all sub-headings create a list cascade representing table of contents and append it to the appropriate element
     const createTableOfContents = () => {
-        let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading):not(.table-of-contents__whatsnext)');
+        let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading):not(.table-of-contents__whatsnext):not(.feedback__heading)');
         let tableOfContentsWrapper = document.querySelector('.table-of-contents__list');
         let tableOfContents = '';
         let prevHeadingLevel = 2;
