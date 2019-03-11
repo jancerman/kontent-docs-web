@@ -28,41 +28,41 @@ const getArticles = async (res) => {
   });
 };
 
-const getVanityUrls = async (res) => {
+const getredirectUrls = async (res) => {
   const articles = await getArticles(res);
   const KCDetails = commonContent.getKCDetails(res);
   const urlMap = await getUrlMap(KCDetails);
-  let vanityMap = [];
+  let redirectMap = [];
 
   articles.forEach(article => {
-    if (article.vanity_urls.value) {
+    if (article.redirect_urls.value) {
       let originalUrl = urlMap.filter(url => url.codename === article.system.codename);
 
       if (originalUrl.length) {
-        vanityMap.push({
+        redirectMap.push({
           originalUrl: originalUrl[0].url,
-          vanityUrls: article.vanity_urls.value.split(';')
+          redirectUrls: article.redirect_urls.value.split(';')
         });
       }
     }
   });
 
-  return vanityMap;
+  return redirectMap;
 }
 
 router.get('/', asyncHandler(async (req, res, next) => {
   const footer = await commonContent.getFooter(res);
   const UIMessages = await commonContent.getUIMessages(res);
   const navigation = await getNavigation(res);
-  const vanityMap = await getVanityUrls(res);
+  const redirectMap = await getredirectUrls(res);
 
-  return res.render('pages/vanityUrls', {
+  return res.render('pages/redirectUrls', {
     req: req,
     minify: minify,
     isPreview: isPreview(res.locals.previewapikey),
-    title: 'Vanity URLs',
+    title: 'Redirect URLs',
     navigation: navigation[0] ? navigation[0].navigation : [],
-    vanityMap: vanityMap,
+    redirectMap: redirectMap,
     footer: footer[0] ? footer[0] : {},
     UIMessages: UIMessages[0],
     helper: helper

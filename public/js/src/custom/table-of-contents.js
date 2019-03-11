@@ -10,7 +10,7 @@
         headings.forEach((item) => {
             let anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig,'').replace(/\W/g,'-');
             item.setAttribute('id', `a-${anchorName}`);
-            item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip">${UIMessages ? UIMessages.copyUrl : ''}</span></span>`;
+            item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip"></span></span>`;
         });
     };
 
@@ -25,10 +25,9 @@
                 helper.copyToClipboard(`${url}#${hash}`);
 
                 let tooltip = item.querySelector('.anchor-copy__tooltip');
-                let tooltipText = tooltip.innerHTML;
-                tooltip.innerHTML = UIMessages ? UIMessages.copyUrlActive : '';
+                tooltip.classList.add('anchor-copy__tooltip--active');
                 setTimeout(() => {
-                    tooltip.innerHTML = tooltipText;
+                    tooltip.classList.remove('anchor-copy__tooltip--active');
                 }, 1500);
             })
         });
