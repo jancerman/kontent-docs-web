@@ -123,8 +123,7 @@
                                     <p class="suggestion__text">${suggestion._highlightResult.content.value}</p>
                                 </a>`;
                     },
-                    empty: () => {
-                        window.dataLayer = window.dataLayer || [];
+                    empty: () => {                        
                         window.dataLayer.push({
                             'event': 'event',
                             'eventCategory': 'search--used',
@@ -140,7 +139,6 @@
                 }
             }])
             .on('autocomplete:selected', (event, suggestion, dataset, context) => {
-                window.dataLayer = window.dataLayer || [];
                 window.dataLayer.push({
                     'event': 'event',
                     'eventCategory': 'search--used',
@@ -194,8 +192,7 @@
             });
         };
     
-        const logSearchTermErased = () => {
-            window.dataLayer = window.dataLayer || [];
+        const logSearchTermErased = () => {  
             window.dataLayer.push({
                 'event': 'event',
                 'eventCategory': 'search--used',

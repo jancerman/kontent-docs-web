@@ -5,7 +5,6 @@
     function intervals() {
         var elem = document.activeElement;
         if (elem && elem.tagName == 'IFRAME') {
-            window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
                 'event': 'click',
                 'eventCategory': 'Embed',
@@ -26,12 +25,13 @@
             monitor = setInterval(intervals, 100);
         }
     }
+})();
 
+function logSearch() {
     // Search number of results
     const searchTerm = helper.getParameterByName('searchterm');
     const searchNumber = helper.getParameterByName('searchnumber');
     if (searchTerm && searchNumber) {
-        window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
             'event': 'event',
             'eventCategory': 'search--searched-results',
@@ -39,4 +39,4 @@
             'eventLabel': searchNumber
         });
     }
-})();
+}

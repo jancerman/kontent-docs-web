@@ -12,10 +12,12 @@ mixin input(type, id, label)
 block content
     main(id='main')
         .article
+            .article__left
             .article__right
                 .article__content 
+                    h1 !{content.title.value}
                     | !{minify(content.content.value)}
-                    .form
+                    .form#certification-form
                         h2.form__heading !{content.form_title.value}
                         if req.successForm
                             .form__success
@@ -24,7 +26,7 @@ block content
                             .form__warning
                                 | !{content.sign_up_repeated.value}
                         else if req.isBot
-                            .form__warning You are most likely a bot and therefore you are not allowed to submit the form.
+                            .form__warning !{content.recaptcha_message.value}
                         else
                             form(action=req.originalUrl, method='post')
                                 +input('text', 'first_name', content.first_name_field_text.value)
@@ -35,3 +37,5 @@ block content
     if process.env['Recaptcha-v3.site']
         script(src=`https://www.google.com/recaptcha/api.js?render=${process.env['Recaptcha-v3.site']}`)
         script grecaptcha.ready(function(){grecaptcha.execute('#{process.env['Recaptcha-v3.site']}').then(function(token){var ri=document.querySelector('#g-recaptcha-response');if(ri){ri.value=token;}});});
+    if req.anchor
+        script window.onload = function(){document.querySelector('##{req.anchor}').scrollIntoView({block:'start',behavior:'smooth'});history.replaceState(undefined, undefined, window.location.pathname+'##{req.anchor}');}
