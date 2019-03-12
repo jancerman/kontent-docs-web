@@ -126,10 +126,10 @@
                     empty: () => {
                         window.dataLayer = window.dataLayer || [];
                         window.dataLayer.push({
-                            'event': 'search',
-                            'eventCategory': 'Search no results',
-                            'eventAction': 'search',
-                            'eventLabel': searchTerm,
+                            'event': 'event',
+                            'eventCategory': 'search--used',
+                            'eventAction': searchTerm,
+                            'eventLabel': '',
                         });
 
                         // Template for a empty result
@@ -140,6 +140,14 @@
                 }
             }])
             .on('autocomplete:selected', (event, suggestion, dataset, context) => {
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({
+                    'event': 'event',
+                    'eventCategory': 'search--used',
+                    'eventAction': searchTerm,
+                    'eventLabel': window.location.pathname
+                });
+
                 // Do nothing on click, as the browser will handle <a> tag by default 
                 if (context.selectionMethod === 'click') {
                   return;
@@ -178,7 +186,7 @@
                         logSearchTermErased();
                     } 
                     prevTerm = e.target.value;
-                }, 1000);
+                }, 500);
             });
 
             searchInput.addEventListener('blur', (e) => {
@@ -189,10 +197,10 @@
         const logSearchTermErased = () => {
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
-                'event': 'search',
-                'eventCategory': 'Search not used',
-                'eventAction': 'search',
-                'eventLabel': searchTerm,
+                'event': 'event',
+                'eventCategory': 'search--used',
+                'eventAction': searchTerm,
+                'eventLabel': 'Not clicked'
             });
         };
     

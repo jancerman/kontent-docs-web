@@ -26,6 +26,7 @@ const error = async (req, res) => {
     return res.render('pages/error', {
         req: req,
         minify: minify,
+        slug: '404',
         navigation: navigation[0] ? navigation[0].navigation : [],
         title: content[0] ? content[0].title.value : '',
         titleSuffix: ` | ${navigation[0] ? navigation[0].title.value : 'Kentico Cloud Docs'}`,

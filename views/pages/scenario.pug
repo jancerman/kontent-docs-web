@@ -9,7 +9,7 @@ block content
                     h1 !{content.title.value}
                     .article__notes
                         time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
-                        .article__author 
+                        .article__author
                             if (content.author && content.author.length)
                                 | !{content.author[0].name.value}
                             else
@@ -20,4 +20,5 @@ block content
                         | !{minify(introduction)}
                     include ../includes/table-of-contents.pug
                     | !{minify(content.content.value)}
-                
+                    include ../includes/feedback.pug
+                    include ../includes/copy-tooltip.pug

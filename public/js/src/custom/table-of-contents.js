@@ -5,12 +5,12 @@
 (() => {
     // For all sub-headings set their id and create the copy to clipboard icon
     const createAnchors = () => {
-        let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading), h3, h4');
+        let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading):not(.feedback__heading), h3, h4');
 
         headings.forEach((item) => {
             let anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig,'').replace(/\W/g,'-');
             item.setAttribute('id', `a-${anchorName}`);
-            item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip">${UIMessages ? UIMessages.copyUrl : ''}</span></span>`;
+            item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip"></span></span>`;
         });
     };
 
@@ -25,10 +25,9 @@
                 helper.copyToClipboard(`${url}#${hash}`);
 
                 let tooltip = item.querySelector('.anchor-copy__tooltip');
-                let tooltipText = tooltip.innerHTML;
-                tooltip.innerHTML = UIMessages ? UIMessages.copyUrlActive : '';
+                tooltip.classList.add('anchor-copy__tooltip--active');
                 setTimeout(() => {
-                    tooltip.innerHTML = tooltipText;
+                    tooltip.classList.remove('anchor-copy__tooltip--active');
                 }, 1500);
             })
         });
@@ -55,7 +54,7 @@
 
     // For all sub-headings create a list cascade representing table of contents and append it to the appropriate element
     const createTableOfContents = () => {
-        let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading):not(.table-of-contents__whatsnext)');
+        let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading):not(.table-of-contents__whatsnext):not(.feedback__heading)');
         let tableOfContentsWrapper = document.querySelector('.table-of-contents__list');
         let tableOfContents = '';
         let prevHeadingLevel = 2;

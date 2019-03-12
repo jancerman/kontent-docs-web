@@ -10,7 +10,14 @@ const helper = {
      },
      removeNewLines: (unsafe) => {
         return unsafe.replace(/\r?\n|\r/g, '');
-     }
+     },
+     getFormValue: (formValues, fieldName) => {
+        var value = '';
+        if (typeof formValues !== 'undefined') {
+            value = formValues[fieldName] || '';
+        }
+        return value;
+    }
 };
 
 module.exports = helper;

@@ -23,7 +23,7 @@ const urlAliases = asyncHandler(async (req, res, next) => {
     let redirectUrl = [];
 
     articles.forEach(item => {
-        const aliases = item.vanity_urls.value.trim().split(';');
+        const aliases = item.redirect_urls.value.trim().split(';');
         aliases.forEach(alias => {
             alias = alias.trim().toLowerCase().replace(/\/\s*$/, '');
             if (alias === originalUrl) {

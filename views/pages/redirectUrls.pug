@@ -7,12 +7,12 @@ block content
                 table
                     tr
                         td Original URL
-                        td Vanity URLs
-                    each url in vanityMap    
+                        td Redirect URLs
+                    each url in redirectMap    
                         tr
                             td 
                                 a(href= req.protocol + '://' + req.get('host') + url.originalUrl, target='_blank') #{url.originalUrl}
                             td
-                                each vanity in url.vanityUrls
-                                    div #{vanity}
+                                each redirect in url.redirectUrls
+                                    div #{redirect}
             

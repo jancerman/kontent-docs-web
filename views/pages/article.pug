@@ -23,3 +23,5 @@ block content
                     if (nextSteps.value !== '<p><br></p>')
                         h2.table-of-contents__whatsnext !{UIMessages.article___next_steps.value}
                         | !{minify(nextSteps.value)}
+                    include ../includes/feedback.pug
+                    include ../includes/copy-tooltip.pug
