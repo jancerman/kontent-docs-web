@@ -1,0 +1,64 @@
+.form {
+
+	&__heading {
+
+	}
+
+	&__label {
+        display: block;
+        padding: 0 0 .125em;
+	}
+
+	&__input {
+        display: block;
+        max-width: 360px;
+        width: 100%;
+        padding: .375em .75em;
+        border-radius: 0;
+        -webkit-appearance: none;
+        border: 2px solid #F3F6F7;
+        background-color: #F3F6F7;
+        color: #2D373B;
+        font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+        line-height: 1.25em;
+        transition: all 0.25s;
+        outline-color: #008AE1;
+        margin: 0 0 .375em;
+	}
+
+	&__button {
+        background-color: #378de1;
+        color: #fff;
+        border-color: #378de1;
+        border: 1px solid #378de1;
+        border-radius: 0;
+        -webkit-appearance: none;
+        padding: .375em .75em;
+        cursor: pointer;
+        font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+        margin: 1em 0 0;
+        font-size: 1em;
+        transition: all 0.25s;
+
+        &:hover {
+            background-color: #e36a57;
+            border-color: #e36a57;
+            border: 1px solid #e36a57;
+        }
+    }
+    
+    &__error {
+        color: #cd0000;
+        font-size: .875em;
+        position: relative;
+        top: -.25em;
+    }
+
+    &__success {
+        color: #39C16C;
+    }
+
+    &__warning {
+        color:	#FF7900;
+    }
+}

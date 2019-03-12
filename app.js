@@ -13,6 +13,7 @@ const commonContent = require('./helpers/commonContent');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
+const certification = require('./routes/certification');
 const sitemap = require('./routes/sitemap');
 const robots = require('./routes/robots');
 const kenticoIcons = require('./routes/kenticoIcons');
@@ -49,7 +50,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 // Routes
-app.get('*', (req, res, next) => {
+app.use('*', (req, res, next) => {
   res.locals.projectid = typeof req.query.projectid !== 'undefined' ? req.query.projectid : process.env['KC.ProjectId'];
   res.locals.previewapikey = typeof req.query.previewapikey !== 'undefined' ? req.query.previewapikey : process.env['KC.PreviewApiKey'];
   res.locals.securedapikey = typeof req.query.securedapikey !== 'undefined' ? req.query.securedapikey : process.env['KC.SecuredApiKey'];
@@ -60,6 +61,7 @@ app.get('*', (req, res, next) => {
 app.use('/', home);
 app.use('/', tutorials);
 app.use('/', previewUrls);
+app.use('/certification', certification);
 app.use('/redirect-urls', redirectUrls);
 
 app.use('/kentico-icons.min.css', kenticoIcons);
