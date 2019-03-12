@@ -10,7 +10,6 @@
         noMsg.classList.add('feedback__message--hidden');
     }
     const sendFeedback = (value) => {
-        window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
             'event': 'event',
             'eventCategory': 'feedback--submitted',
