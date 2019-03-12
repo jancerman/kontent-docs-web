@@ -62,13 +62,13 @@ router.get('/', asyncHandler(async (req, res, next) => {
 
 router.post('/', [
     check('first_name').not().isEmpty().withMessage((value, { req, location, path }) => {
-        return 'Please, fill in your first name.';
+        return 'empty_field_validation';
     }).trim(),
     check('last_name').not().isEmpty().withMessage((value, { req, location, path }) => {
-        return 'Please, fill in your last name.';
+        return 'empty_field_validation';
     }).trim(),
     check('email').not().isEmpty().withMessage((value, { req, location, path }) => {
-        return 'Please, fill in your email address.';
+        return 'empty_field_validation';
     }).trim()
 ], asyncHandler(async (req, res, next) => {
     let data = await getCertificationContent(req, res, next);
@@ -92,9 +92,10 @@ router.post('/', [
             data.req.isBot = true;
         }
     } else {
-        data.req.errorForm = errors.array();
+        data.req.errorForm = helper.getValidationMessages(errors.array(), data);
     }
 
+    data.req.anchor = 'certification-form';
     return res.render('pages/certification', data);
 }));
 
