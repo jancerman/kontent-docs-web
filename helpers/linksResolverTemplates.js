@@ -2,14 +2,25 @@ const cheerio = require('cheerio');
 
 const linksResolverTemplates = {
     article: (item, urlMap) => {
-        return urlMap.filter(elem => elem.codename === item.codename)[0].url;
+        let url = urlMap.filter(elem => elem.codename === item.codename);
+
+        if (url.length > 0) {
+            return url[0].url;
+        } else {
+            return '/page-not-found';
+        }
     },
     resolveInnerRichTextLinks: (item, urlMap) => {
         Object.keys(item)
             .filter((key) => item.hasOwnProperty(key) && item[key].hasOwnProperty('type') && item[key].hasOwnProperty('links') && item[key].type === `rich_text`)
             .forEach((key) => {
                 item[key].links.forEach((link) => {
-                    let resolvedUrl = (urlMap.filter(elem => elem.codename === link.codename)[0].url);
+                    let resolvedUrl = urlMap.filter(elem => elem.codename === link.codename);
+                    if (resolvedUrl.length > 0) {
+                        resolvedUrl = resolvedUrl[0].url;
+                    } else {
+                        resolvedUrl = '/page-not-found';
+                    }
                     if (item[key].value && resolvedUrl) {
                         const $ = cheerio.load(item[key].value);
                         $(`a[data-item-id="${link.itemId}"]`).each(function(i, elem) {
