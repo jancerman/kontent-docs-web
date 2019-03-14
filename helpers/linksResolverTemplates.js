@@ -1,11 +1,13 @@
 const cheerio = require('cheerio');
 
 const linksResolverTemplates = {
-    article: (item, urlMap) => {
+    resolve: (item, urlMap) => {
         let url = urlMap.filter(elem => elem.codename === item.codename);
-
+        
         if (url.length > 0) {
             return url[0].url;
+        } else if (item.type === 'article') {
+            return `/other/${item.urlSlug}`;
         } else {
             return '/page-not-found';
         }
@@ -18,6 +20,8 @@ const linksResolverTemplates = {
                     let resolvedUrl = urlMap.filter(elem => elem.codename === link.codename);
                     if (resolvedUrl.length > 0) {
                         resolvedUrl = resolvedUrl[0].url;
+                    } else if (link.type === 'article') {
+                        resolvedUrl = `/other/${item.urlSlug}`;
                     } else {
                         resolvedUrl = '/page-not-found';
                     }

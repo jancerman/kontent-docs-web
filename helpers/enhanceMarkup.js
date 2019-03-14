@@ -15,6 +15,12 @@ const enhanceMarkup = (text) => {
         }
     });
 
+    $(`a[data-item-id][href=""]`).each(function(i, elem) {
+        var $that = $(this);
+        $that.removeAttr('data-item-id');
+        $that.attr('href', '/page-not-found');
+    });
+
     let output = $.html();
     return output.replace('<html><head></head><body>', '').replace('</body></html>', '');
 };
