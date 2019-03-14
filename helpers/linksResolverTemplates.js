@@ -3,7 +3,7 @@ const cheerio = require('cheerio');
 const linksResolverTemplates = {
     resolve: (item, urlMap) => {
         let url = urlMap.filter(elem => elem.codename === item.codename);
-        
+
         if (url.length > 0) {
             return url[0].url;
         } else if (item.type === 'article') {
