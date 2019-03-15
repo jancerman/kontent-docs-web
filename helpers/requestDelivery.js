@@ -56,8 +56,8 @@ const requestDelivery = async (config) => {
                 }
             },
             linkResolver: (link) => {
-                if ((link.type === 'article' || link.type === 'scenario') && config.urlMap && config.urlMap.length) {
-                    return linksResolverTemplates.article(link, config.urlMap);
+                if (config.urlMap && config.urlMap.length) {
+                    return linksResolverTemplates.resolve(link, config.urlMap);
                 } else {
                     return `/`;
                 }

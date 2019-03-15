@@ -126,9 +126,9 @@
                     empty: () => {                        
                         window.dataLayer.push({
                             'event': 'event',
-                            'eventCategory': 'search--used',
+                            'eventCategory': 'search--searched-result',
                             'eventAction': searchTerm,
-                            'eventLabel': '',
+                            'eventLabel': '0',
                         });
 
                         // Template for a empty result
