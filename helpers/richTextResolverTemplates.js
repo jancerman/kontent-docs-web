@@ -156,11 +156,17 @@ const richTextResolverTemplates = {
         return `<pre data-platform-code="${item.platform.value[0] ? item.platform.value[0].codename : ''}"><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>`;
     },
     contentSwitcher: (item) => {
-        // console.log(item);
-        return `Non-existing resolver for content switcher`;
+        let switcher = '<div class="language-selector"><ul class="language-selector__list">';
+
+        item.children.forEach(item => {
+            switcher += `<li class="language-selector__item"><a class="language-selector__link" href="" data-platform="${item.platform.value[0].codename}">${item.platform.value[0].name}</a></li>`
+        })
+        switcher += '</ul></div>';
+
+        return switcher;
     },
     codeSamples: (item) => {
-        let codeExamples = ''
+        let codeExamples = '';
         item.code_samples.forEach(item => {
             codeExamples += richTextResolverTemplates.codeSample(item);
         });
