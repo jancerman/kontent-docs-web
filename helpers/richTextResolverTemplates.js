@@ -151,49 +151,22 @@ const richTextResolverTemplates = {
         `;
     },
     codeSample: (item) => {
-        let lang = 'lang-';
-        switch (item.programming_language.value[0].codename) {
-            case 'shell':
-                lang += 'shell';
-                break;
-            case 'curl':
-                lang += 'shell';
-                break;
-            case '_net':
-                lang += 'dotnet';
-                break;
-            case 'javascript':
-                lang += 'js';
-                break;
-            case 'typescript':
-                lang += 'ts';
-                break;
-            case 'java':
-                lang += 'java';
-                break;
-            case 'javarx':
-                lang += 'java';
-                break;
-            case 'php':
-                lang += 'php';
-                break;
-            case 'swift':
-                lang += 'swift';
-                break;
-            case 'python':
-                lang += 'python';
-                break;
-            case 'ruby':
-                lang += 'ruby';
-                break;
-            default:
-                lang += 'clike';
-        };
+        const lang = helper.getPrismClassName(item.programming_language.value[0]);
 
-        return `
-            <pre><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>
-        `;
-    }
+        return `<pre data-platform-code="${item.platform.value[0] ? item.platform.value[0].codename : ''}"><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>`;
+    },
+    contentSwitcher: (item) => {
+        //console.log(item);
+        return `Non-existing resolver for content switcher`;
+    },
+    codeSamples: (item) => {
+        let codeExamples = ''
+        item.code_samples.forEach(item => {
+            codeExamples += richTextResolverTemplates.codeSample(item);
+        });
+        
+        return codeExamples;
+    },
 };
 
 module.exports = richTextResolverTemplates;

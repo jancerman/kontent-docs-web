@@ -39,7 +39,7 @@ const getSubNavigationLevels = (req) => {
 const getContentLevel = async (currentLevel, KCDetails, urlMap, req) => {
     let settings = {
         slug: getSubNavigationLevels(req)[currentLevel],
-        depth: 1,
+        depth: 2,
         ...KCDetails
     };
 
@@ -109,6 +109,7 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
         projectId: res.locals.projectid,
         title: content[0].title.value,
         titleSuffix: ` | ${navigation[0] ? navigation[0].title.value : 'Kentico Cloud Docs'}`,
+        platform: content[0].platform && content[0].platform.value.length ? content[0].platform.value : null,
         introduction: content[0].introduction ? content[0].introduction.value : null,
         nextSteps: content[0].next_steps ? content[0].next_steps : '',
         navigation: navigation[0] ? navigation[0].navigation : [],
