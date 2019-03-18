@@ -2,6 +2,7 @@ const commonContent = require('../helpers/commonContent');
 const minify = require('../helpers/minify');
 const helper = require('../helpers/helperFunctions');
 const requestDelivery = require('../helpers/requestDelivery');
+const getUrlMap = require('../helpers/urlMap');
 
 const error = async (req, res) => {
     const footer = await commonContent.getFooter(res);
@@ -14,6 +15,8 @@ const error = async (req, res) => {
 
     const content = await requestDelivery({
         type: 'not_found',
+        resolveRichText: true,
+        urlMap: await getUrlMap(KCDetails),
         ...KCDetails
     });
 
