@@ -156,7 +156,7 @@ const richTextResolverTemplates = {
         return `<pre data-platform-code="${item.platform.value[0] ? item.platform.value[0].codename : ''}"><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>`;
     },
     contentSwitcher: (item) => {
-        //console.log(item);
+        // console.log(item);
         return `Non-existing resolver for content switcher`;
     },
     codeSamples: (item) => {
@@ -164,7 +164,7 @@ const richTextResolverTemplates = {
         item.code_samples.forEach(item => {
             codeExamples += richTextResolverTemplates.codeSample(item);
         });
-        
+
         return codeExamples;
     },
 };
