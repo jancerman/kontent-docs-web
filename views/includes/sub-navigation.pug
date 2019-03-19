@@ -10,6 +10,9 @@ ul.sub-navigation.sub-navigation--level-1.sub-navigation--top(data-toggle-target
                             a(href=`#`, class=`sub-navigation__link${subNavigationLevels[1] === topic.url.value ? ' sub-navigation__link--active sub-navigation__link--on-path' : ''}`) !{topic.title.value}
                             ul.sub-navigation.sub-navigation--level-3
                                 each article in topic.children
-                                    if (!article.visibility.value.filter(item => item.codename === 'excluded_from_navigation').length)
+                                    if (article.visibility && !article.visibility.value.filter(item => item.codename === 'excluded_from_navigation').length)
                                         li.sub-navigation__item
                                             a(href=`/tutorials/${scenario.url.value}/${topic.url.value}/${article.url.value}`, class=`sub-navigation__link${subNavigationLevels[2] === article.url.value ? ' sub-navigation__link--active' : ''}`) !{article.short_title.value ? article.short_title.value : article.title.value}
+                                    if (article.system.type === 'multiplatform_article')
+                                        li.sub-navigation__item
+                                            a(href=`/tutorials/${scenario.url.value}/${topic.url.value}/${article.url.value}`, class=`sub-navigation__link${subNavigationLevels[2] === article.url.value ? ' sub-navigation__link--active' : ''}`) !{article.title.value}

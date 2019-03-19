@@ -25,6 +25,7 @@ const requestDelivery = async (config) => {
     const query = deliveryClient.items()
         .type(config.type);
 
+        config.codename && query.equalsFilter('system.codename', config.codename);
         config.depth && query.depthParameter(config.depth);
         config.slug && query.equalsFilter('elements.url', config.slug);
 

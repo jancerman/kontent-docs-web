@@ -6,7 +6,7 @@
             e.target.classList.add('language-selector__link--active');
         } else {
             let preselectedPlatform = helper.getCookie('KCDOCS.preselectedLanguage');
-            let preselectedElem = document.querySelector(`[data-platform=${preselectedPlatform}]`);
+            let preselectedElem = document.querySelector(`[data-platform="${preselectedPlatform}"]`);
 
             if (preselectedPlatform && preselectedElem) {
                 preselectedElem.classList.add('language-selector__link--active');
@@ -32,7 +32,7 @@
     };
 
     const selectLanguage = () => {
-        let selector = document.querySelector('.language-selector__list');
+        let selector = document.querySelector('.language-selector__list:not(.language-selector__list--static)');
 
         if (selector) {
             highlightSelector();

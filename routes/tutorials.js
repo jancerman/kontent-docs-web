@@ -32,7 +32,8 @@ const getSubNavigationLevels = (req) => {
     return [
         typeof req.params.scenario !== 'undefined' ? req.params.scenario : null,
         typeof req.params.topic !== 'undefined' ? req.params.topic : null,
-        typeof req.params.article !== 'undefined' ? req.params.article : null
+        typeof req.params.article !== 'undefined' ? req.params.article : null,
+        typeof req.params.platform !== 'undefined' ? req.params.platform : null
     ];
 };
 
@@ -54,7 +55,12 @@ const getContentLevel = async (currentLevel, KCDetails, urlMap, req) => {
     } else if (currentLevel === 1) {
         settings.type = 'topic';
     } else if (currentLevel === 2) {
-        settings.type = 'article';
+        settings.type = ['article', 'multiplatform_article'];
+        settings.resolveRichText = true;
+        settings.urlMap = urlMap;
+    } else if (currentLevel === 3) {
+        settings.type = 'multiplatform_article';
+        settings.slug = getSubNavigationLevels(req)[2];
         settings.resolveRichText = true;
         settings.urlMap = urlMap;
     }
@@ -69,7 +75,15 @@ const getCurrentLevel = (levels) => {
     return index;
 };
 
-router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/other/:article', '/whats-new', '/whats-new/:scenario', '/whats-new/:scenario/:topic', '/whats-new/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
+const getPreselectedPlatform = (content, req) => {
+    let preselectedPlatform = req.cookies['KCDOCS.preselectedLanguage'];
+    let platformItems = content.children.filter(item => item.platform.value[0].codename === preselectedPlatform);
+    if (platformItems.length === 0) preselectedPlatform = content.children[0].platform.value[0].codename;
+    if (preselectedPlatform === '_net') preselectedPlatform = 'dotnet';
+    return preselectedPlatform;
+}
+
+router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/tutorials/:scenario/:topic/:article/:platform', '/other/:article', '/whats-new', '/whats-new/:scenario', '/whats-new/:scenario/:topic', '/whats-new/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
     const KCDetails = commonContent.getKCDetails(res);
     const urlMap = await getUrlMap(KCDetails);
     const navigation = await getNavigation(KCDetails);
@@ -77,10 +91,11 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
     const subNavigation = await getSubNavigation(KCDetails, slug);
     const subNavigationLevels = getSubNavigationLevels(req);
     const currentLevel = getCurrentLevel(subNavigationLevels);
-    const content = await getContentLevel(currentLevel, KCDetails, urlMap, req);
     const footer = await commonContent.getFooter(res);
     const UIMessages = await commonContent.getUIMessages(res);
+    let content = await getContentLevel(currentLevel, KCDetails, urlMap, req);
     let view = 'pages/article';
+    let availablePlatforms;
 
     if (content[0]) {
         if (currentLevel === -1) {
@@ -89,6 +104,23 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
             view = 'pages/scenario';
         } else if (currentLevel === 1) {
             return res.redirect(301, `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}`);
+        } else if (currentLevel === 2 && content[0].system.type === 'multiplatform_article') {
+            let preselectedPlatform = getPreselectedPlatform(content[0], req);
+            return res.redirect(301, `/${slug}/${subNavigationLevels[currentLevel - 2]}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${preselectedPlatform}`);
+        } else if (currentLevel === 3) {
+            if (req.params.platform === 'dotnet') req.params.platform = '_net';
+            res.cookie('KCDOCS.preselectedLanguage', req.params.platform);
+            let platformItem = content[0].children.filter(item => item.platform.value[0].codename === req.params.platform);
+            availablePlatforms = content[0].children;
+
+            content = await requestDelivery({
+                codename: platformItem[0].system.codename,
+                type: 'article',
+                depth: 2,
+                resolveRichText: true,
+                urlMap: urlMap,
+                ...KCDetails
+            });
         }
     } else {
         return next();
@@ -110,6 +142,7 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
         title: content[0].title.value,
         titleSuffix: ` | ${navigation[0] ? navigation[0].title.value : 'Kentico Cloud Docs'}`,
         platform: content[0].platform && content[0].platform.value.length ? content[0].platform.value : null,
+        availablePlatforms: availablePlatforms,
         introduction: content[0].introduction ? content[0].introduction.value : null,
         nextSteps: content[0].next_steps ? content[0].next_steps : '',
         navigation: navigation[0] ? navigation[0].navigation : [],

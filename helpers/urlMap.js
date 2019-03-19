@@ -36,6 +36,9 @@ const typeLevels = {
     },
     article: {
         urlLength: 4
+    },
+    multiplatform_article: {
+        urlLength: 4
     }
 };
 
@@ -47,10 +50,22 @@ const createUrlMap = (response, fields, url, urlMap = []) => {
     if (response.children) node = 'children';
 
     if (response[node]) {
+        if (response.system && response.system.type === 'multiplatform_article') {
+            typeLevels.article.urlLength = 5;
+        } else {
+            typeLevels.article.urlLength = 4;
+        }
+
         response[node].forEach(item => {
             if (item.elements.url && typeLevels[item.system.type]) {
                 url.length = typeLevels[item.system.type].urlLength;
-                url[url.length - 1] = item.elements.url.value;
+                let slug = '';
+                if (response.system && response.system.type === 'multiplatform_article') {
+                    slug = item.elements.platform.value[0].codename === '_net' ? 'dotnet' : item.elements.platform.value[0].codename;
+                } else {
+                    slug = item.elements.url.value;
+                }
+                url[url.length - 1] = slug;
             }
 
             if (typeLevels[item.system.type]) {
