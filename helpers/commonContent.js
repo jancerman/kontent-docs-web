@@ -11,16 +11,21 @@ const commonContent = {
     getFooter: async (res) => {
         return await requestDelivery({
             type: 'footer',
-            projectid: res.locals.projectid,
-            previewapikey: res.locals.previewapikey
+            ...commonContent.getKCDetails(res)
         });
     },
     getUIMessages: async (res) => {
         return await requestDelivery({
             type: 'ui_messages',
             resolveRichText: true,
-            projectid: res.locals.projectid,
-            previewapikey: res.locals.previewapikey
+            ...commonContent.getKCDetails(res)
+        });
+    },
+    getPlatformsConfig: async (res) => {
+        return await requestDelivery({
+            type: 'platform_picker',
+            codename: 'platform_picker',
+            ...commonContent.getKCDetails(res)
         });
     },
     orderPlatforms: (platforms) => {
