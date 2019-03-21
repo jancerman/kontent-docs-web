@@ -43,6 +43,7 @@
             }, [{
                 source: (query, callback) => {
                     hitsSource(query, (suggestions) => {
+                        console.log(suggestions);
                         searchResultsNumber = suggestions.length;
                         let limitedSuggestions = [];
                         let limit = suggestions.length <= 8 ? suggestions.length : 8;
@@ -99,7 +100,6 @@
                             suggestions[i]._highlightResult.content.value = `${contentBefore}${highlighted}${contentAfter}`;
                             limitedSuggestions.push(suggestions[i]);
                         }
-
                         callback(limitedSuggestions);
                     });
                 },

@@ -59,7 +59,7 @@ const getContentLevel = async (currentLevel, KCDetails, urlMap, req) => {
         settings.resolveRichText = true;
         settings.urlMap = urlMap;
     } else if (currentLevel === 3) {
-        settings.type = 'multiplatform_article';
+        settings.type = ['article', 'multiplatform_article'];
         settings.slug = getSubNavigationLevels(req)[2];
         settings.resolveRichText = true;
         settings.urlMap = urlMap;
@@ -77,8 +77,15 @@ const getCurrentLevel = (levels) => {
 
 const getPreselectedPlatform = (content, req) => {
     let preselectedPlatform = req.cookies['KCDOCS.preselectedLanguage'];
-    let platformItems = content.children.filter(item => item.platform.value[0].codename === preselectedPlatform);
-    if (platformItems.length === 0) preselectedPlatform = content.children[0].platform.value[0].codename;
+    let platformItems;
+    if (content.children) {
+        platformItems = content.children.filter(item => item.platform.value[0].codename === preselectedPlatform);
+        if (platformItems.length === 0) preselectedPlatform = content.children[0].platform.value[0].codename;
+    } else {
+        platformItems = content.platform.value.filter(item => item.codename === preselectedPlatform);
+        if (platformItems.length === 0) preselectedPlatform = content.platform.value[0].codename;
+    }
+
     if (preselectedPlatform === '_net') preselectedPlatform = 'dotnet';
     return preselectedPlatform;
 }
@@ -104,23 +111,28 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
             view = 'pages/scenario';
         } else if (currentLevel === 1) {
             return res.redirect(301, `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}`);
-        } else if (currentLevel === 2 && content[0].system.type === 'multiplatform_article') {
-            let preselectedPlatform = getPreselectedPlatform(content[0], req);
-            return res.redirect(301, `/${slug}/${subNavigationLevels[currentLevel - 2]}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${preselectedPlatform}`);
+        } else if (currentLevel === 2) {
+            if (content[0].system.type === 'multiplatform_article' || (content[0].system.type === 'article' && content[0].platform.value.length)) {
+                let preselectedPlatform = getPreselectedPlatform(content[0], req);
+                return res.redirect(301, `/${slug}/${subNavigationLevels[currentLevel - 2]}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${preselectedPlatform}`);
+            }
         } else if (currentLevel === 3) {
             if (req.params.platform === 'dotnet') req.params.platform = '_net';
             res.cookie('KCDOCS.preselectedLanguage', req.params.platform);
-            let platformItem = content[0].children.filter(item => item.platform.value[0].codename === req.params.platform);
-            availablePlatforms = content[0].children;
 
-            content = await requestDelivery({
-                codename: platformItem[0].system.codename,
-                type: 'article',
-                depth: 2,
-                resolveRichText: true,
-                urlMap: urlMap,
-                ...KCDetails
-            });
+            if (content[0].system.type === 'multiplatform_article') {
+                let platformItem = content[0].children.filter(item => item.platform.value[0].codename === req.params.platform);
+                availablePlatforms = content[0].children;
+
+                content = await requestDelivery({
+                    codename: platformItem[0].system.codename,
+                    type: 'article',
+                    depth: 2,
+                    resolveRichText: true,
+                    urlMap: urlMap,
+                    ...KCDetails
+                });
+            }
         }
     } else {
         return next();

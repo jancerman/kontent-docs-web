@@ -43,8 +43,25 @@
                     e.preventDefault();
                     highlightSelector(selector, e);
                     selectCode(e);
+                    replaceLanguageInUrl(e);
                 }
             });
+        }
+    };
+
+    const replaceLanguageInUrl = (e) => {
+        let selectedPlatform = e.target.getAttribute('data-platform');
+        if (selectedPlatform === '_net') selectedPlatform = 'dotnet';
+
+        let url = window.location;
+        let path = url.pathname.split('/');
+        path.pop();
+        path.push(selectedPlatform);
+
+        path = path.join('/') + url.search + url.hash;
+
+        if (history && history.replaceState) {
+            history.replaceState({}, null, path);
         }
     };
 
