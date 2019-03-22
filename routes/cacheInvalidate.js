@@ -13,7 +13,7 @@ const isValidSignature = (req, secret) => {
 
 router.post('/platforms-config', (req, res, next) => {
     if (process.env['Webhook.Cache.Invalidate.PlatformsConfig']) {
-        if (isValidSignature(req, process.env['WebhookCacheInvalidatePlatformsConfig'])) {
+        if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.PlatformsConfig'])) {
             let picker = JSON.parse(req.body).data.items.filter(item => item.codename === 'platform_picker');
             if (picker.length) {
                 cache.del('platformsConfig');
