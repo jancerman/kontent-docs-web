@@ -31,9 +31,9 @@ const commonContent = {
     },
     normalizePlatforms: (platforms) => {
         let result = [];
-        let order = [];  
+        let order = [];
         const cachedPlatforms = cache.get('platformsConfig');
-        
+
         if (platforms && cachedPlatforms) {
             cachedPlatforms[0].options.forEach((item) => {
                 let platform = {

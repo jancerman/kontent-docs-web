@@ -68,7 +68,6 @@ const createUrlMap = (response, fields, url, urlMap = []) => {
                     } else {
                         slug = item.elements.platform.value[0].codename === '_net' ? 'dotnet' : item.elements.platform.value[0].codename;
                     }
-                    
                 } else {
                     slug = item.elements.url.value;
                 }
