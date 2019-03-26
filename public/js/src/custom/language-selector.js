@@ -50,8 +50,7 @@
     };
 
     const replaceLanguageInUrl = (e) => {
-        let selectedPlatform = e.target.getAttribute('data-platform');
-        if (selectedPlatform === '_net') selectedPlatform = 'dotnet';
+        let selectedPlatform = e.target.getAttribute('data-slug');
 
         let url = window.location;
         let path = url.pathname.split('/');

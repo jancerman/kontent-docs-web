@@ -1,5 +1,6 @@
 const { DeliveryClient } = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
+const cache = require('memory-cache');
 
 const getMapItem = (data, fields) => {
     let item = {};
@@ -61,7 +62,13 @@ const createUrlMap = (response, fields, url, urlMap = []) => {
                 url.length = typeLevels[item.system.type].urlLength;
                 let slug = '';
                 if (response.system && response.system.type === 'multiplatform_article') {
-                    slug = item.elements.platform.value[0].codename === '_net' ? 'dotnet' : item.elements.platform.value[0].codename;
+                    const cachedPlatforms = cache.get('platformsConfig');
+                    if (cachedPlatforms) {
+                        slug = cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename)[0].url.value;
+                    } else {
+                        slug = item.elements.platform.value[0].codename === '_net' ? 'dotnet' : item.elements.platform.value[0].codename;
+                    }
+                    
                 } else {
                     slug = item.elements.url.value;
                 }

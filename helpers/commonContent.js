@@ -1,4 +1,5 @@
 const requestDelivery = require('../helpers/requestDelivery');
+const cache = require('memory-cache');
 
 const commonContent = {
     getKCDetails: (res) => {
@@ -28,24 +29,32 @@ const commonContent = {
             ...commonContent.getKCDetails(res)
         });
     },
-    orderPlatforms: (platforms) => {
-        if (platforms) {
-            let order = ['rest', '_net', 'javascript', 'typescript', 'java', 'android', 'ios', 'php', 'ruby'];
-            let result = [];
+    normalizePlatforms: (platforms) => {
+        let result = [];
+        let order = [];  
+        const cachedPlatforms = cache.get('platformsConfig');
+        
+        if (platforms && cachedPlatforms) {
+            cachedPlatforms[0].options.forEach((item) => {
+                let platform = {
+                    title: item.title.value,
+                    slug: item.url.value,
+                    codename: item.platform.value[0].codename
+                }
+                order.push(platform);
+            });
 
             order.forEach(orderItem => {
                 platforms.forEach(platformItem => {
                     let codename = platformItem.codename || platformItem.platform.value[0].codename;
-                    if (orderItem === codename) {
-                        result.push(platformItem);
+                    if (orderItem.codename === codename) {
+                        result.push(orderItem);
                     }
                 });
             });
-
-            return result;
         }
 
-        return platforms;
+        return result;
     }
 }
 

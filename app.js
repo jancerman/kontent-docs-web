@@ -11,6 +11,7 @@ const cache = require('memory-cache');
 
 const getUrlMap = require('./helpers/urlMap');
 const commonContent = require('./helpers/commonContent');
+const isPreview = require('./helpers/isPreview');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -56,6 +57,10 @@ app.use('*', asyncHandler(async (req, res, next) => {
   res.locals.previewapikey = typeof req.query.previewapikey !== 'undefined' ? req.query.previewapikey : process.env['KC.PreviewApiKey'];
   res.locals.securedapikey = typeof req.query.securedapikey !== 'undefined' ? req.query.securedapikey : process.env['KC.SecuredApiKey'];
   KCDetails = commonContent.getKCDetails(res);
+
+  if (isPreview() && cache.get('platformsConfig')) {
+    cache.del('platformsConfig');
+  }
 
   if (!cache.get('platformsConfig')) {
     let platformsConfig = await commonContent.getPlatformsConfig(res);
