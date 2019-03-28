@@ -10,6 +10,7 @@ const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 
 const moment = require('moment');
+const cache = require('memory-cache');
 
 const getNavigation = async (KCDetails) => {
     return await requestDelivery({
@@ -83,10 +84,27 @@ const getPreselectedPlatform = (content, req) => {
         if (platformItems.length === 0) preselectedPlatform = content.children[0].platform.value[0].codename;
     } else {
         platformItems = content.platform.value.filter(item => item.codename === preselectedPlatform);
-        if (platformItems.length === 0) preselectedPlatform = content.platform.value[0].codename;
+        if (platformItems.length === 0) {
+            if (cache.get('platformsConfig').length) {
+                preselectedPlatform = cache.get('platformsConfig')[0].options[0].system.codename;
+
+                let platformInArticle = content.platform.value.filter(item => item.codename === preselectedPlatform);
+                if (!platformInArticle.length) {
+                    preselectedPlatform = content.platform.value[0].codename;
+                }
+            } else {
+                preselectedPlatform = content.platform.value[0].codename;
+            }
+        };
     }
 
-    if (preselectedPlatform === '_net') preselectedPlatform = 'dotnet';
+    if (cache.get('platformsConfig').length) {
+        let matchPlatform = cache.get('platformsConfig')[0].options.filter(item => item.system.codename === preselectedPlatform);
+        if (matchPlatform.length) {
+            preselectedPlatform = matchPlatform[0].url.value
+        }
+    }
+
     return preselectedPlatform;
 }
 
@@ -104,24 +122,32 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
     let view = 'pages/article';
     let availablePlatforms;
 
+    let queryHash = req.url.split('?')[1];
+
     if (content[0]) {
         if (currentLevel === -1) {
-            return res.redirect(301, `/${slug}/${content[0].children[0].url.value}`);
+            return res.redirect(301, `/${slug}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`);
         } else if (currentLevel === 0) {
             view = 'pages/scenario';
         } else if (currentLevel === 1) {
-            return res.redirect(301, `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}`);
+            return res.redirect(301, `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`);
         } else if (currentLevel === 2) {
             if (content[0].system.type === 'multiplatform_article' || (content[0].system.type === 'article' && content[0].platform.value.length)) {
                 let preselectedPlatform = getPreselectedPlatform(content[0], req);
-                return res.redirect(301, `/${slug}/${subNavigationLevels[currentLevel - 2]}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${preselectedPlatform}`);
+                return res.redirect(301, `/${slug}/${subNavigationLevels[currentLevel - 2]}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${preselectedPlatform}${queryHash ? '?' + queryHash : ''}`);
             }
         } else if (currentLevel === 3) {
-            if (req.params.platform === 'dotnet') req.params.platform = '_net';
-            res.cookie('KCDOCS.preselectedLanguage', req.params.platform);
+            let preselectedPlatform = req.params.platform;
+            if (cache.get('platformsConfig').length) {
+                preselectedPlatform = cache.get('platformsConfig')[0].options.filter(item => item.url.value === preselectedPlatform);
+                if (preselectedPlatform.length) {
+                    preselectedPlatform = preselectedPlatform[0].system.codename;
+                    res.cookie('KCDOCS.preselectedLanguage', preselectedPlatform);
+                }
+            }
 
             if (content[0].system.type === 'multiplatform_article') {
-                let platformItem = content[0].children.filter(item => item.platform.value[0].codename === req.params.platform);
+                let platformItem = content[0].children.filter(item => item.platform.value[0].codename === preselectedPlatform);
                 availablePlatforms = content[0].children;
 
                 content = await requestDelivery({
