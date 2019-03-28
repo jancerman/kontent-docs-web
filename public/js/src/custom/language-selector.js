@@ -18,7 +18,7 @@
         }
     };
 
-    const selectCode = (e) => {
+    const getSelectedPlatform = (e) => {
         let selectedPlatform;
 
         if (e) {
@@ -26,9 +26,21 @@
         } else {
             selectedPlatform = document.querySelector('.language-selector__link--active').getAttribute('data-platform');
         }
-        
+
+        return selectedPlatform;
+    };
+
+    const selectCode = (e) => {
+        let selectedPlatform = getSelectedPlatform(e);
+
         document.querySelectorAll('[data-platform-code]').forEach(item => item.classList.add('hidden'));
         document.querySelectorAll(`[data-platform-code="${selectedPlatform}"]`).forEach(item => item.classList.remove('hidden'));
+    };
+
+    const switchContentChunk = (e) => {
+        let selectedPlatform = getSelectedPlatform(e);
+        document.querySelectorAll('[data-platform-chunk]').forEach(item => item.classList.add('hidden'));
+        document.querySelectorAll(`[data-platform-chunk*="${selectedPlatform}"], [data-platform-chunk=""]`).forEach(item => item.classList.remove('hidden'));
     };
 
     const selectLanguage = () => {
@@ -37,12 +49,14 @@
         if (selector) {
             highlightSelector();
             selectCode();
+            switchContentChunk();
     
             selector.addEventListener('click', (e) => {
                 if (e.target && e.target.matches('.language-selector__link')) {
                     e.preventDefault();
                     highlightSelector(selector, e);
                     selectCode(e);
+                    switchContentChunk(e);
                     replaceLanguageInUrl(e);
                 }
             });

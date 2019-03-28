@@ -136,7 +136,13 @@ const richTextResolverTemplates = {
         return `<div class="call-to-action" data-click="support">${item.text.value}</div>`;
     },
     contentChunk: (item) => {
-        return `${item.content.value}`;
+        let platforms = [];
+        let value = item.content.value;
+        item.platform.value.forEach(item => platforms.push(item.codename));
+        if (platforms.length) {
+            value = `<div data-platform-chunk="${platforms.join('|')}">${value}</div>`;
+        }
+        return value;
     },
     homeLinkToExternalUrl: (item) => {
         return `
