@@ -41,7 +41,8 @@
     
             autocomplete('#nav-search', {
                 autoselect: true,
-                openOnFocus: true
+                openOnFocus: true,
+                clearOnSelected: false
             }, [{
                 source: (query, callback) => {
                     hitsSource(query, (suggestions) => {
@@ -162,7 +163,7 @@
                 window.location.assign(`${suggestion.resolvedUrl}`);
             })
             .on('autocomplete:closed', () => {
-                if (searchTerm !== '' && !emptySuggestions && !searchResultSelected) {
+                if (searchTerm !== '' && !searchResultSelected) {
                     //Prevent logging twice when ESC key gets pressed
                     setTimeout(() => {
                         if (document.getElementById('nav-search').value !== '') {
@@ -180,22 +181,25 @@
 
         // On search input focus set timer that checks updates on the input
         // If the input gets empty, log it
-        const searchTermErased = () => {
+        const searchTermObserver = () => {
             let searchInput = document.getElementById('nav-search');
-            let eraseInterval;
+            let interval;
 
             searchInput.addEventListener('focus', (e) => {
                 let prevTerm = '';
-                eraseInterval = setInterval(() => {
+                interval = setInterval(() => {
                     if (prevTerm !== '' && e.target.value === '') {
                         logSearchTermErased();
+                    } 
+                    if (prevTerm !== e.target.value) {
+                        logSearchTerm(e.target.value);
                     } 
                     prevTerm = e.target.value;
                 }, 500);
             });
 
             searchInput.addEventListener('blur', (e) => {
-                clearInterval(eraseInterval);
+                clearInterval(interval);
             });
         };
     
@@ -207,8 +211,17 @@
                 'eventLabel': 'Not clicked'
             });
         };
+
+        const logSearchTerm = (term) => {  
+            window.dataLayer.push({
+                'event': 'event',
+                'eventCategory': 'search--searched-result',
+                'eventAction': term,
+                'eventLabel': searchResultsNumber
+            });
+        };
     
-        searchTermErased();
+        searchTermObserver();
     };
 
     // In the header handle re-sizing the search input on focus/blur
