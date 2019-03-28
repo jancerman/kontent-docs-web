@@ -7,9 +7,11 @@ const bodyParser = require('body-parser');
 const compression = require('compression');
 const logger = require('morgan');
 const asyncHandler = require('express-async-handler');
+const cache = require('memory-cache');
 
 const getUrlMap = require('./helpers/urlMap');
 const commonContent = require('./helpers/commonContent');
+const isPreview = require('./helpers/isPreview');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -20,6 +22,7 @@ const kenticoIcons = require('./routes/kenticoIcons');
 const urlAliases = require('./routes/urlAliases');
 const redirectUrls = require('./routes/redirectUrls');
 const previewUrls = require('./routes/previewUrls');
+const cacheInvalidate = require('./routes/cacheInvalidate');
 const error = require('./routes/error');
 
 const app = express();
@@ -40,7 +43,6 @@ app.set('view engine', 'pug');
 
 app.use(compression());
 app.use(logger('dev'));
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
@@ -50,13 +52,23 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 // Routes
-app.use('*', (req, res, next) => {
+app.use('*', asyncHandler(async (req, res, next) => {
   res.locals.projectid = typeof req.query.projectid !== 'undefined' ? req.query.projectid : process.env['KC.ProjectId'];
   res.locals.previewapikey = typeof req.query.previewapikey !== 'undefined' ? req.query.previewapikey : process.env['KC.PreviewApiKey'];
   res.locals.securedapikey = typeof req.query.securedapikey !== 'undefined' ? req.query.securedapikey : process.env['KC.SecuredApiKey'];
   KCDetails = commonContent.getKCDetails(res);
+
+  if (isPreview() && cache.get('platformsConfig')) {
+    cache.del('platformsConfig');
+  }
+
+  if (!cache.get('platformsConfig')) {
+    let platformsConfig = await commonContent.getPlatformsConfig(res);
+    cache.put('platformsConfig', platformsConfig);
+  }
+
   return next();
-});
+}));
 
 app.use('/', home);
 app.use('/', tutorials);
@@ -76,6 +88,8 @@ app.get('/urlmap', asyncHandler(async (req, res, next) => {
 app.use('/test', (req, res, next) => {
   return res.send(`${process.env.APPINSIGHTS_INSTRUMENTATIONKEY}, ${process.env['KC.ProjectId']}, ${process.env['KC.PreviewApiKey']}`);
 });
+
+app.use('/cache-invalidate', bodyParser.text({ type: '*/*' }), cacheInvalidate);
 
 app.get('/design/home', (req, res, next) => {
   return res.render('design/home', {

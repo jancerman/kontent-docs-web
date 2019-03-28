@@ -25,6 +25,7 @@ const requestDelivery = async (config) => {
     const query = deliveryClient.items()
         .type(config.type);
 
+        config.codename && query.equalsFilter('system.codename', config.codename);
         config.depth && query.depthParameter(config.depth);
         config.slug && query.equalsFilter('elements.url', config.slug);
 
@@ -49,8 +50,12 @@ const requestDelivery = async (config) => {
                     return richTextResolverTemplates.homeLinkToExternalUrl(item);
                 } else if (item.system.type === 'code_sample') {
                     return richTextResolverTemplates.codeSample(item);
+                } else if (item.system.type === 'code_samples') {
+                    return richTextResolverTemplates.codeSamples(item);
                 } else if (item.system.type === 'content_chunk') {
                     return richTextResolverTemplates.contentChunk(item);
+                } else if (item.system.type === 'content_switcher') {
+                    return richTextResolverTemplates.contentSwitcher(item);
                 } else {
                     return `Missing Rich text resolver for the ${item.system.type} type.`;
                 }

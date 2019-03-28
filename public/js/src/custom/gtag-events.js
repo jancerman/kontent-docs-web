@@ -4,7 +4,7 @@
 
     function intervals() {
         var elem = document.activeElement;
-        if (elem && elem.tagName == 'IFRAME') {
+        if (elem && elem.tagName == 'IFRAME' && elem.getAttribute('src') !== 'about:blank') {
             window.dataLayer.push({
                 'event': 'click',
                 'eventCategory': 'Embed',

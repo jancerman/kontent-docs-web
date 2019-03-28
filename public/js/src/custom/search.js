@@ -14,6 +14,8 @@
         const tutorials = client.initIndex(searchAPI.indexname);
         const url = window.location;
         let searchTerm = '';
+        let searchResultSelected = false;
+        let emptySuggestions = true;
         let searchResultsNumber = 0;
 
         // Get injected KC API details 
@@ -99,7 +101,6 @@
                             suggestions[i]._highlightResult.content.value = `${contentBefore}${highlighted}${contentAfter}`;
                             limitedSuggestions.push(suggestions[i]);
                         }
-
                         callback(limitedSuggestions);
                     });
                 },
@@ -108,6 +109,7 @@
                     suggestion: (suggestion) => {
                         // Store current search input value for use of querystring that is used in Google Analytics search terms
                         searchTerm = encodeURIComponent(document.querySelector('#nav-search').value);
+                        emptySuggestions = false;
                         
                         // Get url from the urlMap
                         const suggestionUrl = urlMap.filter(item => item.codename === suggestion.codename);
@@ -123,7 +125,10 @@
                                     <p class="suggestion__text">${suggestion._highlightResult.content.value}</p>
                                 </a>`;
                     },
-                    empty: () => {                        
+                    empty: () => {    
+                        searchTerm = encodeURIComponent(document.querySelector('#nav-search').value);
+                        emptySuggestions = true;
+
                         window.dataLayer.push({
                             'event': 'event',
                             'eventCategory': 'search--searched-result',
@@ -139,6 +144,8 @@
                 }
             }])
             .on('autocomplete:selected', (event, suggestion, dataset, context) => {
+                searchResultSelected = true;
+
                 window.dataLayer.push({
                     'event': 'event',
                     'eventCategory': 'search--used',
@@ -155,7 +162,7 @@
                 window.location.assign(`${suggestion.resolvedUrl}`);
             })
             .on('autocomplete:closed', () => {
-                if (searchTerm !== '') {
+                if (searchTerm !== '' && !emptySuggestions && !searchResultSelected) {
                     //Prevent logging twice when ESC key gets pressed
                     setTimeout(() => {
                         if (document.getElementById('nav-search').value !== '') {

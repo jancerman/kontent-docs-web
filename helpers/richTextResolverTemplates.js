@@ -95,29 +95,29 @@ const richTextResolverTemplates = {
     image: (item, urlMap) => {
         if (item.image.value[0]) {
             let alt = item.image.value[0].description ? item.image.value[0].description : '';
-            let transformationQueryString = '';
+            let transformationQueryString = '?w=';
             let cssClass = item.border.value[0].codename === 'show' ? ' article__image-border' : '';
             cssClass += item.zoomable.value[0].codename === 'true' ? ' article__add-lightbox' : '';
 
-            if (!item.image.value[0].url.endsWith('.gif')) {
-                transformationQueryString = '?w=';
+            switch (item.image_width.value[0].codename) {
+                case 'n25_':
+                    cssClass += ' article__image--25';
+                    transformationQueryString += '463';
+                    break;
+                case 'n50_':
+                    cssClass += ' article__image--50';
+                    transformationQueryString += '463';
+                    break;
+                case 'n75_':
+                    cssClass += ' article__image--75';
+                    transformationQueryString += '695';
+                    break;
+                default:
+                    transformationQueryString += '926';
+            };
 
-                switch (item.image_width.value[0].codename) {
-                    case 'n25_':
-                        cssClass += ' article__image--25';
-                        transformationQueryString += '463';
-                        break;
-                    case 'n50_':
-                        cssClass += ' article__image--50';
-                        transformationQueryString += '463';
-                        break;
-                    case 'n75_':
-                        cssClass += ' article__image--75';
-                        transformationQueryString += '695';
-                        break;
-                    default:
-                        transformationQueryString += '926';
-                };
+            if (item.image.value[0].url.endsWith('.gif')) {
+                transformationQueryString = '';
             }
 
             return `
@@ -151,49 +151,28 @@ const richTextResolverTemplates = {
         `;
     },
     codeSample: (item) => {
-        let lang = 'lang-';
-        switch (item.programming_language.value[0].codename) {
-            case 'shell':
-                lang += 'shell';
-                break;
-            case 'curl':
-                lang += 'shell';
-                break;
-            case '_net':
-                lang += 'dotnet';
-                break;
-            case 'javascript':
-                lang += 'js';
-                break;
-            case 'typescript':
-                lang += 'ts';
-                break;
-            case 'java':
-                lang += 'java';
-                break;
-            case 'javarx':
-                lang += 'java';
-                break;
-            case 'php':
-                lang += 'php';
-                break;
-            case 'swift':
-                lang += 'swift';
-                break;
-            case 'python':
-                lang += 'python';
-                break;
-            case 'ruby':
-                lang += 'ruby';
-                break;
-            default:
-                lang += 'clike';
-        };
+        const lang = helper.getPrismClassName(item.programming_language.value[0]);
 
-        return `
-            <pre><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>
-        `;
-    }
+        return `<pre data-platform-code="${item.platform.value[0] ? item.platform.value[0].codename : ''}"><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>`;
+    },
+    contentSwitcher: (item) => {
+        let switcher = '<div class="language-selector"><ul class="language-selector__list">';
+
+        item.children.forEach(item => {
+            switcher += `<li class="language-selector__item"><a class="language-selector__link" href="" data-platform="${item.platform.value[0].codename}">${item.platform.value[0].name}</a></li>`
+        })
+        switcher += '</ul></div>';
+
+        return switcher;
+    },
+    codeSamples: (item) => {
+        let codeExamples = '';
+        item.code_samples.forEach(item => {
+            codeExamples += richTextResolverTemplates.codeSample(item);
+        });
+
+        return codeExamples;
+    },
 };
 
 module.exports = richTextResolverTemplates;

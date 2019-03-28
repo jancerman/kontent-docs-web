@@ -16,6 +16,19 @@ block content
                                 | !{UIMessages.article___no_author.value}
                         if isPreview 
                             a(href=`https://app.kenticocloud.com/goto/edit-item/project/${projectId}/variant-codename/default/item/${content.system.id}`, target='_blank', rel='noopener') Edit
+                    if (platform && !availablePlatforms.length)
+                        .language-selector
+                            ul.language-selector__list
+                                each item in platform
+                                    li.language-selector__item
+                                        a(href=`#`, data-platform=item.codename, data-slug=item.slug, class=`language-selector__link`) #{item.title}
+                    if (availablePlatforms.length)
+                        .language-selector
+                            ul.language-selector__list.language-selector__list--static
+                                each item in availablePlatforms
+                                    li.language-selector__item
+                                        - var path = req.path.split('/');var pathPlatform = path.pop();path = path.join('/');
+                                        a(href=`${path}/${item.slug}`, class=`language-selector__link${pathPlatform === item.slug ? ' language-selector__link--active' : ''}`) #{item.title}
                     if (introduction !== '<p><br></p>')
                         | !{minify(introduction)}
                     include ../includes/table-of-contents.pug

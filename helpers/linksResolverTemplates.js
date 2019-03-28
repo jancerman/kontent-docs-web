@@ -28,6 +28,7 @@ const linksResolverTemplates = {
 const resolveLinkUrlsInElement = (element, item, urlMap) => {
     element.links.forEach((link) => {
         let resolvedUrl = urlMap.filter(elem => elem.codename === link.codename);
+
         if (resolvedUrl.length > 0) {
             resolvedUrl = resolvedUrl[0].url;
         } else if (link.type === 'article') {
