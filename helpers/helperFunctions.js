@@ -54,6 +54,9 @@ const helper = {
                 case 'java':
                     lang += 'java';
                     break;
+                case 'android':
+                    lang += 'java';
+                    break;
                 case 'javarx':
                     lang += 'java';
                     break;

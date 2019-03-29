@@ -58,6 +58,9 @@
                     selectCode(e);
                     switchContentChunk(e);
                     replaceLanguageInUrl(e);
+                    document.querySelectorAll(`pre[data-platform-code=${e.target.getAttribute('data-platform')}] code`).forEach((item) => {
+                        Prism.highlightElement(item);
+                    });
                 }
             });
         }
