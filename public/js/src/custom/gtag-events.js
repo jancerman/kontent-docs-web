@@ -26,7 +26,7 @@
         }
     }
 })();
-
+/*
 function logSearch() {
     // Search number of results
     const searchTerm = helper.getParameterByName('searchterm');
@@ -39,4 +39,4 @@ function logSearch() {
             'eventLabel': searchNumber
         });
     }
-}
+}*/

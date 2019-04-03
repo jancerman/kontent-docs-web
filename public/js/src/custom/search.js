@@ -211,7 +211,7 @@
             searchInput.addEventListener('focus', (e) => {
                 let prevTerm = '';
                 intervalType = setInterval(() => {
-                    if (prevTerm !== e.target.value && arrowPressed === false) {
+                    if (prevTerm !== e.target.value && e.target.value !== '' && arrowPressed === false) {
                         logSearchTerm(e.target.value);
                     }
                     prevTerm = e.target.value;
