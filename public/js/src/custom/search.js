@@ -17,6 +17,7 @@
         let searchResultSelected = false;
         let emptySuggestions = true;
         let searchResultsNumber = 0;
+        let arrowPressed = false;
 
         // Get injected KC API details 
         const projectIdUrl = helper.getParameterByName('projectid');
@@ -31,6 +32,17 @@
             qString = qString ? `?${qString}` : '';
             return qString;
         })();
+
+        const arrowPress = (e) => {
+            e = e || window.event;
+            if (e.keyCode == '38' || e.keyCode == '40' || e.keyCode == '37' || e.keyCode == '39') {
+                arrowPressed = true;
+            } else {
+                arrowPressed = false;
+            }
+        };
+
+        document.onkeydown = arrowPress;
 
         // Init Algolia
         const initAutocomplete = (urlMap) => {
@@ -117,7 +129,7 @@
 
                         // Add an anchor to the url if available
                         const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g,'-')}` : '';
-                        suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}?searchterm=${searchTerm}&searchnumber=${searchResultsNumber}${anchor}` : '';
+                        suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}${anchor}` : ''; //?searchterm=${searchTerm}&searchnumber=${searchResultsNumber}
                         
                         // Template for a single search result suggestion
                         return `<a href="${suggestion.resolvedUrl}" class="suggestion">
@@ -133,7 +145,7 @@
                         window.dataLayer.push({
                             'event': 'event',
                             'eventCategory': 'search--searched-result',
-                            'eventAction': searchTerm,
+                            'eventAction': decodeURI(searchTerm),
                             'eventLabel': '0',
                         });
 
@@ -150,8 +162,8 @@
                 window.dataLayer.push({
                     'event': 'event',
                     'eventCategory': 'search--used',
-                    'eventAction': searchTerm,
-                    'eventLabel': window.location.pathname
+                    'eventAction': decodeURI(searchTerm),
+                    'eventLabel': suggestion.resolvedUrl
                 });
 
                 // Do nothing on click, as the browser will handle <a> tag by default 
@@ -183,23 +195,32 @@
         // If the input gets empty, log it
         const searchTermObserver = () => {
             let searchInput = document.getElementById('nav-search');
-            let interval;
+            let intervalErase;
+            let intervalType;
 
             searchInput.addEventListener('focus', (e) => {
                 let prevTerm = '';
-                interval = setInterval(() => {
+                intervalErase = setInterval(() => {
                     if (prevTerm !== '' && e.target.value === '') {
                         logSearchTermErased();
-                    } 
-                    if (prevTerm !== e.target.value) {
-                        logSearchTerm(e.target.value);
                     } 
                     prevTerm = e.target.value;
                 }, 500);
             });
 
+            searchInput.addEventListener('focus', (e) => {
+                let prevTerm = '';
+                intervalType = setInterval(() => {
+                    if (prevTerm !== e.target.value && arrowPressed === false) {
+                        logSearchTerm(e.target.value);
+                    }
+                    prevTerm = e.target.value;
+                }, 1000);
+            });
+
             searchInput.addEventListener('blur', (e) => {
-                clearInterval(interval);
+                clearInterval(intervalErase);
+                clearInterval(intervalType);
             });
         };
     
@@ -207,7 +228,7 @@
             window.dataLayer.push({
                 'event': 'event',
                 'eventCategory': 'search--used',
-                'eventAction': searchTerm,
+                'eventAction': decodeURI(searchTerm),
                 'eventLabel': 'Not clicked'
             });
         };
@@ -216,7 +237,7 @@
             window.dataLayer.push({
                 'event': 'event',
                 'eventCategory': 'search--searched-result',
-                'eventAction': term,
+                'eventAction': decodeURI(term),
                 'eventLabel': searchResultsNumber
             });
         };
@@ -260,6 +281,7 @@
     }
 })();
 
+/*
 const removeSearchQueryString = () => {
     setTimeout(() => {
         // Remove search query strings to make sure they will get logged only once
@@ -268,3 +290,4 @@ const removeSearchQueryString = () => {
         }
     }, 1000);
 };
+*/
