@@ -1,9 +1,12 @@
 meta(name='viewport', content='width=device-width, initial-scale=1')
 meta(charset='utf-8')
-if isPreview
-    meta(name='robots', content='noindex,nofollow')
 if !isPreview
-    meta(name='robots', content='index,follow')
+    if (content.visibility && content.visibility.value.filter(item => item.codename === 'excluded_from_search').length)
+        meta(name='robots', content='noindex')
+    else 
+        meta(name='robots', content='index,follow')
+else
+    meta(name='robots', content='noindex, nofollow')
 link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700')
 link(rel='stylesheet', href='/css/app.min.css?v=' + deployVersion)
 link(rel='stylesheet', href='/kentico-icons.min.css?v=' + deployVersion)
