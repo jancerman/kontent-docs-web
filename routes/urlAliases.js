@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
+const cache = require('memory-cache');
 
 const requestDelivery = require('../helpers/requestDelivery');
-const getUrlMap = require('../helpers/urlMap');
 const commonContent = require('../helpers/commonContent');
 
 const getArticles = async (res) => {
@@ -17,9 +17,8 @@ const urlAliases = asyncHandler(async (req, res, next) => {
     const urlSplit = req.originalUrl.split('?');
     const queryParamater = urlSplit[1] ? urlSplit[1] : '';
     const originalUrl = urlSplit[0].trim().toLowerCase().replace(/\/\s*$/, '');
-    const KCDetails = commonContent.getKCDetails(res);
     const articles = await getArticles(res);
-    const urlMap = await getUrlMap(KCDetails);
+    const urlMap = cache.get('urlMap');
     let redirectUrl = [];
 
     articles.forEach(item => {

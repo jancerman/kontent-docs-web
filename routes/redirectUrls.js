@@ -1,9 +1,9 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
+const cache = require('memory-cache');
 
 const requestDelivery = require('../helpers/requestDelivery');
-const getUrlMap = require('../helpers/urlMap');
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
@@ -30,8 +30,7 @@ const getArticles = async (res) => {
 
 const getredirectUrls = async (res) => {
   const articles = await getArticles(res);
-  const KCDetails = commonContent.getKCDetails(res);
-  const urlMap = await getUrlMap(KCDetails);
+  const urlMap = cache.get('urlMap');
   let redirectMap = [];
 
   articles.forEach(article => {

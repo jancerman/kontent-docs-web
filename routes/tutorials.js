@@ -3,7 +3,6 @@ const asyncHandler = require('express-async-handler');
 const router = express.Router();
 
 const requestDelivery = require('../helpers/requestDelivery');
-const getUrlMap = require('../helpers/urlMap');
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
@@ -110,7 +109,7 @@ const getPreselectedPlatform = (content, req) => {
 
 router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/tutorials/:scenario/:topic/:article/:platform', '/other/:article', '/whats-new', '/whats-new/:scenario', '/whats-new/:scenario/:topic', '/whats-new/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
     const KCDetails = commonContent.getKCDetails(res);
-    const urlMap = await getUrlMap(KCDetails);
+    const urlMap = cache.get('urlMap');
     const navigation = await getNavigation(KCDetails);
     const slug = req.originalUrl.split('/')[1];
     const subNavigation = await getSubNavigation(KCDetails, slug);

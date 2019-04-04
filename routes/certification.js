@@ -2,9 +2,9 @@ const express = require('express');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
 const { check, validationResult } = require('express-validator/check');
+const cache = require('memory-cache');
 
 const requestDelivery = require('../helpers/requestDelivery');
-const getUrlMap = require('../helpers/urlMap');
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
@@ -19,7 +19,7 @@ const getCertificationContent = async (req, res, next) => {
         type: 'home',
         depth: 1,
         resolveRichText: true,
-        urlMap: await getUrlMap(KCDetails),
+        urlMap: cache.get('urlMap'),
         ...KCDetails
     });
 
@@ -27,7 +27,7 @@ const getCertificationContent = async (req, res, next) => {
         type: 'certification',
         depth: 1,
         resolveRichText: true,
-        urlMap: await getUrlMap(KCDetails),
+        urlMap: cache.get('urlMap'),
         ...KCDetails
     });
 

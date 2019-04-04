@@ -1,9 +1,9 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
+const cache = require('memory-cache');
 
 const requestDelivery = require('../helpers/requestDelivery');
-const getUrlMap = require('../helpers/urlMap');
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
@@ -16,7 +16,7 @@ router.get('/', asyncHandler(async (req, res, next) => {
     type: 'home',
     depth: 4,
     resolveRichText: true,
-    urlMap: await getUrlMap(KCDetails),
+    urlMap: cache.get('urlMap'),
     ...KCDetails
   });
 

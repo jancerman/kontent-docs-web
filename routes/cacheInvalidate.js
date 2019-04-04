@@ -24,4 +24,14 @@ router.post('/platforms-config', (req, res, next) => {
     res.end();
 });
 
+router.post('/url-map', (req, res, next) => {
+    if (process.env['Webhook.Cache.Invalidate.UrlMap']) {
+        if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.UrlMap'])) {
+            cache.del('urlMap');
+        }
+    }
+
+    res.end();
+});
+
 module.exports = router;

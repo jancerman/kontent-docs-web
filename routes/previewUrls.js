@@ -1,7 +1,7 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
-const getUrlMap = require('../helpers/urlMap');
+const cache = require('memory-cache');
 const commonContent = require('../helpers/commonContent');
 const requestDelivery = require('../helpers/requestDelivery');
 
@@ -25,8 +25,7 @@ const getItem = async (res, type, slug) => {
 };
 
 router.get(['/article/:article', '/scenario/:scenario'], asyncHandler(async (req, res, next) => {
-    const KCDetails = commonContent.getKCDetails(res);
-    const urlMap = await getUrlMap(KCDetails);
+    const urlMap = cache.get('urlMap');
     const type = getType(req.params);
     const urlSlug = req.params.article || req.params.scenario;
     let item = await getItem(res, type, urlSlug);

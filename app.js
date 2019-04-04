@@ -58,13 +58,24 @@ app.use('*', asyncHandler(async (req, res, next) => {
   res.locals.securedapikey = typeof req.query.securedapikey !== 'undefined' ? req.query.securedapikey : process.env['KC.SecuredApiKey'];
   KCDetails = commonContent.getKCDetails(res);
 
-  if (isPreview() && cache.get('platformsConfig')) {
+  const isPreviewRequest = isPreview(res.locals.previewapikey);
+
+  if (isPreviewRequest && cache.get('platformsConfig')) {
     cache.del('platformsConfig');
+  }
+
+  if (isPreviewRequest && cache.get('urlMap')) {
+    cache.del('urlMap');
   }
 
   if (!cache.get('platformsConfig')) {
     let platformsConfig = await commonContent.getPlatformsConfig(res);
     cache.put('platformsConfig', platformsConfig);
+  }
+
+  if (!cache.get('urlMap')) {
+    let urlMap = await getUrlMap(KCDetails);
+    cache.put('urlMap', urlMap);
   }
 
   return next();
@@ -81,8 +92,7 @@ app.use('/sitemap.xml', sitemap);
 app.use('/robots.txt', robots);
 
 app.get('/urlmap', asyncHandler(async (req, res, next) => {
-  const urlMap = await getUrlMap(KCDetails);
-  return res.json(urlMap);
+  return res.json(cache.get('urlMap'));
 }));
 
 app.use('/test', (req, res, next) => {
