@@ -84,7 +84,7 @@ const getPreselectedPlatform = (content, req) => {
     } else {
         platformItems = content.platform.value.filter(item => item.codename === preselectedPlatform);
         if (platformItems.length === 0) {
-            if (cache.get('platformsConfig').length) {
+            if (cache.get('platformsConfig') && cache.get('platformsConfig').length) {
                 preselectedPlatform = cache.get('platformsConfig')[0].options[0].system.codename;
 
                 let platformInArticle = content.platform.value.filter(item => item.codename === preselectedPlatform);
@@ -97,7 +97,7 @@ const getPreselectedPlatform = (content, req) => {
         };
     }
 
-    if (cache.get('platformsConfig').length) {
+    if (cache.get('platformsConfig') && cache.get('platformsConfig').length) {
         let matchPlatform = cache.get('platformsConfig')[0].options.filter(item => item.system.codename === preselectedPlatform);
         if (matchPlatform.length) {
             preselectedPlatform = matchPlatform[0].url.value
@@ -137,7 +137,7 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
             }
         } else if (currentLevel === 3) {
             let preselectedPlatform = req.params.platform;
-            if (cache.get('platformsConfig').length) {
+            if (cache.get('platformsConfig') && cache.get('platformsConfig').length) {
                 preselectedPlatform = cache.get('platformsConfig')[0].options.filter(item => item.url.value === preselectedPlatform);
                 if (preselectedPlatform.length) {
                     preselectedPlatform = preselectedPlatform[0].system.codename;
