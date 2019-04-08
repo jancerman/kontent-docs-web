@@ -1,7 +1,7 @@
 meta(name='viewport', content='width=device-width, initial-scale=1')
 meta(charset='utf-8')
 if !isPreview
-    if (content.visibility && content.visibility.value.filter(item => item.codename === 'excluded_from_search').length)
+    if (content && content.visibility && content.visibility.value.filter(item => item.codename === 'excluded_from_search').length)
         meta(name='robots', content='noindex')
     else 
         meta(name='robots', content='index,follow')
