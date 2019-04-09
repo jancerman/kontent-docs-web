@@ -46,7 +46,6 @@ const typeLevels = {
 const createUrlMap = (response, fields, url, urlMap = []) => {
     let node = '';
     let queryString = '';
-    
 
     if (response.items) node = 'items';
     if (response.navigation) node = 'navigation';
@@ -59,7 +58,7 @@ const createUrlMap = (response, fields, url, urlMap = []) => {
             } else {
                 typeLevels.article.urlLength = 4;
             }
-            
+
             if (item.elements.url && typeLevels[item.system.type]) {
                 url.length = typeLevels[item.system.type].urlLength;
                 let slug = '';
@@ -75,13 +74,12 @@ const createUrlMap = (response, fields, url, urlMap = []) => {
                 } else {
                     slug = item.elements.url.value;
                 }
-                
+
                 if (slug) {
                     url[url.length - 1] = slug;
                 } else {
                     url.length = url.length - 1;
                 }
-                
             }
 
             if (typeLevels[item.system.type]) {
