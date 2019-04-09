@@ -45,42 +45,54 @@ const typeLevels = {
 
 const createUrlMap = (response, fields, url, urlMap = []) => {
     let node = '';
+    let queryString = '';
+    
 
     if (response.items) node = 'items';
     if (response.navigation) node = 'navigation';
     if (response.children) node = 'children';
 
     if (response[node]) {
-        if (response.system && response.system.type === 'multiplatform_article') {
-            typeLevels.article.urlLength = 5;
-        } else {
-            typeLevels.article.urlLength = 4;
-        }
-
         response[node].forEach(item => {
+            if (response.system && response.system.type === 'multiplatform_article') {
+                typeLevels.article.urlLength = 5;
+            } else {
+                typeLevels.article.urlLength = 4;
+            }
+            
             if (item.elements.url && typeLevels[item.system.type]) {
                 url.length = typeLevels[item.system.type].urlLength;
                 let slug = '';
+
                 if (response.system && response.system.type === 'multiplatform_article') {
+                    queryString = '?lang=';
                     const cachedPlatforms = cache.get('platformsConfig');
                     if (cachedPlatforms) {
-                        slug = cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename)[0].url.value;
+                        queryString += cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename)[0].url.value;
                     } else {
-                        slug = item.elements.platform.value[0].codename === '_net' ? 'dotnet' : item.elements.platform.value[0].codename;
+                        queryString += item.elements.platform.value[0].codename === '_net' ? 'dotnet' : item.elements.platform.value[0].codename;
                     }
                 } else {
                     slug = item.elements.url.value;
                 }
-                url[url.length - 1] = slug;
+                
+                if (slug) {
+                    url[url.length - 1] = slug;
+                } else {
+                    url.length = url.length - 1;
+                }
+                
             }
 
             if (typeLevels[item.system.type]) {
                 urlMap.push(getMapItem({
                     codename: item.system.codename,
-                    url: `/${url.join('/')}`,
+                    url: `/${url.join('/')}${queryString}`,
                     date: item.system.last_modified
                 }, fields));
             }
+
+            queryString = '';
 
             createUrlMap(item, fields, url, urlMap);
         });
