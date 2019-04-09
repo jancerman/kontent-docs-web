@@ -1,9 +1,7 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
-const cache = require('memory-cache');
 
-const requestDelivery = require('../helpers/requestDelivery');
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
@@ -12,13 +10,7 @@ const helper = require('../helpers/helperFunctions');
 router.get('/', asyncHandler(async (req, res, next) => {
   const KCDetails = commonContent.getKCDetails(res);
 
-  const tree = await requestDelivery({
-    type: 'home',
-    depth: 4,
-    resolveRichText: true,
-    urlMap: cache.get('urlMap'),
-    ...KCDetails
-  });
+  const tree = await commonContent.getTree('home', 4, KCDetails);
 
   if (!tree[0]) {
     return next();

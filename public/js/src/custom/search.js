@@ -193,6 +193,30 @@
             initAutocomplete(urlMap);
         }, 'json');
 
+        const eraseIntervalOnSearch = (e) => {
+            let prevTerm = '';
+            let interval = setInterval(() => {
+                if (prevTerm !== '' && e.target.value === '') {
+                    logSearchTermErased();
+                } 
+                prevTerm = e.target.value;
+            }, 500);
+
+            return interval;
+        };
+
+        const typeIntervalOnSearch = (e) => {
+            let prevTerm = '';
+            let interval = setInterval(() => {
+                if (prevTerm !== e.target.value && e.target.value !== '' && arrowPressed === false) {
+                    logSearchTerm(e.target.value);
+                }
+                prevTerm = e.target.value;
+            }, 1000);
+
+            return interval;
+        };
+
         // On search input focus set timer that checks updates on the input
         // If the input gets empty, log it
         const searchTermObserver = () => {
@@ -200,30 +224,17 @@
             let intervalErase;
             let intervalType;
 
-            searchInput.addEventListener('focus', (e) => {
-                let prevTerm = '';
-                intervalErase = setInterval(() => {
-                    if (prevTerm !== '' && e.target.value === '') {
-                        logSearchTermErased();
-                    } 
-                    prevTerm = e.target.value;
-                }, 500);
-            });
-
-            searchInput.addEventListener('focus', (e) => {
-                let prevTerm = '';
-                intervalType = setInterval(() => {
-                    if (prevTerm !== e.target.value && e.target.value !== '' && arrowPressed === false) {
-                        logSearchTerm(e.target.value);
-                    }
-                    prevTerm = e.target.value;
-                }, 1000);
-            });
-
-            searchInput.addEventListener('blur', (e) => {
-                clearInterval(intervalErase);
-                clearInterval(intervalType);
-            });
+            if (searchInput) {
+                searchInput.addEventListener('focus', (e) => {
+                    intervalErase = eraseIntervalOnSearch(e);
+                    intervalType = typeIntervalOnSearch(e);
+                });
+    
+                searchInput.addEventListener('blur', (e) => {
+                    clearInterval(intervalErase);
+                    clearInterval(intervalType);
+                });
+            }
         };
     
         const logSearchTermErased = () => {  

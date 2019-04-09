@@ -30,17 +30,42 @@
         return selectedPlatform;
     };
 
-    const selectCode = (e) => {
+    const toggleBlock = (e, attribute, allowEmpty) => {
         let selectedPlatform = getSelectedPlatform(e);
+        let selectorToGetVisible = `[${attribute}*="${selectedPlatform}"]`;
 
-        document.querySelectorAll('[data-platform-code]').forEach(item => item.classList.add('hidden'));
-        document.querySelectorAll(`[data-platform-code="${selectedPlatform}"]`).forEach(item => item.classList.remove('hidden'));
+        if (allowEmpty) {
+            selectorToGetVisible += `, [${attribute}=""]`;
+        }
+        document.querySelectorAll(`[${attribute}]`).forEach(item => item.classList.add('hidden'));
+        document.querySelectorAll(selectorToGetVisible).forEach(item => item.classList.remove('hidden'));
+    }
+
+    const selectCode = (e) => {
+        toggleBlock(e, 'data-platform-code', false);
     };
 
     const switchContentChunk = (e) => {
-        let selectedPlatform = getSelectedPlatform(e);
-        document.querySelectorAll('[data-platform-chunk]').forEach(item => item.classList.add('hidden'));
-        document.querySelectorAll(`[data-platform-chunk*="${selectedPlatform}"], [data-platform-chunk=""]`).forEach(item => item.classList.remove('hidden'));
+        toggleBlock(e, 'data-platform-chunk', true);
+    };
+
+    const selectLanguageOnClick = (selector) => {
+        const actionOnClick = (e, selector) => {
+            highlightSelector(selector, e);
+            selectCode(e);
+            switchContentChunk(e);
+            replaceLanguageInUrl(e);
+            document.querySelectorAll(`pre[data-platform-code=${e.target.getAttribute('data-platform')}] code`).forEach((item) => {
+                Prism.highlightElement(item);
+            });
+        };
+
+        selector.addEventListener('click', (e) => {
+            if (e.target && e.target.matches('.language-selector__link')) {
+                e.preventDefault();
+                actionOnClick(e, selector);
+            }
+        });
     };
 
     const selectLanguage = () => {
@@ -50,19 +75,7 @@
             highlightSelector();
             selectCode();
             switchContentChunk();
-    
-            selector.addEventListener('click', (e) => {
-                if (e.target && e.target.matches('.language-selector__link')) {
-                    e.preventDefault();
-                    highlightSelector(selector, e);
-                    selectCode(e);
-                    switchContentChunk(e);
-                    replaceLanguageInUrl(e);
-                    document.querySelectorAll(`pre[data-platform-code=${e.target.getAttribute('data-platform')}] code`).forEach((item) => {
-                        Prism.highlightElement(item);
-                    });
-                }
-            });
+            selectLanguageOnClick(selector);
         }
     };
 

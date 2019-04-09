@@ -9,6 +9,15 @@ const commonContent = {
             securedapikey: res.locals.securedapikey
         };
     },
+    getTree: async (contentType, depth, KCDetails) => {
+        return await requestDelivery({
+            type: contentType,
+            depth: depth,
+            resolveRichText: true,
+            urlMap: cache.get('urlMap'),
+            ...KCDetails
+        });
+    },
     getFooter: async (res) => {
         return await requestDelivery({
             type: 'footer',
