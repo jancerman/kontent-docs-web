@@ -26,7 +26,7 @@
         }
     }
 })();
-
+/*
 function logSearch() {
     // Search number of results
     const searchTerm = helper.getParameterByName('searchterm');
@@ -35,8 +35,8 @@ function logSearch() {
         window.dataLayer.push({
             'event': 'event',
             'eventCategory': 'search--searched-results',
-            'eventAction': searchTerm,
+            'eventAction': decodeURI(searchTerm),
             'eventLabel': searchNumber
         });
     }
-}
+}*/

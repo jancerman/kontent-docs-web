@@ -51,21 +51,53 @@ app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: 86400000
 }));
 
-// Routes
-app.use('*', asyncHandler(async (req, res, next) => {
-  res.locals.projectid = typeof req.query.projectid !== 'undefined' ? req.query.projectid : process.env['KC.ProjectId'];
-  res.locals.previewapikey = typeof req.query.previewapikey !== 'undefined' ? req.query.previewapikey : process.env['KC.PreviewApiKey'];
-  res.locals.securedapikey = typeof req.query.securedapikey !== 'undefined' ? req.query.securedapikey : process.env['KC.SecuredApiKey'];
-  KCDetails = commonContent.getKCDetails(res);
+const handleKCKeys = (req, res) => {
+  if (typeof req.query.projectid !== 'undefined') {
+    res.locals.projectid = req.query.projectid;
+  } else {
+    res.locals.projectid = process.env['KC.ProjectId'];
+  }
 
-  if (isPreview() && cache.get('platformsConfig')) {
+  if (typeof req.query.previewapikey !== 'undefined') {
+    res.locals.previewapikey = req.query.previewapikey;
+  } else {
+    res.locals.previewapikey = process.env['KC.PreviewApiKey'];
+  }
+
+  if (typeof req.query.securedapikey !== 'undefined') {
+    res.locals.securedapikey = req.query.securedapikey;
+  } else {
+    res.locals.securedapikey = process.env['KC.SecuredApiKey'];
+  }
+};
+
+const handleCaching = async (res) => {
+  KCDetails = commonContent.getKCDetails(res);
+  const isPreviewRequest = isPreview(res.locals.previewapikey);
+
+  if (isPreviewRequest && cache.get('platformsConfig')) {
     cache.del('platformsConfig');
+  }
+
+  if (isPreviewRequest && cache.get('urlMap')) {
+    cache.del('urlMap');
   }
 
   if (!cache.get('platformsConfig')) {
     let platformsConfig = await commonContent.getPlatformsConfig(res);
     cache.put('platformsConfig', platformsConfig);
   }
+
+  if (!cache.get('urlMap')) {
+    let urlMap = await getUrlMap(KCDetails);
+    cache.put('urlMap', urlMap);
+  }
+};
+
+// Routes
+app.use('*', asyncHandler(async (req, res, next) => {
+  handleKCKeys(req, res);
+  await handleCaching(res);
 
   return next();
 }));
@@ -81,8 +113,7 @@ app.use('/sitemap.xml', sitemap);
 app.use('/robots.txt', robots);
 
 app.get('/urlmap', asyncHandler(async (req, res, next) => {
-  const urlMap = await getUrlMap(KCDetails);
-  return res.json(urlMap);
+  return res.json(cache.get('urlMap'));
 }));
 
 app.use('/test', (req, res, next) => {

@@ -3,8 +3,6 @@ const asyncHandler = require('express-async-handler');
 const router = express.Router();
 const { check, validationResult } = require('express-validator/check');
 
-const requestDelivery = require('../helpers/requestDelivery');
-const getUrlMap = require('../helpers/urlMap');
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
@@ -15,21 +13,8 @@ const recaptcha = require('../helpers/recaptcha');
 const getCertificationContent = async (req, res, next) => {
     const KCDetails = commonContent.getKCDetails(res);
 
-    const tree = await requestDelivery({
-        type: 'home',
-        depth: 1,
-        resolveRichText: true,
-        urlMap: await getUrlMap(KCDetails),
-        ...KCDetails
-    });
-
-    const content = await requestDelivery({
-        type: 'certification',
-        depth: 1,
-        resolveRichText: true,
-        urlMap: await getUrlMap(KCDetails),
-        ...KCDetails
-    });
+    const tree = await commonContent.getTree('home', 1, KCDetails);
+    const content = await commonContent.getTree('certification', 1, KCDetails);
 
     if (!(tree && tree[0]) || !(content && content[0])) {
         return null;

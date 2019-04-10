@@ -18,7 +18,7 @@
         }
     };
 
-    const selectCode = (e) => {
+    const getSelectedPlatform = (e) => {
         let selectedPlatform;
 
         if (e) {
@@ -26,9 +26,46 @@
         } else {
             selectedPlatform = document.querySelector('.language-selector__link--active').getAttribute('data-platform');
         }
-        
-        document.querySelectorAll('[data-platform-code]').forEach(item => item.classList.add('hidden'));
-        document.querySelectorAll(`[data-platform-code="${selectedPlatform}"]`).forEach(item => item.classList.remove('hidden'));
+
+        return selectedPlatform;
+    };
+
+    const toggleBlock = (e, attribute, allowEmpty) => {
+        let selectedPlatform = getSelectedPlatform(e);
+        let selectorToGetVisible = `[${attribute}*="${selectedPlatform}"]`;
+
+        if (allowEmpty) {
+            selectorToGetVisible += `, [${attribute}=""]`;
+        }
+        document.querySelectorAll(`[${attribute}]`).forEach(item => item.classList.add('hidden'));
+        document.querySelectorAll(selectorToGetVisible).forEach(item => item.classList.remove('hidden'));
+    }
+
+    const selectCode = (e) => {
+        toggleBlock(e, 'data-platform-code', false);
+    };
+
+    const switchContentChunk = (e) => {
+        toggleBlock(e, 'data-platform-chunk', true);
+    };
+
+    const selectLanguageOnClick = (selector) => {
+        const actionOnClick = (e, selector) => {
+            highlightSelector(selector, e);
+            selectCode(e);
+            switchContentChunk(e);
+            replaceLanguageInUrl(e);
+            document.querySelectorAll(`pre[data-platform-code=${e.target.getAttribute('data-platform')}] code`).forEach((item) => {
+                Prism.highlightElement(item);
+            });
+        };
+
+        selector.addEventListener('click', (e) => {
+            if (e.target && e.target.matches('.language-selector__link')) {
+                e.preventDefault();
+                actionOnClick(e, selector);
+            }
+        });
     };
 
     const selectLanguage = () => {
@@ -37,15 +74,8 @@
         if (selector) {
             highlightSelector();
             selectCode();
-    
-            selector.addEventListener('click', (e) => {
-                if (e.target && e.target.matches('.language-selector__link')) {
-                    e.preventDefault();
-                    highlightSelector(selector, e);
-                    selectCode(e);
-                    replaceLanguageInUrl(e);
-                }
-            });
+            switchContentChunk();
+            selectLanguageOnClick(selector);
         }
     };
 

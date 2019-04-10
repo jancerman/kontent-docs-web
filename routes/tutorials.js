@@ -3,7 +3,6 @@ const asyncHandler = require('express-async-handler');
 const router = express.Router();
 
 const requestDelivery = require('../helpers/requestDelivery');
-const getUrlMap = require('../helpers/urlMap');
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
@@ -85,7 +84,7 @@ const getPreselectedPlatform = (content, req) => {
     } else {
         platformItems = content.platform.value.filter(item => item.codename === preselectedPlatform);
         if (platformItems.length === 0) {
-            if (cache.get('platformsConfig').length) {
+            if (cache.get('platformsConfig') && cache.get('platformsConfig').length) {
                 preselectedPlatform = cache.get('platformsConfig')[0].options[0].system.codename;
 
                 let platformInArticle = content.platform.value.filter(item => item.codename === preselectedPlatform);
@@ -98,7 +97,7 @@ const getPreselectedPlatform = (content, req) => {
         };
     }
 
-    if (cache.get('platformsConfig').length) {
+    if (cache.get('platformsConfig') && cache.get('platformsConfig').length) {
         let matchPlatform = cache.get('platformsConfig')[0].options.filter(item => item.system.codename === preselectedPlatform);
         if (matchPlatform.length) {
             preselectedPlatform = matchPlatform[0].url.value
@@ -110,7 +109,7 @@ const getPreselectedPlatform = (content, req) => {
 
 router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/tutorials/:scenario/:topic/:article/:platform', '/other/:article', '/whats-new', '/whats-new/:scenario', '/whats-new/:scenario/:topic', '/whats-new/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
     const KCDetails = commonContent.getKCDetails(res);
-    const urlMap = await getUrlMap(KCDetails);
+    const urlMap = cache.get('urlMap');
     const navigation = await getNavigation(KCDetails);
     const slug = req.originalUrl.split('/')[1];
     const subNavigation = await getSubNavigation(KCDetails, slug);
@@ -138,7 +137,7 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
             }
         } else if (currentLevel === 3) {
             let preselectedPlatform = req.params.platform;
-            if (cache.get('platformsConfig').length) {
+            if (cache.get('platformsConfig') && cache.get('platformsConfig').length) {
                 preselectedPlatform = cache.get('platformsConfig')[0].options.filter(item => item.url.value === preselectedPlatform);
                 if (preselectedPlatform.length) {
                     preselectedPlatform = preselectedPlatform[0].system.codename;

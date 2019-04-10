@@ -136,7 +136,13 @@ const richTextResolverTemplates = {
         return `<div class="call-to-action" data-click="support">${item.text.value}</div>`;
     },
     contentChunk: (item) => {
-        return `${item.content.value}`;
+        let platforms = [];
+        let value = item.content.value;
+        item.platform.value.forEach(item => platforms.push(item.codename));
+        if (platforms.length) {
+            value = `<div data-platform-chunk="${platforms.join('|')}">${value}</div>`;
+        }
+        return value;
     },
     homeLinkToExternalUrl: (item) => {
         return `
@@ -152,8 +158,7 @@ const richTextResolverTemplates = {
     },
     codeSample: (item) => {
         const lang = helper.getPrismClassName(item.programming_language.value[0]);
-
-        return `<pre data-platform-code="${item.platform.value[0] ? item.platform.value[0].codename : ''}"><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>`;
+        return `<pre class="line-numbers" data-platform-code="${item.platform.value[0] ? item.platform.value[0].codename : ''}"><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>`;
     },
     contentSwitcher: (item) => {
         let switcher = '<div class="language-selector"><ul class="language-selector__list">';
