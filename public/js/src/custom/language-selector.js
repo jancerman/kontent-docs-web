@@ -56,9 +56,9 @@
         return selectedPlatform;
     };
 
-    const toggleBlock = (e, attribute, allowEmpty) => {
+    const toggleBlock = (e, attribute, allowEmpty, selectrorCompare) => {
         let selectedPlatform = getSelectedPlatform(e);
-        let selectorToGetVisible = `[${attribute}*="${selectedPlatform}"]`;
+        let selectorToGetVisible = `[${attribute}${selectrorCompare}"${selectedPlatform}"]`;
 
         if (allowEmpty) {
             selectorToGetVisible += `, [${attribute}=""]`;
@@ -68,11 +68,11 @@
     }
 
     const selectCode = (e) => {
-        toggleBlock(e, 'data-platform-code', false);
+        toggleBlock(e, 'data-platform-code', false, '=');
     };
 
     const switchContentChunk = (e) => {
-        toggleBlock(e, 'data-platform-chunk', true);
+        toggleBlock(e, 'data-platform-chunk', true, '*=');
     };
 
     const selectLanguageOnClick = (selector) => {
