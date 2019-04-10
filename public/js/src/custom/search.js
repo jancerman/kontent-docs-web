@@ -37,7 +37,7 @@
             e = e || window.event;
             if (e.keyCode == '38' || e.keyCode == '40' || e.keyCode == '37' || e.keyCode == '39') {
                 arrowPressed = true;
-                document.querySelector('#nav-search').value = searchTerm;
+                document.querySelector('#nav-search').value = decodeURI(searchTerm);
             } else {
                 arrowPressed = false;
             }
@@ -159,7 +159,7 @@
             }])
             .on('autocomplete:selected', (event, suggestion, dataset, context) => {
                 searchResultSelected = true;
-                document.querySelector('#nav-search').value = searchTerm;
+                document.querySelector('#nav-search').value = decodeURI(searchTerm);
 
                 window.dataLayer.push({
                     'event': 'event',
