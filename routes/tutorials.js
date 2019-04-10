@@ -71,6 +71,16 @@ const getCurrentLevel = (levels) => {
     return index;
 };
 
+const getSelectedPlatform = (platformsConfig, cookiesPlatform) => {
+    let platform = platformsConfig ? platformsConfig.filter(item => item.system.codename === cookiesPlatform) : null;
+    if (platform && platform.length) {
+        platform = platform[0].elements.url.value
+    } else {
+        platform = null;
+    }
+    return platform;
+};
+
 const getPreselectedPlatform = (content, req, res) => {
     const platformsConfig = cache.get('platformsConfig') && cache.get('platformsConfig').length ? cache.get('platformsConfig')[0].options : null;
 
@@ -192,7 +202,7 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
         titleSuffix: ` | ${navigation[0] ? navigation[0].title.value : 'Kentico Cloud Docs'}`,
         platform: content[0].platform && content[0].platform.value.length ? commonContent.normalizePlatforms(content[0].platform.value) : null,
         availablePlatforms: commonContent.normalizePlatforms(availablePlatforms),
-        selectedPlatform: platformsConfig ? platformsConfig.filter(item => item.system.codename === cookiesPlatform)[0].elements.url.value : null,
+        selectedPlatform: getSelectedPlatform(platformsConfig, cookiesPlatform),
         introduction: content[0].introduction ? content[0].introduction.value : null,
         nextSteps: content[0].next_steps ? content[0].next_steps : '',
         navigation: navigation[0] ? navigation[0].navigation : [],
