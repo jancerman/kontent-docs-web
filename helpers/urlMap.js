@@ -22,6 +22,7 @@ const getMapItem = (data, fields) => {
     return item;
 };
 
+// Define length of url for specific content types (number of path elements)
 const typeLevels = {
     home: {
         urlLength: 0
@@ -53,6 +54,7 @@ const createUrlMap = (response, fields, url, urlMap = []) => {
 
     if (response[node]) {
         response[node].forEach(item => {
+            // Redefine urls length if "multiplatform_article" is parent of an article
             if (response.system && response.system.type === 'multiplatform_article') {
                 typeLevels.article.urlLength = 5;
             } else {
@@ -64,12 +66,38 @@ const createUrlMap = (response, fields, url, urlMap = []) => {
                 let slug = '';
 
                 if (response.system && response.system.type === 'multiplatform_article') {
+                    // Handle "lang" query string in case articles are assigned to "multiplatform_article"
                     queryString = '?lang=';
                     const cachedPlatforms = cache.get('platformsConfig');
                     if (cachedPlatforms) {
                         queryString += cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename)[0].url.value;
                     } else {
                         queryString += item.elements.platform.value[0].codename === '_net' ? 'dotnet' : item.elements.platform.value[0].codename;
+                    }
+                } else if (item.system && item.system.type === 'article') {
+                    // Handle "lang" query string in case "article" has values selected in the "Platform" field
+                    if (item.elements.platform.value) {
+                        slug = item.elements.url.value;
+                        url[url.length - 1] = slug;
+                        const cachedPlatforms = cache.get('platformsConfig');
+
+                        // Add url to map for each platform in an article
+                        item.elements.platform.value.forEach(elem => {
+                            queryString = '?lang=';
+                            if (cachedPlatforms) {
+                                queryString += cachedPlatforms[0].options.filter(plat => elem.codename === plat.system.codename)[0].url.value;
+                            } else {
+                                queryString += elem.codename === '_net' ? 'dotnet' : elem.codename;
+                            }
+
+                            urlMap.push(getMapItem({
+                                codename: item.system.codename,
+                                url: `/${url.join('/')}${queryString}`,
+                                date: item.system.last_modified
+                            }, fields));
+                        });
+
+                        queryString = '';
                     }
                 } else {
                     slug = item.elements.url.value;
@@ -82,6 +110,7 @@ const createUrlMap = (response, fields, url, urlMap = []) => {
                 }
             }
 
+            // Add url to map
             if (typeLevels[item.system.type]) {
                 urlMap.push(getMapItem({
                     codename: item.system.codename,
