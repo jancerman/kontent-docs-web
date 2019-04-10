@@ -25,10 +25,10 @@ block content
                     if (availablePlatforms.length)
                         .language-selector
                             ul.language-selector__list.language-selector__list--static
-                                each item in availablePlatforms
+                                - var highlighIndex = 0; availablePlatforms.forEach((item, index) => { if (selectedPlatform === item.slug) { highlighIndex = index } });
+                                each item, index in availablePlatforms
                                     li.language-selector__item
-                                        - var path = req.path.split('/');var pathPlatform = path.pop();path = path.join('/');
-                                        a(href=`${path}/${item.slug}`, class=`language-selector__link${pathPlatform === item.slug ? ' language-selector__link--active' : ''}`) #{item.title}
+                                        a(href=`${req.path}?lang=${item.slug}`, class=`language-selector__link${index === highlighIndex ? ' language-selector__link--active' : ''}`) #{item.title}
                     if (introduction !== '<p><br></p>')
                         | !{minify(introduction)}
                     include ../includes/table-of-contents.pug

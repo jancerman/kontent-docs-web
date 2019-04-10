@@ -88,7 +88,7 @@ const richTextResolverTemplates = {
     },
     callout: (item) => {
         return `
-            <div class="callout callout--${item.type.value[0].codename}">
+            <div class="callout callout--${item.type.value.length ? item.type.value[0].codename : ''}">
                 ${item.content.value}
             </div>`;
     },
