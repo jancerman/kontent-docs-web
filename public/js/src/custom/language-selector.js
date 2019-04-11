@@ -45,7 +45,7 @@
 
                 textTofixedLabel = preselectedElem[0].innerHTML;
             } else {
-                let firstPlatformElem = document.querySelectorAll('.language-selector__link:first-child');
+                let firstPlatformElem = document.querySelectorAll('.language-selector__item:first-child .language-selector__link');
                 firstPlatformElem.forEach(item => {
                     item.classList.add('language-selector__link--active'); 
                 });
@@ -188,18 +188,20 @@
     const copyCode = () => {
         let articleContent = document.querySelector('.article__content');
 
-        articleContent.addEventListener('click', (e) => {
-            if (e.target && e.target.matches('.infobar__copy')) {
-                e.preventDefault();
-                let text = e.target.innerHTML;
-                e.target.innerHTML = 'Code copied to clipboard';
-                setTimeout(() => {
-                    e.target.innerHTML = text;
-                }, 1500);
-                let code = helper.findAncestor(e.target, 'pre').querySelector('.clean-code').innerHTML;
-                helper.copyToClipboard(helper.htmlDecode(code));
-            }
-        });
+        if (articleContent) {
+            articleContent.addEventListener('click', (e) => {
+                if (e.target && e.target.matches('.infobar__copy')) {
+                    e.preventDefault();
+                    let text = e.target.innerHTML;
+                    e.target.innerHTML = 'Code copied to clipboard';
+                    setTimeout(() => {
+                        e.target.innerHTML = text;
+                    }, 1500);
+                    let code = helper.findAncestor(e.target, 'pre').querySelector('.clean-code').innerHTML;
+                    helper.copyToClipboard(helper.htmlDecode(code));
+                }
+            });
+        }
     };
 
     const selectLanguage = () => {
