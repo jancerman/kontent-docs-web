@@ -129,7 +129,16 @@ const getPreselectedPlatform = (content, req, res) => {
         }
     }
     return preselectedPlatform;
-}
+};
+
+const getCanonicalUrl = (urlMap, content, preselectedPlatform) => {
+    let canonicalUrl;
+    if (content.system.type === 'article' || (content.system.type === 'multiplatform_article' && content.children.length && preselectedPlatform === content.children[0].platform.value[0].codename)) {
+        canonicalUrl = urlMap.filter(item => item.codename === content.system.codename);
+        canonicalUrl = canonicalUrl.length ? canonicalUrl[0].url : null;
+    }
+    return canonicalUrl;
+};
 
 router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/tutorials/:scenario/:topic/:article', '/other/:article', '/whats-new', '/whats-new/:scenario', '/whats-new/:scenario/:topic', '/whats-new/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
     const KCDetails = commonContent.getKCDetails(res);
@@ -148,6 +157,7 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
     let queryHash = req.url.split('?')[1];
     const platformsConfig = cache.get('platformsConfig') && cache.get('platformsConfig').length ? cache.get('platformsConfig')[0].options : null;
     let preselectedPlatform;
+    let canonicalUrl;
     cookiesPlatform = req.cookies['KCDOCS.preselectedLanguage'];
 
     if (content[0]) {
@@ -163,6 +173,8 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
             if (!preselectedPlatform) {
                 return next();
             }
+
+            canonicalUrl = getCanonicalUrl(urlMap, content[0], preselectedPlatform);
 
             if (content[0].system.type === 'multiplatform_article') {
                 let platformItem = content[0].children.filter(item => item.platform.value[0].codename === preselectedPlatform);
@@ -203,6 +215,7 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
         platform: content[0].platform && content[0].platform.value.length ? commonContent.normalizePlatforms(content[0].platform.value) : null,
         availablePlatforms: commonContent.normalizePlatforms(availablePlatforms),
         selectedPlatform: getSelectedPlatform(platformsConfig, cookiesPlatform),
+        canonicalUrl: canonicalUrl,
         introduction: content[0].introduction ? content[0].introduction.value : null,
         nextSteps: content[0].next_steps ? content[0].next_steps : '',
         navigation: navigation[0] ? navigation[0].navigation : [],

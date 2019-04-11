@@ -1,6 +1,7 @@
 const { DeliveryClient } = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
 const cache = require('memory-cache');
+let globalConfig;
 
 const getMapItem = (data, fields) => {
     let item = {};
@@ -74,7 +75,7 @@ const createUrlMap = (response, fields, url, urlMap = []) => {
                     } else {
                         queryString += item.elements.platform.value[0].codename === '_net' ? 'dotnet' : item.elements.platform.value[0].codename;
                     }
-                } else if (item.system && item.system.type === 'article') {
+                } else if (item.system && item.system.type === 'article' && globalConfig.isSitemap) {
                     // Handle "lang" query string in case "article" has values selected in the "Platform" field
                     if (item.elements.platform.value) {
                         slug = item.elements.url.value;
@@ -129,6 +130,7 @@ const createUrlMap = (response, fields, url, urlMap = []) => {
 };
 
 const getUrlMap = async (config) => {
+    globalConfig = config;
     deliveryConfig.projectId = config.projectid;
 
     if (config.previewapikey) {
