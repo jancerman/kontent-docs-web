@@ -5,11 +5,15 @@
     left: 0;
     right: 0;
     height: 3em;
-    display: flex;
     justify-content: space-between;
     padding: .6875em 1em;
     box-sizing: border-box;
     font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+    display: none;
+
+    &--visible {
+        display: flex;
+    }
 
     &__languages {
         padding: 0 !important;

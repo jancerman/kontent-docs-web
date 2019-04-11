@@ -25,12 +25,15 @@
         });
     };
 
-    const highlightSelector = (articleContent, e) => {  
+    const highlightSelector = (articleContent, e) => { 
+        let fixedLabel = document.querySelector('.language-selector__label'); 
+        let textTofixedLabel;
         if (e) {  
             helper.setCookie('KCDOCS.preselectedLanguage', e.target.getAttribute('data-platform'));
             articleContent.querySelectorAll('.language-selector__link--active').forEach(item => item.classList.remove('language-selector__link--active'));
             articleContent.querySelectorAll(`[data-platform=${e.target.getAttribute('data-platform')}]`).forEach(item => item.classList.add('language-selector__link--active'));
             updatePlatformInUrls(e.target.getAttribute('data-slug'));
+            textTofixedLabel = e.target.innerHTML;
         } else {
             let preselectedPlatform = helper.getCookie('KCDOCS.preselectedLanguage');
             let preselectedElem = document.querySelectorAll(`[data-platform="${preselectedPlatform}"]`);
@@ -39,13 +42,22 @@
                 preselectedElem.forEach(item => {
                     item.classList.add('language-selector__link--active');
                 });
+
+                textTofixedLabel = preselectedElem[0].innerHTML;
             } else {
                 let firstPlatformElem = document.querySelectorAll('.language-selector__link:first-child');
                 firstPlatformElem.forEach(item => {
                     item.classList.add('language-selector__link--active'); 
                 });
+
+                textTofixedLabel = firstPlatformElem[0].innerHTML;
             }
         }
+
+        if (fixedLabel && textTofixedLabel) {
+            fixedLabel.innerHTML = textTofixedLabel;
+        }
+
     };
 
     const getSelectedPlatform = (e) => {
@@ -116,9 +128,10 @@
     };
 
     const cloneLanguageSelectorToCodeBlocks = () => {
-        let languageSelector = document.querySelector('.language-selector').cloneNode(true);
+        let languageSelector = document.querySelector('.language-selector');
 
-        if (languageSelector.querySelector('.language-selector__list:not(.language-selector__list--static)')) {
+        if (languageSelector && languageSelector.querySelector('.language-selector__list:not(.language-selector__list--static)')) {
+            languageSelector = languageSelector.cloneNode(true);
             let codeBlocks = document.querySelectorAll('*:not([data-platform-code]) + [data-platform-code]');
 
             languageSelector.classList.add('language-selector--code-block');
@@ -127,6 +140,48 @@
                 let clonedSelector = item.parentNode.insertBefore(languageSelector, item);
                 languageSelector = clonedSelector.cloneNode(true);
             });
+        }
+    };
+
+    const cloneLanguageSelectorToFixed = () => {
+        let languageSelector = document.querySelector('.language-selector');
+
+        if (languageSelector) {
+            languageSelector = languageSelector.cloneNode(true);
+            let content = document.querySelector('.article__content');
+
+            languageSelector.classList.add('language-selector--fixed');
+            var label = document.createElement('div');
+            label.classList.add('language-selector__label');
+    
+            languageSelector.insertBefore(label, languageSelector.firstChild);
+    
+            languageSelector.addEventListener('click', (e) => {
+                if (languageSelector.classList.contains('language-selector--opened')) {
+                    languageSelector.classList.remove('language-selector--opened');
+                } else {
+                    languageSelector.classList.add('language-selector--opened');
+                }
+            });
+    
+            content.appendChild(languageSelector);
+        }
+    };
+
+    const handleFixedSelector = () => {
+        let selector = document.querySelector('.language-selector--fixed');
+        let viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+
+        if (viewportWidth >= 1150 && selector) {
+            let topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
+            let mainSelector = document.querySelector('.language-selector');
+            let isTop = topOffset <= mainSelector.getBoundingClientRect().top + mainSelector.offsetHeight + window.scrollY;
+
+            if (isTop) {
+                selector.classList.remove('language-selector--visible');
+            } else {
+                selector.classList.add('language-selector--visible');
+            }
         }
     };
 
@@ -156,11 +211,30 @@
             selectCode();
             switchContentChunk();
             selectLanguageOnClick(articleContent);
+        } else {
+            let fixedLabel = document.querySelector('.language-selector__label'); 
+            let activeSelector = document.querySelector('.language-selector__link--active');
+            if (fixedLabel && activeSelector) {
+                fixedLabel.innerHTML = activeSelector.innerHTML;
+            }
         }
     };
 
+    const makeInfobarsVisible = () => {
+        let infobars = document.querySelectorAll('.infobar');
+
+        if (infobars.length) {
+            infobars.forEach(item => {
+                item.classList.add('infobar--visible');
+            });
+        }
+    };
 
     cloneLanguageSelectorToCodeBlocks();
+    cloneLanguageSelectorToFixed();
+    handleFixedSelector();
+    window.addEventListener('scroll', handleFixedSelector, supportsPassive ? { passive: true } : false);
     selectLanguage();
     copyCode();
+    makeInfobarsVisible();
 })();

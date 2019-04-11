@@ -116,7 +116,6 @@
             border: none;
             width: 100%;
             box-sizing: border-box;
-            border: none;
             color: #a9b4ba;
             padding: 0.375em 1.125em;
 
@@ -132,6 +131,100 @@
             &--active {
                 background-color: #8b9ba6;
             }
+        }
+    }
+
+
+    &--fixed {
+        display: none;
+
+        @media (min-width: 1150px) {
+            display: block;
+            position: fixed;
+            top: .375em;
+            width: 920px;
+            max-width: 70% !important;
+            overflow: visible;
+            margin: 0;
+            transition: .25s;
+            opacity: 0;
+            visibility: hidden;
+
+            .language-selector__label {
+                width: 165px;
+                height: 2.125em;
+                position: absolute;
+                right: 0;
+                border: .125em solid #e4e9ec;
+                box-sizing: border-box;
+                padding: 0.125em .875em;
+                cursor: pointer;
+
+                &:before {
+                    font-family: 'kentico-icons';
+                    content: "\e66f";
+                    font-size: 0.75em;
+                    position: absolute;
+                    top: 0;
+                    right: .875em;
+                    color: #008AE1;
+                    line-height: 2.5em;
+                }
+            }
+    
+            .language-selector__list {
+                width: 165px;
+                position: absolute;
+                right: 0;
+                top: 2.125em;
+                background-color: #f3f6f7;
+                visibility: hidden;
+                opacity: 0;
+                transition: .25s;
+            }
+    
+            .language-selector__item {
+                display: block;
+
+                &:first-child {
+                    a.language-selector__link {
+                        border: none;
+                    }
+                }
+            }
+
+            .language-selector__link {
+                border: none;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 0.375em .875em;
+                text-align: left;
+    
+                &:hover,
+                &--active {
+                    margin: 0;
+                    border: none;
+                    font-weight: 400;
+                    background-color: #e36a57;
+                    color: #fff;
+                }
+
+                &--active {
+                    background-color: #378de1;
+                }
+            }
+        }
+    }
+
+    &--visible {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    &--opened {
+        .language-selector__list {
+            opacity: 1;
+            visibility: visible;
         }
     }
  }
