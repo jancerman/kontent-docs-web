@@ -1,0 +1,57 @@
+.infobar {
+    position: absolute;
+    background-color: #efedeb;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3em;
+    display: flex;
+    justify-content: space-between;
+    padding: .6875em 1em;
+    box-sizing: border-box;
+    font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+
+    &__languages {
+        padding: 0 !important;
+    }
+
+    &__lang {
+        line-height: 1.375em;
+        display: inline-block;
+        padding: 0 .5em !important;
+        border: .125em solid #8b9ba6;
+        color: #8b9ba6;
+
+        &:before {
+            display: none;
+        }
+    }
+
+    &__copy {
+        line-height: 1.675em;
+        display: inline-block;
+        padding: 0 .5em !important;
+        border: .125em solid #8b9ba6;
+        background-color: #8b9ba6;   
+        color: #fff; 
+        font-size: .875em;
+        text-shadow: 0 1px #a6b1b8;
+        cursor: pointer;
+        transition: .25s;
+
+        &:hover, &:active {
+            background-color: transparent;  
+            color:  #8b9ba6;
+            text-shadow: 0 1px #fff;
+        }
+
+        &:before {
+            content: "\e69e";
+            font-family: 'kentico-icons';
+            padding: 0 .25em 0 0;
+            position: relative;
+            top: .075em;
+            font-size: .875em;
+        }
+    }
+}

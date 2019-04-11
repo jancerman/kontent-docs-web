@@ -21,6 +21,7 @@ pre[class*="language-"] {
     word-wrap: normal;
     line-height: 1.5;
     max-height: 50vh;
+    position: relative;
 
     -moz-tab-size: 4;
     -o-tab-size: 4;
@@ -173,6 +174,8 @@ pre[class*="language-"].line-numbers {
     position: relative;
     padding-left: 3.8em;
     counter-reset: linenumber;
+    padding-top: 4em;
+    margin-top: 0;
 }
 
 pre[class*="language-"].line-numbers>code {
@@ -210,4 +213,8 @@ pre[class*="language-"].line-numbers>code {
     display: block;
     padding-right: 0.8em;
     text-align: right;
+}
+
+.clean-code {
+    display: none;
 }

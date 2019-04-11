@@ -22,6 +22,18 @@ window.helper = (() => {
         return parents;
     };
 
+    const findAncestor = (el, sel) =>{
+        while ((el = el.parentElement) && !((el.matches || el.matchesSelector).call(el, sel)));
+        return el;
+    };
+
+    const htmlDecode = (input) => {
+        var e = document.createElement('textarea');
+        e.innerHTML = input;
+        // handle case of empty input
+        return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+    };
+
     // Get full height of an element
     const outerHeight = (el) => {
         var height = el.offsetHeight;
@@ -237,6 +249,8 @@ window.helper = (() => {
 
     return {
         getParents: getParents,
+        findAncestor: findAncestor,
+        htmlDecode: htmlDecode,
         outerHeight: outerHeight,
         debounce: debounce,
         createElementFromHTML: createElementFromHTML,

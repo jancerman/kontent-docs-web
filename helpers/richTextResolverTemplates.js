@@ -158,7 +158,13 @@ const richTextResolverTemplates = {
     },
     codeSample: (item) => {
         const lang = helper.getPrismClassName(item.programming_language.value[0]);
-        return `<pre class="line-numbers" data-platform-code="${item.platform.value[0] ? item.platform.value[0].codename : ''}"><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>`;
+        let infoBar = '<div class="infobar"><ul class="infobar__languages">';
+        item.programming_language.value.forEach(item => {
+            infoBar += `<li class="infobar__lang">${item.name}</li>`;
+        });
+        infoBar += '</ul><div class="infobar__copy">Copy code</div></div>';
+
+    return `<pre class="line-numbers" data-platform-code="${item.platform.value[0] ? item.platform.value[0].codename : ''}">${infoBar}<div class="clean-code">${helper.escapeHtml(item.code.value)}</div><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>`;
     },
     contentSwitcher: (item) => {
         let switcher = '<div class="language-selector"><ul class="language-selector__list">';
