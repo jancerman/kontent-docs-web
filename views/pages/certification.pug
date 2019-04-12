@@ -5,10 +5,11 @@ mixin error(errors, field)
             if (err.param === field)
                 .form__error !{err.msg}
 mixin input(type, id, label)
-    if label
-        label.form__label(for=id) #{label}
-    input.form__input(id=id, name=id, type=type, value=getFormValue(req.body, id), required='required')
-    +error(req.errorForm, id)
+    div(class=`form__row${type === 'hidden' ? ' hidden' : ''}`)
+        input.form__input(id=id, name=id, type=type, value=getFormValue(req.body, id), required='required')
+        if label
+            label.form__label(for=id) #{label}
+        +error(req.errorForm, id)
 block content
     main(id='main')
         .article
@@ -33,7 +34,8 @@ block content
                                 +input('text', 'last_name', content.last_name_field_text.value)
                                 +input('email', 'email', content.e_mail_field_text.value)
                                 +input('hidden', 'g-recaptcha-response')
-                                button.form__button !{content.submit_button_text.value}
+                                .form__row.form__row--btn
+                                    button.form__button !{content.submit_button_text.value}
     if process.env['Recaptcha-v3.site']
         script(src=`https://www.google.com/recaptcha/api.js?render=${process.env['Recaptcha-v3.site']}`)
         script grecaptcha.ready(function(){grecaptcha.execute('#{process.env['Recaptcha-v3.site']}').then(function(token){var ri=document.querySelector('#g-recaptcha-response');if(ri){ri.value=token;}});});

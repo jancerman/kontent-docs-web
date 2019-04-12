@@ -5,15 +5,15 @@ mixin error(errors, field)
                 .form__error !{err.msg}
 mixin input(type, id, label)
     .form__row
+        input.form__input(id=id, name=id, type=type, value=getFormValue(req.body, id), required='required')
         if label
             label.form__label(for=id) #{label}
-        input.form__input(id=id, name=id, type=type, value=getFormValue(req.body, id), required='required')
         +error(req.errorForm, id)
 mixin textarea(id, label)
     .form__row
+        textarea.form__input.form__input--textarea(id=id, name=id, required='required') !{getFormValue(req.body, id)}
         if label
             label.form__label(for=id) #{label}
-        textarea.form__input.form__input--textarea(id=id, name=id, required='required') !{getFormValue(req.body, id)}
         +error(req.errorForm, id)
 if UIMessages
     .feedback
@@ -27,5 +27,5 @@ if UIMessages
         form(action='/feedback', method='post').form.feedback__form.form
             +input('email', 'email', 'Email')
             +textarea('feedback', 'Feedback')
-            .form__row
+            .form__row.form__row--btn
                 button.form__button Submit
