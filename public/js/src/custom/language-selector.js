@@ -156,11 +156,15 @@
     
             languageSelector.insertBefore(label, languageSelector.firstChild);
     
-            languageSelector.addEventListener('click', (e) => {
-                if (languageSelector.classList.contains('language-selector--opened')) {
-                    languageSelector.classList.remove('language-selector--opened');
+            window.addEventListener('click', (e) => {
+                if (e.target && e.target.matches('.language-selector--fixed .language-selector__label')) {
+                    if (languageSelector.classList.contains('language-selector--opened')) {
+                        languageSelector.classList.remove('language-selector--opened');
+                    } else {
+                        languageSelector.classList.add('language-selector--opened');
+                    }
                 } else {
-                    languageSelector.classList.add('language-selector--opened');
+                    languageSelector.classList.remove('language-selector--opened');
                 }
             });
     
