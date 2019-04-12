@@ -20,16 +20,25 @@
     };
 
     const onBtnClick = (btn, msg, value) => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            btnArea.parentElement.removeChild(btnArea);
-            msg.classList.remove('feedback__message--hidden');
-            sendFeedback(value);
-        });
+        btnArea.removeEventListener('click', handleFeedback);
+        btnArea.classList.add('feedback__answer--answered');
+        btn.classList.add('feedback__button--active')
+        msg.classList.remove('feedback__message--hidden');
+        sendFeedback(value);
+    };
+
+    const handleFeedback = (e) => {
+        e.preventDefault();
+        if (e.target) {
+            if (e.target.matches('.feedback__button--yes')) {
+                onBtnClick(yesBtn, yesMsg, 1);
+            } else if (e.target.matches('.feedback__button--no')) {
+                onBtnClick(noBtn, noMsg, 0);
+            }
+        }
     };
 
     if (yesMsg && noMsg) {
-        onBtnClick(yesBtn, yesMsg, 1);
-        onBtnClick(noBtn, noMsg, 0);
+        btnArea.addEventListener('click', handleFeedback)
     }
 })();

@@ -224,7 +224,8 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
         content: content[0],
         footer: footer[0] ? footer[0] : {},
         UIMessages: UIMessages[0],
-        helper: helper
+        helper: helper,
+        getFormValue: helper.getFormValue
     });
 }));
 

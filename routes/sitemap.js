@@ -18,6 +18,8 @@ router.get('/', asyncHandler(async (req, res, next) => {
     return next();
   }
 
+  res.set('Content-Type', 'application/xml');
+
   return res.render('pages/sitemap', {
     req: req,
     moment: moment,

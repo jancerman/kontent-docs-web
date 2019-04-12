@@ -6,19 +6,67 @@
 
 	&__answer {
 
+		&--answered {
+			.feedback__button:not(.feedback__button--active) {
+				background-color: #d6dde3;
+				border-color: #ccd6de;
+
+				&:hover {
+					background-color: #d6dde3;
+					border-color: #ccd6de;
+				}
+			}
+
+			.feedback__button {
+				cursor: default;
+			}
+		}
 	}
 
 	&__button {
 		display: inline-block;
 		padding: 0 1em 0 0;
-		&--yes {
+		color: #fff !important;
+		text-transform: uppercase;
+		padding: .5em 1em;
+		border-bottom: .25em solid;
+		text-decoration: none;
 
+		&:hover {
+			color: #fff !important;
 		}
 
-		&--no {
+		&--yes,
+		&--yes&--active {
+			background-color: #32a546;
+			border-color: #2c8e42;
 
+			&:hover {
+				background-color: #2c8e42;
+			}
 		}
 
+		&--yes&--active {
+			&:hover {
+				background-color: #32a546;
+			}
+		}
+
+		&--no,
+		&--no&--active {
+			background-color: #e46952;
+			border-color: #cf6350;
+
+			&:hover {
+				background-color: #cf6350;
+			}
+		}
+
+		&--no&--active {
+			&:hover {
+				background-color: #e46952;
+			}
+		}
 	}
 
 	&__response {
