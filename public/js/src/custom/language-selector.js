@@ -191,13 +191,18 @@
 
     const copyCode = () => {
         let articleContent = document.querySelector('.article__content');
+        let copyButtons = articleContent.querySelectorAll('.infobar__copy');
+
+        copyButtons.forEach(item => {
+            item.innerHTML = (UIMessages ? UIMessages.copyCode : '');
+        });
 
         if (articleContent) {
             articleContent.addEventListener('click', (e) => {
                 if (e.target && e.target.matches('.infobar__copy')) {
                     e.preventDefault();
                     let text = e.target.innerHTML;
-                    e.target.innerHTML = 'Code copied to clipboard';
+                    e.target.innerHTML = (UIMessages ? UIMessages.copyCodeActive : '');
                     setTimeout(() => {
                         e.target.innerHTML = text;
                     }, 1500);
