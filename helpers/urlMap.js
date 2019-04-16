@@ -1,27 +1,8 @@
 const { DeliveryClient } = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
 const cache = require('memory-cache');
+let fields = ['codename', 'url'];
 let globalConfig;
-
-const getMapItem = (data, fields) => {
-    let item = {};
-
-    fields.forEach(field => {
-        switch (field) {
-            case 'codename':
-                item.codename = data.codename;
-                break;
-            case 'url':
-                item.url = data.url;
-                break;
-            case 'date':
-                item.date = data.date;
-                break;
-        };
-    });
-
-    return item;
-};
 
 // Define length of url for specific content types (number of path elements)
 const typeLevels = {
@@ -45,7 +26,117 @@ const typeLevels = {
     }
 };
 
-const createUrlMap = (response, fields, url, urlMap = []) => {
+const getMapItem = (data) => {
+    let item = {};
+
+    fields.forEach(field => {
+        switch (field) {
+            case 'codename':
+                item.codename = data.codename;
+                break;
+            case 'url':
+                item.url = data.url;
+                break;
+            case 'date':
+                item.date = data.date;
+                break;
+        };
+    });
+
+    return item;
+};
+
+const redefineTypeLevel = (response) => {
+    let level = 4;
+    if (response.system && response.system.type === 'multiplatform_article') {
+      level = 5;
+    }
+
+    return level;
+  };
+
+const handleLangForMultiplatformArticle = (queryString, item) => {
+    queryString = '?lang=';
+    const cachedPlatforms = cache.get('platformsConfig');
+    if (cachedPlatforms && cachedPlatforms.length) {
+      queryString += cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename)[0].url.value;
+    }
+
+    return queryString;
+};
+
+const handleLangForPlatformField = (settings) => {
+    if (settings.item.elements.platform.value) {
+        settings.slug = settings.item.elements.url.value;
+        settings.url[settings.url.length - 1] = settings.slug;
+        const cachedPlatforms = cache.get('platformsConfig');
+
+        // Add url to map for each platform in an article
+        settings.item.elements.platform.value.forEach(elem => {
+            settings.queryString = '?lang=';
+            if (cachedPlatforms && cachedPlatforms.length) {
+                settings.queryString += cachedPlatforms[0].options.filter(plat => elem.codename === plat.system.codename)[0].url.value;
+            }
+
+            settings.urlMap = addItemToMap(settings);
+        });
+    }
+
+    return {
+        urlMap: settings.urlMap,
+        slug: settings.slug,
+        url: settings.url
+    };
+};
+
+const addItemToMap = (settings) => {
+    settings.urlMap.push(getMapItem({
+      codename: settings.item.system.codename,
+      url: `/${settings.url.join('/')}${settings.queryString}`,
+      date: settings.item.system.last_modified
+    }, fields));
+
+    return settings.urlMap;
+};
+
+const handleNode = (response, item, urlMap, url, queryString) => {
+    typeLevels.article.urlLength = redefineTypeLevel(response);
+
+    if (item.elements.url && typeLevels[item.system.type]) {
+        url.length = typeLevels[item.system.type].urlLength;
+        let slug = '';
+
+        if (response.system && response.system.type === 'multiplatform_article') {
+            // Handle "lang" query string in case articles are assigned to "multiplatform_article"
+            queryString = handleLangForMultiplatformArticle(queryString, item);
+        } else if (item.system && item.system.type === 'article' && globalConfig.isSitemap) {
+            // Handle "lang" query string in case "article" has values selected in the "Platform" field
+            let tempProperties = handleLangForPlatformField({ item, slug, url, urlMap });
+            urlMap = tempProperties.urlMap;
+            slug = tempProperties.slug;
+            url = tempProperties.url;
+        } else {
+            slug = item.elements.url.value;
+        }
+
+        if (slug) {
+            url[url.length - 1] = slug;
+        } else {
+            url.length = url.length - 1;
+        }
+    }
+
+    // Add url to map
+    if (typeLevels[item.system.type]) {
+        urlMap = addItemToMap({ urlMap, item, url, queryString });
+    }
+
+    queryString = '';
+
+    return createUrlMap(item, url, urlMap);
+};
+
+const createUrlMap = (response, url, urlMap = []) => {
     let node = '';
     let queryString = '';
 
@@ -55,74 +146,7 @@ const createUrlMap = (response, fields, url, urlMap = []) => {
 
     if (response[node]) {
         response[node].forEach(item => {
-            // Redefine urls length if "multiplatform_article" is parent of an article
-            if (response.system && response.system.type === 'multiplatform_article') {
-                typeLevels.article.urlLength = 5;
-            } else {
-                typeLevels.article.urlLength = 4;
-            }
-
-            if (item.elements.url && typeLevels[item.system.type]) {
-                url.length = typeLevels[item.system.type].urlLength;
-                let slug = '';
-
-                if (response.system && response.system.type === 'multiplatform_article') {
-                    // Handle "lang" query string in case articles are assigned to "multiplatform_article"
-                    queryString = '?lang=';
-                    const cachedPlatforms = cache.get('platformsConfig');
-                    if (cachedPlatforms) {
-                        queryString += cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename)[0].url.value;
-                    } else {
-                        queryString += item.elements.platform.value[0].codename === '_net' ? 'dotnet' : item.elements.platform.value[0].codename;
-                    }
-                } else if (item.system && item.system.type === 'article' && globalConfig.isSitemap) {
-                    // Handle "lang" query string in case "article" has values selected in the "Platform" field
-                    if (item.elements.platform.value) {
-                        slug = item.elements.url.value;
-                        url[url.length - 1] = slug;
-                        const cachedPlatforms = cache.get('platformsConfig');
-
-                        // Add url to map for each platform in an article
-                        item.elements.platform.value.forEach(elem => {
-                            queryString = '?lang=';
-                            if (cachedPlatforms) {
-                                queryString += cachedPlatforms[0].options.filter(plat => elem.codename === plat.system.codename)[0].url.value;
-                            } else {
-                                queryString += elem.codename === '_net' ? 'dotnet' : elem.codename;
-                            }
-
-                            urlMap.push(getMapItem({
-                                codename: item.system.codename,
-                                url: `/${url.join('/')}${queryString}`,
-                                date: item.system.last_modified
-                            }, fields));
-                        });
-
-                        queryString = '';
-                    }
-                } else {
-                    slug = item.elements.url.value;
-                }
-
-                if (slug) {
-                    url[url.length - 1] = slug;
-                } else {
-                    url.length = url.length - 1;
-                }
-            }
-
-            // Add url to map
-            if (typeLevels[item.system.type]) {
-                urlMap.push(getMapItem({
-                    codename: item.system.codename,
-                    url: `/${url.join('/')}${queryString}`,
-                    date: item.system.last_modified
-                }, fields));
-            }
-
-            queryString = '';
-
-            createUrlMap(item, fields, url, urlMap);
+            urlMap = handleNode(response, item, urlMap, url, queryString);
         });
     }
 
@@ -152,13 +176,11 @@ const getUrlMap = async (config) => {
     const response = await query
         .getPromise();
 
-    let fields = ['codename', 'url'];
-
     if (config.isSitemap) {
         fields = ['url', 'date'];
     }
 
-    return createUrlMap(response, fields, []);
+    return createUrlMap(response, []);
 };
 
 module.exports = getUrlMap;
