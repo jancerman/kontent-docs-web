@@ -230,7 +230,7 @@ window.helper = (() => {
             expires = '; expires=' + date.toUTCString();
         }
         document.cookie = name + '=' + (value || '')  + expires + '; path=/';
-    }
+    };
 
     const getCookie = (name) => {
         var nameEQ = name + '=';
@@ -241,11 +241,32 @@ window.helper = (() => {
             if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
         }
         return null;
-    }
+    };
 
     const eraseCookie = (name) => {   
         document.cookie = name+'=; Max-Age=-99999999;';  
-    }
+    };
+
+    const loadRecaptcha = () => {
+        let recaptchaElem = document.querySelector('#recaptcha-script');
+        let recaptchaKey = recaptchaElem.getAttribute('data-site');
+
+        if (recaptchaElem && recaptchaKey) {
+            var script = document.createElement('script');
+            script.onload = () => {
+                grecaptcha.ready(() => {
+                    grecaptcha.execute(recaptchaKey).then((token) => {
+                        var ri = document.querySelector('#g-recaptcha-response');
+                        if (ri) {
+                            ri.value=token;
+                        }
+                    });
+                });
+            };
+            script.src = 'https://www.google.com/recaptcha/api.js?render=' + recaptchaKey;
+            recaptchaElem.appendChild(script);
+        }
+    };
 
     return {
         getParents: getParents,
@@ -263,15 +284,21 @@ window.helper = (() => {
         decodeHTMLEntities: decodeHTMLEntities,
         setCookie: setCookie,
         getCookie: getCookie,
-        eraseCookie: eraseCookie
+        eraseCookie: eraseCookie,
+        loadRecaptcha: loadRecaptcha
     }
 })();
 
 // Adds forEach function to NodeList class prototype
+// Adds matches function for IE11
 (() => {
     if (typeof NodeList.prototype.forEach === 'function') {
         return false;
     } else {
         NodeList.prototype.forEach = Array.prototype.forEach;
+    }
+
+    if (!Element.prototype.matches) {
+        Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
     }
 })();

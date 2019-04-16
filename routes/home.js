@@ -26,6 +26,7 @@ router.get('/', asyncHandler(async (req, res, next) => {
     isPreview: isPreview(res.locals.previewapikey),
     title: tree[0].title.value,
     titleSuffix: '',
+    description: helper.stripTags(tree[0].description.value).substring(0, 300),
     navigation: tree[0].navigation,
     introNote: tree[0].intro_note.value,
     signposts: tree[0].signposts.value,

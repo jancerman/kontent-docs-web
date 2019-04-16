@@ -1,12 +1,15 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
+const { check, validationResult } = require('express-validator/check');
 
 const requestDelivery = require('../helpers/requestDelivery');
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
+const recaptcha = require('../helpers/recaptcha');
+const jira = require('../helpers/jira');
 
 const moment = require('moment');
 const cache = require('memory-cache');
@@ -101,9 +104,9 @@ const getPreselectedPlatform = (content, req, res) => {
     }
 
     if (!preselectedPlatform) {
-        if (content.children) {
+        if (content.children && content.children.length) {
             preselectedPlatform = content.children[0].elements.platform.value[0].codename;
-        } else {
+        } else if (content.platform && content.platform.value.length) {
             preselectedPlatform = content.platform.value[0].codename;
         }
     } else {
@@ -140,7 +143,7 @@ const getCanonicalUrl = (urlMap, content, preselectedPlatform) => {
     return canonicalUrl;
 };
 
-router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/tutorials/:scenario/:topic/:article', '/other/:article', '/whats-new', '/whats-new/:scenario', '/whats-new/:scenario/:topic', '/whats-new/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
+const getContent = async (req, res, next) => {
     const KCDetails = commonContent.getKCDetails(res);
     const urlMap = cache.get('urlMap');
     const navigation = await getNavigation(KCDetails);
@@ -170,10 +173,6 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
         } else if (currentLevel === 2) {
             preselectedPlatform = getPreselectedPlatform(content[0], req, res);
 
-            if (!preselectedPlatform) {
-                return next();
-            }
-
             canonicalUrl = getCanonicalUrl(urlMap, content[0], preselectedPlatform);
 
             if (content[0].system.type === 'multiplatform_article') {
@@ -190,7 +189,12 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
                 });
             }
 
-            preselectedPlatform = platformsConfig ? platformsConfig.filter(item => item.system.codename === preselectedPlatform)[0].elements.url.value : null;
+            preselectedPlatform = platformsConfig ? platformsConfig.filter(item => item.system.codename === preselectedPlatform) : null;
+            if (preselectedPlatform.length) {
+                preselectedPlatform = preselectedPlatform[0].elements.url.value;
+            } else {
+                preselectedPlatform = null;
+            }
         }
     } else {
         return next();
@@ -202,7 +206,8 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
         return next();
     }
 
-    return res.render(view, {
+    return {
+        view: view,
         req: req,
         res: res,
         moment: moment,
@@ -212,6 +217,7 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
         projectId: res.locals.projectid,
         title: content[0].title.value,
         titleSuffix: ` | ${navigation[0] ? navigation[0].title.value : 'Kentico Cloud Docs'}`,
+        description: content[0].introduction ? helper.stripTags(content[0].introduction.value).substring(0, 300) : '',
         platform: content[0].platform && content[0].platform.value.length ? commonContent.normalizePlatforms(content[0].platform.value) : null,
         availablePlatforms: commonContent.normalizePlatforms(availablePlatforms),
         selectedPlatform: getSelectedPlatform(platformsConfig, cookiesPlatform),
@@ -226,7 +232,45 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
         UIMessages: UIMessages[0],
         helper: helper,
         getFormValue: helper.getFormValue
-    });
+    };
+};
+
+router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/tutorials/:scenario/:topic/:article', '/other/:article', '/whats-new', '/whats-new/:scenario', '/whats-new/:scenario/:topic', '/whats-new/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
+    let data = await getContent(req, res, next);
+    if (!data) return next();
+    res.render(data.view, data);
+}));
+
+router.post(['/tutorials/:scenario', '/tutorials/:scenario/:topic/:article', '/other/:article', '/whats-new/:scenario', '/whats-new/:scenario/:topic/:article'], [
+    check('email').not().isEmpty().withMessage((value, { req, location, path }) => {
+        return 'feedback_form___empty_field_validation';
+    }).trim(),
+    check('feedback').not().isEmpty().withMessage((value, { req, location, path }) => {
+        return 'feedback_form___empty_field_validation';
+    }).trim(),
+], asyncHandler(async (req, res, next) => {
+    let data = await getContent(req, res, next);
+    if (!data) return next();
+    data.req.formPosted = true;
+    const errors = validationResult(req);
+
+    if (errors.isEmpty()) {
+        let isRealUser = await recaptcha.check(req.body);
+
+        if (isRealUser) {
+            delete req.body['g-recaptcha-response'];
+            data.req.successForm = true;
+            req.body.url = req.originalUrl;
+            await jira.createIssue(req.body);
+        } else {
+            data.req.isBot = true;
+        }
+    } else {
+        data.req.errorForm = helper.getValidationMessages(errors.array(), data.UIMessages);
+    }
+
+    data.req.anchor = 'feedback-form';
+    return res.render(data.view, data);
 }));
 
 module.exports = router;

@@ -155,8 +155,8 @@
             label.classList.add('language-selector__label');
     
             languageSelector.insertBefore(label, languageSelector.firstChild);
-    
-            window.addEventListener('click', (e) => {
+            
+            document.querySelector('body').addEventListener('click', (e) => {
                 if (e.target && e.target.matches('.language-selector--fixed .language-selector__label')) {
                     if (languageSelector.classList.contains('language-selector--opened')) {
                         languageSelector.classList.remove('language-selector--opened');
@@ -191,13 +191,14 @@
 
     const copyCode = () => {
         let articleContent = document.querySelector('.article__content');
-        let copyButtons = articleContent.querySelectorAll('.infobar__copy');
-
-        copyButtons.forEach(item => {
-            item.innerHTML = (UIMessages ? UIMessages.copyCode : '');
-        });
 
         if (articleContent) {
+            let copyButtons = articleContent.querySelectorAll('.infobar__copy');
+
+            copyButtons.forEach(item => {
+                item.innerHTML = (UIMessages ? UIMessages.copyCode : '');
+            });
+        
             articleContent.addEventListener('click', (e) => {
                 if (e.target && e.target.matches('.infobar__copy')) {
                     e.preventDefault();
