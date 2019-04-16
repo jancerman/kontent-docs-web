@@ -112,24 +112,24 @@ app.use('/kentico-icons.min.css', kenticoIcons);
 app.use('/sitemap.xml', sitemap);
 app.use('/robots.txt', robots);
 
-app.get('/urlmap', asyncHandler(async (req, res, next) => {
+app.get('/urlmap', asyncHandler(async (req, res) => {
   return res.json(cache.get('urlMap'));
 }));
 
-app.use('/test', (req, res, next) => {
+app.use('/test', (req, res) => {
   return res.send(`${process.env.APPINSIGHTS_INSTRUMENTATIONKEY}, ${process.env['KC.ProjectId']}, ${process.env['KC.PreviewApiKey']}`);
 });
 
 app.use('/cache-invalidate', bodyParser.text({ type: '*/*' }), cacheInvalidate);
 
-app.get('/design/home', (req, res, next) => {
+app.get('/design/home', (req, res) => {
   return res.render('design/home', {
     title: 'Home',
     req: req
   });
 });
 
-app.get('/design/article', (req, res, next) => {
+app.get('/design/article', (req, res) => {
   return res.render('design/article', {
     title: 'Article',
     req: req
@@ -142,7 +142,7 @@ app.use(async (req, res, next) => {
 });
 
 // error handler
-app.use(async (err, req, res, _next) => {
+app.use(async (err, req, res) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

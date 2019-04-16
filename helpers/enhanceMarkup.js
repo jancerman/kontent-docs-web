@@ -1,5 +1,30 @@
 const cheerio = require('cheerio');
 
+const replaceNodeWithItsContent = ($, selector) => {
+    $(selector).each(() => {
+        var contents = $(this).contents();
+        $(this).replaceWith(contents);
+    });
+};
+
+const setWidthToImages = ($) => {
+    $('img[data-asset-id]').each(() => {
+        var $that = $(this);
+        var src = $that.attr('src');
+        if (src && !src.endsWith('.gif')) {
+            $that.attr('src', src + '?w=926');
+        }
+    });
+};
+
+const processLinks = ($) => {
+    $(`a[data-item-id][href=""]`).each(() => {
+        var $that = $(this);
+        $that.removeAttr('data-item-id');
+        $that.attr('href', '/page-not-found');
+    });
+};
+
 const enhanceMarkup = (text) => {
     const $ = cheerio.load(text);
 
@@ -9,30 +34,6 @@ const enhanceMarkup = (text) => {
 
     let output = $.html();
     return output.replace('<html><head></head><body>', '').replace('</body></html>', '');
-};
-
-const replaceNodeWithItsContent = ($, selector) => {
-    $(selector).each(function(i, elem) {
-        var contents = $(this).contents();
-        $(this).replaceWith(contents);
-    });
-};
-
-const setWidthToImages = ($) => {
-    $('img[data-asset-id]').each(function(i, elem) {
-        var $that = $(this);
-        if (!$that.attr('src').endsWith('.gif')) {
-            $that.attr('src', $that.attr('src') + '?w=926');
-        }
-    });
-};
-
-const processLinks = ($) => {
-    $(`a[data-item-id][href=""]`).each(function(i, elem) {
-        var $that = $(this);
-        $that.removeAttr('data-item-id');
-        $that.attr('href', '/page-not-found');
-    });
 };
 
 module.exports = enhanceMarkup;

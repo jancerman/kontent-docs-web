@@ -49,7 +49,7 @@ const getredirectUrls = async (res) => {
   return redirectMap;
 }
 
-router.get('/', asyncHandler(async (req, res, next) => {
+router.get('/', asyncHandler(async (req, res) => {
   const footer = await commonContent.getFooter(res);
   const UIMessages = await commonContent.getUIMessages(res);
   const navigation = await getNavigation(res);

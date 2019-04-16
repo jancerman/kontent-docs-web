@@ -24,7 +24,7 @@
             }
             
             // Init lighbox with caption
-            item.addEventListener('click', event => {
+            item.addEventListener('click', () => {
                 basicLightbox.create(`<img src="${item.getAttribute('src').split("?")[0] + '?w=1600'}">${figcaption}`).show();
             });
         });

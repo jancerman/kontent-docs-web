@@ -91,6 +91,18 @@
         toggleBlock(e, 'data-platform-chunk', true, '*=');
     };
 
+    const replaceLanguageInUrl = (e) => {
+        let selectedPlatform = e.target.getAttribute('data-slug');
+        let url = window.location;
+        let path = url.href.split(/[?#]/)[0];
+
+        path = path + '?lang=' + selectedPlatform + removeParameterfromUrlSearch(url.search, 'lang').replace('?', '&') + url.hash;
+
+        if (history && history.replaceState) {
+            history.replaceState({}, null, path);
+        }
+    };
+
     const selectLanguageOnClick = (articleContent) => {
         const actionOnClick = (e) => {
             highlightSelector(articleContent, e);
@@ -113,18 +125,6 @@
         urlSearch = urlSearch.replace('?', '').split('&');
         urlSearch = urlSearch.filter(item => item.indexOf(param) !== 0 && item !== '');
         return urlSearch.length ? '?' + urlSearch.join('&') : '';
-    };
-
-    const replaceLanguageInUrl = (e) => {
-        let selectedPlatform = e.target.getAttribute('data-slug');
-        let url = window.location;
-        let path = url.href.split(/[?#]/)[0];
-
-        path = path + '?lang=' + selectedPlatform + removeParameterfromUrlSearch(url.search, 'lang').replace('?', '&') + url.hash;
-
-        if (history && history.replaceState) {
-            history.replaceState({}, null, path);
-        }
     };
 
     const cloneLanguageSelectorToCodeBlocks = () => {

@@ -19,7 +19,7 @@
         let anchors = document.querySelectorAll('.anchor-copy');
 
         anchors.forEach((item) => {
-            item.addEventListener('click', (event) => {
+            item.addEventListener('click', () => {
                 let hash = item.parentElement.getAttribute('id');
                 let url = window.location.href.split('#')[0];
                 helper.copyToClipboard(`${url}#${hash}`);

@@ -5,7 +5,7 @@
 const beLazyOnIntersectionObserver = () => {
     let lazyloadElems = document.querySelectorAll('.lazy');
 
-    var elemObserver = new IntersectionObserver((entries, observer) => {
+    var elemObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
                 var elem = entry.target;
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check if "Do not flag" is enabled in the browser settings
     // If yes, make embeds load on click, otherwise lazyload on scroll
     if (window.doNotTrack || navigator.doNotTrack || navigator.msDoNotTrack || 'msTrackingProtectionEnabled' in window.external) {
-        if (window.doNotTrack == '1' || navigator.doNotTrack === 'yes' || navigator.doNotTrack == '1' || navigator.msDoNotTrack == '1' || window.external.msTrackingProtectionEnabled()) {
+        if (window.doNotTrack === '1' || navigator.doNotTrack === 'yes' || navigator.doNotTrack === '1' || navigator.msDoNotTrack === '1' || window.external.msTrackingProtectionEnabled()) {
             loadOnClick();
         } else {
             loadOnScroll();

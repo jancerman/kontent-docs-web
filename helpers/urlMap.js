@@ -178,6 +178,8 @@ const getUrlMap = async (config) => {
 
     if (config.isSitemap) {
         fields = ['url', 'date'];
+    } else {
+        fields = ['codename', 'url'];
     }
 
     return createUrlMap(response, []);

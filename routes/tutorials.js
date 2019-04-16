@@ -190,7 +190,7 @@ const getContent = async (req, res) => {
             }
 
             preselectedPlatform = platformsConfig ? platformsConfig.filter(item => item.system.codename === preselectedPlatform) : null;
-            if (preselectedPlatform.length) {
+            if (preselectedPlatform && preselectedPlatform.length) {
                 preselectedPlatform = preselectedPlatform[0].elements.url.value;
             } else {
                 preselectedPlatform = null;

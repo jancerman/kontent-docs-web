@@ -92,7 +92,7 @@ const richTextResolverTemplates = {
                 ${item.content.value}
             </div>`;
     },
-    image: (item, urlMap) => {
+    image: (item) => {
         if (item.image.value[0]) {
             let alt = item.image.value[0].description ? item.image.value[0].description : '';
             let transformationQueryString = '?w=';
@@ -114,7 +114,7 @@ const richTextResolverTemplates = {
                     break;
                 default:
                     transformationQueryString += '926';
-            };
+            }
 
             if (item.image.value[0].url.endsWith('.gif')) {
                 transformationQueryString = '';

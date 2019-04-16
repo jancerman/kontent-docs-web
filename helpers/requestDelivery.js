@@ -25,13 +25,13 @@ const requestDelivery = async (config) => {
     const query = deliveryClient.items()
         .type(config.type);
 
-        config.codename && query.equalsFilter('system.codename', config.codename);
-        config.depth && query.depthParameter(config.depth);
-        config.slug && query.equalsFilter('elements.url', config.slug);
+        if (config.codename) { query.equalsFilter('system.codename', config.codename); };
+        if (config.depth) { query.depthParameter(config.depth); };
+        if (config.slug) { query.equalsFilter('elements.url', config.slug); };
 
     if (config.resolveRichText) {
         query.queryConfig({
-            richTextResolver: (item, context) => {
+            richTextResolver: (item) => {
                 item = linksResolverTemplates.resolveInnerRichTextLinks(item, config.urlMap);
 
                 if (item.system.type === 'embedded_content') {
@@ -43,7 +43,7 @@ const requestDelivery = async (config) => {
                 } else if (item.system.type === 'home__link_to_content_item') {
                     return richTextResolverTemplates.homeLinkToContentItem(item, config.urlMap);
                 } else if (item.system.type === 'image') {
-                    return richTextResolverTemplates.image(item, config.urlMap);
+                    return richTextResolverTemplates.image(item);
                 } else if (item.system.type === 'call_to_action') {
                     return richTextResolverTemplates.callToAction(item);
                 } else if (item.system.type === 'home__link_to_external_url') {

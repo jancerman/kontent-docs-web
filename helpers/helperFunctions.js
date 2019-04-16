@@ -78,7 +78,7 @@ const helper = {
                     break;
                 default:
                     lang += 'clike';
-            };
+            }
         } else {
             lang += 'clike';
         }
