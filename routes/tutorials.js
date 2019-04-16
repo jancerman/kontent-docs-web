@@ -143,7 +143,7 @@ const getCanonicalUrl = (urlMap, content, preselectedPlatform) => {
     return canonicalUrl;
 };
 
-const getContent = async (req, res, next) => {
+const getContent = async (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
     const urlMap = cache.get('urlMap');
     const navigation = await getNavigation(KCDetails);
@@ -165,11 +165,11 @@ const getContent = async (req, res, next) => {
 
     if (content[0]) {
         if (currentLevel === -1) {
-            return res.redirect(301, `/${slug}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`);
+            return `/${slug}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else if (currentLevel === 0) {
             view = 'pages/scenario';
         } else if (currentLevel === 1) {
-            return res.redirect(301, `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`);
+            return `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else if (currentLevel === 2) {
             preselectedPlatform = getPreselectedPlatform(content[0], req, res);
 
@@ -197,13 +197,13 @@ const getContent = async (req, res, next) => {
             }
         }
     } else {
-        return next();
+        return null;
     }
 
     // If only article url slug in passed and item is present in the navigation, do not render the article
     let isIncludedNavigation = urlMap.filter(item => item.codename === content[0].system.codename).length > 0;
     if (!req.params.scenario && !req.params.topic && req.params.article && isIncludedNavigation) {
-        return next();
+        return null;
     }
 
     return {
@@ -237,8 +237,11 @@ const getContent = async (req, res, next) => {
 
 router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/tutorials/:scenario/:topic/:article', '/other/:article', '/whats-new', '/whats-new/:scenario', '/whats-new/:scenario/:topic', '/whats-new/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
     let data = await getContent(req, res, next);
+
+    if (data && !data.view) return res.redirect(301, data);
     if (!data) return next();
-    res.render(data.view, data);
+
+    return res.render(data.view, data);
 }));
 
 router.post(['/tutorials/:scenario', '/tutorials/:scenario/:topic/:article', '/other/:article', '/whats-new/:scenario', '/whats-new/:scenario/:topic/:article'], [
