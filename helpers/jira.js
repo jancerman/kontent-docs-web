@@ -3,7 +3,7 @@ const axios = require('axios');
 const jira = {
     createIssue: async (data) => {
         const settings = {
-            auth: { 
+            auth: {
                 username: process.env['Jira.User'] || '',
                 password: process.env['Jira.Token'] || ''
             },
