@@ -247,6 +247,21 @@ window.helper = (() => {
         document.cookie = name+'=; Max-Age=-99999999;';  
     };
 
+    const executeRecaptcha = (recaptchaKey) => {
+        grecaptcha.execute(recaptchaKey).then((token) => {
+            var ri = document.querySelector('#g-recaptcha-response');
+            if (ri) {
+                ri.value = token;
+            }
+        });
+    };
+
+    const initRecaptcha = (recaptchaKey) => {
+        grecaptcha.ready(() => {
+            executeRecaptcha(recaptchaKey);
+        });
+    };
+
     const loadRecaptcha = () => {
         let recaptchaElem = document.querySelector('#recaptcha-script');
         let recaptchaKey = recaptchaElem.getAttribute('data-site');
@@ -254,14 +269,7 @@ window.helper = (() => {
         if (recaptchaElem && recaptchaKey) {
             var script = document.createElement('script');
             script.onload = () => {
-                grecaptcha.ready(() => {
-                    grecaptcha.execute(recaptchaKey).then((token) => {
-                        var ri = document.querySelector('#g-recaptcha-response');
-                        if (ri) {
-                            ri.value=token;
-                        }
-                    });
-                });
+                initRecaptcha(recaptchaKey);
             };
             script.src = 'https://www.google.com/recaptcha/api.js?render=' + recaptchaKey;
             recaptchaElem.appendChild(script);

@@ -65,6 +65,15 @@ const handleLangForMultiplatformArticle = (queryString, item) => {
     return queryString;
 };
 
+const processLangForPlatformField = (elem, settings, cachedPlatforms) => {
+    settings.queryString = '?lang=';
+    if (cachedPlatforms && cachedPlatforms.length) {
+        settings.queryString += cachedPlatforms[0].options.filter(plat => elem.codename === plat.system.codename)[0].url.value;
+    }
+    settings.urlMap = addItemToMap(settings);
+    return settings;
+}
+
 const handleLangForPlatformField = (settings) => {
     if (settings.item.elements.platform.value) {
         settings.slug = settings.item.elements.url.value;
@@ -72,13 +81,8 @@ const handleLangForPlatformField = (settings) => {
         const cachedPlatforms = cache.get('platformsConfig');
 
         // Add url to map for each platform in an article
-        settings.item.elements.platform.value.forEach(elem => {
-            settings.queryString = '?lang=';
-            if (cachedPlatforms && cachedPlatforms.length) {
-                settings.queryString += cachedPlatforms[0].options.filter(plat => elem.codename === plat.system.codename)[0].url.value;
-            }
-
-            settings.urlMap = addItemToMap(settings);
+        settings.item.elements.platform.value.forEach((elem) => {
+            settings = processLangForPlatformField(elem, settings, cachedPlatforms);
         });
     }
 
@@ -99,41 +103,41 @@ const addItemToMap = (settings) => {
     return settings.urlMap;
 };
 
-const handleNode = (response, item, urlMap, url, queryString) => {
-    typeLevels.article.urlLength = redefineTypeLevel(response);
+const handleNode = (settings) => {
+    typeLevels.article.urlLength = redefineTypeLevel(settings.response);
 
-    if (item.elements.url && typeLevels[item.system.type]) {
-        url.length = typeLevels[item.system.type].urlLength;
+    if (settings.item.elements.url && typeLevels[settings.item.system.type]) {
+        settings.url.length = typeLevels[settings.item.system.type].urlLength;
         let slug = '';
 
-        if (response.system && response.system.type === 'multiplatform_article') {
+        if (settings.response.system && settings.response.system.type === 'multiplatform_article') {
             // Handle "lang" query string in case articles are assigned to "multiplatform_article"
-            queryString = handleLangForMultiplatformArticle(queryString, item);
-        } else if (item.system && item.system.type === 'article' && globalConfig.isSitemap) {
+            settings.queryString = handleLangForMultiplatformArticle(settings.queryString, settings.item);
+        } else if (settings.item.system && settings.item.system.type === 'article' && globalConfig.isSitemap) {
             // Handle "lang" query string in case "article" has values selected in the "Platform" field
-            let tempProperties = handleLangForPlatformField({ item, slug, url, urlMap });
-            urlMap = tempProperties.urlMap;
+            let tempProperties = handleLangForPlatformField({ item: settings.item, slug, url: settings.url, urlMap: settings.urlMap });
+            settings.urlMap = tempProperties.urlMap;
             slug = tempProperties.slug;
-            url = tempProperties.url;
+            settings.url = tempProperties.url;
         } else {
-            slug = item.elements.url.value;
+            slug = settings.item.elements.url.value;
         }
 
         if (slug) {
-            url[url.length - 1] = slug;
+            settings.url[settings.url.length - 1] = slug;
         } else {
-            url.length = url.length - 1;
+            settings.url.length = settings.url.length - 1;
         }
     }
 
     // Add url to map
-    if (typeLevels[item.system.type]) {
-        urlMap = addItemToMap({ urlMap, item, url, queryString });
+    if (typeLevels[settings.item.system.type]) {
+        settings.urlMap = addItemToMap({ urlMap: settings.urlMap, item: settings.item, url: settings.url, queryString: settings.queryString });
     }
 
-    queryString = '';
+    settings.queryString = '';
 
-    return createUrlMap(item, url, urlMap);
+    return createUrlMap(settings.item, settings.url, settings.urlMap);
 };
 
 const createUrlMap = (response, url, urlMap = []) => {
@@ -146,7 +150,7 @@ const createUrlMap = (response, url, urlMap = []) => {
 
     if (response[node]) {
         response[node].forEach(item => {
-            urlMap = handleNode(response, item, urlMap, url, queryString);
+            urlMap = handleNode({ response, item, urlMap, url, queryString });
         });
     }
 
