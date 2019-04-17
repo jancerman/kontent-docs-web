@@ -16,8 +16,6 @@ if helper
     script var searchAPI={appid:"#{process.env['Search.AppId']}",apikey:"#{process.env['Search.ApiKey']}",indexname:"#{process.env['Search.IndexName']}"};
 if UIMessages
     script var UIMessages={copyUrl:"#{UIMessages.heading___copy_url_hover.value}",copyUrlActive:"#{UIMessages.heading___copy_url_active.value}",searchNoResults:"#{UIMessages.search___no_results.value}",dntLabel:"#{helper.removeNewLines(UIMessages.embedded_content_dnt_notice.value)}",copyCode:"#{UIMessages.code_block___copy_code_button.value}",copyCodeActive:"#{UIMessages.code_block___copy_code_button_active.value}"};
-script(src='https://cdn.jsdelivr.net/npm/algoliasearch@3.32.0/dist/algoliasearchLite.min.js', defer='')
-script(src='https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js', defer='')
 if (process.env['Intercom.id'] && !isPreview)
     script function logIntercom(){var urlSlug='#{slug}';var currentUrl=window.location.href;var metadata={'link-id':urlSlug,'target':currentUrl,'linkPlacement':'kentico-cloud-docs'};window.dataLayer.push({'event':'event','eventCategory':'docs-link-opened','metadata':metadata});}
 else
@@ -26,6 +24,8 @@ if (process.env['GTM.id'])
     script function initGTM(){(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;j.addEventListener('load',function(){logIntercom();});f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','#{process.env['GTM.id']}');};
 else 
     script function initGTM(){return false;}
+script(src='https://cdn.jsdelivr.net/npm/algoliasearch@3.32.0/dist/algoliasearchLite.min.js', defer='')
+script(src='https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js', defer='')
 script(src='/js/app.min.js?v=' + deployVersion, defer='', onload='initGTM()')
 if (process.env['Hotjar.id'])
     script (function(h,o,t,j,a,r){h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};h._hjSettings={hjid:#{process.env['Hotjar.id']},hjsv:6};a=o.getElementsByTagName('head')[0];r=o.createElement('script');r.async=1;r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;a.appendChild(r);})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');

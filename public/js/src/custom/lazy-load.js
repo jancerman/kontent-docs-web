@@ -57,9 +57,7 @@
             }, 20);
         }
     
-        document.addEventListener('scroll', lazyload, supportsPassive ? {
-            passive: true
-        } : false);
+        document.addEventListener('scroll', lazyload, supportsPassive ? { passive: true } : false);
         window.addEventListener('resize', lazyload);
         window.addEventListener('orientationChange', lazyload);
     };

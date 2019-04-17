@@ -116,25 +116,7 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
   return res.json(cache.get('urlMap'));
 }));
 
-app.use('/test', (req, res) => {
-  return res.send(`${process.env.APPINSIGHTS_INSTRUMENTATIONKEY}, ${process.env['KC.ProjectId']}, ${process.env['KC.PreviewApiKey']}`);
-});
-
 app.use('/cache-invalidate', bodyParser.text({ type: '*/*' }), cacheInvalidate);
-
-app.get('/design/home', (req, res) => {
-  return res.render('design/home', {
-    title: 'Home',
-    req: req
-  });
-});
-
-app.get('/design/article', (req, res) => {
-  return res.render('design/article', {
-    title: 'Article',
-    req: req
-  });
-});
 
 // catch 404 and forward to error handler
 app.use(async (req, res, next) => {
