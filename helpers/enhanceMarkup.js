@@ -17,6 +17,10 @@ const setWidthToImages = ($) => {
     });
 };
 
+const removeEmptyParagraph = ($) => {
+    $('p:empty').remove();
+};
+
 const processLinks = ($) => {
     $(`a[data-item-id][href=""]`).each(() => {
         var $that = $(this);
@@ -31,6 +35,7 @@ const enhanceMarkup = (text) => {
     replaceNodeWithItsContent($, 'p.kc-linked-item-wrapper, p:empty');
     setWidthToImages($);
     processLinks($);
+    removeEmptyParagraph($);
 
     let output = $.html();
     return output.replace('<html><head></head><body>', '').replace('</body></html>', '');

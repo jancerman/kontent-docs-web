@@ -16,6 +16,7 @@
         replaced = replaced.replace(/{~[^~]+~}/g, (match) => {
             return `<code>${match.replace('{~', '').replace('~}', '')}</code>`;
         });
+        
         node.innerHTML = replaced;
     };
 
