@@ -263,7 +263,7 @@ router.post(['/tutorials/:scenario', '/tutorials/:scenario/:topic/:article', '/o
         if (isRealUser) {
             delete req.body['g-recaptcha-response'];
             data.req.successForm = true;
-            req.body.url = req.originalUrl;
+            req.body.url = req.protocol + '://' + req.get('host') + req.originalUrl;
             await jira.createIssue(req.body);
         } else {
             data.req.isBot = true;

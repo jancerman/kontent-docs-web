@@ -4,7 +4,7 @@
 (() => {
 
     // Replace text by something else
-    const replaceText = function (node) {
+    const replaceText = (node) => {
         let current = node.innerHTML;
 
         // If macro in format {@ sometext @}, replace it by icon
@@ -17,10 +17,10 @@
             return `<code>${match.replace('{~', '').replace('~}', '')}</code>`;
         });
         node.innerHTML = replaced;
-    }
+    };
 
     // Traverse content
-    const traverse = function (node) {
+    const traverse = (node) => {
         let children = node.childNodes;
         let childLen = children.length;
 
@@ -33,7 +33,7 @@
                 traverse(child);
             }
         }
-    }
+    };
 
     // Traverse article content
     let articleContent = document.querySelector('#main');

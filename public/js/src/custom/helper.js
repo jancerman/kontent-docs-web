@@ -31,7 +31,7 @@ window.helper = (() => {
         var e = document.createElement('textarea');
         e.innerHTML = input;
         // handle case of empty input
-        return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+        return e.childNodes.length === 0 ? '' : e.childNodes[0].nodeValue;
     };
 
     // Get full height of an element
@@ -46,13 +46,16 @@ window.helper = (() => {
     // Helper function for event listeners bind to scroll events that makes them fire on setTimeout
     const debounce = (func, wait, immediate) => {
         var timeout;
+
         return function () {
             var context = this,
                 args = arguments;
+
             var later = function () {
                 timeout = null;
                 if (!immediate) func.apply(context, args);
             };
+
             var callNow = immediate && !timeout;
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
@@ -128,7 +131,7 @@ window.helper = (() => {
     // Ajax GET call
     const ajaxGet = (url, callback, type) => {
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", url, true);
+        xmlhttp.open('GET', url, true);
         xmlhttp.onreadystatechange = () => {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                 try {
@@ -216,9 +219,10 @@ window.helper = (() => {
             ['quot', '"']
         ];
 
-        for (var i = 0, max = entities.length; i < max; ++i)
+        for (var i = 0, max = entities.length; i < max; ++i) {
             text = text.replace(new RegExp('&' + entities[i][0] + ';', 'g'), entities[i][1]);
-
+        }
+        
         return text;
     };
 

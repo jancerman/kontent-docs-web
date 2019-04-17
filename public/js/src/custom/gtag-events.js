@@ -1,9 +1,9 @@
 (() => {
     // Iframes
-    var monitor = setInterval(intervals, 100);
+    let monitor = setInterval(intervals, 100);
 
     function intervals() {
-        var elem = document.activeElement;
+        let elem = document.activeElement;
         if (elem && elem.tagName === 'IFRAME' && elem.getAttribute('src') !== 'about:blank') {
             window.dataLayer.push({
                 'event': 'click',
@@ -19,7 +19,7 @@
     }
 
     function exitIframe(iframe) {
-        var elem = document.activeElement;
+        let elem = document.activeElement;
         if ((elem && elem.tagName !== 'IFRAME') || (elem && elem !== iframe)) {
             clearInterval(monitor);
             monitor = setInterval(intervals, 100);

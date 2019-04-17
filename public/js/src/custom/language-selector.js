@@ -28,6 +28,7 @@
     const highlightSelector = (articleContent, e) => { 
         let fixedLabel = document.querySelector('.language-selector__label'); 
         let textTofixedLabel;
+        
         if (e) {  
             helper.setCookie('KCDOCS.preselectedLanguage', e.target.getAttribute('data-platform'));
             articleContent.querySelectorAll('.language-selector__link--active').forEach(item => item.classList.remove('language-selector__link--active'));

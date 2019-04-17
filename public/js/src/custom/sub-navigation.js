@@ -29,7 +29,7 @@
         if (level2) {
             level2.addEventListener('click', event => {
                 if (event.target && event.target.classList.contains('sub-navigation__link')) {
-                    actionOnLevel2();
+                    actionOnLevel2(event);
                 }
             });
         }

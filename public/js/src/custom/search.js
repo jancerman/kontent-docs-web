@@ -17,6 +17,7 @@
     let emptySuggestions = true;
     let searchResultsNumber = 0;
     let arrowPressed = false;
+    let searchInput = document.querySelector('#nav-search');
 
     // Get injected KC API details 
     const projectIdUrl = helper.getParameterByName('projectid');
@@ -36,7 +37,7 @@
         e = e || window.event;
         if (e.keyCode == '38' || e.keyCode == '40' || e.keyCode == '37' || e.keyCode == '39') {
             arrowPressed = true;
-            document.querySelector('#nav-search').value = decodeURI(searchTerm);
+            searchInput.value = decodeURI(searchTerm);
         } else {
             arrowPressed = false;
         }
@@ -92,7 +93,7 @@
 
     const formatSuggestion = (suggestion, urlMap) => {
         // Store current search input value for use of querystring that is used in Google Analytics search terms
-        searchTerm = encodeURIComponent(document.querySelector('#nav-search').value);
+        searchTerm = encodeURIComponent(searchInput.value);
         emptySuggestions = false;
 
         // Get url from the urlMap
@@ -111,7 +112,7 @@
     };
 
     const formatEmptySuggestion = () => {
-        searchTerm = encodeURIComponent(document.querySelector('#nav-search').value);
+        searchTerm = encodeURIComponent(searchInput.value);
         emptySuggestions = true;
 
         // Template for a empty result
@@ -122,7 +123,7 @@
 
     const onAutocompleteSelected = (suggestion, context) => {
         searchResultSelected = true;
-        document.querySelector('#nav-search').value = decodeURI(searchTerm);
+        searchInput.value = decodeURI(searchTerm);
 
         logSearchTermSelected(searchTerm, suggestion.resolvedUrl);
 
@@ -139,7 +140,7 @@
         if (searchTerm !== '' && !searchResultSelected) {
             //Prevent logging twice when ESC key gets pressed
             setTimeout(() => {
-                if (document.getElementById('nav-search').value !== '') {
+                if (searchInput.value !== '') {
                     logSearchTermErased();
                 }
             }, 500);
@@ -217,7 +218,6 @@
     // On search input focus set timer that checks updates on the input
     // If the input gets empty, log it
     const searchTermObserver = () => {
-        let searchInput = document.getElementById('nav-search');
         let intervalErase;
         let intervalType;
 
@@ -276,9 +276,8 @@
         let search = document.querySelector(`.${prefix}__search`);
         if (search) {
             let icon = search.querySelector(`.${prefix}__search-icon`);
-            let input = search.querySelector(`#nav-search`);
             icon.addEventListener('click', () => {
-                input.focus();
+                searchInput.focus();
             });
         }
     };

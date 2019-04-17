@@ -2,11 +2,11 @@
  * Make tables spread reasonably it the page content
  */
 (() => {
+    const tables = document.querySelectorAll('.table');
+    const articleContent = document.querySelector('.article__content');
 
     // Set a wrapper to all tables
     const wrapTables = () => {
-        let tables = document.querySelectorAll('table');
-
         if (tables.length > 0) {
             tables.forEach(item => {
                 let wrapper = document.createElement('div');
@@ -24,12 +24,10 @@
 
     // Force size of table to the very right of the viewport if number of cells if more than 5
     const setWrapperSize = helper.debounce(() => {
-        let tables = document.querySelectorAll('.table');
-
         if (tables.length > 0) {
             let viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
             let websiteWidth = document.querySelector('main').offsetWidth;
-            let contentWidth = document.querySelector('.article__content').offsetWidth;
+            let contentWidth = articleContent.offsetWidth;
             let tableWidth = contentWidth + (viewportWidth - websiteWidth) / 2;
 
             tables.forEach(item => {
@@ -44,8 +42,7 @@
 
     // If cell count is lower than 6, set a max-size to them to prevent overflowing the table from the website container 
     const setCellMaxWidth = () => {
-        let tables = document.querySelectorAll('table');
-        let contentWidth = document.querySelector('.article__content').offsetWidth;
+        let contentWidth = articleContent.offsetWidth;
 
         if (tables.length > 0 && contentWidth > 768) {
             tables.forEach((item, index) => {
@@ -60,7 +57,7 @@
         }
     };
 
-    if (document.querySelector('.article__content')) {
+    if (articleContent) {
         wrapTables();
         setWrapperSize();
         setCellMaxWidth();

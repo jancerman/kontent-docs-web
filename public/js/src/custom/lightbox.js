@@ -3,7 +3,7 @@
  */
 (() => {
     setTimeout(() => {
-        document.querySelectorAll('.article__content img.article__add-lightbox').forEach(item => {
+        document.querySelectorAll('.article__content img.article__add-lightbox').forEach((item) => {
             let figcaption = '';
             let nextSibling = item.nextSibling;
             let nextNextSibling = nextSibling.nextSibling;

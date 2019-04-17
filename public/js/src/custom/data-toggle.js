@@ -4,8 +4,8 @@
  * */
 (() => {
     // Bind click event to all triggers
-    document.querySelectorAll('[data-toggle-trigger]').forEach(item => {
-        item.addEventListener('click', event => {
+    document.querySelectorAll('[data-toggle-trigger]').forEach((item) => {
+        item.addEventListener('click', (event) => {
             event.preventDefault();
 
             // Find target element according to the trigger name
