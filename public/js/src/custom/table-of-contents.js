@@ -3,9 +3,13 @@
  */
 
 (() => {
+    const articleContent = document.querySelector('.article__content');
+    const tableOfContentsWrapper = document.querySelector('.table-of-contents__list');
+    const tableOfContentsElem = document.querySelector('.table-of-contents');
+
     // For all sub-headings set their id and create the copy to clipboard icon
     const createAnchors = () => {
-        let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading):not(.feedback__heading), h3, h4');
+        let headings = articleContent.querySelectorAll('h2:not(.table-of-contents__heading):not(.feedback__heading), h3, h4');
 
         headings.forEach((item) => {
             let anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig,'').replace(/\W/g,'-');
@@ -19,7 +23,7 @@
         let anchors = document.querySelectorAll('.anchor-copy');
 
         anchors.forEach((item) => {
-            item.addEventListener('click', (event) => {
+            item.addEventListener('click', () => {
                 let hash = item.parentElement.getAttribute('id');
                 let url = window.location.href.split('#')[0];
                 helper.copyToClipboard(`${url}#${hash}`);
@@ -54,8 +58,7 @@
 
     // For all sub-headings create a list cascade representing table of contents and append it to the appropriate element
     const createTableOfContents = () => {
-        let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading):not(.table-of-contents__whatsnext):not(.feedback__heading)');
-        let tableOfContentsWrapper = document.querySelector('.table-of-contents__list');
+        let headings = articleContent.querySelectorAll('h2:not(.table-of-contents__heading):not(.table-of-contents__whatsnext):not(.feedback__heading)');
         let tableOfContents = '';
         let prevHeadingLevel = 2;
         headings.forEach(item => {
@@ -77,13 +80,12 @@
         tableOfContentsWrapper.innerHTML = tableOfContents;
 
         if (tableOfContentsWrapper.innerHTML) {
-            document.querySelector('.table-of-contents').classList.add('table-of-contents--render');
+            tableOfContentsElem.classList.add('table-of-contents--render');
         }
     };
 
     // Scroll to appropriate anchor when a table of content items gets clicked
     const bindSmothScroll = () => {
-        let tableOfContentsWrapper = document.querySelector('.table-of-contents__list');
         tableOfContentsWrapper.addEventListener('click', (event) => {
             if(event.target && event.target.nodeName === 'A') {
                 event.preventDefault();
@@ -93,7 +95,7 @@
         });
     };
 
-    if (document.querySelector('.table-of-contents')) {
+    if (tableOfContentsElem) {
         setTimeout(() => {
             createAnchors();
             createTableOfContents();

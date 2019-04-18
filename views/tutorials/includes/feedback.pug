@@ -1,0 +1,43 @@
+mixin error(errors, field)
+    if (typeof errors !== 'undefined' && errors.length)
+        each err in errors
+            if (err.param === field)
+                .form__error !{err.msg}
+mixin input(type, id, label, className)
+    div(class=`form__row${className ? ' ' + className : '' }`)
+        input.form__input(id=id, name=id, type=type, value=getFormValue(req.body, id))
+        if label
+            label.form__label(for=id) #{label}
+        +error(req.errorForm, id)
+mixin textarea(id, label)
+    .form__row
+        textarea.form__input.form__input--textarea(id=id, name=id, required='required') !{getFormValue(req.body, id)}
+        if label
+            label.form__label(for=id) #{label}
+        +error(req.errorForm, id)
+if UIMessages
+    div(class=`feedback${req.formPosted ? ' feedback--posted' : ''}`)#feedback-form
+        h2.feedback__heading !{UIMessages.feedback_form___heading.value}
+        .feedback__answer
+            a.feedback__button.feedback__button--yes(href='#yesMsg') !{UIMessages.feedback_form___yes_button.value}
+            a.feedback__button.feedback__button--no(href='#noMsg') !{UIMessages.feedback_form___no_button.value}
+        if req.successForm
+            .feedback__response
+                .feedback__message#formSentMsg.feedback__message--form-sent !{UIMessages.feedback_form___yes_message.value}
+        else if req.isBot
+            .feedback__response
+                .form__warning !{UIMessages.feedback_form___recaptcha_message.value}
+        else
+            .feedback__response
+                .feedback__message#yesMsg.feedback__message--yes !{UIMessages.feedback_form___yes_message.value}
+                .feedback__message#noMsg.feedback__message--no !{UIMessages.feedback_form___no_message.value}
+            form(action=req.originalUrl, method='post').feedback__form.form
+                +textarea('feedback', UIMessages.feedback_form___feedback_label.value)
+                +input('email', 'email', UIMessages.feedback_form___email_label.value)
+                +input('hidden', 'g-recaptcha-response', null, 'hidden')
+                .form__row.form__row--btn
+                    button.form__button !{UIMessages.feedback_form___submit_button.value}
+    if process.env['Recaptcha-v3.site']
+        #recaptcha-script(data-site=process.env['Recaptcha-v3.site'])
+    if req.anchor
+        script window.onload = function(){document.querySelector('##{req.anchor}').scrollIntoView({block:'start',behavior:'smooth'});history.replaceState(undefined, undefined, window.location.pathname+'##{req.anchor}');}

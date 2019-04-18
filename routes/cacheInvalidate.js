@@ -11,7 +11,7 @@ const isValidSignature = (req, secret) => {
     return crypto.timingSafeEqual(Buffer.from(givenSignature, 'base64'), computedSignature);
 };
 
-router.post('/platforms-config', (req, res, next) => {
+router.post('/platforms-config', (req, res) => {
     if (process.env['Webhook.Cache.Invalidate.PlatformsConfig']) {
         if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.PlatformsConfig'])) {
             let picker = JSON.parse(req.body).data.items.filter(item => item.codename === 'platform_picker');
@@ -24,7 +24,7 @@ router.post('/platforms-config', (req, res, next) => {
     res.end();
 });
 
-router.post('/url-map', (req, res, next) => {
+router.post('/url-map', (req, res) => {
     if (process.env['Webhook.Cache.Invalidate.UrlMap']) {
         if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.UrlMap'])) {
             cache.del('urlMap');

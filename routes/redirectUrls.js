@@ -49,13 +49,13 @@ const getredirectUrls = async (res) => {
   return redirectMap;
 }
 
-router.get('/', asyncHandler(async (req, res, next) => {
+router.get('/', asyncHandler(async (req, res) => {
   const footer = await commonContent.getFooter(res);
   const UIMessages = await commonContent.getUIMessages(res);
   const navigation = await getNavigation(res);
   const redirectMap = await getredirectUrls(res);
 
-  return res.render('pages/redirectUrls', {
+  return res.render('tutorials/pages/redirectUrls', {
     req: req,
     minify: minify,
     isPreview: isPreview(res.locals.previewapikey),

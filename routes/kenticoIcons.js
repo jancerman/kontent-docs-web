@@ -3,7 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const asyncHandler = require('express-async-handler');
 
-router.get('/', asyncHandler(async (req, res, next) => {
+router.get('/', asyncHandler(async (req, res) => {
     let icons = await axios.get('https://cdn.jsdelivr.net/gh/Kentico/kentico-icons/production/icon-variables.less');
 
     let lines = icons.data.split('\n');

@@ -1,0 +1,40 @@
+extends ../includes/layout.pug
+block content
+    #redoc
+    script(src='https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js')
+    script.
+        Redoc.init('https://gist.githubusercontent.com/jancerman/248759d3ae8b088dee38c983adca949f/raw/8ac4355e098ae5f38d3e581f91524bd563426a32/OHP%20OAS%20Proto.yaml', {
+            scrollYOffset: 60,
+            hideDownloadButton: true,
+            theme: {
+                colors: {
+                   primary: {
+                       main: '#e75810'
+                   } 
+                },
+                code: {
+                    fontSize: '13px',
+                    fontFamily: 'Inconsolata, monospace',
+                    color: '#000',
+                    backgroundColor: '#f5f2f0',
+                },
+                rightPanel: {
+                    backgroundColor: '#f5f2f0',
+                    width: '40%',
+                    textColor: '#fff',
+                },
+                codeSample: {
+                    backgroundColor: '#2D373B',
+                }
+            }
+        }, document.getElementById('redoc'), function () {
+            var preselectedPlatform = helper.getCookie('KCDOCS.preselectedLanguage');
+
+            document.querySelectorAll('.react-tabs__tab').forEach((item) => {
+                var idName = item.innerHTML.replace(/\./g, '_').toLowerCase();
+                console.log(idName, preselectedPlatform);
+                if (idName === preselectedPlatform) {
+                    item.click();
+                }
+            });
+        });

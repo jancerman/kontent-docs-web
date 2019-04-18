@@ -17,12 +17,14 @@ const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
 const certification = require('./routes/certification');
 const sitemap = require('./routes/sitemap');
+const rss = require('./routes/rss');
 const robots = require('./routes/robots');
 const kenticoIcons = require('./routes/kenticoIcons');
 const urlAliases = require('./routes/urlAliases');
 const redirectUrls = require('./routes/redirectUrls');
 const previewUrls = require('./routes/previewUrls');
 const cacheInvalidate = require('./routes/cacheInvalidate');
+// const apiReference = require('./routes/apiReference');
 const error = require('./routes/error');
 
 const app = express();
@@ -50,6 +52,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: 86400000
 }));
+app.enable('trust proxy');
 
 const handleKCKeys = (req, res) => {
   if (typeof req.query.projectid !== 'undefined') {
@@ -106,35 +109,19 @@ app.use('/', home);
 app.use('/', tutorials);
 app.use('/', previewUrls);
 app.use('/certification', certification);
+// app.use('/api-reference', apiReference);
 app.use('/redirect-urls', redirectUrls);
 
 app.use('/kentico-icons.min.css', kenticoIcons);
 app.use('/sitemap.xml', sitemap);
+app.use('/rss', rss);
 app.use('/robots.txt', robots);
 
-app.get('/urlmap', asyncHandler(async (req, res, next) => {
+app.get('/urlmap', asyncHandler(async (req, res) => {
   return res.json(cache.get('urlMap'));
 }));
 
-app.use('/test', (req, res, next) => {
-  return res.send(`${process.env.APPINSIGHTS_INSTRUMENTATIONKEY}, ${process.env['KC.ProjectId']}, ${process.env['KC.PreviewApiKey']}`);
-});
-
 app.use('/cache-invalidate', bodyParser.text({ type: '*/*' }), cacheInvalidate);
-
-app.get('/design/home', (req, res, next) => {
-  return res.render('design/home', {
-    title: 'Home',
-    req: req
-  });
-});
-
-app.get('/design/article', (req, res, next) => {
-  return res.render('design/article', {
-    title: 'Article',
-    req: req
-  });
-});
 
 // catch 404 and forward to error handler
 app.use(async (req, res, next) => {

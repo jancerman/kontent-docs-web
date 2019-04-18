@@ -19,6 +19,10 @@ const normalizePort = val => {
     return false;
 };
 
+// Get port from environment and store in Express.
+const port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
 // Event listener for HTTP server 'error' event.
 const onError = error => {
     if (error.syscall !== 'listen') {
@@ -40,19 +44,15 @@ const onError = error => {
     }
 };
 
+// Create HTTP server.
+const server = http.createServer(app);
+
 // Event listener for HTTP server 'listening' event.
 const onListening = () => {
     var addr = server.address();
     var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
     debug('Listening on ' + bind);
 };
-
-// Get port from environment and store in Express.
-const port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
-
-// Create HTTP server.
-const server = http.createServer(app);
 
 // Listen on provided port, on all network interfaces.
 server.listen(port);

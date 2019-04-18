@@ -3,7 +3,7 @@
  */
 (() => {
     setTimeout(() => {
-        document.querySelectorAll('.article__content img.article__add-lightbox').forEach(item => {
+        document.querySelectorAll('.article__content img.article__add-lightbox').forEach((item) => {
             let figcaption = '';
             let nextSibling = item.nextSibling;
             let nextNextSibling = nextSibling.nextSibling;
@@ -24,7 +24,7 @@
             }
             
             // Init lighbox with caption
-            item.addEventListener('click', event => {
+            item.addEventListener('click', () => {
                 basicLightbox.create(`<img src="${item.getAttribute('src').split("?")[0] + '?w=1600'}">${figcaption}`).show();
             });
         });

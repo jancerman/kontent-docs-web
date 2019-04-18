@@ -21,7 +21,11 @@ const helper = {
     getValidationMessages: (errors, data) => {
         errors.forEach((item) => {
             if (item.msg) {
-                if (data.content[item.msg] && data.content[item.msg].value) {
+                if (data.elements && data.elements[item.msg] && data.elements[item.msg].value) {
+                    item.msg = data.elements[item.msg].value;
+                }
+
+                if (data.content && data.content[item.msg] && data.content[item.msg].value) {
                     item.msg = data.content[item.msg].value;
                 }
             }
@@ -74,12 +78,15 @@ const helper = {
                     break;
                 default:
                     lang += 'clike';
-            };
+            }
         } else {
             lang += 'clike';
         }
 
         return lang;
+    },
+    stripTags: (text) => {
+        return text.replace(/<\/?[^>]+(>|$)/g, '');
     }
 };
 

@@ -10,7 +10,7 @@ const helper = require('../helpers/helperFunctions');
 const lms = require('../helpers/lms');
 const recaptcha = require('../helpers/recaptcha');
 
-const getCertificationContent = async (req, res, next) => {
+const getCertificationContent = async (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
 
     const tree = await commonContent.getTree('home', 1, KCDetails);
@@ -42,7 +42,7 @@ const getCertificationContent = async (req, res, next) => {
 router.get('/', asyncHandler(async (req, res, next) => {
     let data = await getCertificationContent(req, res, next);
     if (!data) return next();
-    return res.render('pages/certification', data);
+    return res.render('tutorials/pages/certification', data);
 }));
 
 router.post('/', [
@@ -81,7 +81,7 @@ router.post('/', [
     }
 
     data.req.anchor = 'certification-form';
-    return res.render('pages/certification', data);
+    return res.render('tutorials/pages/certification', data);
 }));
 
 module.exports = router;

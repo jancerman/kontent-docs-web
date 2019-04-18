@@ -1,10 +1,10 @@
 (() => {
     // Iframes
-    var monitor = setInterval(intervals, 100);
+    let monitor = setInterval(intervals, 100);
 
     function intervals() {
-        var elem = document.activeElement;
-        if (elem && elem.tagName == 'IFRAME' && elem.getAttribute('src') !== 'about:blank') {
+        let elem = document.activeElement;
+        if (elem && elem.tagName === 'IFRAME' && elem.getAttribute('src') !== 'about:blank') {
             window.dataLayer.push({
                 'event': 'click',
                 'eventCategory': 'Embed',
@@ -19,24 +19,10 @@
     }
 
     function exitIframe(iframe) {
-        var elem = document.activeElement;
-        if ((elem && elem.tagName != 'IFRAME') || (elem && elem != iframe)) {
+        let elem = document.activeElement;
+        if ((elem && elem.tagName !== 'IFRAME') || (elem && elem !== iframe)) {
             clearInterval(monitor);
             monitor = setInterval(intervals, 100);
         }
     }
 })();
-/*
-function logSearch() {
-    // Search number of results
-    const searchTerm = helper.getParameterByName('searchterm');
-    const searchNumber = helper.getParameterByName('searchnumber');
-    if (searchTerm && searchNumber) {
-        window.dataLayer.push({
-            'event': 'event',
-            'eventCategory': 'search--searched-results',
-            'eventAction': decodeURI(searchTerm),
-            'eventLabel': searchNumber
-        });
-    }
-}*/

@@ -1,50 +1,86 @@
 .form {
+    padding: .25em 0 0;
 
 	&__heading {
 
-	}
+    }
+    
+    &__row {
+        position: relative;
+        padding: 1.375em 0 0;
+
+        &--btn {
+            padding: 1em 0 0;
+        }
+    }
 
 	&__label {
         display: block;
         padding: 0 0 .125em;
+        position: absolute;
+        top: 2em;
+        left: .875em;
+        transition: all .25s;
+        color: #a3a2a2;
 	}
 
 	&__input {
+        position: relative;
         display: block;
         max-width: 360px;
         width: 100%;
-        padding: .375em .75em;
+        padding: .75em .875em;
         border-radius: 0;
         -webkit-appearance: none;
-        border: 2px solid #F3F6F7;
         background-color: #F3F6F7;
+        border: none;
         color: #2D373B;
         font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
         line-height: 1.25em;
         transition: all 0.25s;
-        outline-color: #008AE1;
-        margin: 0 0 .375em;
+        outline: none; 
+        margin: 0 0 .125em;
         box-sizing: border-box;
+        transition: all .25s;
+
+        &:focus {
+            box-shadow: inset .25em 0 0 0 #008AE1;
+
+            & + .form__label,
+            & + * + .form__label {
+                top: 0;
+                left: 0;
+                font-size: .75em;
+            }
+        } 
+
+        &--value {
+            & + .form__label,
+            & + * + .form__label {
+                top: 0;
+                left: 0;
+                font-size: .75em;
+            }
+        }
 	}
 
 	&__button {
-        background-color: #378de1;
-        color: #fff;
-        border-color: #378de1;
-        border: 1px solid #378de1;
-        border-radius: 0;
-        -webkit-appearance: none;
-        padding: .375em .75em;
-        cursor: pointer;
+        display: inline-block;
+		color: #fff;
+		text-transform: uppercase;
+        padding: .5em 1.5em;
+        border: none;
+		border-bottom: .25em solid;
+		text-decoration: none;
         font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-        margin: 1em 0 0;
+        background-color: #f05a22;
+        border-color: #db531f;
+        cursor: pointer;
         font-size: 1em;
-        transition: all 0.25s;
+        transition: .25s;
 
         &:hover {
-            background-color: #e36a57;
-            border-color: #e36a57;
-            border: 1px solid #e36a57;
+            background-color: #db531f;
         }
     }
     

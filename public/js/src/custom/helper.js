@@ -22,6 +22,18 @@ window.helper = (() => {
         return parents;
     };
 
+    const findAncestor = (el, sel) =>{
+        while ((el = el.parentElement) && !((el.matches || el.matchesSelector).call(el, sel)));
+        return el;
+    };
+
+    const htmlDecode = (input) => {
+        var e = document.createElement('textarea');
+        e.innerHTML = input;
+        // handle case of empty input
+        return e.childNodes.length === 0 ? '' : e.childNodes[0].nodeValue;
+    };
+
     // Get full height of an element
     const outerHeight = (el) => {
         var height = el.offsetHeight;
@@ -34,13 +46,16 @@ window.helper = (() => {
     // Helper function for event listeners bind to scroll events that makes them fire on setTimeout
     const debounce = (func, wait, immediate) => {
         var timeout;
+
         return function () {
             var context = this,
                 args = arguments;
+
             var later = function () {
                 timeout = null;
                 if (!immediate) func.apply(context, args);
             };
+
             var callNow = immediate && !timeout;
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
@@ -116,7 +131,7 @@ window.helper = (() => {
     // Ajax GET call
     const ajaxGet = (url, callback, type) => {
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", url, true);
+        xmlhttp.open('GET', url, true);
         xmlhttp.onreadystatechange = () => {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                 try {
@@ -204,9 +219,10 @@ window.helper = (() => {
             ['quot', '"']
         ];
 
-        for (var i = 0, max = entities.length; i < max; ++i)
+        for (var i = 0, max = entities.length; i < max; ++i) {
             text = text.replace(new RegExp('&' + entities[i][0] + ';', 'g'), entities[i][1]);
-
+        }
+        
         return text;
     };
 
@@ -218,25 +234,56 @@ window.helper = (() => {
             expires = '; expires=' + date.toUTCString();
         }
         document.cookie = name + '=' + (value || '')  + expires + '; path=/';
-    }
+    };
 
     const getCookie = (name) => {
         var nameEQ = name + '=';
         var ca = document.cookie.split(';');
         for(var i=0;i < ca.length;i++) {
             var c = ca[i];
-            while (c.charAt(0)==' ') c = c.substring(1,c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+            while (c.charAt(0)===' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length,c.length);
         }
         return null;
-    }
+    };
 
     const eraseCookie = (name) => {   
         document.cookie = name+'=; Max-Age=-99999999;';  
-    }
+    };
+
+    const executeRecaptcha = (recaptchaKey) => {
+        grecaptcha.execute(recaptchaKey).then((token) => {
+            var ri = document.querySelector('#g-recaptcha-response');
+            if (ri) {
+                ri.value = token;
+            }
+        });
+    };
+
+    const initRecaptcha = (recaptchaKey) => {
+        grecaptcha.ready(() => {
+            executeRecaptcha(recaptchaKey);
+        });
+    };
+
+    const loadRecaptcha = () => {
+        let recaptchaElem = document.querySelector('#recaptcha-script');
+        let recaptchaKey = recaptchaElem.getAttribute('data-site');
+
+        if (recaptchaElem && recaptchaKey) {
+            var script = document.createElement('script');
+            script.onload = () => {
+                initRecaptcha(recaptchaKey);
+            };
+            script.src = 'https://www.google.com/recaptcha/api.js?render=' + recaptchaKey;
+            recaptchaElem.appendChild(script);
+        }
+    };
 
     return {
         getParents: getParents,
+        findAncestor: findAncestor,
+        htmlDecode: htmlDecode,
         outerHeight: outerHeight,
         debounce: debounce,
         createElementFromHTML: createElementFromHTML,
@@ -249,15 +296,21 @@ window.helper = (() => {
         decodeHTMLEntities: decodeHTMLEntities,
         setCookie: setCookie,
         getCookie: getCookie,
-        eraseCookie: eraseCookie
+        eraseCookie: eraseCookie,
+        loadRecaptcha: loadRecaptcha
     }
 })();
 
 // Adds forEach function to NodeList class prototype
+// Adds matches function for IE11
 (() => {
     if (typeof NodeList.prototype.forEach === 'function') {
         return false;
     } else {
         NodeList.prototype.forEach = Array.prototype.forEach;
+    }
+
+    if (!Element.prototype.matches) {
+        Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
     }
 })();
