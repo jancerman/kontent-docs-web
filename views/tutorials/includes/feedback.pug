@@ -5,7 +5,7 @@ mixin error(errors, field)
                 .form__error !{err.msg}
 mixin input(type, id, label, className)
     div(class=`form__row${className ? ' ' + className : '' }`)
-        input.form__input(id=id, name=id, type=type, value=getFormValue(req.body, id), required='required')
+        input.form__input(id=id, name=id, type=type, value=getFormValue(req.body, id))
         if label
             label.form__label(for=id) #{label}
         +error(req.errorForm, id)
@@ -32,8 +32,8 @@ if UIMessages
                 .feedback__message#yesMsg.feedback__message--yes !{UIMessages.feedback_form___yes_message.value}
                 .feedback__message#noMsg.feedback__message--no !{UIMessages.feedback_form___no_message.value}
             form(action=req.originalUrl, method='post').feedback__form.form
-                +input('email', 'email', UIMessages.feedback_form___email_label.value)
                 +textarea('feedback', UIMessages.feedback_form___feedback_label.value)
+                +input('email', 'email', UIMessages.feedback_form___email_label.value)
                 +input('hidden', 'g-recaptcha-response', null, 'hidden')
                 .form__row.form__row--btn
                     button.form__button !{UIMessages.feedback_form___submit_button.value}

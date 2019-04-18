@@ -245,7 +245,7 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
 }));
 
 router.post(['/tutorials/:scenario', '/tutorials/:scenario/:topic/:article', '/other/:article', '/whats-new/:scenario', '/whats-new/:scenario/:topic/:article'], [
-    check('email').not().isEmpty().withMessage((value, { req, location, path }) => {
+    check('email').isEmail().withMessage((value, { req, location, path }) => {
         return 'feedback_form___empty_field_validation';
     }).trim(),
     check('feedback').not().isEmpty().withMessage((value, { req, location, path }) => {
