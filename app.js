@@ -109,7 +109,7 @@ app.use('/', home);
 app.use('/', tutorials);
 app.use('/', previewUrls);
 app.use('/certification', certification);
-app.use('/api-reference', apiReference);
+// app.use('/api-reference', apiReference);
 app.use('/redirect-urls', redirectUrls);
 
 app.use('/kentico-icons.min.css', kenticoIcons);

@@ -3,6 +3,7 @@ const asyncHandler = require('express-async-handler');
 const router = express.Router();
 const cache = require('memory-cache');
 const requestDelivery = require('../helpers/requestDelivery');
+const moment = require('moment');
 const Entities = require('html-entities').AllHtmlEntities;
 const entities = new Entities();
 
@@ -31,6 +32,7 @@ router.get('/articles', asyncHandler(async (req, res, next) => {
         home: home[0],
         helper: helper,
         entities: entities,
+        moment: moment,
         articles: articles,
         urlMap: urlMap
     });
