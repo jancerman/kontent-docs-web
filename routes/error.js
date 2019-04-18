@@ -26,7 +26,7 @@ const error = async (req, res) => {
         ...KCDetails
     });
 
-    return res.render('pages/error', {
+    return res.render('tutorials/pages/error', {
         req: req,
         minify: minify,
         slug: '404',

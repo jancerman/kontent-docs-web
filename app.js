@@ -23,6 +23,7 @@ const urlAliases = require('./routes/urlAliases');
 const redirectUrls = require('./routes/redirectUrls');
 const previewUrls = require('./routes/previewUrls');
 const cacheInvalidate = require('./routes/cacheInvalidate');
+const apiReference = require('./routes/apiReference');
 const error = require('./routes/error');
 
 const app = express();
@@ -50,6 +51,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: 86400000
 }));
+app.enable('trust proxy');
 
 const handleKCKeys = (req, res) => {
   if (typeof req.query.projectid !== 'undefined') {
@@ -106,6 +108,7 @@ app.use('/', home);
 app.use('/', tutorials);
 app.use('/', previewUrls);
 app.use('/certification', certification);
+app.use('/api-reference', apiReference);
 app.use('/redirect-urls', redirectUrls);
 
 app.use('/kentico-icons.min.css', kenticoIcons);

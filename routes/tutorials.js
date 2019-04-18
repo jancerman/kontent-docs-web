@@ -154,7 +154,7 @@ const getContent = async (req, res) => {
     const footer = await commonContent.getFooter(res);
     const UIMessages = await commonContent.getUIMessages(res);
     let content = await getContentLevel(currentLevel, KCDetails, urlMap, req);
-    let view = 'pages/article';
+    let view = 'tutorials/pages/article';
     let availablePlatforms;
 
     let queryHash = req.url.split('?')[1];
@@ -167,7 +167,7 @@ const getContent = async (req, res) => {
         if (currentLevel === -1) {
             return `/${slug}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else if (currentLevel === 0) {
-            view = 'pages/scenario';
+            view = 'tutorials/pages/scenario';
         } else if (currentLevel === 1) {
             return `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else if (currentLevel === 2) {

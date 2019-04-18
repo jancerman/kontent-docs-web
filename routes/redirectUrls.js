@@ -55,7 +55,7 @@ router.get('/', asyncHandler(async (req, res) => {
   const navigation = await getNavigation(res);
   const redirectMap = await getredirectUrls(res);
 
-  return res.render('pages/redirectUrls', {
+  return res.render('tutorials/pages/redirectUrls', {
     req: req,
     minify: minify,
     isPreview: isPreview(res.locals.previewapikey),
