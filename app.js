@@ -24,7 +24,7 @@ const urlAliases = require('./routes/urlAliases');
 const redirectUrls = require('./routes/redirectUrls');
 const previewUrls = require('./routes/previewUrls');
 const cacheInvalidate = require('./routes/cacheInvalidate');
-const apiReference = require('./routes/apiReference');
+// const apiReference = require('./routes/apiReference');
 const error = require('./routes/error');
 
 const app = express();
@@ -129,7 +129,7 @@ app.use(async (req, res, next) => {
 });
 
 // error handler
-app.use(async (err, req, res) => {
+app.use(async (err, req, res, _next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
