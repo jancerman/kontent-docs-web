@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+rss(version='2.0')
+    channel
+        title !{home.elements.title.value}
+        | <link>!{req.protocol + '://' + req.get('host')}</link>
+        | <description><![CDATA[!{entities.decode(helper.stripTags(home.elements.description.value).trim())}]]></description>
+        each article in articles
+            - var path = urlMap.filter((item) => { return item.codename === article.system.codename });
+            if path.length
+                item
+                    title !{article.title.value}
+                    | <description><![CDATA[!{entities.decode(helper.stripTags(article.introduction.value).trim())}]]></description>
+                    | <link>!{req.protocol + '://' + req.get('Host') + path[0].url}</link>

@@ -17,6 +17,7 @@ const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
 const certification = require('./routes/certification');
 const sitemap = require('./routes/sitemap');
+const rss = require('./routes/rss');
 const robots = require('./routes/robots');
 const kenticoIcons = require('./routes/kenticoIcons');
 const urlAliases = require('./routes/urlAliases');
@@ -113,6 +114,7 @@ app.use('/redirect-urls', redirectUrls);
 
 app.use('/kentico-icons.min.css', kenticoIcons);
 app.use('/sitemap.xml', sitemap);
+app.use('/rss', rss);
 app.use('/robots.txt', robots);
 
 app.get('/urlmap', asyncHandler(async (req, res) => {

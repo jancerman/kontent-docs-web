@@ -21,15 +21,31 @@ const defineDeliveryConfig = (config) => {
     }
 };
 
+const addQueryToOrder = (query, config) => {
+    if (config.order.field && config.order.type) {
+        if (config.order.type === 'descending') {
+            query.orderByDescending(config.order.field);
+        }
+
+        if (config.order.type === 'ascending') {
+            query.orderByAscending(config.order.field);
+        }
+    }
+
+    return query;
+};
+
 const defineQuery = (deliveryConfig, config) => {
     const deliveryClient = new KenticoCloud.DeliveryClient(deliveryConfig);
 
-    const query = deliveryClient.items()
+    let query = deliveryClient.items()
         .type(config.type);
 
-        if (config.codename) { query.equalsFilter('system.codename', config.codename); };
-        if (config.depth) { query.depthParameter(config.depth); };
-        if (config.slug) { query.equalsFilter('elements.url', config.slug); };
+        if (config.codename) { query.equalsFilter('system.codename', config.codename); }
+        if (config.depth) { query.depthParameter(config.depth); }
+        if (config.slug) { query.equalsFilter('elements.url', config.slug); }
+        if (config.limit) { query.limitParameter(config.limit) }
+        if (config.order) { query = addQueryToOrder(query, config); }
 
     return query;
 };
