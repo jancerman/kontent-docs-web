@@ -150,13 +150,12 @@
     const getSuggestionsSource = (hitsSource, query, callback) => {
         hitsSource(query, (suggestions) => {
             searchResultsNumber = suggestions.length;
-            let limitedSuggestions = [];
-            let limit = suggestions.length <= 8 ? suggestions.length : 8;
+            let formattedSuggestions = [];
 
-            for (let i = 0; i < limit; i++) {
-                limitedSuggestions.push(formatSuggestionContent(suggestions[i]))
+            for (let i = 0; i < suggestions.length; i++) {
+                formattedSuggestions.push(formatSuggestionContent(suggestions[i]))
             }
-            callback(limitedSuggestions);
+            callback(formattedSuggestions);
         });
     };
 
@@ -170,7 +169,8 @@
         autocomplete('#nav-search', {
                 autoselect: true,
                 openOnFocus: true,
-                clearOnSelected: false
+                clearOnSelected: false,
+                debug: true
             }, [{
                 source: (query, callback) => {
                     getSuggestionsSource(hitsSource, query, callback);

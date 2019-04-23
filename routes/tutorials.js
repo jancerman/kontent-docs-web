@@ -247,7 +247,7 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
 router.post(['/tutorials/:scenario', '/tutorials/:scenario/:topic/:article', '/other/:article', '/whats-new/:scenario', '/whats-new/:scenario/:topic/:article'], [
     check('feedback').not().isEmpty().withMessage((value, { req, location, path }) => {
         return 'feedback_form___empty_field_validation';
-    }).trim(),
+    }).trim()
 ], asyncHandler(async (req, res, next) => {
     let data = await getContent(req, res, next);
     if (!data) return next();
