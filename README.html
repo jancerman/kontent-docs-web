@@ -37,17 +37,33 @@
 <ol>
 <li>Clone the project repository.</li>
 <li>Run <code>npm install</code> in the terminal.</li>
-<li>Run <code>npm start</code> to start a development server.</li>
+<li>Run <code>npm run debug</code> to start a development server.</li>
 <li>The website can be opened in your browser at <a href="http://localhost:3000">http://localhost:3000</a>.</li>
 </ol>
-<h4 id="required-keys">Required Keys</h4>
+<h4 id="required-environmental-variables">Required environmental variables</h4>
 <ul>
 <li><code>KC.ProjectId</code> - Kentico Cloud project ID</li>
 <li><code>KC.PreviewApiKey</code> - Kentico Cloud preview API key (set this key to retrieve preview content from Kentico Cloud)</li>
-<li><code>Search.ApiKey</code> - Algolia search-only API key</li>
-<li><code>Search.AppId</code> - Algolia application ID</li>
-<li><code>Search.IndexName</code> - Index name in Algolia application</li>
-<li><code>APPINSIGHTS_INSTRUMENTATIONKEY</code> - Application Insights key</li>
+</ul>
+<h4 id="optional-environmental-variables">Optional environmental variables</h4>
+<p>Without the following variables, related features will not work on the website.</p>
+<ul>
+<li><code>Search.ApiKey</code> - Algolia search-only API key (used for site search)</li>
+<li><code>Search.AppId</code> - Algolia application ID (used for site search)</li>
+<li><code>Search.IndexName</code> - Index name in Algolia application (used for site search)</li>
+<li><code>APPINSIGHTS_INSTRUMENTATIONKEY</code> - Application Insights key (used for application monitoring)</li>
+<li><code>GTM.id</code> - Google Tag Manager ID (used for analytics)</li>
+<li><code>Intercom.id</code> - Intercom account ID (used for support chat)</li>
+<li><code>LMS.id</code> - Kentico e-Learning API key (used for certification course and exam registration)</li>
+<li><code>Recaptcha-v3.secret</code> - Google Recaptcha v3 secret API key (used for forms robot protection)</li>
+<li><code>Recaptcha-v3.site</code> - Google Recaptcha v3 site API key (used for forms robot protection)</li>
+<li><code>Hotjar.id</code> - Hotjar account ID (used for analytics)</li>
+<li><code>Webhook.Cache.Invalidate.PlatformsConfig</code> - Kentico Cloud Webhook token (used for PlatformsConfig cache invalidation)</li>
+<li><code>Webhook.Cache.Invalidate.UrlMap</code> - Kentico Cloud Webhook token (used for UrlMap cache invalidation)</li>
+<li><code>Jira.User</code> - User email for a Jira account (used for feedback form)</li>
+<li><code>Jira.Token</code> - Jira API key (used for feedback form)</li>
+<li><code>Jira.TMSNTST</code> - Jira Project codename (used for feedback form)</li>
+<li><code>Jira.IssueType</code> - Jira Issue index (used for feedback form)</li>
 </ul>
 <h2 id="how-to-contribute">How To Contribute</h2>
 <p>Feel free to open a new issue where you describe your proposed changes, or even create a new pull request from your branch with proposed changes.</p>
