@@ -167,7 +167,7 @@ const getContent = async (req, res) => {
     let preselectedPlatform;
     let canonicalUrl;
     cookiesPlatform = req.cookies['KCDOCS.preselectedLanguage'];
-    
+
     if (content[0]) {
         if (currentLevel === -1) {
             return `/${slug}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
@@ -176,11 +176,10 @@ const getContent = async (req, res) => {
         } else if (currentLevel === 1) {
             return `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else if (currentLevel === 2) {
-            preselectedPlatform = getPreselectedPlatform(content[0], req, res);     
+            preselectedPlatform = getPreselectedPlatform(content[0], req, res);
             canonicalUrl = getCanonicalUrl(urlMap, content[0], preselectedPlatform);
 
             if (content[0].system.type === 'multiplatform_article') {
-                
                 let platformItem = content[0].children.filter(item => {
                     if (item.platform.value.length) {
                         return item.platform.value[0].codename === preselectedPlatform;
