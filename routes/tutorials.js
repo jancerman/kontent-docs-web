@@ -90,7 +90,7 @@ const getPreselectedPlatform = (content, req, res) => {
     let preselectedPlatform = req.query.lang;
     if (preselectedPlatform) {
         let tempPlatforms = platformsConfig ? platformsConfig.filter(item => item.elements.url.value === preselectedPlatform) : null;
-        if (tempPlatforms.length) {
+        if (tempPlatforms && tempPlatforms.length) {
             preselectedPlatform = tempPlatforms[0].system.codename;
             res.cookie('KCDOCS.preselectedLanguage', preselectedPlatform);
             cookiesPlatform = preselectedPlatform;

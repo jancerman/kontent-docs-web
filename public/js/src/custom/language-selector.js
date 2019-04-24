@@ -51,7 +51,9 @@
                     item.classList.add('language-selector__link--active'); 
                 });
 
-                textTofixedLabel = firstPlatformElem[0].innerHTML;
+                if (firstPlatformElem.length) {
+                    textTofixedLabel = firstPlatformElem[0].innerHTML;
+                }
             }
         }
 
@@ -67,7 +69,10 @@
         if (e) {
             selectedPlatform = e.target.getAttribute('data-platform');
         } else {
-            selectedPlatform = document.querySelector('.language-selector__link--active').getAttribute('data-platform');
+            let activeLink = document.querySelector('.language-selector__link--active');
+            if (activeLink) {
+                selectedPlatform = activeLink.getAttribute('data-platform');
+            }
         }
 
         return selectedPlatform;
