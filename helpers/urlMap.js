@@ -58,7 +58,7 @@ const redefineTypeLevel = (response) => {
 const handleLangForMultiplatformArticle = (queryString, item) => {
     queryString = '?lang=';
     const cachedPlatforms = cache.get('platformsConfig');
-    if (cachedPlatforms && cachedPlatforms.length) {
+    if (cachedPlatforms && cachedPlatforms.length && item.elements.platform.value.length) {
       let tempPlatform = cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename);
       if (tempPlatform.length) {
         queryString += tempPlatform[0].url.value;

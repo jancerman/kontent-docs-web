@@ -112,7 +112,12 @@ const getPreselectedPlatform = (content, req, res) => {
     } else {
         let platformItems;
         if (content.children) {
-            platformItems = content.children.filter(item => item.platform.value[0].codename === preselectedPlatform);
+            platformItems = content.children.filter(item => {
+                if (item.platform.value.length) {
+                    return item.platform.value[0].codename === preselectedPlatform;
+                }
+                return false;
+            });
 
             if (platformItems.length) {
                 preselectedPlatform = platformItems[0].platform.value[0].codename;
@@ -176,7 +181,12 @@ const getContent = async (req, res) => {
             canonicalUrl = getCanonicalUrl(urlMap, content[0], preselectedPlatform);
 
             if (content[0].system.type === 'multiplatform_article') {
-                let platformItem = content[0].children.filter(item => item.platform.value[0].codename === preselectedPlatform);
+                let platformItem = content[0].children.filter(item => {
+                    if (item.platform.value.length) {
+                        return item.platform.value[0].codename === preselectedPlatform;
+                    }
+                    return false;
+                });
                 availablePlatforms = content[0].children;
 
                 content = await requestDelivery({
