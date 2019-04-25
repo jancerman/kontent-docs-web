@@ -85,7 +85,7 @@
         if (allowEmpty) {
             selectorToGetVisible += `, [${attribute}=""]`;
         }
-        document.querySelectorAll(`[${attribute}]`).forEach(item => item.classList.add('hidden'));
+        document.querySelectorAll(`[${attribute}]:not([${attribute}=""])`).forEach(item => item.classList.add('hidden'));
         document.querySelectorAll(selectorToGetVisible).forEach(item => item.classList.remove('hidden'));
     }
 
@@ -138,7 +138,7 @@
 
         if (languageSelector && languageSelector.querySelector('.language-selector__list:not(.language-selector__list--static)')) {
             languageSelector = languageSelector.cloneNode(true);
-            let codeBlocks = document.querySelectorAll('*:not([data-platform-code]) + [data-platform-code]');
+            let codeBlocks = document.querySelectorAll('*:not([data-platform-code]) + [data-platform-code]:not([data-platform-code=""])');
 
             languageSelector.classList.add('language-selector--code-block');
     
