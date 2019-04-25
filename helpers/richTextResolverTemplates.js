@@ -95,9 +95,12 @@ const richTextResolverTemplates = {
     image: (item) => {
         if (item.image.value[0]) {
             let alt = item.image.value[0].description ? item.image.value[0].description : '';
+            let url = encodeURI(item.url.value.trim());
             let transformationQueryString = '?w=';
             let cssClass = item.border.value[0].codename === 'show' ? ' article__image-border' : '';
-            cssClass += item.zoomable.value[0].codename === 'true' ? ' article__add-lightbox' : '';
+            cssClass += item.zoomable.value[0].codename === 'true' && !url ? ' article__add-lightbox' : '';
+            let openLinkTag = url ? '<a href="'+ url +'" target="_blank" class="no-icon">' : '';
+            let closeLinkTag = url ? '</a>' : '';
 
             switch (item.image_width.value[0].codename) {
                 case 'n25_':
@@ -126,9 +129,13 @@ const richTextResolverTemplates = {
 
             return `
                 <figure>
-                    <img class="${cssClass}" alt="${alt}" src="${item.image.value[0].url}${transformationQueryString}">
+                    ${openLinkTag}
+                        <img class="${cssClass}" alt="${alt}" src="${item.image.value[0].url}${transformationQueryString}">
+                    ${closeLinkTag}
                     <noscript>
-                        <img class="article__image-border" alt="${alt}" src="${item.image.value[0].url}${transformationQueryString}">
+                        ${openLinkTag}
+                            <img class="article__image-border" alt="${alt}" src="${item.image.value[0].url}${transformationQueryString}">
+                        ${closeLinkTag}
                     </noscript>
                     ${item.description.value && item.description.value !== '<p><br></p>' ? '<figcaption>'+ item.description.value +'</figcaption>' : ''}
                 </figure>`;
