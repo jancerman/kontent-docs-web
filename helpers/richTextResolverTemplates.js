@@ -102,18 +102,22 @@ const richTextResolverTemplates = {
             switch (item.image_width.value[0].codename) {
                 case 'n25_':
                     cssClass += ' article__image--25';
-                    transformationQueryString += '463';
+                    transformationQueryString += '168';
                     break;
                 case 'n50_':
                     cssClass += ' article__image--50';
-                    transformationQueryString += '463';
+                    transformationQueryString += '336';
                     break;
                 case 'n75_':
                     cssClass += ' article__image--75';
-                    transformationQueryString += '695';
+                    transformationQueryString += '504';
+                    break;
+                case 'n100_':
+                    cssClass += ' article__image--100';
+                    transformationQueryString += '672';
                     break;
                 default:
-                    transformationQueryString += '926';
+                    transformationQueryString += '896';
             }
 
             if (item.image.value[0].url.endsWith('.gif')) {
