@@ -2,9 +2,27 @@ const helper = require('./helperFunctions');
 
 const richTextResolverTemplates = {
     embeddedContent: (item) => {
+        let cssClass = '';
+
+        if (item.width.value.length) {
+            switch (item.width.value[0].codename) {
+                case 'n50_':
+                    cssClass += ' embed--50';
+                    break;
+                case 'n75_':
+                    cssClass += ' embed--75';
+                    break;
+                case 'n100_':
+                    cssClass += ' embed--100';
+                    break;
+                default:
+                    cssClass += '';
+            }
+        }
+
         const templates = {
             youtube: `
-                <div class="embed">
+                <div class="embed${cssClass}">
                     <iframe class="lazy" width="560" height="315" data-src="https://www.youtube-nocookie.com/embed/${item.id.value}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
                     <noscript>
                         <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/${item.id.value}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
@@ -15,7 +33,7 @@ const richTextResolverTemplates = {
                 </p>
                 `,
             codepen: `
-                <div class="embed">
+                <div class="embed${cssClass}">
                     <iframe class="lazy" height="265" scrolling="no" data-src="https://codepen.io/${item.id.value.replace('/pen/', '/embed/')}/?height=265&amp;theme-id=0&amp;default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
                     <noscript>
                         <iframe height="265" scrolling="no" src="https://codepen.io/${item.id.value}/?height=265&amp;theme-id=0&amp;default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
@@ -26,7 +44,7 @@ const richTextResolverTemplates = {
                 </p>
                 `,
             stackblitz: `
-                <div class="embed">
+                <div class="embed${cssClass}">
                     <iframe class="lazy" data-src="https://stackblitz.com/edit/${item.id.value}?embed=1"></iframe>
                     <noscript>
                         <iframe src="https://stackblitz.com/edit/${item.id.value}?embed=1"></iframe>
@@ -37,7 +55,7 @@ const richTextResolverTemplates = {
                 </p>
                 `,
             codesandbox: `
-                <div class="embed">
+                <div class="embed${cssClass}">
                     <iframe class="lazy" data-src="https://codesandbox.io/embed/${item.id.value}"></iframe>
                     <noscript>
                         <iframe src="https://codesandbox.io/embed/${item.id.value}"></iframe>
