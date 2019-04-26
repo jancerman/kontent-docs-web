@@ -2,7 +2,7 @@
  * Make tables spread reasonably it the page content
  */
 (() => {
-    const tables = document.querySelectorAll('.table');
+    const tables = document.querySelectorAll('table');
     const articleContent = document.querySelector('.article__content');
 
     // Set a wrapper to all tables
