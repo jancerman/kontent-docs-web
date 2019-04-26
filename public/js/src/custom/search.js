@@ -169,8 +169,7 @@
         autocomplete('#nav-search', {
                 autoselect: true,
                 openOnFocus: true,
-                clearOnSelected: false,
-                debug: true
+                clearOnSelected: false
             }, [{
                 source: (query, callback) => {
                     getSuggestionsSource(hitsSource, query, callback);
