@@ -14,9 +14,7 @@
     const url = window.location;
     let searchTerm = '';
     let searchResultSelected = false;
-    let emptySuggestions = true;
     let searchResultsNumber = 0;
-    let arrowPressed = false;
     let searchInput = document.querySelector('#nav-search');
 
     // Get injected KC API details 
@@ -36,10 +34,7 @@
     const arrowPress = (e) => {
         e = e || window.event;
         if (e.keyCode == '38' || e.keyCode == '40' || e.keyCode == '37' || e.keyCode == '39') {
-            arrowPressed = true;
             searchInput.value = decodeURI(searchTerm);
-        } else {
-            arrowPressed = false;
         }
     };
 
@@ -94,7 +89,6 @@
     const formatSuggestion = (suggestion, urlMap) => {
         // Store current search input value for use of querystring that is used in Google Analytics search terms
         searchTerm = encodeURIComponent(searchInput.value);
-        emptySuggestions = false;
 
         // Get url from the urlMap
         const suggestionUrl = urlMap.filter(item => item.codename === suggestion.codename);
@@ -113,7 +107,6 @@
 
     const formatEmptySuggestion = () => {
         searchTerm = encodeURIComponent(searchInput.value);
-        emptySuggestions = true;
 
         // Template for a empty result
         return `<div class="suggestion suggestion--empty">
@@ -126,6 +119,7 @@
         searchInput.value = decodeURI(searchTerm);
 
         logSearchTermSelected(searchTerm, suggestion.resolvedUrl);
+        logSearchTermNumber(searchTerm);
 
         // Do nothing on click, as the browser will handle <a> tag by default 
         if (context.selectionMethod === 'click') {
@@ -138,12 +132,8 @@
 
     const onAutocompleteClosed = () => {
         if (searchTerm !== '' && !searchResultSelected) {
-            //Prevent logging twice when ESC key gets pressed
-            setTimeout(() => {
-                if (searchInput.value !== '') {
-                    logSearchTermErased();
-                }
-            }, 500);
+            logSearchTermNumber(searchTerm);
+            logSearchTermErased();
         }
     };
 
@@ -190,49 +180,6 @@
             .on('autocomplete:closed', onAutocompleteClosed)
     };
 
-    const eraseIntervalOnSearch = (e) => {
-        let prevTerm = '';
-        let interval = setInterval(() => {
-            if (prevTerm !== '' && e.target.value === '') {
-                logSearchTermErased();
-            }
-            prevTerm = e.target.value;
-        }, 500);
-
-        return interval;
-    };
-
-    const typeIntervalOnSearch = (e) => {
-        let prevTerm = '';
-        let interval = setInterval(() => {
-            if (prevTerm !== e.target.value && e.target.value !== '' && arrowPressed === false) {
-                logSearchTerm(e.target.value);
-            }
-            prevTerm = e.target.value;
-        }, 1000);
-
-        return interval;
-    };
-
-    // On search input focus set timer that checks updates on the input
-    // If the input gets empty, log it
-    const searchTermObserver = () => {
-        let intervalErase;
-        let intervalType;
-
-        if (searchInput) {
-            searchInput.addEventListener('focus', (e) => {
-                intervalErase = eraseIntervalOnSearch(e);
-                intervalType = typeIntervalOnSearch(e);
-            });
-
-            searchInput.addEventListener('blur', (e) => {
-                clearInterval(intervalErase);
-                clearInterval(intervalType);
-            });
-        }
-    };
-
     const logSearchTermErased = () => {
         window.dataLayer.push({
             'event': 'event',
@@ -242,7 +189,7 @@
         });
     };
 
-    const logSearchTerm = (term) => {
+    const logSearchTermNumber = (term) => {
         window.dataLayer.push({
             'event': 'event',
             'eventCategory': 'search--searched-result',
@@ -267,8 +214,6 @@
         helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
             initAutocomplete(urlMap);
         }, 'json');
-
-        searchTermObserver();
     };
 
     const setFocusOnMagnifier = (prefix) => {
