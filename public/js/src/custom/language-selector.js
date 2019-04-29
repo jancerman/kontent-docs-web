@@ -133,18 +133,50 @@
         return urlSearch.length ? '?' + urlSearch.join('&') : '';
     };
 
+    const hidePlaformInContentChunk = (item, languageSelector) => {
+        let chunkParent = helper.findAncestor(item, '[data-platform-chunk]');
+        
+        if (chunkParent) {
+            let languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');
+            let chunkPlatforms = chunkParent.getAttribute('data-platform-chunk').split('|');
+            languageSelectorItems.forEach((elem) => {
+                let elemParent = helper.findAncestor(elem, '.language-selector__item');
+                elemParent.style.display = 'none';
+                if (chunkPlatforms.indexOf(elem.getAttribute('data-platform')) > -1) {
+                    elemParent.style.display = 'block';
+                }
+            });
+        }
+
+        return languageSelector;
+    };
+
+    const showAllPlatformsInContentChunk = (languageSelector) => {
+        let languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');       
+        languageSelectorItems.forEach((elem) => {
+            let elemParent = helper.findAncestor(elem, '.language-selector__item');
+            elemParent.style.display = 'block';
+        });
+
+        return languageSelector;
+    };
+
     const cloneLanguageSelectorToCodeBlocks = () => {
         let languageSelector = document.querySelector('.language-selector');
 
         if (languageSelector && languageSelector.querySelector('.language-selector__list:not(.language-selector__list--static)')) {
             languageSelector = languageSelector.cloneNode(true);
-            let codeBlocks = document.querySelectorAll('*:not([data-platform-code]) + [data-platform-code]:not([data-platform-code=""])');
+            let codeBlocks = document.querySelectorAll('*:not([data-platform-code]) + [data-platform-code]:not([data-platform-code=""]), [data-platform-code]:first-child:not([data-platform-code=""]');
 
             languageSelector.classList.add('language-selector--code-block');
     
             codeBlocks.forEach(item => {
+                languageSelector = hidePlaformInContentChunk(item, languageSelector);
+
                 let clonedSelector = item.parentNode.insertBefore(languageSelector, item);
                 languageSelector = clonedSelector.cloneNode(true);
+                
+                languageSelector = showAllPlatformsInContentChunk(languageSelector);
             });
         }
     };
