@@ -11,14 +11,14 @@
             if (qs) {
                 qs = qs.split('&');
                 qs = qs.map(item => {
-                    if (item.indexOf('lang') === 0) {
-                        item = 'lang=' + platform;
+                    if (item.indexOf('tech') === 0) {
+                        item = 'tech=' + platform;
                     }
                     return item;
                 });
                 qs.join('&');
             } else {
-                qs = 'lang=' + platform;
+                qs = 'tech=' + platform;
             }
 
             item.setAttribute('href', `${path}${qs ? '?' + qs : ''}${hash ? '#' + hash : ''}`);
@@ -102,7 +102,7 @@
         let url = window.location;
         let path = url.href.split(/[?#]/)[0];
 
-        path = path + '?lang=' + selectedPlatform + removeParameterfromUrlSearch(url.search, 'lang').replace('?', '&') + url.hash;
+        path = path + '?tech=' + selectedPlatform + removeParameterfromUrlSearch(url.search, 'tech').replace('?', '&') + url.hash;
 
         if (history && history.replaceState) {
             history.replaceState({}, null, path);

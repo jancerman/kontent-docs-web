@@ -87,7 +87,7 @@ const getSelectedPlatform = (platformsConfig, cookiesPlatform) => {
 const getPreselectedPlatform = (content, req, res) => {
     const platformsConfig = cache.get('platformsConfig') && cache.get('platformsConfig').length ? cache.get('platformsConfig')[0].options : null;
 
-    let preselectedPlatform = req.query.lang;
+    let preselectedPlatform = req.query.tech;
     if (preselectedPlatform) {
         let tempPlatforms = platformsConfig ? platformsConfig.filter(item => item.elements.url.value === preselectedPlatform) : null;
         if (tempPlatforms && tempPlatforms.length) {
