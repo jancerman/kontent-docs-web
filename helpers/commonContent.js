@@ -38,12 +38,16 @@ const commonContent = {
             ...commonContent.getKCDetails(res)
         });
     },
-    normalizePlatforms: (platforms) => {
+    normalizePlatforms: async (platforms, res) => {
         let result = [];
         let order = [];
-        const cachedPlatforms = cache.get('platformsConfig');
+        let cachedPlatforms = cache.get('platformsConfig');
 
-        if (platforms && cachedPlatforms) {
+        if (!cachedPlatforms) {
+            cachedPlatforms = await commonContent.getPlatformsConfig(res);
+        }
+
+        if (platforms && cachedPlatforms && cachedPlatforms.length) {
             cachedPlatforms[0].options.forEach((item) => {
                 let platform = {
                     title: item.title.value,
