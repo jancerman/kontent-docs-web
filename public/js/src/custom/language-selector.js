@@ -164,7 +164,7 @@
     const cloneLanguageSelectorToCodeBlocks = () => {
         let languageSelector = document.querySelector('.language-selector');
 
-        if (languageSelector && languageSelector.querySelector('.language-selector__list:not(.language-selector__list--static)')) {
+        if (languageSelector && languageSelector.querySelector('.language-selector__list:not(.language-selector__list--static)') && languageSelector.querySelector('.language-selector__list').childNodes.length > 1) {
             languageSelector = languageSelector.cloneNode(true);
             let codeBlocks = document.querySelectorAll('*:not([data-platform-code]) + [data-platform-code]:not([data-platform-code=""]), [data-platform-code]:first-child:not([data-platform-code=""]');
 
