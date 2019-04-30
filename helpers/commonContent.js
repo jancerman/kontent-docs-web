@@ -55,7 +55,8 @@ const commonContent = {
 
             order.forEach(orderItem => {
                 platforms.forEach(platformItem => {
-                    let codename = platformItem.codename || platformItem.platform.value[0].codename;
+                    let codenameTemp = platformItem.platform && platformItem.platform.value.length ? platformItem.platform.value[0].codename : null;
+                    let codename = platformItem.codename || codenameTemp;
                     if (orderItem.codename === codename) {
                         result.push(orderItem);
                     }

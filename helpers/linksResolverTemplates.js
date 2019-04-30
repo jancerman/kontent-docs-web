@@ -2,10 +2,10 @@ const cheerio = require('cheerio');
 
 const updateLinkAttribute = (element, resolvedUrl, link) => {
     const $ = cheerio.load(element.value);
-    $(`a[data-item-id="${link.itemId}"]`).each(() => {
-        var $that = $(this);
-        $that.removeAttr('data-item-id');
-        $that.attr('href', resolvedUrl);
+    $(`a[data-item-id="${link.itemId}"]`).each((index, item) => {
+        let $item = $(item);
+        $item.removeAttr('data-item-id');
+        $item.attr('href', resolvedUrl);
     });
     element.value = $.html();
     element.value = element.value.replace('<html><head></head><body>', '').replace('</body></html>', '');

@@ -56,17 +56,20 @@ const redefineTypeLevel = (response) => {
   };
 
 const handleLangForMultiplatformArticle = (queryString, item) => {
-    queryString = '?lang=';
+    queryString = '?tech=';
     const cachedPlatforms = cache.get('platformsConfig');
-    if (cachedPlatforms && cachedPlatforms.length) {
-      queryString += cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename)[0].url.value;
+    if (cachedPlatforms && cachedPlatforms.length && item.elements.platform.value.length) {
+      let tempPlatform = cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename);
+      if (tempPlatform.length) {
+        queryString += tempPlatform[0].url.value;
+      }
     }
 
     return queryString;
 };
 
 const processLangForPlatformField = (elem, settings, cachedPlatforms) => {
-    settings.queryString = '?lang=';
+    settings.queryString = '?tech=';
     if (cachedPlatforms && cachedPlatforms.length) {
         settings.queryString += cachedPlatforms[0].options.filter(plat => elem.codename === plat.system.codename)[0].url.value;
     }

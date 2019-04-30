@@ -21,16 +21,31 @@ Kentico Cloud documentation portal, which utilizes [Kentico Cloud](https://app.k
 ### Instructions
 1. Clone the project repository.
 2. Run `npm install` in the terminal.
-3. Run `npm start` to start a development server.
+3. Run `npm run debug` to start a development server.
 4. The website can be opened in your browser at http://localhost:3000.
 
-#### Required Keys
+#### Required environmental variables
 * `KC.ProjectId` - Kentico Cloud project ID
 * `KC.PreviewApiKey` - Kentico Cloud preview API key (set this key to retrieve preview content from Kentico Cloud)
-* `Search.ApiKey` - Algolia search-only API key
-* `Search.AppId` - Algolia application ID
-* `Search.IndexName` - Index name in Algolia application
-* `APPINSIGHTS_INSTRUMENTATIONKEY` - Application Insights key
+
+#### Optional environmental variables
+Without the following variables, related features will not work on the website.
+* `Search.ApiKey` - Algolia search-only API key (used for site search)
+* `Search.AppId` - Algolia application ID (used for site search)
+* `Search.IndexName` - Index name in Algolia application (used for site search)
+* `APPINSIGHTS_INSTRUMENTATIONKEY` - Application Insights key (used for application monitoring)
+* `GTM.id` - Google Tag Manager ID (used for analytics)
+* `Intercom.id` - Intercom account ID (used for support chat)
+* `LMS.id` - Kentico e-Learning API key (used for certification course and exam registration)
+* `Recaptcha-v3.secret` - Google Recaptcha v3 secret API key (used for forms robot protection)
+* `Recaptcha-v3.site` - Google Recaptcha v3 site API key (used for forms robot protection)
+* `Hotjar.id` - Hotjar account ID (used for analytics)
+* `Webhook.Cache.Invalidate.PlatformsConfig` - Kentico Cloud Webhook token (used for PlatformsConfig cache invalidation)
+* `Webhook.Cache.Invalidate.UrlMap` - Kentico Cloud Webhook token (used for UrlMap cache invalidation)
+* `Jira.User` - User email for a Jira account (used for feedback form)
+* `Jira.Token` - Jira API key (used for feedback form)
+* `Jira.TMSNTST` - Jira Project codename (used for feedback form)
+* `Jira.IssueType` - Jira Issue index (used for feedback form)
 
 ## How To Contribute
 Feel free to open a new issue where you describe your proposed changes, or even create a new pull request from your branch with proposed changes.

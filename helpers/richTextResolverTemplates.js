@@ -2,9 +2,27 @@ const helper = require('./helperFunctions');
 
 const richTextResolverTemplates = {
     embeddedContent: (item) => {
+        let cssClass = '';
+
+        if (item.width.value.length) {
+            switch (item.width.value[0].codename) {
+                case 'n50_':
+                    cssClass += ' embed--50';
+                    break;
+                case 'n75_':
+                    cssClass += ' embed--75';
+                    break;
+                case 'n100_':
+                    cssClass += ' embed--100';
+                    break;
+                default:
+                    cssClass += '';
+            }
+        }
+
         const templates = {
             youtube: `
-                <div class="embed">
+                <div class="embed${cssClass}">
                     <iframe class="lazy" width="560" height="315" data-src="https://www.youtube-nocookie.com/embed/${item.id.value}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
                     <noscript>
                         <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/${item.id.value}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
@@ -15,7 +33,7 @@ const richTextResolverTemplates = {
                 </p>
                 `,
             codepen: `
-                <div class="embed">
+                <div class="embed${cssClass}">
                     <iframe class="lazy" height="265" scrolling="no" data-src="https://codepen.io/${item.id.value.replace('/pen/', '/embed/')}/?height=265&amp;theme-id=0&amp;default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
                     <noscript>
                         <iframe height="265" scrolling="no" src="https://codepen.io/${item.id.value}/?height=265&amp;theme-id=0&amp;default-tab=js,result" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
@@ -26,7 +44,7 @@ const richTextResolverTemplates = {
                 </p>
                 `,
             stackblitz: `
-                <div class="embed">
+                <div class="embed${cssClass}">
                     <iframe class="lazy" data-src="https://stackblitz.com/edit/${item.id.value}?embed=1"></iframe>
                     <noscript>
                         <iframe src="https://stackblitz.com/edit/${item.id.value}?embed=1"></iframe>
@@ -37,7 +55,7 @@ const richTextResolverTemplates = {
                 </p>
                 `,
             codesandbox: `
-                <div class="embed">
+                <div class="embed${cssClass}">
                     <iframe class="lazy" data-src="https://codesandbox.io/embed/${item.id.value}"></iframe>
                     <noscript>
                         <iframe src="https://codesandbox.io/embed/${item.id.value}"></iframe>
@@ -95,25 +113,32 @@ const richTextResolverTemplates = {
     image: (item) => {
         if (item.image.value[0]) {
             let alt = item.image.value[0].description ? item.image.value[0].description : '';
+            let url = encodeURI(item.url.value.trim());
             let transformationQueryString = '?w=';
             let cssClass = item.border.value[0].codename === 'show' ? ' article__image-border' : '';
-            cssClass += item.zoomable.value[0].codename === 'true' ? ' article__add-lightbox' : '';
+            cssClass += item.zoomable.value[0].codename === 'true' && !url ? ' article__add-lightbox' : '';
+            let openLinkTag = url ? '<a href="'+ url +'" target="_blank" class="no-icon">' : '';
+            let closeLinkTag = url ? '</a>' : '';
 
             switch (item.image_width.value[0].codename) {
                 case 'n25_':
                     cssClass += ' article__image--25';
-                    transformationQueryString += '463';
+                    transformationQueryString += '168';
                     break;
                 case 'n50_':
                     cssClass += ' article__image--50';
-                    transformationQueryString += '463';
+                    transformationQueryString += '336';
                     break;
                 case 'n75_':
                     cssClass += ' article__image--75';
-                    transformationQueryString += '695';
+                    transformationQueryString += '504';
+                    break;
+                case 'n100_':
+                    cssClass += ' article__image--100';
+                    transformationQueryString += '672';
                     break;
                 default:
-                    transformationQueryString += '926';
+                    transformationQueryString += '896';
             }
 
             if (item.image.value[0].url.endsWith('.gif')) {
@@ -122,9 +147,13 @@ const richTextResolverTemplates = {
 
             return `
                 <figure>
-                    <img class="${cssClass}" alt="${alt}" src="${item.image.value[0].url}${transformationQueryString}">
+                    ${openLinkTag}
+                        <img class="${cssClass}" alt="${alt}" src="${item.image.value[0].url}${transformationQueryString}">
+                    ${closeLinkTag}
                     <noscript>
-                        <img class="article__image-border" alt="${alt}" src="${item.image.value[0].url}${transformationQueryString}">
+                        ${openLinkTag}
+                            <img class="article__image-border" alt="${alt}" src="${item.image.value[0].url}${transformationQueryString}">
+                        ${closeLinkTag}
                     </noscript>
                     ${item.description.value && item.description.value !== '<p><br></p>' ? '<figcaption>'+ item.description.value +'</figcaption>' : ''}
                 </figure>`;

@@ -80,16 +80,20 @@
 
     & img&__image {
         @media screen and (min-width: 768px) {
-            &--75 {
+            &--100 {
                 max-width: 75%;
             }
 
+            &--75 {
+                max-width: 56.25%;
+            }
+
             &--50 {
-                max-width: 50%;
+                max-width: 37.5%;
             }
 
             &--25 {
-                max-width: 25%;
+                max-width: 18.75%;
             }
         }
     }
@@ -238,6 +242,10 @@
                 color: #58666D;
                 font-style: italic;
                 line-height: 1.25em;  
+
+                em {
+                    font-style: normal;
+                }
             }
         }
 

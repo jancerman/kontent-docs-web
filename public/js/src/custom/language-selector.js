@@ -11,14 +11,14 @@
             if (qs) {
                 qs = qs.split('&');
                 qs = qs.map(item => {
-                    if (item.indexOf('lang') === 0) {
-                        item = 'lang=' + platform;
+                    if (item.indexOf('tech') === 0) {
+                        item = 'tech=' + platform;
                     }
                     return item;
                 });
                 qs.join('&');
             } else {
-                qs = 'lang=' + platform;
+                qs = 'tech=' + platform;
             }
 
             item.setAttribute('href', `${path}${qs ? '?' + qs : ''}${hash ? '#' + hash : ''}`);
@@ -51,7 +51,9 @@
                     item.classList.add('language-selector__link--active'); 
                 });
 
-                textTofixedLabel = firstPlatformElem[0].innerHTML;
+                if (firstPlatformElem.length) {
+                    textTofixedLabel = firstPlatformElem[0].innerHTML;
+                }
             }
         }
 
@@ -67,7 +69,10 @@
         if (e) {
             selectedPlatform = e.target.getAttribute('data-platform');
         } else {
-            selectedPlatform = document.querySelector('.language-selector__link--active').getAttribute('data-platform');
+            let activeLink = document.querySelector('.language-selector__link--active');
+            if (activeLink) {
+                selectedPlatform = activeLink.getAttribute('data-platform');
+            }
         }
 
         return selectedPlatform;
@@ -80,7 +85,7 @@
         if (allowEmpty) {
             selectorToGetVisible += `, [${attribute}=""]`;
         }
-        document.querySelectorAll(`[${attribute}]`).forEach(item => item.classList.add('hidden'));
+        document.querySelectorAll(`[${attribute}]:not([${attribute}=""])`).forEach(item => item.classList.add('hidden'));
         document.querySelectorAll(selectorToGetVisible).forEach(item => item.classList.remove('hidden'));
     }
 
@@ -97,7 +102,7 @@
         let url = window.location;
         let path = url.href.split(/[?#]/)[0];
 
-        path = path + '?lang=' + selectedPlatform + removeParameterfromUrlSearch(url.search, 'lang').replace('?', '&') + url.hash;
+        path = path + '?tech=' + selectedPlatform + removeParameterfromUrlSearch(url.search, 'tech').replace('?', '&') + url.hash;
 
         if (history && history.replaceState) {
             history.replaceState({}, null, path);
@@ -128,18 +133,50 @@
         return urlSearch.length ? '?' + urlSearch.join('&') : '';
     };
 
+    const hidePlaformInContentChunk = (item, languageSelector) => {
+        let chunkParent = helper.findAncestor(item, '[data-platform-chunk]');
+        
+        if (chunkParent) {
+            let languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');
+            let chunkPlatforms = chunkParent.getAttribute('data-platform-chunk').split('|');
+            languageSelectorItems.forEach((elem) => {
+                let elemParent = helper.findAncestor(elem, '.language-selector__item');
+                elemParent.style.display = 'none';
+                if (chunkPlatforms.indexOf(elem.getAttribute('data-platform')) > -1) {
+                    elemParent.style.display = 'block';
+                }
+            });
+        }
+
+        return languageSelector;
+    };
+
+    const showAllPlatformsInContentChunk = (languageSelector) => {
+        let languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');       
+        languageSelectorItems.forEach((elem) => {
+            let elemParent = helper.findAncestor(elem, '.language-selector__item');
+            elemParent.style.display = 'block';
+        });
+
+        return languageSelector;
+    };
+
     const cloneLanguageSelectorToCodeBlocks = () => {
         let languageSelector = document.querySelector('.language-selector');
 
-        if (languageSelector && languageSelector.querySelector('.language-selector__list:not(.language-selector__list--static)')) {
+        if (languageSelector && languageSelector.querySelector('.language-selector__list:not(.language-selector__list--static)') && languageSelector.querySelector('.language-selector__list').childNodes.length > 1) {
             languageSelector = languageSelector.cloneNode(true);
-            let codeBlocks = document.querySelectorAll('*:not([data-platform-code]) + [data-platform-code]');
+            let codeBlocks = document.querySelectorAll('*:not([data-platform-code]) + [data-platform-code]:not([data-platform-code=""]), [data-platform-code]:first-child:not([data-platform-code=""]');
 
             languageSelector.classList.add('language-selector--code-block');
     
             codeBlocks.forEach(item => {
+                languageSelector = hidePlaformInContentChunk(item, languageSelector);
+
                 let clonedSelector = item.parentNode.insertBefore(languageSelector, item);
                 languageSelector = clonedSelector.cloneNode(true);
+                
+                languageSelector = showAllPlatformsInContentChunk(languageSelector);
             });
         }
     };

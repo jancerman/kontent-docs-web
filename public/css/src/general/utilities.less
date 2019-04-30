@@ -127,6 +127,25 @@ code {
     right: 0 !important;
     text-align: left;
     box-shadow: 0px 24px 24px 6px rgba(0,0,0,.15);
+    max-height: 500px;
+    overflow: auto;
+
+    &::-webkit-scrollbar-track {
+        background-color: #F3F6F7;
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar {
+        height: 8px;
+        width: 8px;
+        border-radius: 4px;
+        background-color: #F3F6F7;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        background-color: #7C909B;
+    }
 }
 
 .algolia-autocomplete {

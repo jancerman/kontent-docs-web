@@ -3,17 +3,30 @@
     padding: 1em 1.25em 1.25em;
     margin: 0 0 1em;
     box-sizing: border-box;
+    position: relative;
+
+    &:before {
+        font-family: 'kentico-icons';
+        display: inline-block;
+        padding: 0 .75em 0 0;
+        width: 1em;
+        font-weight: normal;
+        position: absolute;
+        top: 1em;
+        left: 1.375em;
+    }
 
     &--tip {
         background-color: #C8E2C4;
         border-color: #00A54B;
 
+        &:before {
+            color: #00A54B;
+            content: @icon-check-circle;
+        }
+
         .callout__title, & > p:first-child > strong {
             color: #00A54B;
-
-            &:before {
-                content: @icon-check-circle;
-            }
         }    
     }
 
@@ -21,12 +34,13 @@
         background-color: #FACDBD;
         border-color: #F16A38;
 
+        &:before {
+            color: #F16A38;
+            content: @icon-times-circle;
+        }
+
         .callout__title, & > p:first-child > strong {
             color: #F16A38;
-
-            &:before {
-                content: @icon-times-circle;
-            }
         }
     }
 
@@ -34,12 +48,13 @@
         background-color: #E3E9EC;
         border-color: #7C909B;
 
+        &:before {
+            color: #7C909B;
+            content: @icon-exclamation-triangle;
+        }
+
         .callout__title, & > p:first-child > strong {
             color: #7C909B;
-
-            &:before {
-                content: @icon-exclamation-triangle;
-            }
         }
     }
 
@@ -47,31 +62,21 @@
         background-color: #C0EAFF;
         border-color: #008AE1;
 
+        &:before {
+            color: #008AE1;
+            content: @icon-i-circle;
+        }
+
         .callout__title, & > p:first-child > strong {
             color: #008AE1;
-
-            &:before {
-                content: @icon-i-circle;
-            }
         }
     }
 
     &__title, & > p:first-child > strong {
         font-weight: 700;
-
-        &:before {
-            font-family: 'kentico-icons';
-            display: inline-block;
-            padding: 0 .75em 0 0;
-            width: 1em;
-            font-weight: normal;
-            position: relative;
-            top: 1px;
-        }
     }
 
     & > p:first-child > strong {
-        margin-left: -1.75em;
         padding: 0 0 .375em;
     }
 

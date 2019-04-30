@@ -87,10 +87,10 @@ const getSelectedPlatform = (platformsConfig, cookiesPlatform) => {
 const getPreselectedPlatform = (content, req, res) => {
     const platformsConfig = cache.get('platformsConfig') && cache.get('platformsConfig').length ? cache.get('platformsConfig')[0].options : null;
 
-    let preselectedPlatform = req.query.lang;
+    let preselectedPlatform = req.query.tech;
     if (preselectedPlatform) {
         let tempPlatforms = platformsConfig ? platformsConfig.filter(item => item.elements.url.value === preselectedPlatform) : null;
-        if (tempPlatforms.length) {
+        if (tempPlatforms && tempPlatforms.length) {
             preselectedPlatform = tempPlatforms[0].system.codename;
             res.cookie('KCDOCS.preselectedLanguage', preselectedPlatform);
             cookiesPlatform = preselectedPlatform;
@@ -112,7 +112,12 @@ const getPreselectedPlatform = (content, req, res) => {
     } else {
         let platformItems;
         if (content.children) {
-            platformItems = content.children.filter(item => item.platform.value[0].codename === preselectedPlatform);
+            platformItems = content.children.filter(item => {
+                if (item.platform.value.length) {
+                    return item.platform.value[0].codename === preselectedPlatform;
+                }
+                return false;
+            });
 
             if (platformItems.length) {
                 preselectedPlatform = platformItems[0].platform.value[0].codename;
@@ -172,11 +177,15 @@ const getContent = async (req, res) => {
             return `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else if (currentLevel === 2) {
             preselectedPlatform = getPreselectedPlatform(content[0], req, res);
-
             canonicalUrl = getCanonicalUrl(urlMap, content[0], preselectedPlatform);
 
             if (content[0].system.type === 'multiplatform_article') {
-                let platformItem = content[0].children.filter(item => item.platform.value[0].codename === preselectedPlatform);
+                let platformItem = content[0].children.filter(item => {
+                    if (item.platform.value.length) {
+                        return item.platform.value[0].codename === preselectedPlatform;
+                    }
+                    return false;
+                });
                 availablePlatforms = content[0].children;
 
                 content = await requestDelivery({
@@ -247,7 +256,7 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
 router.post(['/tutorials/:scenario', '/tutorials/:scenario/:topic/:article', '/other/:article', '/whats-new/:scenario', '/whats-new/:scenario/:topic/:article'], [
     check('feedback').not().isEmpty().withMessage((value, { req, location, path }) => {
         return 'feedback_form___empty_field_validation';
-    }).trim(),
+    }).trim()
 ], asyncHandler(async (req, res, next) => {
     let data = await getContent(req, res, next);
     if (!data) return next();
