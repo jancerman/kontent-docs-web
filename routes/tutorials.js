@@ -227,8 +227,8 @@ const getContent = async (req, res) => {
         title: content[0].title.value,
         titleSuffix: ` | ${navigation[0] ? navigation[0].title.value : 'Kentico Cloud Docs'}`,
         description: content[0].introduction ? helper.stripTags(content[0].introduction.value).substring(0, 300) : '',
-        platform: content[0].platform && content[0].platform.value.length ? commonContent.normalizePlatforms(content[0].platform.value) : null,
-        availablePlatforms: commonContent.normalizePlatforms(availablePlatforms),
+        platform: content[0].platform && content[0].platform.value.length ? await commonContent.normalizePlatforms(content[0].platform.value, res) : null,
+        availablePlatforms: await commonContent.normalizePlatforms(availablePlatforms, res),
         selectedPlatform: getSelectedPlatform(platformsConfig, cookiesPlatform),
         canonicalUrl: canonicalUrl,
         introduction: content[0].introduction ? content[0].introduction.value : null,
@@ -244,7 +244,7 @@ const getContent = async (req, res) => {
     };
 };
 
-router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/tutorials/:scenario/:topic/:article', '/other/:article', '/whats-new', '/whats-new/:scenario', '/whats-new/:scenario/:topic', '/whats-new/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
+router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/other/:article', '/whats-new', '/whats-new/:scenario', '/whats-new/:scenario/:topic', '/whats-new/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
     let data = await getContent(req, res, next);
 
     if (data && !data.view) return res.redirect(301, data);

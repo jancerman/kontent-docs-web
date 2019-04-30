@@ -36,9 +36,7 @@ const urlAliases = asyncHandler(async (req, res, next) => {
     if (redirectUrl.length) {
         return res.redirect(301, `${redirectUrl[0].url}${queryParamater ? '?' + queryParamater : ''}`);
     } else {
-        const err = new Error('Not Found');
-        err.status = 404;
-        return next(err);
+        return next();
     }
 });
 

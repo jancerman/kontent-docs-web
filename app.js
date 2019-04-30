@@ -105,6 +105,10 @@ app.use('*', asyncHandler(async (req, res, next) => {
   return next();
 }));
 
+app.use('/tutorials/:scenario/:topic/:article', async (req, res, next) => {
+  return await urlAliases(req, res, next);
+});
+
 app.use('/', home);
 app.use('/', tutorials);
 app.use('/', previewUrls);
@@ -124,8 +128,10 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
 app.use('/cache-invalidate', bodyParser.text({ type: '*/*' }), cacheInvalidate);
 
 // catch 404 and forward to error handler
-app.use(async (req, res, next) => {
-  return await urlAliases(req, res, next);
+app.use((req, res, next) => {
+  const err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 // error handler
