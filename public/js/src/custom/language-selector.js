@@ -286,5 +286,8 @@
     window.addEventListener('scroll', handleFixedSelector, supportsPassive ? { passive: true } : false);
     selectLanguage();
     copyCode();
-    makeInfobarsVisible();
+    setTimeout(() => {
+        makeInfobarsVisible();
+    }, 0);
+    
 })();
