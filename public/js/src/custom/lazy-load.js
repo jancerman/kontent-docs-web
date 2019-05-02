@@ -56,7 +56,8 @@
                 handleLazyFallback(lazyloadElems, lazyload);
             }, 20);
         }
-    
+        
+        lazyload();
         document.addEventListener('scroll', lazyload, supportsPassive ? { passive: true } : false);
         window.addEventListener('resize', lazyload);
         window.addEventListener('orientationChange', lazyload);
@@ -123,8 +124,8 @@
     
         // Check if "Do not flag" is enabled in the browser settings
         // If yes, make embeds load on click, otherwise lazyload on scroll
-        if (window.doNotTrack || navigator.doNotTrack || navigator.msDoNotTrack || 'msTrackingProtectionEnabled' in window.external) {
-            if (window.doNotTrack === '1' || navigator.doNotTrack === 'yes' || navigator.doNotTrack === '1' || navigator.msDoNotTrack === '1' || window.external.msTrackingProtectionEnabled()) {
+        if (window.doNotTrack || navigator.doNotTrack || navigator.msDoNotTrack) {
+            if (window.doNotTrack === '1' || navigator.doNotTrack === 'yes' || navigator.doNotTrack === '1' || navigator.msDoNotTrack === '1') {
                 loadOnClick();
             } else {
                 loadOnScroll();
