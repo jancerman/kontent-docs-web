@@ -2,7 +2,7 @@ const { DeliveryClient } = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
 const cache = require('memory-cache');
 let fields = ['codename', 'url'];
-let globalConfig;
+// let globalConfig;
 
 // Define length of url for specific content types (number of path elements)
 const typeLevels = {
@@ -68,7 +68,7 @@ const handleLangForMultiplatformArticle = (queryString, item) => {
     return queryString;
 };
 
-const processLangForPlatformField = (elem, settings, cachedPlatforms) => {
+/* const processLangForPlatformField = (elem, settings, cachedPlatforms) => {
     settings.queryString = '?tech=';
     if (cachedPlatforms && cachedPlatforms.length) {
         settings.queryString += cachedPlatforms[0].options.filter(plat => elem.codename === plat.system.codename)[0].url.value;
@@ -94,7 +94,7 @@ const handleLangForPlatformField = (settings) => {
         slug: settings.slug,
         url: settings.url
     };
-};
+}; */
 
 const addItemToMap = (settings) => {
     settings.urlMap.push(getMapItem({
@@ -116,12 +116,12 @@ const handleNode = (settings) => {
         if (settings.response.system && settings.response.system.type === 'multiplatform_article') {
             // Handle "lang" query string in case articles are assigned to "multiplatform_article"
             settings.queryString = handleLangForMultiplatformArticle(settings.queryString, settings.item);
-        } else if (settings.item.system && settings.item.system.type === 'article' && globalConfig.isSitemap) {
+        /* }  else if (settings.item.system && settings.item.system.type === 'article' && globalConfig.isSitemap) {
             // Handle "lang" query string in case "article" has values selected in the "Platform" field
             let tempProperties = handleLangForPlatformField({ item: settings.item, slug, url: settings.url, urlMap: settings.urlMap });
             settings.urlMap = tempProperties.urlMap;
             slug = tempProperties.slug;
-            settings.url = tempProperties.url;
+            settings.url = tempProperties.url; */
         } else {
             slug = settings.item.elements.url.value;
         }
@@ -161,7 +161,7 @@ const createUrlMap = (response, url, urlMap = []) => {
 };
 
 const getUrlMap = async (config) => {
-    globalConfig = config;
+    // globalConfig = config;
     deliveryConfig.projectId = config.projectid;
 
     if (config.previewapikey) {
