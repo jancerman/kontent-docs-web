@@ -141,7 +141,7 @@ const getPreselectedPlatform = (content, req, res) => {
 
 const getCanonicalUrl = (urlMap, content, preselectedPlatform) => {
     let canonicalUrl;
-    if (content.system.type === 'article' || (content.system.type === 'multiplatform_article' && content.children.length && preselectedPlatform === content.children[0].platform.value[0].codename)) {
+    if ((content.system.type === 'article' && content.platform.value.length > 1) || (content.system.type === 'multiplatform_article' && content.children.length && preselectedPlatform === content.children[0].platform.value[0].codename)) {
         canonicalUrl = urlMap.filter(item => item.codename === content.system.codename);
         canonicalUrl = canonicalUrl.length ? canonicalUrl[0].url : null;
     }
