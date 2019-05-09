@@ -105,7 +105,7 @@ app.use('*', asyncHandler(async (req, res, next) => {
   return next();
 }));
 
-app.use('/tutorials/:scenario/:topic/:article', async (req, res, next) => {
+app.use(['/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article'], async (req, res, next) => {
   return await urlAliases(req, res, next);
 });
 
