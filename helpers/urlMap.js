@@ -28,7 +28,6 @@ const typeLevels = {
 
 const getMapItem = (data) => {
     let item = {};
-
     fields.forEach(field => {
         switch (field) {
             case 'codename':
@@ -39,6 +38,9 @@ const getMapItem = (data) => {
                 break;
             case 'date':
                 item.date = data.date;
+                break;
+            case 'visibility':
+                item.visibility = data.visibility;
                 break;
         };
     });
@@ -100,7 +102,8 @@ const addItemToMap = (settings) => {
     settings.urlMap.push(getMapItem({
       codename: settings.item.system.codename,
       url: `/${settings.url.join('/')}${settings.queryString}`,
-      date: settings.item.system.last_modified
+      date: settings.item.system.lastModified,
+      visibility: settings.item.visibility && settings.item.visibility.value.length ? settings.item.visibility.value : null
     }, fields));
 
     return settings.urlMap;
@@ -184,7 +187,7 @@ const getUrlMap = async (config) => {
         .getPromise();
 
     if (config.isSitemap) {
-        fields = ['url', 'date'];
+        fields = ['url', 'date', 'visibility'];
     } else {
         fields = ['codename', 'url'];
     }
