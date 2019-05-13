@@ -31,6 +31,14 @@ const app = express();
 
 let KCDetails = {};
 
+const urlWhitelist = [
+  '/urlmap',
+  '/kentico-icons.min.css',
+  '/favicon.ico',
+  '/api-reference',
+  '/rss/articles'
+];
+
 // Azure Application Insights monitors
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   appInsights.setup();
@@ -97,17 +105,44 @@ const handleCaching = async (res) => {
   }
 };
 
+const pageExists = (req, res, next) => {
+  const urlMap = cache.get('urlMap');
+  const path = req.originalUrl.split('?')[0];
+  let exists = false;
+
+  urlMap.forEach((item) => {
+    const itemPath = item.url.split('?')[0];
+
+    if (itemPath === path) {
+      exists = true;
+    }
+  });
+
+  if (!exists) {
+    urlWhitelist.forEach((item) => {
+      const itemPath = item.split('?')[0];
+  
+      if (itemPath === path) {
+        exists = true;
+      }
+    });
+  }
+
+  return exists;
+};
+
 // Routes
 app.use('*', asyncHandler(async (req, res, next) => {
   handleKCKeys(req, res);
   await handleCaching(res);
+  const exists = pageExists(req, res, next);
+  
+  if (!exists) {
+    return await urlAliases(req, res, next);
+  }
 
   return next();
 }));
-
-app.use(['/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article'], async (req, res, next) => {
-  return await urlAliases(req, res, next);
-});
 
 app.use('/', home);
 app.use('/certification', certification);
