@@ -121,7 +121,7 @@ const pageExists = (req, res, next) => {
   if (!exists) {
     urlWhitelist.forEach((item) => {
       const itemPath = item.split('?')[0];
-  
+
       if (itemPath === path) {
         exists = true;
       }
@@ -136,7 +136,7 @@ app.use('*', asyncHandler(async (req, res, next) => {
   handleKCKeys(req, res);
   await handleCaching(res);
   const exists = pageExists(req, res, next);
-  
+
   if (!exists) {
     return await urlAliases(req, res, next);
   }
