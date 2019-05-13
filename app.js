@@ -110,9 +110,8 @@ app.use(['/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:sce
 });
 
 app.use('/', home);
-app.use('/', tutorials);
-app.use('/', previewUrls);
 app.use('/certification', certification);
+app.use('/', previewUrls);
 app.use('/api-reference', apiReference);
 app.use('/redirect-urls', redirectUrls);
 
@@ -126,6 +125,8 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
 }));
 
 app.use('/cache-invalidate', bodyParser.text({ type: '*/*' }), cacheInvalidate);
+
+app.use('/', tutorials);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
