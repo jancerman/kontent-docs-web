@@ -36,7 +36,10 @@ const urlWhitelist = [
   '/kentico-icons.min.css',
   '/favicon.ico',
   '/api-reference',
-  '/rss/articles'
+  '/rss/articles',
+  '/redirect-urls',
+  '/cache-invalidate/platforms-config',
+  '/cache-invalidate/url-map'
 ];
 
 // Azure Application Insights monitors
