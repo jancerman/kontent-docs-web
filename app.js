@@ -8,6 +8,7 @@ const compression = require('compression');
 const logger = require('morgan');
 const asyncHandler = require('express-async-handler');
 const cache = require('memory-cache');
+const cacheControl = require('express-cache-controller');
 
 const getUrlMap = require('./helpers/urlMap');
 const commonContent = require('./helpers/commonContent');
@@ -63,6 +64,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: 86400000
 }));
+app.use(cacheControl({ maxAge: 60 }));
 app.enable('trust proxy');
 
 const handleKCKeys = (req, res) => {
