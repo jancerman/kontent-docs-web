@@ -9,6 +9,7 @@ const logger = require('morgan');
 const asyncHandler = require('express-async-handler');
 const cache = require('memory-cache');
 const cacheControl = require('express-cache-controller');
+const serveStatic = require('serve-static');
 
 const getUrlMap = require('./helpers/urlMap');
 const commonContent = require('./helpers/commonContent');
@@ -61,7 +62,7 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public'), {
+app.use(serveStatic(path.join(__dirname, 'public'), {
   maxAge: 2592000
 }));
 app.use(cacheControl({ maxAge: 604800 }));
