@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const cache = require('memory-cache');
 const crypto = require('crypto');
+const commonContent = require('../helpers/commonContent');
 
 const isValidSignature = (req, secret) => {
     const givenSignature = req.headers['x-kc-signature'];
@@ -16,7 +17,8 @@ router.post('/platforms-config', (req, res) => {
         if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.PlatformsConfig'])) {
             let picker = JSON.parse(req.body).data.items.filter(item => item.codename === 'platform_picker');
             if (picker.length) {
-                cache.del('platformsConfig');
+                const KCDetails = commonContent.getKCDetails(res);
+                cache.del(`platformsConfig_${KCDetails.projectid}`);
             }
         }
     }
@@ -27,7 +29,8 @@ router.post('/platforms-config', (req, res) => {
 router.post('/url-map', (req, res) => {
     if (process.env['Webhook.Cache.Invalidate.UrlMap']) {
         if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.UrlMap'])) {
-            cache.del('urlMap');
+            const KCDetails = commonContent.getKCDetails(res);
+            cache.del(`urlMap_${KCDetails.projectid}`);
         }
     }
 

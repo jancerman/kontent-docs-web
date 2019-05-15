@@ -59,7 +59,7 @@ const redefineTypeLevel = (response) => {
 
 const handleLangForMultiplatformArticle = (queryString, item) => {
     queryString = '?tech=';
-    const cachedPlatforms = cache.get('platformsConfig');
+    const cachedPlatforms = cache.get(`urlMap_${deliveryConfig.projectId}`);
     if (cachedPlatforms && cachedPlatforms.length && item.elements.platform.value.length) {
       let tempPlatform = cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename);
       if (tempPlatform.length) {
@@ -83,7 +83,7 @@ const handleLangForPlatformField = (settings) => {
     if (settings.item.elements.platform.value) {
         settings.slug = settings.item.elements.url.value;
         settings.url[settings.url.length - 1] = settings.slug;
-        const cachedPlatforms = cache.get('platformsConfig');
+        const cachedPlatforms = cache.get(`platformsConfig_${deliveryConfig.projectid}`);
 
         // Add url to map for each platform in an article
         settings.item.elements.platform.value.forEach((elem) => {

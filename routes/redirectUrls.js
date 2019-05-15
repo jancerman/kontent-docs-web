@@ -29,8 +29,10 @@ const getArticles = async (res) => {
 };
 
 const getredirectUrls = async (res) => {
+  const KCDetails = commonContent.getKCDetails(res);
+
   const articles = await getArticles(res);
-  const urlMap = cache.get('urlMap');
+  const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
   let redirectMap = [];
 
   articles.forEach(article => {
