@@ -62,9 +62,9 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: 86400000
+  maxAge: 2592000
 }));
-app.use(cacheControl({ maxAge: 60 }));
+app.use(cacheControl({ maxAge: 604800 }));
 app.enable('trust proxy');
 
 const handleKCKeys = (req, res) => {
@@ -161,6 +161,9 @@ app.use('/rss', rss);
 app.use('/robots.txt', robots);
 
 app.get('/urlmap', asyncHandler(async (req, res) => {
+  res.cacheControl = {
+    maxAge: 300
+  };
   return res.json(cache.get('urlMap'));
 }));
 
