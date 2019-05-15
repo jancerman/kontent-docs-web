@@ -16,7 +16,7 @@ const error = async (req, res) => {
     const content = await requestDelivery({
         type: 'not_found',
         resolveRichText: true,
-        urlMap: cache.get('urlMap'),
+        urlMap: cache.get(`urlMap_${KCDetails.projectid}`),
         ...KCDetails
     });
 

@@ -92,27 +92,27 @@ const handleCaching = async (res) => {
   KCDetails = commonContent.getKCDetails(res);
   const isPreviewRequest = isPreview(res.locals.previewapikey);
 
-  if (isPreviewRequest && cache.get('platformsConfig')) {
-    cache.del('platformsConfig');
+  if (isPreviewRequest && cache.get(`platformsConfig_${KCDetails.projectid}`)) {
+    cache.del(`platformsConfig_${KCDetails.projectid}`);
   }
 
-  if (isPreviewRequest && cache.get('urlMap')) {
-    cache.del('urlMap');
+  if (isPreviewRequest && cache.get(`urlMap_${KCDetails.projectid}`)) {
+    cache.del(`urlMap_${KCDetails.projectid}`);
   }
 
-  if (!cache.get('platformsConfig')) {
+  if (!cache.get(`platformsConfig_${KCDetails.projectid}`)) {
     let platformsConfig = await commonContent.getPlatformsConfig(res);
-    cache.put('platformsConfig', platformsConfig);
+    cache.put(`platformsConfig_${KCDetails.projectid}`, platformsConfig);
   }
 
-  if (!cache.get('urlMap')) {
+  if (!cache.get(`urlMap_${KCDetails.projectid}`)) {
     let urlMap = await getUrlMap(KCDetails);
-    cache.put('urlMap', urlMap);
+    cache.put(`urlMap_${KCDetails.projectid}`, urlMap);
   }
 };
 
 const pageExists = (req, res, next) => {
-  const urlMap = cache.get('urlMap');
+  const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
   const path = req.originalUrl.split('?')[0];
   let exists = false;
 
@@ -165,7 +165,7 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
   res.cacheControl = {
     maxAge: 300
   };
-  return res.json(cache.get('urlMap'));
+  return res.json(cache.get(`urlMap_${res.locals.projectid}`));
 }));
 
 app.use('/cache-invalidate', bodyParser.text({ type: '*/*' }), cacheInvalidate);

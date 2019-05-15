@@ -84,8 +84,14 @@ const getSelectedPlatform = (platformsConfig, cookiesPlatform) => {
     return platform;
 };
 
+const getPlatformsConfig = (projectId) =>
+    cache.get(`platformsConfig_${projectId}`) && cache.get(`platformsConfig_${projectId}`).length
+    ? cache.get(`platformsConfig_${projectId}`)[0].options
+    : null;
+
 const getPreselectedPlatform = (content, req, res) => {
-    const platformsConfig = cache.get('platformsConfig') && cache.get('platformsConfig').length ? cache.get('platformsConfig')[0].options : null;
+    const KCDetails = commonContent.getKCDetails(res);
+    const platformsConfig = getPlatformsConfig(KCDetails.projectid);
 
     let preselectedPlatform = req.query.tech;
     if (preselectedPlatform) {
@@ -150,7 +156,7 @@ const getCanonicalUrl = (urlMap, content, preselectedPlatform) => {
 
 const getContent = async (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
-    const urlMap = cache.get('urlMap');
+    const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
     const navigation = await getNavigation(KCDetails);
     const slug = req.originalUrl.split('/')[1];
     const subNavigation = await getSubNavigation(KCDetails, slug);
@@ -163,7 +169,7 @@ const getContent = async (req, res) => {
     let availablePlatforms;
 
     let queryHash = req.url.split('?')[1];
-    const platformsConfig = cache.get('platformsConfig') && cache.get('platformsConfig').length ? cache.get('platformsConfig')[0].options : null;
+    const platformsConfig = getPlatformsConfig(KCDetails.projectid);
     let preselectedPlatform;
     let canonicalUrl;
     cookiesPlatform = req.cookies['KCDOCS.preselectedLanguage'];
