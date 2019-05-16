@@ -125,7 +125,6 @@
         run();
 
         document.querySelector('body').addEventListener('click', (e) => {
-            e.preventDefault();
             if (e.target && e.target.classList.contains('language-selector__link')) {
                 run();
             }
