@@ -141,6 +141,12 @@ const pageExists = (req, res, next) => {
 app.use('*', asyncHandler(async (req, res, next) => {
   handleKCKeys(req, res);
   await handleCaching(res);
+  return next();
+}));
+
+app.use('/', previewUrls);
+
+app.use('/', asyncHandler(async (req, res, next) => {
   const exists = pageExists(req, res, next);
 
   if (!exists) {
@@ -152,7 +158,6 @@ app.use('*', asyncHandler(async (req, res, next) => {
 
 app.use('/', home);
 app.use('/certification', certification);
-app.use('/', previewUrls);
 app.use('/api-reference', apiReference);
 app.use('/redirect-urls', redirectUrls);
 
