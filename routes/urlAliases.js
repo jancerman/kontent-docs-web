@@ -14,11 +14,13 @@ const getArticles = async (res) => {
 };
 
 const urlAliases = asyncHandler(async (req, res, next) => {
+    const KCDetails = commonContent.getKCDetails(res);
+
     const urlSplit = req.originalUrl.split('?');
     const queryParamater = urlSplit[1] ? urlSplit[1] : '';
     const originalUrl = urlSplit[0].trim().toLowerCase().replace(/\/\s*$/, '');
     const articles = await getArticles(res);
-    const urlMap = cache.get('urlMap');
+    const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
     let redirectUrl = [];
 
     articles.forEach(item => {

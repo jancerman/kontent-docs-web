@@ -25,7 +25,8 @@ const getItem = async (res, type, slug) => {
 };
 
 router.get(['/article/:article', '/scenario/:scenario'], asyncHandler(async (req, res, next) => {
-    const urlMap = cache.get('urlMap');
+    const KCDetails = commonContent.getKCDetails(res);
+    const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
     const type = getType(req.params);
     const urlSlug = req.params.article || req.params.scenario;
     let item = await getItem(res, type, urlSlug);
