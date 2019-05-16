@@ -1,6 +1,7 @@
 /**
  * Helper functions used in other JS files in the ../custom folder
  */
+let recaptchaKey;
 window.helper = (() => {
 
     // Find a parent of the "el" element specified by the "parentSelector" param
@@ -22,7 +23,7 @@ window.helper = (() => {
         return parents;
     };
 
-    const findAncestor = (el, sel) =>{
+    const findAncestor = (el, sel) => {
         while ((el = el.parentElement) && !((el.matches || el.matchesSelector).call(el, sel)));
         return el;
     };
@@ -171,9 +172,9 @@ window.helper = (() => {
         let path = url[0].split('?');
         let qString = path.length > 1 ? path[1].split('&') : [];
 
-        for(let i = 0; i < qString.length; i++) {
+        for (let i = 0; i < qString.length; i++) {
             let name = qString[i].split('=')[0];
-    
+
             for (let j = 0; j < params.length; j++) {
                 if (name === params[j]) {
                     qString.splice(i, 1);
@@ -222,60 +223,42 @@ window.helper = (() => {
         for (var i = 0, max = entities.length; i < max; ++i) {
             text = text.replace(new RegExp('&' + entities[i][0] + ';', 'g'), entities[i][1]);
         }
-        
+
         return text;
     };
 
-    const setCookie = (name,value,days) => {
+    const setCookie = (name, value, days) => {
         var expires = '';
         if (days) {
             var date = new Date();
-            date.setTime(date.getTime() + (days*24*60*60*1000));
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
             expires = '; expires=' + date.toUTCString();
         }
-        document.cookie = name + '=' + (value || '')  + expires + '; path=/';
+        document.cookie = name + '=' + (value || '') + expires + '; path=/';
     };
 
     const getCookie = (name) => {
         var nameEQ = name + '=';
         var ca = document.cookie.split(';');
-        for(var i=0;i < ca.length;i++) {
+        for (var i = 0; i < ca.length; i++) {
             var c = ca[i];
-            while (c.charAt(0)===' ') c = c.substring(1,c.length);
-            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length,c.length);
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
         }
         return null;
     };
 
-    const eraseCookie = (name) => {   
-        document.cookie = name+'=; Max-Age=-99999999;';  
-    };
-
-    const executeRecaptcha = (recaptchaKey) => {
-        grecaptcha.execute(recaptchaKey).then((token) => {
-            var ri = document.querySelector('#g-recaptcha-response');
-            if (ri) {
-                ri.value = token;
-            }
-        });
-    };
-
-    const initRecaptcha = (recaptchaKey) => {
-        grecaptcha.ready(() => {
-            executeRecaptcha(recaptchaKey);
-        });
+    const eraseCookie = (name) => {
+        document.cookie = name + '=; Max-Age=-99999999;';
     };
 
     const loadRecaptcha = () => {
         let recaptchaElem = document.querySelector('#recaptcha-script');
-        let recaptchaKey = recaptchaElem.getAttribute('data-site');
+        recaptchaKey = recaptchaElem.getAttribute('data-site');
 
         if (recaptchaElem && recaptchaKey) {
             var script = document.createElement('script');
-            script.onload = () => {
-                initRecaptcha(recaptchaKey);
-            };
-            script.src = 'https://www.google.com/recaptcha/api.js?render=' + recaptchaKey;
+            script.src = 'https://www.google.com/recaptcha/api.js?onload=renderReCaptcha';
             recaptchaElem.appendChild(script);
         }
     };
@@ -300,6 +283,13 @@ window.helper = (() => {
         loadRecaptcha: loadRecaptcha
     }
 })();
+
+const renderReCaptcha = function () {
+    grecaptcha.render('g-recaptcha-placeholder', {
+        'sitekey': recaptchaKey,
+        'theme': 'light'
+    });
+};
 
 // Adds forEach function to NodeList class prototype
 // Adds matches function for IE11

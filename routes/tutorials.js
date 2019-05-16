@@ -270,7 +270,7 @@ router.post(['/:main/:scenario', '/:main/:scenario/:topic/:article', '/other/:ar
     const errors = validationResult(req);
 
     if (errors.isEmpty()) {
-        let isRealUser = await recaptcha.check(req.body);
+        let isRealUser = await recaptcha.checkv2(req.body);
 
         if (isRealUser) {
             delete req.body['g-recaptcha-response'];
