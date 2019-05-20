@@ -35,6 +35,8 @@ let KCDetails = {};
 
 const urlWhitelist = [
   '/other/*',
+  '/scenario/*',
+  '/article/*',
   '/urlmap',
   '/kentico-icons.min.css',
   '/favicon.ico',
