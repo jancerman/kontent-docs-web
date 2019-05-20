@@ -109,6 +109,11 @@
         }
     };
 
+    const getScrollPosition = () => {
+        var doc = document.documentElement;
+        return window.pageYOffset || doc.scrollTop;
+    };
+
     const selectLanguageOnClick = (articleContent) => {
         const actionOnClick = (e) => {
             highlightSelector(articleContent, e);
@@ -122,8 +127,14 @@
 
         articleContent.addEventListener('click', (e) => {
             if (e.target && e.target.matches('.language-selector__link')) {
+                let prevElemOffset = e.target.getBoundingClientRect().top;
+
                 e.preventDefault();
                 actionOnClick(e, articleContent);
+                
+                let scrollPosition = getScrollPosition();
+                let newElemOffset = e.target.getBoundingClientRect().top;
+                window.scrollTo(0, scrollPosition - (prevElemOffset - newElemOffset));
             }
         });
     };

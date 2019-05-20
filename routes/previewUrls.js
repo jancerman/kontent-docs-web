@@ -25,19 +25,24 @@ const getItem = async (res, type, slug) => {
 };
 
 router.get(['/article/:article', '/scenario/:scenario'], asyncHandler(async (req, res, next) => {
-    const urlMap = cache.get('urlMap');
+    const KCDetails = commonContent.getKCDetails(res);
+    const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
     const type = getType(req.params);
     const urlSlug = req.params.article || req.params.scenario;
     let item = await getItem(res, type, urlSlug);
-    const redirectUrl = urlMap.filter(url => {
-        return url.codename === item[0].system.codename;
-    });
-    if (redirectUrl.length) {
-        return res.redirect(301, redirectUrl[0].url);
+
+    if (item.length) {
+        const redirectUrl = urlMap.filter(url => {
+            return url.codename === item[0].system.codename;
+        });
+        if (redirectUrl.length) {
+            return res.redirect(301, redirectUrl[0].url);
+        }
+        if (type === 'article') {
+            return res.redirect(301, `/other/${urlSlug}`);
+        }
     }
-    if (type === 'article') {
-        return res.redirect(301, `/other/${urlSlug}`);
-    }
+
     return next();
 }));
 

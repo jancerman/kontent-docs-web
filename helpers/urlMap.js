@@ -28,7 +28,6 @@ const typeLevels = {
 
 const getMapItem = (data) => {
     let item = {};
-
     fields.forEach(field => {
         switch (field) {
             case 'codename':
@@ -39,6 +38,9 @@ const getMapItem = (data) => {
                 break;
             case 'date':
                 item.date = data.date;
+                break;
+            case 'visibility':
+                item.visibility = data.visibility;
                 break;
         };
     });
@@ -57,7 +59,7 @@ const redefineTypeLevel = (response) => {
 
 const handleLangForMultiplatformArticle = (queryString, item) => {
     queryString = '?tech=';
-    const cachedPlatforms = cache.get('platformsConfig');
+    const cachedPlatforms = cache.get(`platformsConfig_${deliveryConfig.projectId}`);
     if (cachedPlatforms && cachedPlatforms.length && item.elements.platform.value.length) {
       let tempPlatform = cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename);
       if (tempPlatform.length) {
@@ -81,7 +83,7 @@ const handleLangForPlatformField = (settings) => {
     if (settings.item.elements.platform.value) {
         settings.slug = settings.item.elements.url.value;
         settings.url[settings.url.length - 1] = settings.slug;
-        const cachedPlatforms = cache.get('platformsConfig');
+        const cachedPlatforms = cache.get(`platformsConfig_${deliveryConfig.projectid}`);
 
         // Add url to map for each platform in an article
         settings.item.elements.platform.value.forEach((elem) => {
@@ -100,7 +102,8 @@ const addItemToMap = (settings) => {
     settings.urlMap.push(getMapItem({
       codename: settings.item.system.codename,
       url: `/${settings.url.join('/')}${settings.queryString}`,
-      date: settings.item.system.last_modified
+      date: settings.item.system.lastModified,
+      visibility: settings.item.visibility && settings.item.visibility.value.length ? settings.item.visibility.value : null
     }, fields));
 
     return settings.urlMap;
@@ -184,7 +187,7 @@ const getUrlMap = async (config) => {
         .getPromise();
 
     if (config.isSitemap) {
-        fields = ['url', 'date'];
+        fields = ['url', 'date', 'visibility'];
     } else {
         fields = ['codename', 'url'];
     }

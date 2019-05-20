@@ -8,6 +8,8 @@ const compression = require('compression');
 const logger = require('morgan');
 const asyncHandler = require('express-async-handler');
 const cache = require('memory-cache');
+const cacheControl = require('express-cache-controller');
+const serveStatic = require('serve-static');
 
 const getUrlMap = require('./helpers/urlMap');
 const commonContent = require('./helpers/commonContent');
@@ -31,6 +33,20 @@ const app = express();
 
 let KCDetails = {};
 
+const urlWhitelist = [
+  '/other/*',
+  '/scenario/*',
+  '/article/*',
+  '/urlmap',
+  '/kentico-icons.min.css',
+  '/favicon.ico',
+  '/api-reference',
+  '/rss/articles',
+  '/redirect-urls',
+  '/cache-invalidate/platforms-config',
+  '/cache-invalidate/url-map'
+];
+
 // Azure Application Insights monitors
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   appInsights.setup();
@@ -49,9 +65,10 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: 86400000
+app.use(serveStatic(path.join(__dirname, 'public'), {
+  maxAge: 2592000
 }));
+app.use(cacheControl({ maxAge: 604800 }));
 app.enable('trust proxy');
 
 const handleKCKeys = (req, res) => {
@@ -78,40 +95,77 @@ const handleCaching = async (res) => {
   KCDetails = commonContent.getKCDetails(res);
   const isPreviewRequest = isPreview(res.locals.previewapikey);
 
-  if (isPreviewRequest && cache.get('platformsConfig')) {
-    cache.del('platformsConfig');
+  if (isPreviewRequest && cache.get(`platformsConfig_${KCDetails.projectid}`)) {
+    cache.del(`platformsConfig_${KCDetails.projectid}`);
   }
 
-  if (isPreviewRequest && cache.get('urlMap')) {
-    cache.del('urlMap');
+  if (isPreviewRequest && cache.get(`urlMap_${KCDetails.projectid}`)) {
+    cache.del(`urlMap_${KCDetails.projectid}`);
   }
 
-  if (!cache.get('platformsConfig')) {
+  if (!cache.get(`platformsConfig_${KCDetails.projectid}`)) {
     let platformsConfig = await commonContent.getPlatformsConfig(res);
-    cache.put('platformsConfig', platformsConfig);
+    cache.put(`platformsConfig_${KCDetails.projectid}`, platformsConfig);
   }
 
-  if (!cache.get('urlMap')) {
+  if (!cache.get(`urlMap_${KCDetails.projectid}`)) {
     let urlMap = await getUrlMap(KCDetails);
-    cache.put('urlMap', urlMap);
+    cache.put(`urlMap_${KCDetails.projectid}`, urlMap);
   }
+};
+
+const pageExists = (req, res, next) => {
+  const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
+  const path = req.originalUrl.split('?')[0];
+  let exists = false;
+
+  urlMap.forEach((item) => {
+    const itemPath = item.url.split('?')[0];
+
+    if (itemPath === path) {
+      exists = true;
+    }
+  });
+
+  if (!exists) {
+    urlWhitelist.forEach((item) => {
+      let itemPath = item.split('?')[0];
+
+      if (itemPath === path) {
+        exists = true;
+      } else if (itemPath.endsWith('/*')) {
+        itemPath = itemPath.slice(0, -1);
+
+        if (path.startsWith(itemPath)) {
+          exists = true;
+        }
+      }
+    });
+  }
+
+  return exists;
 };
 
 // Routes
 app.use('*', asyncHandler(async (req, res, next) => {
   handleKCKeys(req, res);
   await handleCaching(res);
+  return next();
+}));
+
+app.use('/', previewUrls);
+
+app.use('/', asyncHandler(async (req, res, next) => {
+  const exists = pageExists(req, res, next);
+
+  if (!exists) {
+    return await urlAliases(req, res, next);
+  }
 
   return next();
 }));
 
-app.use('/tutorials/:scenario/:topic/:article', async (req, res, next) => {
-  return await urlAliases(req, res, next);
-});
-
 app.use('/', home);
-app.use('/', tutorials);
-app.use('/', previewUrls);
 app.use('/certification', certification);
 app.use('/api-reference', apiReference);
 app.use('/redirect-urls', redirectUrls);
@@ -122,10 +176,15 @@ app.use('/rss', rss);
 app.use('/robots.txt', robots);
 
 app.get('/urlmap', asyncHandler(async (req, res) => {
-  return res.json(cache.get('urlMap'));
+  res.cacheControl = {
+    maxAge: 300
+  };
+  return res.json(cache.get(`urlMap_${res.locals.projectid}`));
 }));
 
 app.use('/cache-invalidate', bodyParser.text({ type: '*/*' }), cacheInvalidate);
+
+app.use('/', tutorials);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -14,7 +14,7 @@ const commonContent = {
             type: contentType,
             depth: depth,
             resolveRichText: true,
-            urlMap: cache.get('urlMap'),
+            urlMap: cache.get(`urlMap_${KCDetails.projectid}`),
             ...KCDetails
         });
     },
@@ -39,9 +39,11 @@ const commonContent = {
         });
     },
     normalizePlatforms: async (platforms, res) => {
+        const KCDetails = commonContent.getKCDetails(res);
+
         let result = [];
         let order = [];
-        let cachedPlatforms = cache.get('platformsConfig');
+        let cachedPlatforms = cache.get(`platformsConfig_${KCDetails.projectid}`);
 
         if (!cachedPlatforms) {
             cachedPlatforms = await commonContent.getPlatformsConfig(res);

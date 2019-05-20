@@ -62,10 +62,9 @@ router.post('/', [
     const errors = validationResult(req);
 
     if (errors.isEmpty()) {
-        let isRealUser = await recaptcha.check(req.body);
+        let isRealUser = await recaptcha.checkv2(req.body);
 
         if (isRealUser) {
-            delete req.body['g-recaptcha-response'];
             let signedInPast = await lms.registerAddtoCourse(req.body);
 
             if (signedInPast) {

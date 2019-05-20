@@ -84,8 +84,14 @@ const getSelectedPlatform = (platformsConfig, cookiesPlatform) => {
     return platform;
 };
 
+const getPlatformsConfig = (projectId) =>
+    cache.get(`platformsConfig_${projectId}`) && cache.get(`platformsConfig_${projectId}`).length
+    ? cache.get(`platformsConfig_${projectId}`)[0].options
+    : null;
+
 const getPreselectedPlatform = (content, req, res) => {
-    const platformsConfig = cache.get('platformsConfig') && cache.get('platformsConfig').length ? cache.get('platformsConfig')[0].options : null;
+    const KCDetails = commonContent.getKCDetails(res);
+    const platformsConfig = getPlatformsConfig(KCDetails.projectid);
 
     let preselectedPlatform = req.query.tech;
     if (preselectedPlatform) {
@@ -150,7 +156,7 @@ const getCanonicalUrl = (urlMap, content, preselectedPlatform) => {
 
 const getContent = async (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
-    const urlMap = cache.get('urlMap');
+    const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
     const navigation = await getNavigation(KCDetails);
     const slug = req.originalUrl.split('/')[1];
     const subNavigation = await getSubNavigation(KCDetails, slug);
@@ -163,7 +169,7 @@ const getContent = async (req, res) => {
     let availablePlatforms;
 
     let queryHash = req.url.split('?')[1];
-    const platformsConfig = cache.get('platformsConfig') && cache.get('platformsConfig').length ? cache.get('platformsConfig')[0].options : null;
+    const platformsConfig = getPlatformsConfig(KCDetails.projectid);
     let preselectedPlatform;
     let canonicalUrl;
     cookiesPlatform = req.cookies['KCDOCS.preselectedLanguage'];
@@ -244,7 +250,7 @@ const getContent = async (req, res) => {
     };
 };
 
-router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic', '/tutorials/:scenario/:topic/:article', '/other/:article', '/whats-new', '/whats-new/:scenario', '/whats-new/:scenario/:topic', '/whats-new/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
+router.get(['/other/:article', '/:main', '/:main/:scenario', '/:main/:scenario/:topic', '/:main/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
     let data = await getContent(req, res, next);
 
     if (data && !data.view) return res.redirect(301, data);
@@ -253,7 +259,7 @@ router.get(['/tutorials', '/tutorials/:scenario', '/tutorials/:scenario/:topic',
     return res.render(data.view, data);
 }));
 
-router.post(['/tutorials/:scenario', '/tutorials/:scenario/:topic/:article', '/other/:article', '/whats-new/:scenario', '/whats-new/:scenario/:topic/:article'], [
+router.post(['/other/:article', '/:main/:scenario', '/:main/:scenario/:topic/:article'], [
     check('feedback').not().isEmpty().withMessage((value, { req, location, path }) => {
         return 'feedback_form___empty_field_validation';
     }).trim()
@@ -264,7 +270,7 @@ router.post(['/tutorials/:scenario', '/tutorials/:scenario/:topic/:article', '/o
     const errors = validationResult(req);
 
     if (errors.isEmpty()) {
-        let isRealUser = await recaptcha.check(req.body);
+        let isRealUser = await recaptcha.checkv2(req.body);
 
         if (isRealUser) {
             delete req.body['g-recaptcha-response'];
