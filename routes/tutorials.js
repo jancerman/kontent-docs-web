@@ -250,7 +250,7 @@ const getContent = async (req, res) => {
     };
 };
 
-router.get(['/:main', '/:main/:scenario', '/:main/:scenario/:topic', '/:main/:scenario/:topic/:article', '/other/:article'], asyncHandler(async (req, res, next) => {
+router.get(['/other/:article', '/:main', '/:main/:scenario', '/:main/:scenario/:topic', '/:main/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
     let data = await getContent(req, res, next);
 
     if (data && !data.view) return res.redirect(301, data);
@@ -259,7 +259,7 @@ router.get(['/:main', '/:main/:scenario', '/:main/:scenario/:topic', '/:main/:sc
     return res.render(data.view, data);
 }));
 
-router.post(['/:main/:scenario', '/:main/:scenario/:topic/:article', '/other/:article'], [
+router.post(['/other/:article', '/:main/:scenario', '/:main/:scenario/:topic/:article'], [
     check('feedback').not().isEmpty().withMessage((value, { req, location, path }) => {
         return 'feedback_form___empty_field_validation';
     }).trim()

@@ -34,6 +34,7 @@ const app = express();
 let KCDetails = {};
 
 const urlWhitelist = [
+  '/other/*',
   '/urlmap',
   '/kentico-icons.min.css',
   '/favicon.ico',
@@ -126,10 +127,16 @@ const pageExists = (req, res, next) => {
 
   if (!exists) {
     urlWhitelist.forEach((item) => {
-      const itemPath = item.split('?')[0];
+      let itemPath = item.split('?')[0];
 
       if (itemPath === path) {
         exists = true;
+      } else if (itemPath.endsWith('/*')) {
+        itemPath = itemPath.slice(0, -1);
+
+        if (path.startsWith(itemPath)) {
+          exists = true;
+        }
       }
     });
   }
