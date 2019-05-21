@@ -149,9 +149,15 @@ const pageExists = (req, res, next) => {
 // Routes
 app.use('*', asyncHandler(async (req, res, next) => {
   handleKCKeys(req, res);
-  await handleCaching(res);
+
+  if (!req.originalUrl.startsWith('/cache-invalidate/')) {
+    await handleCaching(res);
+  }
+
   return next();
 }));
+
+app.use('/cache-invalidate', bodyParser.text({ type: '*/*' }), cacheInvalidate);
 
 app.use('/', previewUrls);
 
@@ -181,8 +187,6 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
   };
   return res.json(cache.get(`urlMap_${res.locals.projectid}`));
 }));
-
-app.use('/cache-invalidate', bodyParser.text({ type: '*/*' }), cacheInvalidate);
 
 app.use('/', tutorials);
 
