@@ -97,7 +97,7 @@ const richTextResolverTemplates = {
             <li class="selection__item">
                 ${resolvedUrl ? '<a class="selection__link" href="'+ resolvedUrl + '">' : '<div class="selection__link">'}
                     <div class="selection__img-sizer">
-                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + '?w=290' : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
+                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + '?w=290&fm=jpg&auto=format' : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
                     </div>
                     <div class="selection__title">${item.title.value}</div>
                 ${resolvedUrl ? '</a>' : '</div>'}
@@ -114,7 +114,7 @@ const richTextResolverTemplates = {
         if (item.image.value[0]) {
             let alt = item.image.value[0].description ? item.image.value[0].description : '';
             let url = encodeURI(item.url.value.trim());
-            let transformationQueryString = '?w=';
+            let transformationQueryString = '?fm=jpg&auto=format&w=';
             let cssClass = item.border.value[0].codename === 'show' ? ' article__image-border' : '';
             cssClass += item.zoomable.value[0].codename === 'true' && !url ? ' article__add-lightbox' : '';
             let openLinkTag = url ? '<a href="'+ url +'" target="_blank" class="no-icon">' : '';
@@ -178,7 +178,7 @@ const richTextResolverTemplates = {
             <li class="selection__item">
                 <a class="selection__link" href="${item.url.value}">
                     <div class="selection__img-sizer">
-                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + '?w=290' : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
+                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + '?w=290&fm=jpg&auto=format' : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
                     </div>
                     <div class="selection__title">${item.title.value}</div>
                 </a>

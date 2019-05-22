@@ -12,7 +12,7 @@ const setWidthToImages = ($) => {
         var $that = $(this);
         var src = $that.attr('src');
         if (src && !src.endsWith('.gif')) {
-            $that.attr('src', src + '?w=926');
+            $that.attr('src', src + '?w=926&fm=jpg&auto=format');
         }
     });
 };
