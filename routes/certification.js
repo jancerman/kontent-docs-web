@@ -39,6 +39,15 @@ const getCertificationContent = async (req, res) => {
     };
 };
 
+const substituteDetailsInMessage = (data) => {
+    data.content.sign_up_success.value = data.content.sign_up_success.value
+        .replace('{first-name}', data.req.body.first_name)
+        .replace('{last-name}', data.req.body.last_name)
+        .replace('{email}', data.req.body.email);
+
+    return data;
+};
+
 router.get('/', asyncHandler(async (req, res, next) => {
     let data = await getCertificationContent(req, res, next);
     if (!data) return next();
@@ -80,6 +89,7 @@ router.post('/', [
     }
 
     data.req.anchor = 'certification-form';
+    data = substituteDetailsInMessage(data);
     return res.render('tutorials/pages/certification', data);
 }));
 
