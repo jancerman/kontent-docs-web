@@ -27,12 +27,8 @@ router.post('/platforms-config', (req, res) => {
 });
 
 router.post('/url-map', (req, res) => {
-    if (process.env['Webhook.Cache.Invalidate.UrlMap']) {
-        if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.UrlMap'])) {
-            const KCDetails = commonContent.getKCDetails(res);
-            cache.del(`urlMap_${KCDetails.projectid}`);
-        }
-    }
+    const KCDetails = commonContent.getKCDetails(res);
+    cache.del(`urlMap_${KCDetails.projectid}`);
 
     res.end();
 });
