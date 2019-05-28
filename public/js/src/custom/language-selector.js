@@ -116,7 +116,7 @@
 
     const getFirstElemInViewport = (selector) => {
         const elements = document.querySelectorAll(selector);
-        for (var i=0; i<elements.length; i++) {            
+        for (var i = 0; i < elements.length; i++) {            
             if ((elements[i].getBoundingClientRect().top >= 0) && (elements[i].offsetWidth > 0 && elements[i].offsetHeight > 0)) {
                 return elements[i];
             }
