@@ -44,7 +44,9 @@ const urlWhitelist = [
   '/rss/articles',
   '/redirect-urls',
   '/cache-invalidate/platforms-config',
-  '/cache-invalidate/url-map'
+  '/cache-invalidate/url-map',
+  '/robots.txt',
+  '/sitemap.xml'
 ];
 
 // Azure Application Insights monitors
