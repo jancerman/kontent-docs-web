@@ -14,7 +14,7 @@ const cache = require('memory-cache');
 const getCertificationContent = async (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
     const home = cache.get(`home_${KCDetails.projectid}`);
-    const content = await commonContent.getTree('certification', 1, res);
+    const content = cache.get(`certification_${KCDetails.projectid}`);
 
     if (!(home && home[0]) || !(content && content[0])) {
         return null;

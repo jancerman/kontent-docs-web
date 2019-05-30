@@ -2,7 +2,6 @@ const express = require('express');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
 const cache = require('memory-cache');
-const requestDelivery = require('../helpers/requestDelivery');
 const moment = require('moment');
 const Entities = require('html-entities').AllHtmlEntities;
 const entities = new Entities();
@@ -15,15 +14,7 @@ router.get('/articles', asyncHandler(async (req, res, next) => {
 
     const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
     const home = cache.get(`home_${KCDetails.projectid}`);
-    const articles = await requestDelivery({
-        type: 'article',
-        limit: 20,
-        order: {
-            type: 'descending',
-            field: 'system.last_modified'
-        },
-        ...KCDetails
-    });
+    const articles = cache.get(`rss_articles_${KCDetails.projectid}`);
 
     res.set('Content-Type', 'application/xml');
 

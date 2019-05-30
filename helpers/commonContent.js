@@ -42,6 +42,38 @@ const commonContent = {
             ...KCDetails
         });
     },
+    getArticles: async (res) => {
+        return await requestDelivery({
+            type: 'article',
+            ...commonContent.getKCDetails(res)
+        });
+    },
+    getRSSArticles: async (res) => {
+        return await requestDelivery({
+            type: 'article',
+            limit: 20,
+            order: {
+                type: 'descending',
+                field: 'system.last_modified'
+            },
+            ...commonContent.getKCDetails(res)
+        });
+    },
+    getCertification: async (res) => {
+        return await requestDelivery({
+            type: 'certification',
+            ...commonContent.getKCDetails(res)
+        });
+    },
+    getNotFound: async (res) => {
+        const KCDetails = commonContent.getKCDetails(res);
+        return await requestDelivery({
+            type: 'not_found',
+            resolveRichText: true,
+            urlMap: cache.get(`urlMap_${KCDetails.projectid}`),
+            ...KCDetails
+        });
+    },
     getPlatformsConfig: async (res) => {
         return await requestDelivery({
             type: 'platform_picker',

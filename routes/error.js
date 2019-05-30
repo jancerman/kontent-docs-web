@@ -2,7 +2,6 @@ const cache = require('memory-cache');
 const commonContent = require('../helpers/commonContent');
 const minify = require('../helpers/minify');
 const helper = require('../helpers/helperFunctions');
-const requestDelivery = require('../helpers/requestDelivery');
 
 const error = async (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
@@ -13,13 +12,7 @@ const error = async (req, res) => {
         return res.status(500).send('Unexpected error, please check site logs.');
     }
 
-    const content = await requestDelivery({
-        type: 'not_found',
-        resolveRichText: true,
-        urlMap: cache.get(`urlMap_${KCDetails.projectid}`),
-        ...KCDetails
-    });
-
+    const content = cache.get(`not_found_${KCDetails.projectid}`);
     const home = cache.get(`home_${KCDetails.projectid}`);
 
     return res.render('tutorials/pages/error', {

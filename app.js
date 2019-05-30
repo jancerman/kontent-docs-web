@@ -146,6 +146,46 @@ const handleCaching = async (res) => {
     let home = await commonContent.getHome(res);
     cache.put(`home_${KCDetails.projectid}`, home);
   }
+
+  // Articles
+  if (isPreviewRequest && cache.get(`articles_${KCDetails.projectid}`)) {
+    cache.del(`articles_${KCDetails.projectid}`);
+  }
+
+  if (!cache.get(`articles_${KCDetails.projectid}`)) {
+    let articles = await commonContent.getArticles(res);
+    cache.put(`articles_${KCDetails.projectid}`, articles);
+  }
+
+  // RSS Articles
+  if (isPreviewRequest && cache.get(`rss_articles_${KCDetails.projectid}`)) {
+    cache.del(`rss_articles_${KCDetails.projectid}`);
+  }
+
+  if (!cache.get(`rss_articles_${KCDetails.projectid}`)) {
+    let articles = await commonContent.getRSSArticles(res);
+    cache.put(`rss_articles_${KCDetails.projectid}`, articles);
+  }
+
+  // Certification
+  if (isPreviewRequest && cache.get(`certification_${KCDetails.projectid}`)) {
+    cache.del(`certification_${KCDetails.projectid}`);
+  }
+
+  if (!cache.get(`certification_${KCDetails.projectid}`)) {
+    let certification = await commonContent.getCertification(res);
+    cache.put(`certification_${KCDetails.projectid}`, certification);
+  }
+
+  // Not found
+  if (isPreviewRequest && cache.get(`not_found_${KCDetails.projectid}`)) {
+    cache.del(`not_found_${KCDetails.projectid}`);
+  }
+
+  if (!cache.get(`not_found_${KCDetails.projectid}`)) {
+    let notFound = await commonContent.getNotFound(res);
+    cache.put(`not_found_${KCDetails.projectid}`, notFound);
+  }
 };
 
 const pageExists = (req, res, next) => {

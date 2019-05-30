@@ -37,8 +37,27 @@ router.post('/common-content', (req, res) => {
     if (process.env['Webhook.Cache.Invalidate.CommonContent']) {
         if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
             const KCDetails = commonContent.getKCDetails(res);
-            let footer = JSON.parse(req.body).data.items.filter(item => item.type === 'footer');
-            let UIMessages = JSON.parse(req.body).data.items.filter(item => item.type === 'ui_messages');
+            const items = JSON.parse(req.body).data.items;
+            let footer = [];
+            let UIMessages = [];
+            let articles = [];
+            let notFound = [];
+            let certification = [];
+
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item.type === 'footer') {
+                    footer.push(item);
+                } else if (item.type === 'ui_messages') {
+                    UIMessages.push(item);
+                } else if (item.type === 'article') {
+                    articles.push(item);
+                } else if (item.type === 'not_found') {
+                    notFound.push(item);
+                } else if (item.type === 'certification') {
+                    certification.push(item);
+                }
+            }
 
             if (footer.length) {
                 cache.del(`footer_${KCDetails.projectid}`);
@@ -46,6 +65,19 @@ router.post('/common-content', (req, res) => {
 
             if (UIMessages.length) {
                 cache.del(`UIMessages_${KCDetails.projectid}`);
+            }
+
+            if (articles.length) {
+                cache.del(`articles_${KCDetails.projectid}`);
+                cache.del(`rss_articles_${KCDetails.projectid}`);
+            }
+
+            if (notFound.length) {
+                cache.del(`notFound_${KCDetails.projectid}`);
+            }
+
+            if (certification.length) {
+                cache.del(`certification_${KCDetails.projectid}`);
             }
 
             cache.del(`home_${KCDetails.projectid}`);

@@ -3,25 +3,15 @@ const asyncHandler = require('express-async-handler');
 const router = express.Router();
 const cache = require('memory-cache');
 
-const requestDelivery = require('../helpers/requestDelivery');
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 
-const getArticles = async (res) => {
-  const KCDetails = commonContent.getKCDetails(res);
-
-  return await requestDelivery({
-      type: 'article',
-      ...KCDetails
-  });
-};
-
 const getredirectUrls = async (res) => {
   const KCDetails = commonContent.getKCDetails(res);
 
-  const articles = await getArticles(res);
+  const articles = cache.get(`articles_${KCDetails.projectid}`);
   const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
   let redirectMap = [];
 
