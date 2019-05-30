@@ -15,21 +15,25 @@ const moment = require('moment');
 const cache = require('memory-cache');
 let cookiesPlatform;
 
-const getNavigation = async (KCDetails) => {
-    return await requestDelivery({
-        type: 'home',
-        depth: 1,
-        ...KCDetails
-    });
-};
-
 const getSubNavigation = async (KCDetails, slug) => {
-    return await requestDelivery({
-        type: 'navigation_item',
-        depth: 3,
-        slug: slug,
-        ...KCDetails
-    });
+    const isPreviewRequest = isPreview(KCDetails.previewapikey);
+    const cacheKey = `subNavigation_${slug}_${KCDetails.projectid}`;
+
+    if (isPreviewRequest && cache.get(cacheKey)) {
+        cache.del(cacheKey);
+    }
+
+    if (!cache.get(cacheKey)) {
+        let subNavigation = await requestDelivery({
+            type: 'navigation_item',
+            depth: 3,
+            slug: slug,
+            ...KCDetails
+        });
+        cache.put(cacheKey, subNavigation);
+    }
+
+    return cache.get(cacheKey);
 };
 
 const getSubNavigationLevels = (req) => {
@@ -157,13 +161,13 @@ const getCanonicalUrl = (urlMap, content, preselectedPlatform) => {
 const getContent = async (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
     const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
-    const navigation = await getNavigation(KCDetails);
+    const home = cache.get(`home_${KCDetails.projectid}`);
     const slug = req.originalUrl.split('/')[1];
     const subNavigation = await getSubNavigation(KCDetails, slug);
     const subNavigationLevels = getSubNavigationLevels(req);
     const currentLevel = getCurrentLevel(subNavigationLevels);
-    const footer = await commonContent.getFooter(res);
-    const UIMessages = await commonContent.getUIMessages(res);
+    const footer = cache.get(`footer_${KCDetails.projectid}`);
+    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
     let content = await getContentLevel(currentLevel, KCDetails, urlMap, req);
     let view = 'tutorials/pages/article';
     let availablePlatforms;
@@ -231,7 +235,7 @@ const getContent = async (req, res) => {
         isPreview: isPreview(res.locals.previewapikey),
         projectId: res.locals.projectid,
         title: content[0].title.value,
-        titleSuffix: ` | ${navigation[0] ? navigation[0].title.value : 'Kentico Cloud Docs'}`,
+        titleSuffix: ` | ${home[0] ? home[0].title.value : 'Kentico Cloud Docs'}`,
         description: content[0].introduction ? helper.stripTags(content[0].introduction.value).substring(0, 300) : '',
         platform: content[0].platform && content[0].platform.value.length ? await commonContent.normalizePlatforms(content[0].platform.value, res) : null,
         availablePlatforms: await commonContent.normalizePlatforms(availablePlatforms, res),
@@ -239,7 +243,7 @@ const getContent = async (req, res) => {
         canonicalUrl: canonicalUrl,
         introduction: content[0].introduction ? content[0].introduction.value : null,
         nextSteps: content[0].next_steps ? content[0].next_steps : '',
-        navigation: navigation[0] ? navigation[0].navigation : [],
+        navigation: home[0] ? home[0].navigation : [],
         subNavigation: subNavigation[0] ? subNavigation[0].children : [],
         subNavigationLevels: subNavigationLevels,
         content: content[0],

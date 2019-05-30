@@ -97,12 +97,19 @@ const handleCaching = async (res) => {
   KCDetails = commonContent.getKCDetails(res);
   const isPreviewRequest = isPreview(res.locals.previewapikey);
 
-  if (isPreviewRequest && cache.get(`platformsConfig_${KCDetails.projectid}`)) {
-    cache.del(`platformsConfig_${KCDetails.projectid}`);
-  }
-
+  // Url map
   if (isPreviewRequest && cache.get(`urlMap_${KCDetails.projectid}`)) {
     cache.del(`urlMap_${KCDetails.projectid}`);
+  }
+
+  if (!cache.get(`urlMap_${KCDetails.projectid}`)) {
+    let urlMap = await getUrlMap(KCDetails);
+    cache.put(`urlMap_${KCDetails.projectid}`, urlMap);
+  }
+
+  // Platforms config
+  if (isPreviewRequest && cache.get(`platformsConfig_${KCDetails.projectid}`)) {
+    cache.del(`platformsConfig_${KCDetails.projectid}`);
   }
 
   if (!cache.get(`platformsConfig_${KCDetails.projectid}`)) {
@@ -110,9 +117,34 @@ const handleCaching = async (res) => {
     cache.put(`platformsConfig_${KCDetails.projectid}`, platformsConfig);
   }
 
-  if (!cache.get(`urlMap_${KCDetails.projectid}`)) {
-    let urlMap = await getUrlMap(KCDetails);
-    cache.put(`urlMap_${KCDetails.projectid}`, urlMap);
+  // Footer
+  if (isPreviewRequest && cache.get(`footer_${KCDetails.projectid}`)) {
+    cache.del(`footer_${KCDetails.projectid}`);
+  }
+
+  if (!cache.get(`footer_${KCDetails.projectid}`)) {
+    let footer = await commonContent.getFooter(res);
+    cache.put(`footer_${KCDetails.projectid}`, footer);
+  }
+
+  // UI messages
+  if (isPreviewRequest && cache.get(`UIMessages_${KCDetails.projectid}`)) {
+    cache.del(`UIMessages_${KCDetails.projectid}`);
+  }
+
+  if (!cache.get(`UIMessages_${KCDetails.projectid}`)) {
+    let UIMessages = await commonContent.getUIMessages(res);
+    cache.put(`UIMessages_${KCDetails.projectid}`, UIMessages);
+  }
+
+  // Home
+  if (isPreviewRequest && cache.get(`home_${KCDetails.projectid}`)) {
+    cache.del(`home_${KCDetails.projectid}`);
+  }
+
+  if (!cache.get(`home_${KCDetails.projectid}`)) {
+    let home = await commonContent.getHome(res);
+    cache.put(`home_${KCDetails.projectid}`, home);
   }
 };
 

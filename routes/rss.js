@@ -14,7 +14,7 @@ router.get('/articles', asyncHandler(async (req, res, next) => {
     const KCDetails = commonContent.getKCDetails(res);
 
     const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
-    const home = await commonContent.getTree('home', 1, KCDetails);
+    const home = cache.get(`home_${KCDetails.projectid}`);
     const articles = await requestDelivery({
         type: 'article',
         limit: 20,

@@ -9,19 +9,19 @@ const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 const lms = require('../helpers/lms');
 const recaptcha = require('../helpers/recaptcha');
+const cache = require('memory-cache');
 
 const getCertificationContent = async (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
+    const home = cache.get(`home_${KCDetails.projectid}`);
+    const content = await commonContent.getTree('certification', 1, res);
 
-    const tree = await commonContent.getTree('home', 1, KCDetails);
-    const content = await commonContent.getTree('certification', 1, KCDetails);
-
-    if (!(tree && tree[0]) || !(content && content[0])) {
+    if (!(home && home[0]) || !(content && content[0])) {
         return null;
     }
 
-    const footer = await commonContent.getFooter(res);
-    const UIMessages = await commonContent.getUIMessages(res);
+    const footer = cache.get(`footer_${KCDetails.projectid}`);
+    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
 
     return {
         req: req,
@@ -30,9 +30,9 @@ const getCertificationContent = async (req, res) => {
         slug: 'certification',
         isPreview: isPreview(res.locals.previewapikey),
         title: content[0].title.value,
-        titleSuffix: ` | ${tree[0] ? tree[0].title.value : 'Kentico Cloud Docs'}`,
+        titleSuffix: ` | ${home[0] ? home[0].title.value : 'Kentico Cloud Docs'}`,
         content: content[0],
-        navigation: tree[0].navigation,
+        navigation: home[0].navigation,
         footer: footer[0] ? footer[0] : {},
         UIMessages: UIMessages[0],
         helper: helper

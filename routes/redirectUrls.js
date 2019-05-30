@@ -9,16 +9,6 @@ const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 
-const getNavigation = async (res) => {
-  const KCDetails = commonContent.getKCDetails(res);
-
-  return await requestDelivery({
-      type: 'home',
-      depth: 1,
-      ...KCDetails
-  });
-};
-
 const getArticles = async (res) => {
   const KCDetails = commonContent.getKCDetails(res);
 
@@ -52,9 +42,10 @@ const getredirectUrls = async (res) => {
 }
 
 router.get('/', asyncHandler(async (req, res) => {
-  const footer = await commonContent.getFooter(res);
-  const UIMessages = await commonContent.getUIMessages(res);
-  const navigation = await getNavigation(res);
+  const KCDetails = commonContent.getKCDetails(res);
+  const footer = cache.get(`footer_${KCDetails.projectid}`);
+  const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+  const home = cache.get(`home_${KCDetails.projectid}`);
   const redirectMap = await getredirectUrls(res);
 
   return res.render('tutorials/pages/redirectUrls', {
@@ -62,7 +53,7 @@ router.get('/', asyncHandler(async (req, res) => {
     minify: minify,
     isPreview: isPreview(res.locals.previewapikey),
     title: 'Redirect URLs',
-    navigation: navigation[0] ? navigation[0].navigation : [],
+    navigation: home[0] ? home[0].navigation : [],
     redirectMap: redirectMap,
     footer: footer[0] ? footer[0] : {},
     UIMessages: UIMessages[0],

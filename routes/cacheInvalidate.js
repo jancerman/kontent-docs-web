@@ -33,4 +33,34 @@ router.post('/url-map', (req, res) => {
     res.end();
 });
 
+router.post('/common-content', (req, res) => {
+    if (process.env['Webhook.Cache.Invalidate.CommonContent']) {
+        if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
+            const KCDetails = commonContent.getKCDetails(res);
+            let footer = JSON.parse(req.body).data.items.filter(item => item.type === 'footer');
+            let UIMessages = JSON.parse(req.body).data.items.filter(item => item.type === 'ui_messages');
+
+            if (footer.length) {
+                cache.del(`footer_${KCDetails.projectid}`);
+            }
+
+            if (UIMessages.length) {
+                cache.del(`UIMessages_${KCDetails.projectid}`);
+            }
+
+            cache.del(`home_${KCDetails.projectid}`);
+
+            // Delete all subnavigation keys
+            const keys = cache.keys();
+            for (let i = 0; i < keys.length; i++) {
+                if (keys[i].startsWith('subNavigation_')) {
+                    cache.del(keys[i]);
+                }
+            }
+        }
+    }
+
+    res.end();
+});
+
 module.exports = router;

@@ -9,7 +9,8 @@ const commonContent = {
             securedapikey: res.locals.securedapikey
         };
     },
-    getTree: async (contentType, depth, KCDetails) => {
+    getTree: async (contentType, depth, res) => {
+        const KCDetails = commonContent.getKCDetails(res);
         return await requestDelivery({
             type: contentType,
             depth: depth,
@@ -29,6 +30,16 @@ const commonContent = {
             type: 'ui_messages',
             resolveRichText: true,
             ...commonContent.getKCDetails(res)
+        });
+    },
+    getHome: async (res) => {
+        const KCDetails = commonContent.getKCDetails(res);
+        return await requestDelivery({
+            type: 'home',
+            depth: 4,
+            resolveRichText: true,
+            urlMap: cache.get(`urlMap_${KCDetails.projectid}`),
+            ...KCDetails
         });
     },
     getPlatformsConfig: async (res) => {
