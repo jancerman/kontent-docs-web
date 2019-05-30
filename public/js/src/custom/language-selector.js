@@ -125,7 +125,7 @@
     };
 
     const selectLanguageOnClick = (articleContent) => {
-        const actionOnClick = (e) => {
+        const actionOnClick = (e, articleContent) => {
             highlightSelector(articleContent, e);
             selectCode(e);
             switchContentChunk(e);

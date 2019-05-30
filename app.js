@@ -97,16 +97,6 @@ const handleCaching = async (res) => {
   KCDetails = commonContent.getKCDetails(res);
   const isPreviewRequest = isPreview(res.locals.previewapikey);
 
-  // Url map
-  if (isPreviewRequest && cache.get(`urlMap_${KCDetails.projectid}`)) {
-    cache.del(`urlMap_${KCDetails.projectid}`);
-  }
-
-  if (!cache.get(`urlMap_${KCDetails.projectid}`)) {
-    let urlMap = await getUrlMap(KCDetails);
-    cache.put(`urlMap_${KCDetails.projectid}`, urlMap);
-  }
-
   // Platforms config
   if (isPreviewRequest && cache.get(`platformsConfig_${KCDetails.projectid}`)) {
     cache.del(`platformsConfig_${KCDetails.projectid}`);
@@ -115,6 +105,16 @@ const handleCaching = async (res) => {
   if (!cache.get(`platformsConfig_${KCDetails.projectid}`)) {
     let platformsConfig = await commonContent.getPlatformsConfig(res);
     cache.put(`platformsConfig_${KCDetails.projectid}`, platformsConfig);
+  }
+
+  // Url map
+  if (isPreviewRequest && cache.get(`urlMap_${KCDetails.projectid}`)) {
+    cache.del(`urlMap_${KCDetails.projectid}`);
+  }
+
+  if (!cache.get(`urlMap_${KCDetails.projectid}`)) {
+    let urlMap = await getUrlMap(KCDetails);
+    cache.put(`urlMap_${KCDetails.projectid}`, urlMap);
   }
 
   // Footer

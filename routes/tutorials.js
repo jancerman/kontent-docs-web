@@ -146,6 +146,7 @@ const getPreselectedPlatform = (content, req, res) => {
             }
         }
     }
+
     return preselectedPlatform;
 };
 
@@ -196,6 +197,7 @@ const getContent = async (req, res) => {
                     }
                     return false;
                 });
+
                 availablePlatforms = content[0].children;
 
                 content = await requestDelivery({
@@ -250,7 +252,8 @@ const getContent = async (req, res) => {
         footer: footer[0] ? footer[0] : {},
         UIMessages: UIMessages[0],
         helper: helper,
-        getFormValue: helper.getFormValue
+        getFormValue: helper.getFormValue,
+        preselectedPlatform: preselectedPlatform
     };
 };
 
