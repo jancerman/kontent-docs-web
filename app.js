@@ -122,15 +122,15 @@ const pageExists = async (req, res, next) => {
 };
 
 // Routes
-app.use(asyncHandler(async (req, res, next) => {
+app.use(async (req, res, next) => {
   handleKCKeys(req, res);
 
-  if (!req.originalUrl.startsWith('/cache-invalidate/')) {
+  if (!req.originalUrl.startsWith('/cache-invalidate/') && !req.originalUrl.startsWith('/kentico-icons.min.css')) {
     await handleCache(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home']);
   }
 
   return next();
-}));
+});
 
 app.use('/cache-invalidate', bodyParser.text({ type: '*/*' }), cacheInvalidate);
 
