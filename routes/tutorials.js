@@ -10,30 +10,21 @@ const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 const recaptcha = require('../helpers/recaptcha');
 const jira = require('../helpers/jira');
+const handleCache = require('../helpers/handleCache');
 
 const moment = require('moment');
 const cache = require('memory-cache');
 let cookiesPlatform;
 
-const getSubNavigation = async (KCDetails, slug) => {
-    const isPreviewRequest = isPreview(KCDetails.previewapikey);
-    const cacheKey = `subNavigation_${slug}_${KCDetails.projectid}`;
-
-    if (isPreviewRequest && cache.get(cacheKey)) {
-        cache.del(cacheKey);
-    }
-
-    if (!cache.get(cacheKey)) {
-        let subNavigation = await requestDelivery({
+const getSubNavigation = async (res, slug) => {
+    return await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
+        return await requestDelivery({
             type: 'navigation_item',
             depth: 3,
             slug: slug,
-            ...KCDetails
+            ...commonContent.getKCDetails(res)
         });
-        cache.put(cacheKey, subNavigation);
-    }
-
-    return cache.get(cacheKey);
+    });
 };
 
 const getSubNavigationLevels = (req) => {
@@ -45,7 +36,9 @@ const getSubNavigationLevels = (req) => {
     ];
 };
 
-const getContentLevel = async (currentLevel, KCDetails, urlMap, req) => {
+const getContentLevel = async (currentLevel, urlMap, req, res) => {
+    const KCDetails = commonContent.getKCDetails(res);
+
     let settings = {
         slug: getSubNavigationLevels(req)[currentLevel],
         depth: 2,
@@ -68,7 +61,17 @@ const getContentLevel = async (currentLevel, KCDetails, urlMap, req) => {
         settings.urlMap = urlMap;
     }
 
-    return await requestDelivery(settings);
+    let cacheKey;
+
+    if (Array.isArray(settings.type)) {
+        cacheKey = `${settings.type[0]}_${settings.slug}_${KCDetails.projectid}`;
+    } else {
+        cacheKey = `${settings.type}_${settings.slug}_${KCDetails.projectid}`;
+    }
+
+    return await handleCache.evaluateSingle(res, cacheKey, async () => {
+        return await requestDelivery(settings);
+    });
 };
 
 const getCurrentLevel = (levels) => {
@@ -164,12 +167,12 @@ const getContent = async (req, res) => {
     const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
     const home = cache.get(`home_${KCDetails.projectid}`);
     const slug = req.originalUrl.split('/')[1];
-    const subNavigation = await getSubNavigation(KCDetails, slug);
+    const subNavigation = await getSubNavigation(res, slug);
     const subNavigationLevels = getSubNavigationLevels(req);
     const currentLevel = getCurrentLevel(subNavigationLevels);
     const footer = cache.get(`footer_${KCDetails.projectid}`);
     const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
-    let content = await getContentLevel(currentLevel, KCDetails, urlMap, req);
+    let content = await getContentLevel(currentLevel, urlMap, req, res);
     let view = 'tutorials/pages/article';
     let availablePlatforms;
 
@@ -200,13 +203,15 @@ const getContent = async (req, res) => {
 
                 availablePlatforms = content[0].children;
 
-                content = await requestDelivery({
-                    codename: platformItem[0].system.codename,
-                    type: 'article',
-                    depth: 2,
-                    resolveRichText: true,
-                    urlMap: urlMap,
-                    ...KCDetails
+                content = await handleCache.evaluateSingle(res, `article_${platformItem[0].elements.url.value}`, async () => {
+                    return await requestDelivery({
+                        codename: platformItem[0].system.codename,
+                        type: 'article',
+                        depth: 2,
+                        resolveRichText: true,
+                        urlMap: urlMap,
+                        ...KCDetails
+                    });
                 });
             }
 
@@ -259,7 +264,6 @@ const getContent = async (req, res) => {
 
 router.get(['/other/:article', '/:main', '/:main/:scenario', '/:main/:scenario/:topic', '/:main/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
     let data = await getContent(req, res, next);
-
     if (data && !data.view) return res.redirect(301, data);
     if (!data) return next();
 

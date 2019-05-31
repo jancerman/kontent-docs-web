@@ -4,6 +4,7 @@ const router = express.Router();
 const cache = require('memory-cache');
 const commonContent = require('../helpers/commonContent');
 const requestDelivery = require('../helpers/requestDelivery');
+const handleCache = require('../helpers/handleCache');
 
 const getType = (params) => {
     let type = '';
@@ -17,10 +18,17 @@ const getType = (params) => {
 
 const getItem = async (res, type, slug) => {
     const KCDetails = commonContent.getKCDetails(res);
-    return await requestDelivery({
-        type: type,
-        slug: slug,
-        ...KCDetails
+    const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
+
+    return await handleCache.evaluateSingle(res, `${type}_${slug}`, async () => {
+        return await requestDelivery({
+            type: type,
+            slug: slug,
+            depth: 2,
+            resolveRichText: true,
+            urlMap: urlMap,
+            ...KCDetails
+        });
     });
 };
 

@@ -126,7 +126,7 @@ app.use(async (req, res, next) => {
   handleKCKeys(req, res);
 
   if (!req.originalUrl.startsWith('/cache-invalidate/') && !req.originalUrl.startsWith('/kentico-icons.min.css')) {
-    await handleCache(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home']);
+    await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home']);
   }
 
   return next();
@@ -140,7 +140,7 @@ app.use('/', asyncHandler(async (req, res, next) => {
   const exists = await pageExists(req, res, next);
 
   if (!exists) {
-    await handleCache(res, ['articles']);
+    await handleCache.evaluateCommon(res, ['articles']);
     return await urlAliases(req, res, next);
   }
 
@@ -149,20 +149,20 @@ app.use('/', asyncHandler(async (req, res, next) => {
 
 app.use('/', home);
 app.use('/certification', async (req, res, next) => {
-  await handleCache(res, ['certification']);
+  await handleCache.evaluateCommon(res, ['certification']);
   return next();
 }, certification);
 
 app.use('/api-reference', apiReference);
 app.use('/redirect-urls', async (req, res, next) => {
-  await handleCache(res, ['articles']);
+  await handleCache.evaluateCommon(res, ['articles']);
   return next();
 }, redirectUrls);
 
 app.use('/kentico-icons.min.css', kenticoIcons);
 app.use('/sitemap.xml', sitemap);
 app.use('/rss', async (req, res, next) => {
-  await handleCache(res, ['rss_articles']);
+  await handleCache.evaluateCommon(res, ['rss_articles']);
   return next();
 }, rss);
 app.use('/robots.txt', robots);
@@ -192,7 +192,7 @@ app.use(async(err, req, res, _next) => {
   // render the error page
   res.status(err.status || 500);
   req.err = err;
-  await handleCache(res, ['not_found']);
+  await handleCache.evaluateCommon(res, ['not_found']);
   return error(req, res);
 });
 

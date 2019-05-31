@@ -12,6 +12,14 @@ const isValidSignature = (req, secret) => {
     return crypto.timingSafeEqual(Buffer.from(givenSignature, 'base64'), computedSignature);
 };
 
+const deleteMultipleKeys = (keys, startsWithString) => {
+    for (let i = 0; i < keys.length; i++) {
+        if (keys[i].startsWith(startsWithString)) {
+            cache.del(keys[i]);
+        }
+    }
+};
+
 router.post('/platforms-config', (req, res) => {
     if (process.env['Webhook.Cache.Invalidate.PlatformsConfig']) {
         if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.PlatformsConfig'])) {
@@ -38,9 +46,12 @@ router.post('/common-content', (req, res) => {
         if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
             const KCDetails = commonContent.getKCDetails(res);
             const items = JSON.parse(req.body).data.items;
+            const keys = cache.keys();
             let footer = [];
             let UIMessages = [];
             let articles = [];
+            let scenarios = [];
+            let topics = [];
             let notFound = [];
             let certification = [];
 
@@ -52,6 +63,10 @@ router.post('/common-content', (req, res) => {
                     UIMessages.push(item);
                 } else if (item.type === 'article') {
                     articles.push(item);
+                } else if (item.type === 'scenario') {
+                    scenarios.push(item);
+                } else if (item.type === 'topic') {
+                    topics.push(item);
                 } else if (item.type === 'not_found') {
                     notFound.push(item);
                 } else if (item.type === 'certification') {
@@ -70,6 +85,15 @@ router.post('/common-content', (req, res) => {
             if (articles.length) {
                 cache.del(`articles_${KCDetails.projectid}`);
                 cache.del(`rss_articles_${KCDetails.projectid}`);
+                deleteMultipleKeys(keys, 'article_');
+            }
+
+            if (scenarios.length) {
+                deleteMultipleKeys(keys, 'scenario_');
+            }
+
+            if (topics.length) {
+                deleteMultipleKeys(keys, 'topic_');
             }
 
             if (notFound.length) {
@@ -82,13 +106,7 @@ router.post('/common-content', (req, res) => {
 
             cache.del(`home_${KCDetails.projectid}`);
 
-            // Delete all subnavigation keys
-            const keys = cache.keys();
-            for (let i = 0; i < keys.length; i++) {
-                if (keys[i].startsWith('subNavigation_')) {
-                    cache.del(keys[i]);
-                }
-            }
+            deleteMultipleKeys(keys, 'subNavigation_');
         }
     }
 

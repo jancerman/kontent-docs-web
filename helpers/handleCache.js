@@ -26,6 +26,7 @@ const manageCache = async (keyName, dataRetrieval) => {
         const data = await dataRetrieval();
         putCache(keyName, data);
     }
+    return getCache(keyName);
 };
 
 const cacheKeys = [{
@@ -58,7 +59,7 @@ const cacheKeys = [{
     }
 ];
 
-const handleCache = async (res, keysTohandle) => {
+const evaluateCommon = async (res, keysTohandle) => {
     KCDetails = commonContent.getKCDetails(res);
     isPreviewRequest = isPreview(res.locals.previewapikey);
 
@@ -75,4 +76,13 @@ const handleCache = async (res, keysTohandle) => {
     await processCache(cacheKeys);
 };
 
-module.exports = handleCache;
+const evaluateSingle = async (res, keyName, method) => {
+    return await manageCache(keyName, async () => {
+        return await method(res);
+    });
+};
+
+module.exports = {
+    evaluateCommon,
+    evaluateSingle
+}

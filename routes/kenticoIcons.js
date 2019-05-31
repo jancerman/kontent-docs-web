@@ -2,9 +2,12 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const asyncHandler = require('express-async-handler');
+const handleCache = require('../helpers/handleCache');
 
 router.get('/', asyncHandler(async (req, res) => {
-    let icons = await axios.get('https://cdn.jsdelivr.net/gh/Kentico/kentico-icons/production/icon-variables.less');
+    let icons = await handleCache.evaluateSingle(res, `kenticoIcons_`, async () => {
+        return await axios.get('https://cdn.jsdelivr.net/gh/Kentico/kentico-icons/production/icon-variables.less');
+    });
 
     let lines = icons.data.split('\n');
     let css = '';
