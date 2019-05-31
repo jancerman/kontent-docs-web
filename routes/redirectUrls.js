@@ -1,5 +1,4 @@
 const express = require('express');
-const asyncHandler = require('express-async-handler');
 const router = express.Router();
 const cache = require('memory-cache');
 
@@ -8,7 +7,7 @@ const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 
-const getredirectUrls = async (res) => {
+const getredirectUrls = (res) => {
   const KCDetails = commonContent.getKCDetails(res);
 
   const articles = cache.get(`articles_${KCDetails.projectid}`);
@@ -31,12 +30,12 @@ const getredirectUrls = async (res) => {
   return redirectMap;
 }
 
-router.get('/', asyncHandler(async (req, res) => {
+router.get('/', async (req, res) => {
   const KCDetails = commonContent.getKCDetails(res);
   const footer = cache.get(`footer_${KCDetails.projectid}`);
   const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
   const home = cache.get(`home_${KCDetails.projectid}`);
-  const redirectMap = await getredirectUrls(res);
+  const redirectMap = getredirectUrls(res);
 
   return res.render('tutorials/pages/redirectUrls', {
     req: req,
@@ -49,6 +48,6 @@ router.get('/', asyncHandler(async (req, res) => {
     UIMessages: UIMessages[0],
     helper: helper
   });
-}));
+});
 
 module.exports = router;

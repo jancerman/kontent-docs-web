@@ -1,5 +1,4 @@
 const express = require('express');
-const asyncHandler = require('express-async-handler');
 const router = express.Router();
 const cache = require('memory-cache');
 const moment = require('moment');
@@ -9,7 +8,7 @@ const entities = new Entities();
 const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 
-router.get('/articles', asyncHandler(async (req, res, next) => {
+router.get('/articles', (req, res, next) => {
     const KCDetails = commonContent.getKCDetails(res);
 
     const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
@@ -27,6 +26,6 @@ router.get('/articles', asyncHandler(async (req, res, next) => {
         articles: articles,
         urlMap: urlMap
     });
-}));
+});
 
 module.exports = router;

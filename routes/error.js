@@ -3,7 +3,7 @@ const commonContent = require('../helpers/commonContent');
 const minify = require('../helpers/minify');
 const helper = require('../helpers/helperFunctions');
 
-const error = async (req, res) => {
+const error = (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
     const footer = cache.get(`footer_${KCDetails.projectid}`);
     const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);

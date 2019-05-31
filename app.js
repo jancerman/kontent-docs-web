@@ -11,9 +11,7 @@ const cache = require('memory-cache');
 const cacheControl = require('express-cache-controller');
 const serveStatic = require('serve-static');
 
-const getUrlMap = require('./helpers/urlMap');
-const commonContent = require('./helpers/commonContent');
-const isPreview = require('./helpers/isPreview');
+const handleCache = require('./helpers/handleCache');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -30,8 +28,6 @@ const apiReference = require('./routes/apiReference');
 const error = require('./routes/error');
 
 const app = express();
-
-let KCDetails = {};
 
 const urlWhitelist = [
   '/other/*',
@@ -93,103 +89,8 @@ const handleKCKeys = (req, res) => {
   }
 };
 
-const handleCaching = async (res) => {
-  KCDetails = commonContent.getKCDetails(res);
-  const isPreviewRequest = isPreview(res.locals.previewapikey);
-
-  // Platforms config
-  if (isPreviewRequest && cache.get(`platformsConfig_${KCDetails.projectid}`)) {
-    cache.del(`platformsConfig_${KCDetails.projectid}`);
-  }
-
-  if (!cache.get(`platformsConfig_${KCDetails.projectid}`)) {
-    let platformsConfig = await commonContent.getPlatformsConfig(res);
-    cache.put(`platformsConfig_${KCDetails.projectid}`, platformsConfig);
-  }
-
-  // Url map
-  if (isPreviewRequest && cache.get(`urlMap_${KCDetails.projectid}`)) {
-    cache.del(`urlMap_${KCDetails.projectid}`);
-  }
-
-  if (!cache.get(`urlMap_${KCDetails.projectid}`)) {
-    let urlMap = await getUrlMap(KCDetails);
-    cache.put(`urlMap_${KCDetails.projectid}`, urlMap);
-  }
-
-  // Footer
-  if (isPreviewRequest && cache.get(`footer_${KCDetails.projectid}`)) {
-    cache.del(`footer_${KCDetails.projectid}`);
-  }
-
-  if (!cache.get(`footer_${KCDetails.projectid}`)) {
-    let footer = await commonContent.getFooter(res);
-    cache.put(`footer_${KCDetails.projectid}`, footer);
-  }
-
-  // UI messages
-  if (isPreviewRequest && cache.get(`UIMessages_${KCDetails.projectid}`)) {
-    cache.del(`UIMessages_${KCDetails.projectid}`);
-  }
-
-  if (!cache.get(`UIMessages_${KCDetails.projectid}`)) {
-    let UIMessages = await commonContent.getUIMessages(res);
-    cache.put(`UIMessages_${KCDetails.projectid}`, UIMessages);
-  }
-
-  // Home
-  if (isPreviewRequest && cache.get(`home_${KCDetails.projectid}`)) {
-    cache.del(`home_${KCDetails.projectid}`);
-  }
-
-  if (!cache.get(`home_${KCDetails.projectid}`)) {
-    let home = await commonContent.getHome(res);
-    cache.put(`home_${KCDetails.projectid}`, home);
-  }
-
-  // Articles
-  if (isPreviewRequest && cache.get(`articles_${KCDetails.projectid}`)) {
-    cache.del(`articles_${KCDetails.projectid}`);
-  }
-
-  if (!cache.get(`articles_${KCDetails.projectid}`)) {
-    let articles = await commonContent.getArticles(res);
-    cache.put(`articles_${KCDetails.projectid}`, articles);
-  }
-
-  // RSS Articles
-  if (isPreviewRequest && cache.get(`rss_articles_${KCDetails.projectid}`)) {
-    cache.del(`rss_articles_${KCDetails.projectid}`);
-  }
-
-  if (!cache.get(`rss_articles_${KCDetails.projectid}`)) {
-    let articles = await commonContent.getRSSArticles(res);
-    cache.put(`rss_articles_${KCDetails.projectid}`, articles);
-  }
-
-  // Certification
-  if (isPreviewRequest && cache.get(`certification_${KCDetails.projectid}`)) {
-    cache.del(`certification_${KCDetails.projectid}`);
-  }
-
-  if (!cache.get(`certification_${KCDetails.projectid}`)) {
-    let certification = await commonContent.getCertification(res);
-    cache.put(`certification_${KCDetails.projectid}`, certification);
-  }
-
-  // Not found
-  if (isPreviewRequest && cache.get(`not_found_${KCDetails.projectid}`)) {
-    cache.del(`not_found_${KCDetails.projectid}`);
-  }
-
-  if (!cache.get(`not_found_${KCDetails.projectid}`)) {
-    let notFound = await commonContent.getNotFound(res);
-    cache.put(`not_found_${KCDetails.projectid}`, notFound);
-  }
-};
-
-const pageExists = (req, res, next) => {
-  const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
+const pageExists = async (req, res, next) => {
+  const urlMap = cache.get(`urlMap_${res.locals.projectid}`);
   const path = req.originalUrl.split('?')[0];
   let exists = false;
 
@@ -221,11 +122,11 @@ const pageExists = (req, res, next) => {
 };
 
 // Routes
-app.use('*', asyncHandler(async (req, res, next) => {
+app.use(asyncHandler(async (req, res, next) => {
   handleKCKeys(req, res);
 
   if (!req.originalUrl.startsWith('/cache-invalidate/')) {
-    await handleCaching(res);
+    await handleCache(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home']);
   }
 
   return next();
@@ -236,9 +137,10 @@ app.use('/cache-invalidate', bodyParser.text({ type: '*/*' }), cacheInvalidate);
 app.use('/', previewUrls);
 
 app.use('/', asyncHandler(async (req, res, next) => {
-  const exists = pageExists(req, res, next);
+  const exists = await pageExists(req, res, next);
 
   if (!exists) {
+    await handleCache(res, ['articles']);
     return await urlAliases(req, res, next);
   }
 
@@ -246,13 +148,23 @@ app.use('/', asyncHandler(async (req, res, next) => {
 }));
 
 app.use('/', home);
-app.use('/certification', certification);
+app.use('/certification', async (req, res, next) => {
+  await handleCache(res, ['certification']);
+  return next();
+}, certification);
+
 app.use('/api-reference', apiReference);
-app.use('/redirect-urls', redirectUrls);
+app.use('/redirect-urls', async (req, res, next) => {
+  await handleCache(res, ['articles']);
+  return next();
+}, redirectUrls);
 
 app.use('/kentico-icons.min.css', kenticoIcons);
 app.use('/sitemap.xml', sitemap);
-app.use('/rss', rss);
+app.use('/rss', async (req, res, next) => {
+  await handleCache(res, ['rss_articles']);
+  return next();
+}, rss);
 app.use('/robots.txt', robots);
 
 app.get('/urlmap', asyncHandler(async (req, res) => {
@@ -268,11 +180,11 @@ app.use('/', tutorials);
 app.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;
-  next(err);
+  return next(err);
 });
 
 // error handler
-app.use(async (err, req, res, _next) => {
+app.use(async(err, req, res, _next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -280,7 +192,8 @@ app.use(async (err, req, res, _next) => {
   // render the error page
   res.status(err.status || 500);
   req.err = err;
-  return await error(req, res);
+  await handleCache(res, ['not_found']);
+  return error(req, res);
 });
 
 module.exports = app;

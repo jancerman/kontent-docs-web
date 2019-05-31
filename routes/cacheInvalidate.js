@@ -23,14 +23,14 @@ router.post('/platforms-config', (req, res) => {
         }
     }
 
-    res.end();
+    return res.end();
 });
 
 router.post('/url-map', (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
     cache.del(`urlMap_${KCDetails.projectid}`);
 
-    res.end();
+    return res.end();
 });
 
 router.post('/common-content', (req, res) => {
@@ -92,7 +92,7 @@ router.post('/common-content', (req, res) => {
         }
     }
 
-    res.end();
+    return res.end();
 });
 
 module.exports = router;

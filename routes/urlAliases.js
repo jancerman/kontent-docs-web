@@ -1,8 +1,7 @@
-const asyncHandler = require('express-async-handler');
 const cache = require('memory-cache');
 const commonContent = require('../helpers/commonContent');
 
-const urlAliases = asyncHandler(async (req, res, next) => {
+const urlAliases = (req, res, next) => {
     const KCDetails = commonContent.getKCDetails(res);
 
     const urlSplit = req.originalUrl.split('?');
@@ -31,6 +30,6 @@ const urlAliases = asyncHandler(async (req, res, next) => {
         err.status = 404;
         return next(err);
     }
-});
+};
 
 module.exports = urlAliases;

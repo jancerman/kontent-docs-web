@@ -1,5 +1,4 @@
 const express = require('express');
-const asyncHandler = require('express-async-handler');
 const router = express.Router();
 
 const minify = require('../helpers/minify');
@@ -8,7 +7,7 @@ const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 const cache = require('memory-cache');
 
-router.get('/', asyncHandler(async (req, res, next) => {
+router.get('/', (req, res, next) => {
   const KCDetails = commonContent.getKCDetails(res);
   const home = cache.get(`home_${KCDetails.projectid}`);
 
@@ -35,6 +34,6 @@ router.get('/', asyncHandler(async (req, res, next) => {
     UIMessages: UIMessages[0],
     helper: helper
   });
-}));
+});
 
 module.exports = router;

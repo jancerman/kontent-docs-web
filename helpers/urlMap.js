@@ -163,17 +163,17 @@ const createUrlMap = (response, url, urlMap = []) => {
     return urlMap;
 };
 
-const getUrlMap = async (config) => {
+const getUrlMap = async (res, isSitemap) => {
     // globalConfig = config;
-    deliveryConfig.projectId = config.projectid;
+    deliveryConfig.projectId = res.locals.projectid;
 
-    if (config.previewapikey) {
-        deliveryConfig.previewApiKey = config.previewapikey;
+    if (res.locals.previewapikey) {
+        deliveryConfig.previewApiKey = res.locals.previewapikey;
         deliveryConfig.enablePreviewMode = true;
     }
 
-    if (config.securedapikey) {
-        deliveryConfig.securedApiKey = config.securedapikey;
+    if (res.locals.securedapikey) {
+        deliveryConfig.securedApiKey = res.locals.securedapikey;
         deliveryConfig.enableSecuredMode = true;
     }
 
@@ -186,7 +186,7 @@ const getUrlMap = async (config) => {
     const response = await query
         .getPromise();
 
-    if (config.isSitemap) {
+    if (isSitemap) {
         fields = ['url', 'date', 'visibility'];
     } else {
         fields = ['codename', 'url'];

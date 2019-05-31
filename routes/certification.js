@@ -11,7 +11,7 @@ const lms = require('../helpers/lms');
 const recaptcha = require('../helpers/recaptcha');
 const cache = require('memory-cache');
 
-const getCertificationContent = async (req, res) => {
+const getCertificationContent = (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
     const home = cache.get(`home_${KCDetails.projectid}`);
     const content = cache.get(`certification_${KCDetails.projectid}`);
@@ -48,11 +48,11 @@ const substituteDetailsInMessage = (data) => {
     return data;
 };
 
-router.get('/', asyncHandler(async (req, res, next) => {
-    let data = await getCertificationContent(req, res, next);
+router.get('/', (req, res, next) => {
+    let data = getCertificationContent(req, res, next);
     if (!data) return next();
     return res.render('tutorials/pages/certification', data);
-}));
+});
 
 router.post('/', [
     check('first_name').not().isEmpty().withMessage((value, { req, location, path }) => {
@@ -65,7 +65,7 @@ router.post('/', [
         return 'empty_field_validation';
     }).trim()
 ], asyncHandler(async (req, res, next) => {
-    let data = await getCertificationContent(req, res, next);
+    let data = getCertificationContent(req, res, next);
     if (!data) return next();
 
     const errors = validationResult(req);

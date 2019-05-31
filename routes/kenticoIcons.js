@@ -17,7 +17,7 @@ router.get('/', asyncHandler(async (req, res) => {
     }
 
     res.header('Content-Type', 'text/css');
-    res.send(css);
+    return res.send(css);
 }));
 
 module.exports = router;
