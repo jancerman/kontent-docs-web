@@ -49,6 +49,7 @@ const urlWhitelist = [
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   appInsights.setup();
   appInsights.start();
+  exports.appInsights = appInsights;
 }
 
 app.locals.deployVersion = (new Date()).getTime();

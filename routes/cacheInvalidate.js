@@ -3,6 +3,7 @@ const router = express.Router();
 const cache = require('memory-cache');
 const crypto = require('crypto');
 const commonContent = require('../helpers/commonContent');
+const app = require('../app');
 
 const isValidSignature = (req, secret) => {
     const givenSignature = req.headers['x-kc-signature'];
@@ -37,6 +38,7 @@ router.post('/platforms-config', (req, res) => {
 router.post('/url-map', (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
     cache.del(`urlMap_${KCDetails.projectid}`);
+    app.appInsights.defaultClient.trackTrace({ message: 'URL_MAP_INVALIDATE: ' + req.body });
 
     return res.end();
 });
