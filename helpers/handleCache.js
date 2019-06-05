@@ -51,9 +51,6 @@ const cacheKeys = [{
         name: 'rss_articles',
         method: commonContent.getRSSArticles
     }, {
-        name: 'certification',
-        method: commonContent.getCertification
-    }, {
         name: 'not_found',
         method: commonContent.getNotFound
     }

@@ -44,7 +44,6 @@ const splitPayloadByContentType = (items) => {
         scenarios: [],
         topics: [],
         notFound: [],
-        certification: [],
         picker: []
     };
 
@@ -62,8 +61,6 @@ const splitPayloadByContentType = (items) => {
             itemsByTypes.topics.push(item);
         } else if (item.type === 'not_found') {
             itemsByTypes.notFound.push(item);
-        } else if (item.type === 'certification') {
-            itemsByTypes.certification.push(item);
         } else if (item.type === 'platform_picker') {
             itemsByTypes.picker.push(item);
         }
@@ -104,10 +101,6 @@ router.post('/', (req, res) => {
 
             if (itemsByTypes.notFound.length) {
                 cache.del(`notFound_${KCDetails.projectid}`);
-            }
-
-            if (itemsByTypes.certification.length) {
-                cache.del(`certification_${KCDetails.projectid}`);
             }
 
             if (itemsByTypes.picker.length) {

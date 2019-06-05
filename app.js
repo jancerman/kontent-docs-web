@@ -15,7 +15,6 @@ const handleCache = require('./helpers/handleCache');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
-const certification = require('./routes/certification');
 const sitemap = require('./routes/sitemap');
 const rss = require('./routes/rss');
 const robots = require('./routes/robots');
@@ -126,7 +125,7 @@ const pageExists = async (req, res, next) => {
 app.use(async (req, res, next) => {
   handleKCKeys(req, res);
 
-  if (!req.originalUrl.startsWith('/cache-invalidate/') && !req.originalUrl.startsWith('/kentico-icons.min.css')) {
+  if (!req.originalUrl.startsWith('/cache-invalidate') && !req.originalUrl.startsWith('/kentico-icons.min.css')) {
     await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home']);
   }
 
@@ -149,10 +148,6 @@ app.use('/', asyncHandler(async (req, res, next) => {
 }));
 
 app.use('/', home);
-app.use('/certification', async (req, res, next) => {
-  await handleCache.evaluateCommon(res, ['certification']);
-  return next();
-}, certification);
 
 app.use('/api-reference', apiReference);
 app.use('/redirect-urls', async (req, res, next) => {

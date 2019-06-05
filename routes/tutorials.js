@@ -1,15 +1,12 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
-const { check, validationResult } = require('express-validator/check');
 
 const requestDelivery = require('../helpers/requestDelivery');
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
-const recaptcha = require('../helpers/recaptcha');
-const jira = require('../helpers/jira');
 const handleCache = require('../helpers/handleCache');
 
 const moment = require('moment');
@@ -50,7 +47,7 @@ const getContentLevel = async (currentLevel, urlMap, req, res) => {
         settings.slug = req.originalUrl.split('/')[1];
         delete settings.depth;
     } else if (currentLevel === 0) {
-        settings.type = 'scenario';
+        settings.type = ['scenario', 'certification'];
         settings.resolveRichText = true;
         settings.urlMap = urlMap;
     } else if (currentLevel === 1) {
@@ -186,7 +183,11 @@ const getContent = async (req, res) => {
         if (currentLevel === -1) {
             return `/${slug}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else if (currentLevel === 0) {
-            view = 'tutorials/pages/scenario';
+            if (content[0].system.type === 'certification') {
+                view = 'tutorials/pages/certification';
+            } else {
+                view = 'tutorials/pages/scenario';
+            }
         } else if (currentLevel === 1) {
             return `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else if (currentLevel === 2) {
@@ -267,35 +268,6 @@ router.get(['/other/:article', '/:main', '/:main/:scenario', '/:main/:scenario/:
     if (data && !data.view) return res.redirect(301, data);
     if (!data) return next();
 
-    return res.render(data.view, data);
-}));
-
-router.post(['/other/:article', '/:main/:scenario', '/:main/:scenario/:topic/:article'], [
-    check('feedback').not().isEmpty().withMessage((value, { req, location, path }) => {
-        return 'feedback_form___empty_field_validation';
-    }).trim()
-], asyncHandler(async (req, res, next) => {
-    let data = await getContent(req, res, next);
-    if (!data) return next();
-    data.req.formPosted = true;
-    const errors = validationResult(req);
-
-    if (errors.isEmpty()) {
-        let isRealUser = await recaptcha.checkv2(req.body);
-
-        if (isRealUser) {
-            delete req.body['g-recaptcha-response'];
-            data.req.successForm = true;
-            req.body.url = req.protocol + '://' + req.get('host') + req.originalUrl;
-            await jira.createIssue(req.body);
-        } else {
-            data.req.isBot = true;
-        }
-    } else {
-        data.req.errorForm = helper.getValidationMessages(errors.array(), data.UIMessages);
-    }
-
-    data.req.anchor = 'feedback-form';
     return res.render(data.view, data);
 }));
 

@@ -15,6 +15,9 @@ const typeLevels = {
     scenario: {
         urlLength: 2
     },
+    certification: {
+        urlLength: 2
+    },
     topic: {
         urlLength: 3
     },
@@ -69,34 +72,6 @@ const handleLangForMultiplatformArticle = (queryString, item) => {
 
     return queryString;
 };
-
-/* const processLangForPlatformField = (elem, settings, cachedPlatforms) => {
-    settings.queryString = '?tech=';
-    if (cachedPlatforms && cachedPlatforms.length) {
-        settings.queryString += cachedPlatforms[0].options.filter(plat => elem.codename === plat.system.codename)[0].url.value;
-    }
-    settings.urlMap = addItemToMap(settings);
-    return settings;
-}
-
-const handleLangForPlatformField = (settings) => {
-    if (settings.item.elements.platform.value) {
-        settings.slug = settings.item.elements.url.value;
-        settings.url[settings.url.length - 1] = settings.slug;
-        const cachedPlatforms = cache.get(`platformsConfig_${deliveryConfig.projectid}`);
-
-        // Add url to map for each platform in an article
-        settings.item.elements.platform.value.forEach((elem) => {
-            settings = processLangForPlatformField(elem, settings, cachedPlatforms);
-        });
-    }
-
-    return {
-        urlMap: settings.urlMap,
-        slug: settings.slug,
-        url: settings.url
-    };
-}; */
 
 const addItemToMap = (settings) => {
     settings.urlMap.push(getMapItem({
