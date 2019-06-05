@@ -20,6 +20,54 @@ const deleteMultipleKeys = (keys, startsWithString) => {
     }
 };
 
+const deleteSpecificKeys = (KCDetails, items, keyNameToCheck, keyNameToDelete) => {
+    let cacheItems = cache.get(`${keyNameToCheck}_${KCDetails.projectid}`);
+    if (items && cacheItems) {
+        for (let i = 0; i < items.length; i++) {
+            for (let j = 0; j < cacheItems.length; j++) {
+                if (items[i].codename === cacheItems[j].system.codename) {
+                    cache.del(`${keyNameToDelete}_${cacheItems[j].elements.url.value}_${KCDetails.projectid}`);
+                }
+            }; 
+        };
+    } else {
+        deleteMultipleKeys(cache.keys(), `${keyNameToDelete}_`);
+    }
+};
+
+const splitPayloadByContentType = (items) => {
+    let itemsByTypes = {
+        footer: [],
+        UIMessages: [],
+        articles:[],
+        scenarios: [],
+        topics: [],
+        notFound: [],
+        certification: []
+    };
+
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.type === 'footer') {
+            itemsByTypes.footer.push(item);
+        } else if (item.type === 'ui_messages') {
+            itemsByTypes.UIMessages.push(item);
+        } else if (item.type === 'article') {
+            itemsByTypes.articles.push(item);
+        } else if (item.type === 'scenario') {
+            itemsByTypes.scenarios.push(item);
+        } else if (item.type === 'topic') {
+            itemsByTypes.topics.push(item);
+        } else if (item.type === 'not_found') {
+            itemsByTypes.notFound.push(item);
+        } else if (item.type === 'certification') {
+            itemsByTypes.certification.push(item);
+        }
+    }
+
+    return itemsByTypes;
+};
+
 router.post('/platforms-config', (req, res) => {
     if (process.env['Webhook.Cache.Invalidate.PlatformsConfig']) {
         if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.PlatformsConfig'])) {
@@ -47,60 +95,35 @@ router.post('/common-content', (req, res) => {
             const KCDetails = commonContent.getKCDetails(res);
             const items = JSON.parse(req.body).data.items;
             const keys = cache.keys();
-            let footer = [];
-            let UIMessages = [];
-            let articles = [];
-            let scenarios = [];
-            let topics = [];
-            let notFound = [];
-            let certification = [];
+            let itemsByTypes = splitPayloadByContentType(items);
 
-            for (let i = 0; i < items.length; i++) {
-                const item = items[i];
-                if (item.type === 'footer') {
-                    footer.push(item);
-                } else if (item.type === 'ui_messages') {
-                    UIMessages.push(item);
-                } else if (item.type === 'article') {
-                    articles.push(item);
-                } else if (item.type === 'scenario') {
-                    scenarios.push(item);
-                } else if (item.type === 'topic') {
-                    topics.push(item);
-                } else if (item.type === 'not_found') {
-                    notFound.push(item);
-                } else if (item.type === 'certification') {
-                    certification.push(item);
-                }
-            }
-
-            if (footer.length) {
+            if (itemsByTypes.footer.length) {
                 cache.del(`footer_${KCDetails.projectid}`);
             }
 
-            if (UIMessages.length) {
+            if (itemsByTypes.UIMessages.length) {
                 cache.del(`UIMessages_${KCDetails.projectid}`);
             }
 
-            if (articles.length) {
+            if (itemsByTypes.articles.length) {
+                deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'articles', 'article');
                 cache.del(`articles_${KCDetails.projectid}`);
                 cache.del(`rss_articles_${KCDetails.projectid}`);
-                deleteMultipleKeys(keys, 'article_');
             }
 
-            if (scenarios.length) {
+            if (itemsByTypes.scenarios.length) {
                 deleteMultipleKeys(keys, 'scenario_');
             }
 
-            if (topics.length) {
+            if (itemsByTypes.topics.length) {
                 deleteMultipleKeys(keys, 'topic_');
             }
 
-            if (notFound.length) {
+            if (itemsByTypes.notFound.length) {
                 cache.del(`notFound_${KCDetails.projectid}`);
             }
 
-            if (certification.length) {
+            if (itemsByTypes.certification.length) {
                 cache.del(`certification_${KCDetails.projectid}`);
             }
 

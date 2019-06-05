@@ -64,9 +64,9 @@ const getContentLevel = async (currentLevel, urlMap, req, res) => {
     let cacheKey;
 
     if (Array.isArray(settings.type)) {
-        cacheKey = `${settings.type[0]}_${settings.slug}_${KCDetails.projectid}`;
+        cacheKey = `${settings.type[0]}_${settings.slug}`;
     } else {
-        cacheKey = `${settings.type}_${settings.slug}_${KCDetails.projectid}`;
+        cacheKey = `${settings.type}_${settings.slug}`;
     }
 
     return await handleCache.evaluateSingle(res, cacheKey, async () => {
