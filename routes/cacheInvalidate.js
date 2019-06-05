@@ -29,7 +29,7 @@ const deleteSpecificKeys = (KCDetails, items, keyNameToCheck, keyNameToDelete) =
                 if (items[i].codename === cacheItems[j].system.codename) {
                     cache.del(`${keyNameToDelete}_${cacheItems[j].elements.url.value}_${KCDetails.projectid}`);
                 }
-            }; 
+            };
         };
     } else {
         deleteMultipleKeys(cache.keys(), `${keyNameToDelete}_`);
@@ -40,11 +40,12 @@ const splitPayloadByContentType = (items) => {
     let itemsByTypes = {
         footer: [],
         UIMessages: [],
-        articles:[],
+        articles: [],
         scenarios: [],
         topics: [],
         notFound: [],
-        certification: []
+        certification: [],
+        picker: []
     };
 
     for (let i = 0; i < items.length; i++) {
@@ -63,35 +64,15 @@ const splitPayloadByContentType = (items) => {
             itemsByTypes.notFound.push(item);
         } else if (item.type === 'certification') {
             itemsByTypes.certification.push(item);
+        } else if (item.type === 'platform_picker') {
+            itemsByTypes.picker.push(item);
         }
     }
 
     return itemsByTypes;
 };
 
-router.post('/platforms-config', (req, res) => {
-    if (process.env['Webhook.Cache.Invalidate.PlatformsConfig']) {
-        if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.PlatformsConfig'])) {
-            let picker = JSON.parse(req.body).data.items.filter(item => item.codename === 'platform_picker');
-            if (picker.length) {
-                const KCDetails = commonContent.getKCDetails(res);
-                cache.del(`platformsConfig_${KCDetails.projectid}`);
-            }
-        }
-    }
-
-    return res.end();
-});
-
-router.post('/url-map', (req, res) => {
-    const KCDetails = commonContent.getKCDetails(res);
-    cache.del(`urlMap_${KCDetails.projectid}`);
-    app.appInsights.defaultClient.trackTrace({ message: 'URL_MAP_INVALIDATE: ' + req.body });
-
-    return res.end();
-});
-
-router.post('/common-content', (req, res) => {
+router.post('/', (req, res) => {
     if (process.env['Webhook.Cache.Invalidate.CommonContent']) {
         if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
             const KCDetails = commonContent.getKCDetails(res);
@@ -129,9 +110,18 @@ router.post('/common-content', (req, res) => {
                 cache.del(`certification_${KCDetails.projectid}`);
             }
 
+            if (itemsByTypes.picker.length) {
+                cache.del(`platformsConfig_${KCDetails.projectid}`);
+            }
+
             cache.del(`home_${KCDetails.projectid}`);
 
             deleteMultipleKeys(keys, 'subNavigation_');
+
+            cache.del(`urlMap_${KCDetails.projectid}`);
+            if (app.appInsights) {
+                app.appInsights.defaultClient.trackTrace({ message: 'URL_MAP_INVALIDATE: ' + req.body });
+            }
         }
     }
 
