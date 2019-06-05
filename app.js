@@ -25,6 +25,7 @@ const previewUrls = require('./routes/previewUrls');
 const cacheInvalidate = require('./routes/cacheInvalidate');
 const apiReference = require('./routes/apiReference');
 const error = require('./routes/error');
+const form = require('./routes/form');
 
 const app = express();
 
@@ -32,14 +33,14 @@ const urlWhitelist = [
   '/other/*',
   '/scenario/*',
   '/article/*',
+  '/form/*',
   '/urlmap',
   '/kentico-icons.min.css',
   '/favicon.ico',
   '/api-reference',
   '/rss/articles',
   '/redirect-urls',
-  '/cache-invalidate/platforms-config',
-  '/cache-invalidate/url-map',
+  '/cache-invalidate',
   '/robots.txt',
   '/sitemap.xml'
 ];
@@ -125,7 +126,7 @@ const pageExists = async (req, res, next) => {
 app.use(async (req, res, next) => {
   handleKCKeys(req, res);
 
-  if (!req.originalUrl.startsWith('/cache-invalidate') && !req.originalUrl.startsWith('/kentico-icons.min.css')) {
+  if (!req.originalUrl.startsWith('/cache-invalidate') && !req.originalUrl.startsWith('/kentico-icons.min.css') && !req.originalUrl.startsWith('/form')) {
     await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home']);
   }
 
@@ -135,6 +136,8 @@ app.use(async (req, res, next) => {
 app.use('/cache-invalidate', bodyParser.text({ type: '*/*' }), cacheInvalidate);
 
 app.use('/', previewUrls);
+
+app.use('/form', bodyParser.text({ type: '*/*' }), form);
 
 app.use('/', asyncHandler(async (req, res, next) => {
   const exists = await pageExists(req, res, next);

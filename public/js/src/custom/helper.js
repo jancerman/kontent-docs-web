@@ -154,6 +154,31 @@ window.helper = (() => {
         xmlhttp.send();
     };
 
+    // Ajax POST call
+    const ajaxPost = (url, requestData, callback, type) => {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open('POST', url, true);
+        xmlhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        xmlhttp.onload = () => {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                try {
+                    var data;
+
+                    if (type === 'json') {
+                        // Parse JSON if specified in the "type" param
+                        data = JSON.parse(xmlhttp.responseText);
+                    } else {
+                        data = xmlhttp.responseText
+                    }
+                } catch (err) {
+                    return;
+                }
+                return callback(data);
+            }
+        };
+        xmlhttp.send(JSON.stringify(requestData));
+    };
+
     // Get url parameter by its name
     const getParameterByName = (name, url) => {
         if (!url) url = window.location.href;
@@ -272,6 +297,7 @@ window.helper = (() => {
         createElementFromHTML: createElementFromHTML,
         copyToClipboard: copyToClipboard,
         ajaxGet: ajaxGet,
+        ajaxPost: ajaxPost,
         getParameterByName: getParameterByName,
         removeParametersByNames: removeParametersByNames,
         loadStylesheet: loadStylesheet,
