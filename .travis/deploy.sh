@@ -17,6 +17,7 @@ if [ "$TRAVIS_BRANCH" == "master" ]; then
 elif [ "$TRAVIS_BRANCH" == "develop" ]; then
     GIT_DESTINATION_LIVE=$GIT_DESTINATION_LIVE_DEVELOP
     GIT_DESTINATION_PREVIEW=$GIT_DESTINATION_PREVIEW_DEVELOP
+    GIT_DESTINATION_LIVE_TESTS=$GIT_DESTINATION_LIVE_DEVELOP_TESTS
 else
     exit 0
 fi
@@ -42,6 +43,16 @@ main () {
           && git add -A \
           && git commit --message "$TRAVIS_COMMIT_MESSAGE" \
           && git push --quiet --force --set-upstream "https://$GIT_USER_NAME:$GIT_PASSWORD@$GIT_DESTINATION_LIVE" master
+    } || {
+        exit 1
+    }
+
+    rm -rf .git
+    {
+        git init \
+          && git add -A \
+          && git commit --message "$TRAVIS_COMMIT_MESSAGE" \
+          && git push --quiet --force --set-upstream "https://$GIT_USER_NAME:$GIT_PASSWORD@$GIT_DESTINATION_LIVE_TESTS" master
     } || {
         exit 1
     }
