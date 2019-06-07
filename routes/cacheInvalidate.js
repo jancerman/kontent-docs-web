@@ -3,6 +3,7 @@ const router = express.Router();
 const cache = require('memory-cache');
 const crypto = require('crypto');
 const commonContent = require('../helpers/commonContent');
+const requestDelivery = require('../helpers/requestDelivery');
 const app = require('../app');
 
 const isValidSignature = (req, secret) => {
@@ -21,6 +22,17 @@ const deleteMultipleKeys = (keys, startsWithString) => {
     }
 };
 
+const requestItemAndDeleteCacheKey = async (keyNameToDelete, codename, KCDetails) => {
+    let item = await requestDelivery({
+        codename: codename,
+        ...KCDetails
+    });
+
+    if (item.length) {
+        cache.del(`${keyNameToDelete}_${item[0].elements.url.value}_${KCDetails.projectid}`);
+    }
+};
+
 const deleteSpecificKeys = (KCDetails, items, keyNameToCheck, keyNameToDelete) => {
     let cacheItems = cache.get(`${keyNameToCheck}_${KCDetails.projectid}`);
     if (items && cacheItems) {
@@ -31,8 +43,10 @@ const deleteSpecificKeys = (KCDetails, items, keyNameToCheck, keyNameToDelete) =
                 }
             };
         };
-    } else {
-        deleteMultipleKeys(cache.keys(), `${keyNameToDelete}_`);
+    } else if (items) {
+        items.forEach(async (item) => {
+            await requestItemAndDeleteCacheKey(keyNameToDelete, item.codename, KCDetails);
+        });
     }
 };
 
@@ -55,7 +69,7 @@ const splitPayloadByContentType = (items) => {
             itemsByTypes.UIMessages.push(item);
         } else if (item.type === 'article') {
             itemsByTypes.articles.push(item);
-        } else if (item.type === 'scenario') {
+        } else if (item.type === 'scenario' || item.type === 'certification' ) {
             itemsByTypes.scenarios.push(item);
         } else if (item.type === 'topic') {
             itemsByTypes.topics.push(item);
@@ -92,11 +106,15 @@ router.post('/', (req, res) => {
             }
 
             if (itemsByTypes.scenarios.length) {
-                deleteMultipleKeys(keys, 'scenario_');
+                itemsByTypes.scenarios.forEach(async (item) => {
+                    await requestItemAndDeleteCacheKey('scenario', item.codename, KCDetails);
+                });
             }
 
             if (itemsByTypes.topics.length) {
-                deleteMultipleKeys(keys, 'topic_');
+                itemsByTypes.topics.forEach(async (item) => {
+                    await requestItemAndDeleteCacheKey('topic', item.codename, KCDetails);
+                });
             }
 
             if (itemsByTypes.notFound.length) {
