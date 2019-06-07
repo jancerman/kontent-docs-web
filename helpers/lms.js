@@ -40,7 +40,7 @@ const lms = {
                 url: settings.addToCourseUrl,
                 data: {
                     user_email: data.email,
-                    course_id: 170
+                    course_id: data.course_id || 0
                 },
                 auth: settings.auth
             });

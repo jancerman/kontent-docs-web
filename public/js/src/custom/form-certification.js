@@ -1,5 +1,5 @@
 (() => {
-    const form = document.querySelector('.feedback__form');
+    const form = document.querySelector('.form__certification');
     if (form) {
         const submitButton = form.querySelector('.form__button');
         const recaptchaCover = form.querySelector('.form__recaptcha-disabled');
@@ -30,15 +30,23 @@
 
         const collectData = () => {
             var data = {};
-            data.feedback = form.querySelector('#feedback').value;
+            var companyField = form.querySelector('#custom_field_1');
+
+            if (companyField) {
+                data.custom_field_1 = companyField.value;
+            }
+
+            data.course_id = form.querySelector('#course_id').value;
+            data.first_name = form.querySelector('#first_name').value;
+            data.last_name = form.querySelector('#last_name').value;
             data.email = form.querySelector('#email').value;
             data['g-recaptcha-response'] = grecaptcha.getResponse();
-            data.url = window.location.href;
+
             return data;
         };
 
         const submitData = (data, callback) => {
-            return helper.ajaxPost('/form/feedback', data, callback, 'json');
+            return helper.ajaxPost('/form/certification', data, callback, 'json');
         };
 
         const clearForm = () => {
@@ -48,10 +56,10 @@
         };
 
         const clearMessages = () => {
-            document.querySelector(`.feedback__message`).classList.add('feedback__message--hidden');
             form.querySelectorAll('[data-form-error]').forEach((item) => {
                 item.innerHTML = '';
             });
+            document.querySelector('[data-form-warning]').innerHTML = '';
         };
 
         const displayValidationMessages = (data) => {
@@ -65,9 +73,12 @@
             }
         };
 
-        const displaySuccessMessage = () => {
-            document.querySelector(`.feedback__message--yes`).classList.remove('feedback__message--hidden');
-            document.querySelector(`.feedback__message--no`).classList.add('feedback__message--hidden');
+        const displaySuccessMessage = (data) => {
+            document.querySelector('[data-form-success]').innerHTML = data.success;
+        };
+
+        const displayWarningMessage = (data) => {
+            document.querySelector('[data-form-warning]').innerHTML = data.warning;
         };
 
         const hideForm = () => {
@@ -80,9 +91,15 @@
             grecaptcha.reset();
 
             if (data.isValid) {
-                clearForm();
-                hideForm();
-                displaySuccessMessage();
+                if (data.warning) {
+                    displayWarningMessage(data);
+                }
+
+                if (data.success) {
+                    clearForm();
+                    hideForm();
+                    displaySuccessMessage(data);
+                }
             } else {
                 displayValidationMessages(data);
             }

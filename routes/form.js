@@ -3,25 +3,51 @@ const router = express.Router();
 const commonContent = require('../helpers/commonContent');
 const recaptcha = require('../helpers/recaptcha');
 const jira = require('../helpers/jira');
+const lms = require('../helpers/lms');
 const cache = require('memory-cache');
 
-const validateDataFeedback = async (data, req, res) => {
-    const KCDetails = commonContent.getKCDetails(res);
-    let validation = {
-        isValid: true
-    };
-    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+const setFalseValidation = (validation, property, UIMessages) => {
+    validation.isValid = false;
+    validation[property] = UIMessages[0].elements['form_field_validation___empty_field'].value;
+    return validation;
+};
 
-    if (!data.feedback) {
-        validation.isValid = false;
-        validation.feedback = UIMessages[0].elements['feedback_form___empty_field_validation'].value;
-    }
-
+const validateReCaptcha = async (validation, data, UIMessages) => {
     let isRealUser = await recaptcha.checkv2(data);
     if (!isRealUser) {
         validation.isValid = false;
-        validation['g-recaptcha-response'] = UIMessages[0].elements['feedback_form___recaptcha_message'].value;
+        validation['g-recaptcha-response'] = UIMessages[0].elements['form_field_validation___recaptcha_message'].value;
     }
+    return validation;
+};
+
+const emailIsValid = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
+
+const substituteDetailsInMessage = (message, data) => {
+    message = message
+        .replace('{first-name}', data.first_name)
+        .replace('{last-name}', data.last_name)
+        .replace('{email}', data.email)
+        .replace(/\n/g, '<br>');
+
+    return message;
+};
+
+const validateDataFeedback = async (data, req, res) => {
+    const KCDetails = commonContent.getKCDetails(res);
+    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+
+    let validation = {
+        isValid: true
+    };
+
+    if (!data.feedback) {
+        validation = setFalseValidation(validation, 'feedback', UIMessages);
+    }
+
+    validation = await validateReCaptcha(validation, data, UIMessages);
 
     if (validation.isValid) {
         validation.success = UIMessages[0].elements['feedback_form___yes_message'].value;
@@ -31,10 +57,56 @@ const validateDataFeedback = async (data, req, res) => {
     return validation;
 };
 
+const validateDataCertification = async (data, req, res) => {
+    const KCDetails = commonContent.getKCDetails(res);
+    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+
+    let validation = {
+        isValid: true
+    };
+
+    if (!data.first_name) {
+        validation = setFalseValidation(validation, 'first_name', UIMessages);
+    }
+
+    if (!data.last_name) {
+        validation = setFalseValidation(validation, 'last_name', UIMessages);
+    }
+
+    if (!data.email || !emailIsValid(data.email)) {
+        validation = setFalseValidation(validation, 'email', UIMessages);
+    }
+
+    if (typeof data.custom_field_1 !== 'undefined' && data.custom_field_1 === '') {
+        validation = setFalseValidation(validation, 'custom_field_1', UIMessages);
+    }
+
+    validation = await validateReCaptcha(validation, data, UIMessages);
+
+    if (validation.isValid) {
+        let signedInPast = await lms.registerAddtoCourse(data);
+
+        if (signedInPast) {
+            validation.warning = UIMessages[0].elements['certification_form___repeated_attempt_message'].value;
+        } else {
+            validation.success = substituteDetailsInMessage(UIMessages[0].elements['certification_form___success_message'].value, data);
+        }
+    }
+
+    return validation;
+};
+
 router.post('/feedback', async (req, res, next) => {
     let data = JSON.parse(req.body);
 
     let validation = await validateDataFeedback(data, req, res);
+    return res.json(validation);
+});
+
+router.post('/certification', async (req, res, next) => {
+    let data = JSON.parse(req.body);
+
+    let validation = await validateDataCertification(data, req, res);
     return res.json(validation);
 });
 
