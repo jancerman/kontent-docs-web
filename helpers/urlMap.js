@@ -15,6 +15,9 @@ const typeLevels = {
     scenario: {
         urlLength: 2
     },
+    certification: {
+        urlLength: 2
+    },
     topic: {
         urlLength: 3
     },
@@ -69,34 +72,6 @@ const handleLangForMultiplatformArticle = (queryString, item) => {
 
     return queryString;
 };
-
-/* const processLangForPlatformField = (elem, settings, cachedPlatforms) => {
-    settings.queryString = '?tech=';
-    if (cachedPlatforms && cachedPlatforms.length) {
-        settings.queryString += cachedPlatforms[0].options.filter(plat => elem.codename === plat.system.codename)[0].url.value;
-    }
-    settings.urlMap = addItemToMap(settings);
-    return settings;
-}
-
-const handleLangForPlatformField = (settings) => {
-    if (settings.item.elements.platform.value) {
-        settings.slug = settings.item.elements.url.value;
-        settings.url[settings.url.length - 1] = settings.slug;
-        const cachedPlatforms = cache.get(`platformsConfig_${deliveryConfig.projectid}`);
-
-        // Add url to map for each platform in an article
-        settings.item.elements.platform.value.forEach((elem) => {
-            settings = processLangForPlatformField(elem, settings, cachedPlatforms);
-        });
-    }
-
-    return {
-        urlMap: settings.urlMap,
-        slug: settings.slug,
-        url: settings.url
-    };
-}; */
 
 const addItemToMap = (settings) => {
     settings.urlMap.push(getMapItem({
@@ -163,17 +138,17 @@ const createUrlMap = (response, url, urlMap = []) => {
     return urlMap;
 };
 
-const getUrlMap = async (config) => {
+const getUrlMap = async (res, isSitemap) => {
     // globalConfig = config;
-    deliveryConfig.projectId = config.projectid;
+    deliveryConfig.projectId = res.locals.projectid;
 
-    if (config.previewapikey) {
-        deliveryConfig.previewApiKey = config.previewapikey;
+    if (res.locals.previewapikey) {
+        deliveryConfig.previewApiKey = res.locals.previewapikey;
         deliveryConfig.enablePreviewMode = true;
     }
 
-    if (config.securedapikey) {
-        deliveryConfig.securedApiKey = config.securedapikey;
+    if (res.locals.securedapikey) {
+        deliveryConfig.securedApiKey = res.locals.securedapikey;
         deliveryConfig.enableSecuredMode = true;
     }
 
@@ -186,7 +161,7 @@ const getUrlMap = async (config) => {
     const response = await query
         .getPromise();
 
-    if (config.isSitemap) {
+    if (isSitemap) {
         fields = ['url', 'date', 'visibility'];
     } else {
         fields = ['codename', 'url'];

@@ -86,6 +86,10 @@
         return suggestion;
     };
 
+    const htmlEntities = (str) => {
+        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/&lt;em&gt;/g, '<em>').replace(/&lt;\/em&gt;/g, '</em>');
+    };
+
     const formatSuggestion = (suggestion, urlMap) => {
         // Store current search input value for use of querystring that is used in Google Analytics search terms
         searchTerm = encodeURIComponent(searchInput.value);
@@ -101,7 +105,7 @@
         return `<a href="${suggestion.resolvedUrl}" class="suggestion">
                     <span class="suggestion__heading">${removeInlineElements(suggestion._highlightResult.title.value)}</span><span class="suggestion__category">Tutorials</span>
                     ${suggestion._highlightResult.heading.value ? '<span class="suggestion__sub-heading">'+ removeInlineElements(suggestion._highlightResult.heading.value) +'</span>' : ''}
-                    <p class="suggestion__text">${suggestion._highlightResult.content.value}</p>
+                    <p class="suggestion__text">${htmlEntities(suggestion._highlightResult.content.value)}</p>
                 </a>`;
     };
 
@@ -159,7 +163,8 @@
         autocomplete('#nav-search', {
                 autoselect: true,
                 openOnFocus: true,
-                clearOnSelected: false
+                clearOnSelected: false,
+                debug: false
             }, [{
                 source: (query, callback) => {
                     getSuggestionsSource(hitsSource, query, callback);

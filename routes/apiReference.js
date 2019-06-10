@@ -6,12 +6,13 @@ const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 const minify = require('../helpers/minify');
+const cache = require('memory-cache');
 
 router.get('/', asyncHandler(async (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
-    const tree = await commonContent.getTree('home', 1, KCDetails);
-    const footer = await commonContent.getFooter(res);
-    const UIMessages = await commonContent.getUIMessages(res);
+    const home = cache.get(`home_${KCDetails.projectid}`);
+    const footer = cache.get(`footer_${KCDetails.projectid}`);
+    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
 
     let data = {
         req: req,
@@ -20,7 +21,7 @@ router.get('/', asyncHandler(async (req, res) => {
         isPreview: isPreview(res.locals.previewapikey),
         title: 'Api reference',
         titleSuffix: 'Kentico Cloud Docs',
-        navigation: tree[0].navigation,
+        navigation: home[0].navigation,
         footer: footer[0] ? footer[0] : {},
         UIMessages: UIMessages[0],
         helper: helper

@@ -3,6 +3,7 @@ const helper = require('./helperFunctions');
 const richTextResolverTemplates = {
     embeddedContent: (item) => {
         let cssClass = '';
+        let netlifyId = '';
 
         if (item.width.value.length) {
             switch (item.width.value[0].codename) {
@@ -17,6 +18,14 @@ const richTextResolverTemplates = {
                     break;
                 default:
                     cssClass += '';
+            }
+        }
+
+        if (item.provider.value[0].codename === 'netlify') {
+            netlifyId = item.id.value.trim().split(';');
+
+            if (!netlifyId[1]) {
+                netlifyId[1] = '';
             }
         }
 
@@ -63,6 +72,17 @@ const richTextResolverTemplates = {
                 </div>
                 <p class="print-only"> 
                     <i>See the code example on <a href="https://codesandbox.io/s/${item.id.value}">https://codesandbox.io/s/${item.id.value}</a></i>
+                </p>
+                `,
+            netlify: `
+                <div class="embed${cssClass}">
+                    <iframe class="lazy" data-src="https://${netlifyId[0]}.netlify.com/${netlifyId[1]}"></iframe>
+                    <noscript>
+                        <iframe src="https://${netlifyId[0]}.netlify.com${netlifyId[1]}"></iframe>
+                    </noscript>
+                </div>
+                <p class="print-only"> 
+                    <i>See the code example on <a href="https://${netlifyId[0]}.netlify.com${netlifyId[1]}">https://${netlifyId[0]}.netlify.com${netlifyId[1]}</a></i>
                 </p>
                 `
         };

@@ -11,13 +11,10 @@ const cache = require('memory-cache');
 const cacheControl = require('express-cache-controller');
 const serveStatic = require('serve-static');
 
-const getUrlMap = require('./helpers/urlMap');
-const commonContent = require('./helpers/commonContent');
-const isPreview = require('./helpers/isPreview');
+const handleCache = require('./helpers/handleCache');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
-const certification = require('./routes/certification');
 const sitemap = require('./routes/sitemap');
 const rss = require('./routes/rss');
 const robots = require('./routes/robots');
@@ -28,29 +25,31 @@ const previewUrls = require('./routes/previewUrls');
 const cacheInvalidate = require('./routes/cacheInvalidate');
 const apiReference = require('./routes/apiReference');
 const error = require('./routes/error');
+const form = require('./routes/form');
 
 const app = express();
-
-let KCDetails = {};
 
 const urlWhitelist = [
   '/other/*',
   '/scenario/*',
   '/article/*',
+  '/form/*',
   '/urlmap',
   '/kentico-icons.min.css',
   '/favicon.ico',
   '/api-reference',
   '/rss/articles',
   '/redirect-urls',
-  '/cache-invalidate/platforms-config',
-  '/cache-invalidate/url-map'
+  '/cache-invalidate',
+  '/robots.txt',
+  '/sitemap.xml'
 ];
 
 // Azure Application Insights monitors
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   appInsights.setup();
   appInsights.start();
+  exports.appInsights = appInsights;
 }
 
 app.locals.deployVersion = (new Date()).getTime();
@@ -91,31 +90,8 @@ const handleKCKeys = (req, res) => {
   }
 };
 
-const handleCaching = async (res) => {
-  KCDetails = commonContent.getKCDetails(res);
-  const isPreviewRequest = isPreview(res.locals.previewapikey);
-
-  if (isPreviewRequest && cache.get(`platformsConfig_${KCDetails.projectid}`)) {
-    cache.del(`platformsConfig_${KCDetails.projectid}`);
-  }
-
-  if (isPreviewRequest && cache.get(`urlMap_${KCDetails.projectid}`)) {
-    cache.del(`urlMap_${KCDetails.projectid}`);
-  }
-
-  if (!cache.get(`platformsConfig_${KCDetails.projectid}`)) {
-    let platformsConfig = await commonContent.getPlatformsConfig(res);
-    cache.put(`platformsConfig_${KCDetails.projectid}`, platformsConfig);
-  }
-
-  if (!cache.get(`urlMap_${KCDetails.projectid}`)) {
-    let urlMap = await getUrlMap(KCDetails);
-    cache.put(`urlMap_${KCDetails.projectid}`, urlMap);
-  }
-};
-
-const pageExists = (req, res, next) => {
-  const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
+const pageExists = async (req, res, next) => {
+  const urlMap = cache.get(`urlMap_${res.locals.projectid}`);
   const path = req.originalUrl.split('?')[0];
   let exists = false;
 
@@ -147,24 +123,27 @@ const pageExists = (req, res, next) => {
 };
 
 // Routes
-app.use('*', asyncHandler(async (req, res, next) => {
+app.use(async (req, res, next) => {
   handleKCKeys(req, res);
 
-  if (!req.originalUrl.startsWith('/cache-invalidate/')) {
-    await handleCaching(res);
+  if (!req.originalUrl.startsWith('/cache-invalidate') && !req.originalUrl.startsWith('/kentico-icons.min.css') && !req.originalUrl.startsWith('/form')) {
+    await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home']);
   }
 
   return next();
-}));
+});
 
 app.use('/cache-invalidate', bodyParser.text({ type: '*/*' }), cacheInvalidate);
 
 app.use('/', previewUrls);
 
+app.use('/form', bodyParser.text({ type: '*/*' }), form);
+
 app.use('/', asyncHandler(async (req, res, next) => {
-  const exists = pageExists(req, res, next);
+  const exists = await pageExists(req, res, next);
 
   if (!exists) {
+    await handleCache.evaluateCommon(res, ['articles']);
     return await urlAliases(req, res, next);
   }
 
@@ -172,13 +151,19 @@ app.use('/', asyncHandler(async (req, res, next) => {
 }));
 
 app.use('/', home);
-app.use('/certification', certification);
+
 app.use('/api-reference', apiReference);
-app.use('/redirect-urls', redirectUrls);
+app.use('/redirect-urls', async (req, res, next) => {
+  await handleCache.evaluateCommon(res, ['articles']);
+  return next();
+}, redirectUrls);
 
 app.use('/kentico-icons.min.css', kenticoIcons);
 app.use('/sitemap.xml', sitemap);
-app.use('/rss', rss);
+app.use('/rss', async (req, res, next) => {
+  await handleCache.evaluateCommon(res, ['rss_articles']);
+  return next();
+}, rss);
 app.use('/robots.txt', robots);
 
 app.get('/urlmap', asyncHandler(async (req, res) => {
@@ -194,11 +179,11 @@ app.use('/', tutorials);
 app.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;
-  next(err);
+  return next(err);
 });
 
 // error handler
-app.use(async (err, req, res, _next) => {
+app.use(async(err, req, res, _next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -206,7 +191,8 @@ app.use(async (err, req, res, _next) => {
   // render the error page
   res.status(err.status || 500);
   req.err = err;
-  return await error(req, res);
+  await handleCache.evaluateCommon(res, ['not_found']);
+  return error(req, res);
 });
 
 module.exports = app;

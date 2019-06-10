@@ -39,8 +39,8 @@ const defineQuery = (deliveryConfig, config) => {
     const deliveryClient = new KenticoCloud.DeliveryClient(deliveryConfig);
 
     let query = deliveryClient.items()
-        .type(config.type);
 
+        if (config.type) { query.type(config.type); }
         if (config.codename) { query.equalsFilter('system.codename', config.codename); }
         if (config.depth) { query.depthParameter(config.depth); }
         if (config.slug) { query.equalsFilter('elements.url', config.slug); }

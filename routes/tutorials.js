@@ -1,34 +1,26 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
-const { check, validationResult } = require('express-validator/check');
 
 const requestDelivery = require('../helpers/requestDelivery');
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
-const recaptcha = require('../helpers/recaptcha');
-const jira = require('../helpers/jira');
+const handleCache = require('../helpers/handleCache');
 
 const moment = require('moment');
 const cache = require('memory-cache');
 let cookiesPlatform;
 
-const getNavigation = async (KCDetails) => {
-    return await requestDelivery({
-        type: 'home',
-        depth: 1,
-        ...KCDetails
-    });
-};
-
-const getSubNavigation = async (KCDetails, slug) => {
-    return await requestDelivery({
-        type: 'navigation_item',
-        depth: 3,
-        slug: slug,
-        ...KCDetails
+const getSubNavigation = async (res, slug) => {
+    return await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
+        return await requestDelivery({
+            type: 'navigation_item',
+            depth: 3,
+            slug: slug,
+            ...commonContent.getKCDetails(res)
+        });
     });
 };
 
@@ -41,7 +33,9 @@ const getSubNavigationLevels = (req) => {
     ];
 };
 
-const getContentLevel = async (currentLevel, KCDetails, urlMap, req) => {
+const getContentLevel = async (currentLevel, urlMap, req, res) => {
+    const KCDetails = commonContent.getKCDetails(res);
+
     let settings = {
         slug: getSubNavigationLevels(req)[currentLevel],
         depth: 2,
@@ -53,7 +47,7 @@ const getContentLevel = async (currentLevel, KCDetails, urlMap, req) => {
         settings.slug = req.originalUrl.split('/')[1];
         delete settings.depth;
     } else if (currentLevel === 0) {
-        settings.type = 'scenario';
+        settings.type = ['scenario', 'certification'];
         settings.resolveRichText = true;
         settings.urlMap = urlMap;
     } else if (currentLevel === 1) {
@@ -64,7 +58,17 @@ const getContentLevel = async (currentLevel, KCDetails, urlMap, req) => {
         settings.urlMap = urlMap;
     }
 
-    return await requestDelivery(settings);
+    let cacheKey;
+
+    if (Array.isArray(settings.type)) {
+        cacheKey = `${settings.type[0]}_${settings.slug}`;
+    } else {
+        cacheKey = `${settings.type}_${settings.slug}`;
+    }
+
+    return await handleCache.evaluateSingle(res, cacheKey, async () => {
+        return await requestDelivery(settings);
+    });
 };
 
 const getCurrentLevel = (levels) => {
@@ -142,6 +146,7 @@ const getPreselectedPlatform = (content, req, res) => {
             }
         }
     }
+
     return preselectedPlatform;
 };
 
@@ -157,14 +162,14 @@ const getCanonicalUrl = (urlMap, content, preselectedPlatform) => {
 const getContent = async (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
     const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
-    const navigation = await getNavigation(KCDetails);
+    const home = cache.get(`home_${KCDetails.projectid}`);
     const slug = req.originalUrl.split('/')[1];
-    const subNavigation = await getSubNavigation(KCDetails, slug);
+    const subNavigation = await getSubNavigation(res, slug);
     const subNavigationLevels = getSubNavigationLevels(req);
     const currentLevel = getCurrentLevel(subNavigationLevels);
-    const footer = await commonContent.getFooter(res);
-    const UIMessages = await commonContent.getUIMessages(res);
-    let content = await getContentLevel(currentLevel, KCDetails, urlMap, req);
+    const footer = cache.get(`footer_${KCDetails.projectid}`);
+    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+    let content = await getContentLevel(currentLevel, urlMap, req, res);
     let view = 'tutorials/pages/article';
     let availablePlatforms;
 
@@ -178,7 +183,11 @@ const getContent = async (req, res) => {
         if (currentLevel === -1) {
             return `/${slug}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else if (currentLevel === 0) {
-            view = 'tutorials/pages/scenario';
+            if (content[0].system.type === 'certification') {
+                view = 'tutorials/pages/certification';
+            } else {
+                view = 'tutorials/pages/scenario';
+            }
         } else if (currentLevel === 1) {
             return `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else if (currentLevel === 2) {
@@ -192,15 +201,18 @@ const getContent = async (req, res) => {
                     }
                     return false;
                 });
+
                 availablePlatforms = content[0].children;
 
-                content = await requestDelivery({
-                    codename: platformItem[0].system.codename,
-                    type: 'article',
-                    depth: 2,
-                    resolveRichText: true,
-                    urlMap: urlMap,
-                    ...KCDetails
+                content = await handleCache.evaluateSingle(res, `article_${platformItem[0].elements.url.value}`, async () => {
+                    return await requestDelivery({
+                        codename: platformItem[0].system.codename,
+                        type: 'article',
+                        depth: 2,
+                        resolveRichText: true,
+                        urlMap: urlMap,
+                        ...KCDetails
+                    });
                 });
             }
 
@@ -231,7 +243,7 @@ const getContent = async (req, res) => {
         isPreview: isPreview(res.locals.previewapikey),
         projectId: res.locals.projectid,
         title: content[0].title.value,
-        titleSuffix: ` | ${navigation[0] ? navigation[0].title.value : 'Kentico Cloud Docs'}`,
+        titleSuffix: ` | ${home[0] ? home[0].title.value : 'Kentico Cloud Docs'}`,
         description: content[0].introduction ? helper.stripTags(content[0].introduction.value).substring(0, 300) : '',
         platform: content[0].platform && content[0].platform.value.length ? await commonContent.normalizePlatforms(content[0].platform.value, res) : null,
         availablePlatforms: await commonContent.normalizePlatforms(availablePlatforms, res),
@@ -239,52 +251,23 @@ const getContent = async (req, res) => {
         canonicalUrl: canonicalUrl,
         introduction: content[0].introduction ? content[0].introduction.value : null,
         nextSteps: content[0].next_steps ? content[0].next_steps : '',
-        navigation: navigation[0] ? navigation[0].navigation : [],
+        navigation: home[0] ? home[0].navigation : [],
         subNavigation: subNavigation[0] ? subNavigation[0].children : [],
         subNavigationLevels: subNavigationLevels,
         content: content[0],
         footer: footer[0] ? footer[0] : {},
         UIMessages: UIMessages[0],
         helper: helper,
-        getFormValue: helper.getFormValue
+        getFormValue: helper.getFormValue,
+        preselectedPlatform: preselectedPlatform
     };
 };
 
 router.get(['/other/:article', '/:main', '/:main/:scenario', '/:main/:scenario/:topic', '/:main/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
     let data = await getContent(req, res, next);
-
     if (data && !data.view) return res.redirect(301, data);
     if (!data) return next();
 
-    return res.render(data.view, data);
-}));
-
-router.post(['/other/:article', '/:main/:scenario', '/:main/:scenario/:topic/:article'], [
-    check('feedback').not().isEmpty().withMessage((value, { req, location, path }) => {
-        return 'feedback_form___empty_field_validation';
-    }).trim()
-], asyncHandler(async (req, res, next) => {
-    let data = await getContent(req, res, next);
-    if (!data) return next();
-    data.req.formPosted = true;
-    const errors = validationResult(req);
-
-    if (errors.isEmpty()) {
-        let isRealUser = await recaptcha.checkv2(req.body);
-
-        if (isRealUser) {
-            delete req.body['g-recaptcha-response'];
-            data.req.successForm = true;
-            req.body.url = req.protocol + '://' + req.get('host') + req.originalUrl;
-            await jira.createIssue(req.body);
-        } else {
-            data.req.isBot = true;
-        }
-    } else {
-        data.req.errorForm = helper.getValidationMessages(errors.array(), data.UIMessages);
-    }
-
-    data.req.anchor = 'feedback-form';
     return res.render(data.view, data);
 }));
 

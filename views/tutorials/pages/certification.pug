@@ -1,42 +1,37 @@
 extends ../includes/layout.pug
-mixin error(errors, field)
-    if (typeof errors !== 'undefined' && errors.length)
-        each err in errors
-            if (err.param === field)
-                .form__error !{err.msg}
+mixin error(name)
+    .form__error(data-form-error=name)
 mixin input(type, id, label)
     div(class=`form__row${type === 'hidden' ? ' hidden' : ''}`)
-        input.form__input(id=id, name=id, type=type, value=getFormValue(req.body, id), required='required')
+        input.form__input(id=id, name=id, type=type)
         if label
             label.form__label(for=id) #{label}
-        +error(req.errorForm, id)
+        +error(id)
 block content
     main(id='main')
         .article
             .article__left
+                include ../includes/sub-navigation.pug
             .article__right
                 .article__content 
                     h1 !{content.title.value}
                     | !{minify(content.content.value)}
-                    .form#certification-form
-                        h2.form__heading !{content.form_title.value}
-                        if req.successForm
-                            .form__success
-                                | !{content.sign_up_success.value}
-                        else if req.signedInPast
-                            .form__warning
-                                | !{content.sign_up_repeated.value}
-                        else
-                            form(action=req.originalUrl, method='post')
-                                +input('text', 'first_name', content.first_name_field_text.value)
-                                +input('text', 'last_name', content.last_name_field_text.value)
-                                +input('email', 'email', content.e_mail_field_text.value)
-                                .g-recaptcha.form__row(data-sitekey=`${process.env['Recaptcha-v2.site']}`)
-                                if req.isBot
-                                    .form__warning !{content.recaptcha_message.value}
-                                .form__row.form__row--btn
-                                    button.form__button !{content.submit_button_text.value}
+                    .form
+                        h2.form__heading !{UIMessages.certification_form___title.value}
+                        form.form__certification
+                            input#course_id(type='hidden', value=content.course_id.value)
+                            +input('text', 'first_name', UIMessages.certification_form___first_name_field.value)
+                            +input('text', 'last_name', UIMessages.certification_form___last_name_field.value)
+                            +input('email', 'email', UIMessages.certificationform___email_field.value)
+                            if (content.require_company.value[0].codename === 'true')
+                                +input('text', 'custom_field_1', UIMessages.certificationform___company_field.value)
+                            .form__row
+                                .form__recaptcha-disabled
+                                .g-recaptcha(data-sitekey=`${process.env['Recaptcha-v2.site']}`)
+                                +error('g-recaptcha-response')
+                            .form__row.form__row--btn
+                                button.form__button !{UIMessages.certification_form___submit_button.value}
+                        .form__success(data-form-success="")
+                        .form__warning(data-form-warning="")
     if process.env['Recaptcha-v2.site']
         script(src=`https://www.google.com/recaptcha/api.js`)
-    if req.anchor
-        script window.onload = function(){document.querySelector('##{req.anchor}').scrollIntoView({block:'start',behavior:'smooth'});history.replaceState(undefined, undefined, window.location.pathname+'##{req.anchor}');}

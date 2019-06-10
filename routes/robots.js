@@ -4,7 +4,7 @@ const isPreview = require('../helpers/isPreview');
 
 router.get('/', (req, res) => {
     res.header('Content-Type', 'text/plain');
-    res.render('tutorials/pages/robots', { isPreview: isPreview(res.locals.previewapikey) });
+    return res.render('tutorials/pages/robots', { isPreview: isPreview(res.locals.previewapikey) });
 });
 
 module.exports = router;
