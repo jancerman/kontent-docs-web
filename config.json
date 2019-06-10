@@ -1,15 +1,9 @@
 {
   "deliveryConfig": {
     "typeResolvers": [],
-    "customHeaders": [
-      {
-        "header": "X-KC-SOURCE",
-        "value": "kentico-cloud-docs-web;1.0.0-beta"
-      },
-      {
-        "header": "X-KC-Wait-For-Loading-New-Content",
-        "value": "true"
-      }
-    ]
+     "customHeaders": [{
+      "header": "X-KC-SOURCE",
+      "value": "kentico-cloud-docs-web;1.0.0-beta"
+    }]
   }
 }
