@@ -46,16 +46,17 @@ main () {
     } || {
         exit 1
     }
-
-    rm -rf .git
-    {
-        git init \
-          && git add -A \
-          && git commit --message "$TRAVIS_COMMIT_MESSAGE" \
-          && git push --quiet --force --set-upstream "https://$GIT_USER_NAME:$GIT_PASSWORD@$GIT_DESTINATION_LIVE_TESTS" master
-    } || {
-        exit 1
-    }
+    if [ "$TRAVIS_BRANCH" == "develop" ]; then
+        rm -rf .git
+        {
+            git init \
+            && git add -A \
+            && git commit --message "$TRAVIS_COMMIT_MESSAGE" \
+            && git push --quiet --force --set-upstream "https://$GIT_USER_NAME:$GIT_PASSWORD@$GIT_DESTINATION_LIVE_TESTS" master
+        } || {
+            exit 1
+        }
+    fi
 }
 
 main "$@"
