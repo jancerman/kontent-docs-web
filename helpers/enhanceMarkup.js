@@ -1,4 +1,5 @@
 const cheerio = require('cheerio');
+const helper = require('./helperFunctions');
 
 const replaceNodeWithItsContent = ($, selector) => {
     $(selector).each(() => {
@@ -30,6 +31,7 @@ const processLinks = ($) => {
 };
 
 const enhanceMarkup = (text) => {
+    text = helper.resolveMacros(text);
     const $ = cheerio.load(text);
 
     replaceNodeWithItsContent($, 'p.kc-linked-item-wrapper, p:empty');
