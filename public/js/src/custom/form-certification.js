@@ -4,30 +4,6 @@
         const submitButton = form.querySelector('.form__button');
         const recaptchaCover = form.querySelector('.form__recaptcha-disabled');
 
-        const disableInputs = () => {
-            form.querySelectorAll('.form__input').forEach((item) => {
-                item.setAttribute('disabled', 'disabled');
-            });
-
-            recaptchaCover.classList.add('form__recaptcha-disabled--visible');
-        };
-
-        const enableInputs = () => {
-            form.querySelectorAll('.form__input').forEach((item) => {
-                item.removeAttribute('disabled');
-            });
-
-            recaptchaCover.classList.remove('form__recaptcha-disabled--visible');
-        };
-
-        const addLoadingToButton = () => {
-            submitButton.classList.add('form__button--loading');
-        };
-
-        const removeLoadingFromButton = () => {
-            submitButton.classList.remove('form__button--loading');
-        };
-
         const collectData = () => {
             var data = {};
             var companyField = form.querySelector('#custom_field_1');
@@ -45,32 +21,11 @@
             return data;
         };
 
-        const submitData = (data, callback) => {
-            return helper.ajaxPost('/form/certification', data, callback, 'json');
-        };
-
-        const clearForm = () => {
-            form.querySelectorAll('.form__input').forEach((item) => {
-                item.value = '';
-            });
-        };
-
         const clearMessages = () => {
             form.querySelectorAll('[data-form-error]').forEach((item) => {
                 item.innerHTML = '';
             });
             document.querySelector('[data-form-warning]').innerHTML = '';
-        };
-
-        const displayValidationMessages = (data) => {
-            for (var item in data) {
-                if (data.hasOwnProperty(item)) {
-                    let errorElem = form.querySelector(`[data-form-error="${item}"]`);
-                    if (errorElem) {
-                        errorElem.innerHTML = data[item];
-                    }
-                }
-            }
         };
 
         const displaySuccessMessage = (data) => {
@@ -81,13 +36,9 @@
             document.querySelector('[data-form-warning]').innerHTML = data.warning;
         };
 
-        const hideForm = () => {
-            form.classList.add('form--hidden');
-        };
-
         const processData = (data) => {
-            enableInputs();
-            removeLoadingFromButton();
+            helperForm.enableInputs(form, recaptchaCover);
+            helperForm.removeLoadingFromButton(submitButton);
             grecaptcha.reset();
 
             if (data.isValid) {
@@ -96,25 +47,25 @@
                 }
 
                 if (data.success) {
-                    clearForm();
-                    hideForm();
+                    helperForm.clearForm(form);
+                    helperForm.hideForm(form);
                     displaySuccessMessage(data);
                 }
             } else {
-                displayValidationMessages(data);
+                helperForm.displayValidationMessages(data, form);
             }
         };
 
         submitButton.addEventListener('click', (e) => {
             e.preventDefault();
 
-            if (!submitButton.classList.contains('form__button--loading')) {
+            helperForm.validateAndSubmitForm(form, e.target, () => {
                 clearMessages();
-                disableInputs();
-                addLoadingToButton();
+                helperForm.disableInputs(form, recaptchaCover);
+                helperForm.addLoadingToButton(submitButton);
                 var data = collectData();
-                submitData(data, processData);
-            }
+                helperForm.submitData('/form/certification', data, processData);
+            });
         });
     }
 })();

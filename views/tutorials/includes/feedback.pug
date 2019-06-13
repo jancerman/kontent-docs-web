@@ -8,7 +8,7 @@ mixin input(type, id, label, className)
         +error(id)
 mixin textarea(id, label)
     .form__row
-        textarea.form__input.form__input--textarea(id=id, name=id)
+        textarea.form__input.form__input--textarea(id=id, name=id, required='required')
         if label
             label.form__label(for=id) #{label}
         +error(id)
