@@ -204,6 +204,10 @@ const getContent = async (req, res) => {
 
                 availablePlatforms = content[0].children;
 
+                if (!platformItem.length && availablePlatforms.length) {
+                    platformItem.push(availablePlatforms[0]);
+                }
+
                 if (platformItem.length) {
                     content = await handleCache.evaluateSingle(res, `article_${platformItem[0].elements.url.value}`, async () => {
                         return await requestDelivery({
