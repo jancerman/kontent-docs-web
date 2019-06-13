@@ -204,16 +204,20 @@ const getContent = async (req, res) => {
 
                 availablePlatforms = content[0].children;
 
-                content = await handleCache.evaluateSingle(res, `article_${platformItem[0].elements.url.value}`, async () => {
-                    return await requestDelivery({
-                        codename: platformItem[0].system.codename,
-                        type: 'article',
-                        depth: 2,
-                        resolveRichText: true,
-                        urlMap: urlMap,
-                        ...KCDetails
+                if (platformItem.length) {
+                    content = await handleCache.evaluateSingle(res, `article_${platformItem[0].elements.url.value}`, async () => {
+                        return await requestDelivery({
+                            codename: platformItem[0].system.codename,
+                            type: 'article',
+                            depth: 2,
+                            resolveRichText: true,
+                            urlMap: urlMap,
+                            ...KCDetails
+                        });
                     });
-                });
+                } else {
+                    return null;
+                }
             }
 
             preselectedPlatform = platformsConfig ? platformsConfig.filter(item => item.system.codename === preselectedPlatform) : null;

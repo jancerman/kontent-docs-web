@@ -126,10 +126,6 @@ const pageExists = async (req, res, next) => {
 app.use(async (req, res, next) => {
   handleKCKeys(req, res);
 
-  if (!req.originalUrl.startsWith('/cache-invalidate') && !req.originalUrl.startsWith('/kentico-icons.min.css') && !req.originalUrl.startsWith('/form')) {
-    await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home']);
-  }
-
   return next();
 });
 
@@ -139,7 +135,13 @@ app.use('/', previewUrls);
 
 app.use('/form', bodyParser.text({ type: '*/*' }), form);
 
+app.use('/kentico-icons.min.css', kenticoIcons);
+
 app.use('/', asyncHandler(async (req, res, next) => {
+  if (!req.originalUrl.startsWith('/cache-invalidate') && !req.originalUrl.startsWith('/kentico-icons.min.css') && !req.originalUrl.startsWith('/form')) {
+    await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home']);
+  }
+
   const exists = await pageExists(req, res, next);
 
   if (!exists) {
@@ -158,7 +160,6 @@ app.use('/redirect-urls', async (req, res, next) => {
   return next();
 }, redirectUrls);
 
-app.use('/kentico-icons.min.css', kenticoIcons);
 app.use('/sitemap.xml', sitemap);
 app.use('/rss', async (req, res, next) => {
   await handleCache.evaluateCommon(res, ['rss_articles']);
