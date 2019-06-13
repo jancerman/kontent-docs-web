@@ -189,6 +189,9 @@ app.use(async(err, req, res, _next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   console.error(err.stack);
+  if (appInsights) {
+    appInsights.defaultClient.trackTrace({ message: 'ERR_STACK_TRACE: ' + err.stack });
+  }
   // render the error page
   res.status(err.status || 500);
   req.err = err;
