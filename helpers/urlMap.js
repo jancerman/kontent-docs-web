@@ -182,6 +182,9 @@ const getUrlMap = async (res, isSitemap) => {
 
     const query = deliveryClient.items()
         .type('home')
+        .queryConfig({
+            waitForLoadingNewContent: true
+        })
         .depthParameter(5);
 
     const response = await query
