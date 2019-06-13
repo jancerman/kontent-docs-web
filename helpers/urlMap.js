@@ -138,6 +138,32 @@ const createUrlMap = (response, url, urlMap = []) => {
     return urlMap;
 };
 
+const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
+    const query = deliveryClient.items()
+        .type('article');
+
+    const articles = await query
+        .getPromise();
+
+    articles.items.forEach((articleItem) => {
+        let isInUrlMap = false;
+        urlMap.forEach((mapItem) => {
+            if (articleItem.system.codename === mapItem.codename) {
+                isInUrlMap = true;
+            }
+        });
+
+        if (!isInUrlMap) {
+            urlMap.push({
+                codename: articleItem.system.codename,
+                url: `/other/${articleItem.elements.url.value}`
+            });
+        }
+    });
+
+    return urlMap;
+};
+
 const getUrlMap = async (res, isSitemap) => {
     // globalConfig = config;
     deliveryConfig.projectId = res.locals.projectid;
@@ -167,7 +193,9 @@ const getUrlMap = async (res, isSitemap) => {
         fields = ['codename', 'url'];
     }
 
-    return createUrlMap(response, []);
+    let urlMap = createUrlMap(response, []);
+    urlMap = await addUnusedArtilesToUrlMap(deliveryClient, urlMap);
+    return urlMap;
 };
 
 module.exports = getUrlMap;
