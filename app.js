@@ -10,8 +10,10 @@ const asyncHandler = require('express-async-handler');
 const cache = require('memory-cache');
 const cacheControl = require('express-cache-controller');
 const serveStatic = require('serve-static');
+const cmd = require('node-cmd');
 
 const handleCache = require('./helpers/handleCache');
+const prerenderOptions = require('./helpers/redoc-cli/prerender-options.js');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -23,7 +25,7 @@ const urlAliases = require('./routes/urlAliases');
 const redirectUrls = require('./routes/redirectUrls');
 const previewUrls = require('./routes/previewUrls');
 const cacheInvalidate = require('./routes/cacheInvalidate');
-const apiReference = require('./routes/apiReference');
+// const apiReference = require('./routes/apiReference');
 const error = require('./routes/error');
 const form = require('./routes/form');
 
@@ -154,7 +156,6 @@ app.use('/', asyncHandler(async (req, res, next) => {
 
 app.use('/', home);
 
-app.use('/api-reference', apiReference);
 app.use('/redirect-urls', async (req, res, next) => {
   await handleCache.evaluateCommon(res, ['articles']);
   return next();
@@ -173,6 +174,29 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
   };
   return res.json(cache.get(`urlMap_${res.locals.projectid}`));
 }));
+
+// API Reference
+const prerender = () => {
+  const yaml = 'https://gist.githubusercontent.com/jancerman/248759d3ae8b088dee38c983adca949f/raw/8ac4355e098ae5f38d3e581f91524bd563426a32/OHP%20OAS%20Proto.yaml';
+  const options = prerenderOptions.join(' ');
+  const template = './views/apiReference/redoc/template.hbs';
+
+  cmd.get(
+      `node ./helpers/redoc-cli/index.js bundle ${yaml} -t ${template} ${options}`,
+      function(err, data, stderr) {
+          console.log(data);
+          console.log(err);
+          console.log(stderr);
+      }
+  );
+};
+
+prerender();
+
+app.get('/api-reference', (req, res, next) => {
+  res.render('apiReference/redoc/redoc-static');
+});
+// End of API Reference
 
 app.use('/', tutorials);
 
