@@ -27,7 +27,7 @@ router.get('/', asyncHandler(async (req, res) => {
         helper: helper
     };
 
-    return res.render('apiReference/pages/home', data);
+    return res.render('apiReference/redoc/redoc-static', data);
 }));
 
 module.exports = router;

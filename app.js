@@ -25,7 +25,7 @@ const urlAliases = require('./routes/urlAliases');
 const redirectUrls = require('./routes/redirectUrls');
 const previewUrls = require('./routes/previewUrls');
 const cacheInvalidate = require('./routes/cacheInvalidate');
-// const apiReference = require('./routes/apiReference');
+const apiReference = require('./routes/apiReference');
 const error = require('./routes/error');
 const form = require('./routes/form');
 
@@ -193,9 +193,7 @@ const prerender = () => {
 
 prerender();
 
-app.get('/api-reference', (req, res, next) => {
-  res.render('apiReference/redoc/redoc-static');
-});
+app.use('/api-reference', apiReference);
 // End of API Reference
 
 app.use('/', tutorials);
