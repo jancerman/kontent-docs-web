@@ -1,287 +1,418 @@
-.api-reference {
-    #redoc {
-        overflow: visible;
-        font-size: 16px;
-    
-        .menu-content {
-            background-color: #fff;
+html,
+body {
+  overflow-x: visible;
+}
+
+.redoc-wrap {
+  overflow: visible;
+  font-size: 16px;
+  margin-top: 4px;
+  display: block;
+
+  .menu-content {
+    background-color: #fff;
+    border-right: 1px solid #E3E9EC;
+    padding: 1em 1em 0;
+  }
+
+  // Code samples
+  [data-tabs] {
+    margin: 0.5em 0 1em;
+  }
+
+  .react-tabs__tab-list {
+    margin: 0;
+
+    [role="tab"] {
+      display: inline-block;
+      color: #7C909B;
+      background-color: #283033;
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      font-weight: 700;
+      font-size: 1em;
+      cursor: pointer;
+      padding: 0.375em 1em;
+      transition: background-color .25s, color .25s;
+
+      &:hover {
+        background-color: #47545A;
+      }
+
+      &.react-tabs__tab--selected {
+        background-color: #F3F6F7;
+        color: #2D373B;
+
+        &:hover {
+          background-color: #F3F6F7;
+          color: #2D373B;
         }
-    
-        // Code samples
-        [data-tabs] {
-            margin: 0.5em 0 1em;
-        }
-    
-        .react-tabs__tab-list {
-            margin: 0;
-            background-color: #efedeb;
-            display: flex;
-    
-            [role="tab"] {
-                flex: 1;
-                display: inline-block;
-                color: #8b9ba6;
-                background-color: #efedeb;
-                margin: 0;
-                border: none;
-                border-radius: 0;
-                font-weight: 400;
-                font-size: 1em;
-                cursor: pointer;
-                padding: 0.375em 1.125em;
-                transition: background-color .25s, color .25s;
-                max-width: 6.625em;
-    
-                &:hover {
-                    background-color: #b7c3cb;
-                    color: #fff;
-                }
-    
-                &.react-tabs__tab--selected {
-                    background-color: #8b9ba6;
-                    color: #fff;
-    
-                    &:hover {
-                        background-color: #8b9ba6;
-                    }
-                }
-            }
-        }
+      }
 
-        .code-style {
-            &::selection, & ::selection {
-                text-shadow: none;
-                background: #b3d4fc;
-            }
+      &.tab-error {
+        color: #ED6A56;
+      }
 
-            &::-moz-selection, & ::-moz-selection {
-                text-shadow: none;
-                background: #b3d4fc;
-            }
-
-            &::-webkit-scrollbar-track {
-                background-color: #e5e5e5;
-                border-radius: 4px;
-            }
-        
-            &::-webkit-scrollbar {
-                height: 8px;
-                border-radius: 4px;
-                background-color: #F5F5F5;
-            }
-        
-            &::-webkit-scrollbar-thumb {
-                border-radius: 4px;
-                background-color: #adadad;
-            }
-        }
-    
-        .react-tabs__tab-panel {
-            position: relative;
-            text-shadow: 0 1px #fff;
-            //max-height: 50vh;
-            //overflow: auto;
-
-            &::-webkit-scrollbar-track {
-                background-color: #e5e5e5;
-                border-radius: 4px;
-            }
-        
-            &::-webkit-scrollbar {
-                width: 8px;
-                border-radius: 4px;
-                background-color: #F5F5F5;
-            }
-        
-            &::-webkit-scrollbar-thumb {
-                border-radius: 4px;
-                background-color: #adadad;
-            }
-
-            & > div, & > pre {
-                padding: 0;
-                //white-space: pre-wrap;
-
-                .code-style();
-
-                & > pre {
-                    padding: 1em;
-                    //white-space: pre-wrap;
-
-                    .code-style()
-                }
-
-                & > div[class] {
-                    display: flex;
-                    justify-content: space-between;
-                    padding: 0.6875em 1em;
-                    color: #8b9ba6;
-                    background-color: #efedeb;
-                    border: none;
-                    line-height: 1.375em;
-                    margin: 0;
-
-                    & > span {
-                        line-height: 1.675em;
-                        border: 0.125em solid #8b9ba6;
-                        background-color: #8b9ba6;
-                        text-shadow: 0 1px #a6b1b8;
-                        color: #fff;
-                        transition: 0.25s;
-                        padding: 0 0.5em;
-                        font-size: .875em;
-
-                        div {
-                            display: inline-block;
-                        }
-
-                        &:before {
-                            content: "\e69e";
-                            font-family: 'kentico-icons';
-                            padding: 0 .25em 0 0;
-                            position: relative;
-                            top: .075em;
-                            font-size: .875em;
-                        }
-
-                        &:hover {
-                            background-color: transparent;
-                            color: #8b9ba6;
-                            text-shadow: 0 1px #fff;
-                        }
-                    }
-                }
-
-                & > div:not([class]) {
-                    & > div {
-                        & > div {
-                            &:first-child {
-                                opacity: 1 !important;
-                                position: absolute;
-                                top: 0;
-                                right: 0;
-                                padding: 0.6em 1em;
-                                font-size: .875em;
-
-                                & > span {
-                                    line-height: 1.675em;
-                                    border: 0.125em solid #8b9ba6;
-                                    background-color: #8b9ba6;
-                                    text-shadow: 0 1px #a6b1b8;
-                                    color: #fff;
-                                    transition: 0.25s;
-                                    padding: 0 0.5em;
-                                    margin: 0 0 0 .5em;
-
-                                    & > div {
-                                        text-shadow: 0 1px #a6b1b8;
-
-                                        &:before {
-                                            content: "\e69e";
-                                            font-family: 'kentico-icons';
-                                            padding: 0 .25em 0 0;
-                                            position: relative;
-                                            top: .075em;
-                                            font-size: .875em;
-                                        }
-                                    }
-
-                                    &:hover {
-                                        background-color: transparent;
-                                        color: #8b9ba6;
-                                        text-shadow: 0 1px #fff;
-
-                                        div {
-                                            text-shadow: 0 1px #fff;
-                                        }
-                                    }
-                                }
-                            }
-
-                            &:last-child {
-                                padding: 1em;
-                                //white-space: pre-wrap;
-
-                                .code-style();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Syntax highlight
-        .token.comment,
-        .token.prolog,
-        .token.doctype,
-        .token.cdata {
-            color: slategray;
-        }
-
-        .token.punctuation {
-            color: #999;
-        }
-
-        .namespace {
-            opacity: .7;
-        }
-
-        .token.property,
-        .token.tag,
-        .token.boolean,
-        .token.number,
-        .token.constant,
-        .token.symbol,
-        .token.deleted {
-            color: #905;
-        }
-
-        .token.selector,
-        .token.attr-name,
-        .token.string,
-        .token.char,
-        .token.builtin,
-        .token.inserted {
-            color: #690;
-        }
-
-        .token.operator,
-        .token.entity,
-        .token.url,
-        .language-css .token.string,
-        .style .token.string {
-            color: #9a6e3a;
-            background: hsla(0, 0%, 100%, .5);
-        }
-
-        .token.atrule,
-        .token.attr-value,
-        .token.keyword {
-            color: #07a;
-        }
-
-        .token.function,
-        .token.class-name {
-            color: #DD4A68;
-        }
-
-        .token.regex,
-        .token.important,
-        .token.variable {
-            color: #e90;
-        }
-
-        .token.important,
-        .token.bold {
-            font-weight: bold;
-        }
-
-        .token.italic {
-            font-style: italic;
-        }
-
-        .token.entity {
-            cursor: help;
-        }
+      &.tab-success {
+        color: #00A54B;
+      }
     }
+
+    .react-tabs__tab-list {
+      display: none;
+    }
+  }
+
+  .code-style {
+
+    &::selection,
+    & ::selection {
+      text-shadow: none;
+      background: #b3d4fc;
+    }
+
+    &::-moz-selection,
+    & ::-moz-selection {
+      text-shadow: none;
+      background: #b3d4fc;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: #1A1F21;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar {
+      height: 8px;
+      border-radius: 4px;
+      background-color: #6B7C85;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: #6B7C85;
+    }
+  }
+
+  .react-tabs__tab-panel {
+    position: relative;
+    text-shadow: none;
+    //max-height: 50vh;
+    //overflow: auto;
+
+    &::-webkit-scrollbar-track {
+      background-color: #1A1F21;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      border-radius: 4px;
+      background-color: #1A1F21;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: #6B7C85;
+    }
+
+    &>div,
+    &>pre {
+      padding: 0;
+      //white-space: pre-wrap;
+
+      .code-style();
+
+      &>pre {
+        padding: 1.25em;
+        //white-space: pre-wrap;
+
+        .code-style()
+      }
+
+      &>div[class*="MimeLabel"] {
+        padding: 0.6875em 0 .125em;
+        margin: 0 1em;
+        color: #6B7C85;
+        border: none;
+        border-bottom: 1px solid #6B7C85;
+        line-height: 1.375em;
+        opacity: 1;
+
+        &>span {
+          line-height: 1.675em;
+          color: #6B7C85;
+          transition: 0.25s;
+          padding: 0 0.5em;
+          font-size: 1em;
+
+          div {
+            display: inline-block;
+          }
+
+          &:hover {
+            background-color: #6B7C85;
+            color: #AEBCC5;
+          }
+        }
+      }
+
+      &>div:not([class]) {
+        &>div {
+          &>div {
+            &:first-child {
+              padding: .5em 1em;
+              opacity: 1;
+
+              &>span {
+                line-height: 1.675em;
+                color: #6B7C85;
+                transition: 0.25s;
+                padding: 0 0.675em .125em;
+
+                &:hover {
+                  background-color: #6B7C85;
+                  color: #AEBCC5;
+                }
+              }
+            }
+
+            &:last-child {
+              padding: .5em 1em 1em;
+              //white-space: pre-wrap;
+
+              .code-style();
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Syntax highlight
+  .token.comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata {
+    color: #55636a;
+  }
+
+  .token.punctuation {
+    color: #95a2a9;
+    opacity: 1;
+  }
+
+  .namespace {
+    opacity: 1;
+  }
+
+  .token.property,
+  .token.tag,
+  .token.boolean,
+  .token.number,
+  .token.constant,
+  .token.symbol,
+  .token.deleted {
+    color: #ED6A56;
+  }
+
+  .token.selector,
+  .token.attr-name,
+  .token.string,
+  .token.char,
+  .token.builtin,
+  .token.inserted {
+    color: #67B870;
+  }
+
+  .token.operator,
+  .token.entity,
+  .token.url,
+  .language-css .token.string,
+  .style .token.string {
+    color: #FBC15E;
+    background: none;
+  }
+
+  .token.atrule,
+  .token.attr-value,
+  .token.keyword {
+    color: #007DCC;
+  }
+
+  .token.function,
+  .token.class-name {
+    color: #937AB4;
+  }
+
+  .token.regex,
+  .token.important,
+  .token.variable {
+    color: #2FB8C6;
+  }
+
+  .token.important,
+  .token.bold {
+    font-weight: 700;
+  }
+
+  .token.italic {
+    font-style: italic;
+  }
+
+  .token.entity {
+    cursor: help;
+  }
+
+  .api-content {
+    [data-section-id] {
+      /*h3 {
+        font-size: 1.375em;
+        font-weight: 700;
+        padding: .75em 0;
+      }*/
+
+      h5 {
+        font-size: .875em;
+        letter-spacing: 1px;
+      }
+
+      &>div {
+        &>div {
+          &:last-child {
+            //background: transparent;
+
+            &>div {
+              &>div {
+                &:first-child {
+                  padding: .675em 2em .675em .875em;
+                  border-radius: 0;
+                  //margin-bottom: .75em;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  [class*="SecurityRequirementAndWrap"] {
+    &>a {
+      font-weight: 700;
+      text-decoration: none;
+    }
+  }
+
+  [class*="PropertiesTable"] {
+    background-color: #F3F6F7;
+    margin-left: -2em;
+    width: calc(100% + 4em);
+    padding: 0 2em .75em;
+    margin-bottom: 1em;
+
+    [class*="ExampleValue"] {
+      background-color: #F3F6F7;
+      color: #007DCC;
+    }
+
+    [class*="PrismDiv"] {
+      code {
+        background-color: #F3F6F7;
+        color: #007DCC;
+      }
+    }
+  }
+
+  [class*="ResponsesHeader"] {
+    font-style: italic;
+    padding: 2em 0 1em;
+    font-size: 1.3125em;
+    margin: 0;
+    font-weight: 400;
+  }
+
+  [class*="StyledDropdown"] .Dropdown-control {
+    line-height: 1.25em;
+  }
+
+  [class*="HeadersCaption"] {
+    font-size: 0.875em;
+    letter-spacing: 1px;
+    padding: 0 2em;
+  }
+
+  .react-tabs__tab-panel {
+
+    [class*="NoSampleLabel"],
+    [class*="StyledPre"] {
+      padding: 1em;
+    }
+
+    [class*="StyledDropdown"] {
+      margin: .5em .75em;
+    }
+
+    [class*="SmallTabs"] {
+      margin-left: 1em;
+      margin-right: 1em;
+
+      .react-tabs__tab {
+        padding: 0;
+        background: transparent;
+        border-bottom: 1px dashed #7C909B;
+        font-weight: 400;
+        display: inline-block;
+        margin: 0 1em .5em 0;
+        padding: 0 0 2px;
+      }
+
+      .react-tabs__tab--selected,
+      .react-tabs__tab--selected:hover,
+      .react-tabs__tab:hover {
+        border-color: #fff;
+        color: #fff;
+        background: transparent;
+      }
+    }
+  }
+
+  [class*="UnderlinedHeader"] {
+    .Dropdown-menu {
+      min-width: 130px;
+    }
+  }
+
+  [class*="ServerRelativeURL"] {
+    position: relative;
+
+    &:before {
+      content: 'See full URL';
+      color: #7C909B;
+      text-transform: uppercase;
+      font-size: 11px;
+      background-color: #1A1F21;
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      right: .375em;
+      font-family: Source Sans Pro, Helvetica, Arial, sans-serif;
+      transition: .25s background-color;
+    }
+  }
+
+  [class*="EndpointInfo"] {
+    transition: .25s background-color;
+
+    &:hover {
+      background-color: #445055;
+
+      [class*="ServerRelativeURL"] {
+        &:before {
+          background-color: #445055;
+        }
+      }
+    }
+  }
 }

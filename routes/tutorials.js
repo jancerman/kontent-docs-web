@@ -204,16 +204,24 @@ const getContent = async (req, res) => {
 
                 availablePlatforms = content[0].children;
 
-                content = await handleCache.evaluateSingle(res, `article_${platformItem[0].elements.url.value}`, async () => {
-                    return await requestDelivery({
-                        codename: platformItem[0].system.codename,
-                        type: 'article',
-                        depth: 2,
-                        resolveRichText: true,
-                        urlMap: urlMap,
-                        ...KCDetails
+                if (!platformItem.length && availablePlatforms.length) {
+                    platformItem.push(availablePlatforms[0]);
+                }
+
+                if (platformItem.length) {
+                    content = await handleCache.evaluateSingle(res, `article_${platformItem[0].elements.url.value}`, async () => {
+                        return await requestDelivery({
+                            codename: platformItem[0].system.codename,
+                            type: 'article',
+                            depth: 2,
+                            resolveRichText: true,
+                            urlMap: urlMap,
+                            ...KCDetails
+                        });
                     });
-                });
+                } else {
+                    return null;
+                }
             }
 
             preselectedPlatform = platformsConfig ? platformsConfig.filter(item => item.system.codename === preselectedPlatform) : null;
@@ -228,8 +236,8 @@ const getContent = async (req, res) => {
     }
 
     // If only article url slug in passed and item is present in the navigation, do not render the article
-    let isIncludedNavigation = urlMap.filter(item => item.codename === content[0].system.codename).length > 0;
-    if (!req.params.scenario && !req.params.topic && req.params.article && isIncludedNavigation) {
+    let isExcludedNavigation = urlMap.filter(item => (item.codename === content[0].system.codename) && (item.url.startsWith('/other/'))).length > 0;
+    if (!req.params.scenario && !req.params.topic && req.params.article && !isExcludedNavigation) {
         return null;
     }
 

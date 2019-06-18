@@ -87,6 +87,19 @@ const helper = {
     },
     stripTags: (text) => {
         return text.replace(/<\/?[^>]+(>|$)/g, '');
+    },
+    resolveMacros: (text) => {
+        // If macro in format {@ sometext @}, replace it by icon
+        let replaced = text.replace(/{@[a-z,0-9,-]+@}/g, (match) => {
+            return `<i aria-hidden="true" class="icon ${match.replace('{@', '').replace('@}', '')}"></i>`;
+        });
+
+        // If macro in format {~ sometext ~}, replace it by inlone code
+        replaced = replaced.replace(/{~[^~]+~}/g, (match) => {
+            return `<code>${match.replace('{~', '').replace('~}', '')}</code>`;
+        });
+
+        return replaced;
     }
 };
 

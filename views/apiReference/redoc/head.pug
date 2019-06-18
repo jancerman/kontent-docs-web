@@ -10,13 +10,12 @@ if !isPreview
 else
     meta(name='robots', content='noindex, nofollow')
 link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700')
-link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Inconsolata')
 link(rel='stylesheet', href='/css/apireference.min.css?v=' + deployVersion)
 link(rel='stylesheet', href='/kentico-icons.min.css?v=' + deployVersion)
 if helper
     script var searchAPI={appid:"#{process.env['Search.AppId']}",apikey:"#{process.env['Search.ApiKey']}",indexname:"#{process.env['Search.IndexName']}"};
 if UIMessages
-    script var UIMessages={copyUrl:"#{UIMessages.heading___copy_url_hover.value}",copyUrlActive:"#{UIMessages.heading___copy_url_active.value}",searchNoResults:"#{UIMessages.search___no_results.value}",dntLabel:"#{helper.removeNewLines(UIMessages.embedded_content_dnt_notice.value)}",copyCode:"#{UIMessages.code_block___copy_code_button.value}",copyCodeActive:"#{UIMessages.code_block___copy_code_button_active.value}"};
+    script var UIMessages={copyUrl:"#{UIMessages.heading___copy_url_hover.value}",copyUrlActive:"#{UIMessages.heading___copy_url_active.value}",searchNoResults:"#{UIMessages.search___no_results.value}",dntLabel:"#{helper.removeNewLines(UIMessages.embedded_content_dnt_notice.value)}",copyCode:"#{UIMessages.code_block___copy_code_button.value}",copyCodeActive:"#{UIMessages.code_block___copy_code_button_active.value}",cookieBar:"#{UIMessages.cookie_policy_bar.value}"};
 if (process.env['Intercom.id'] && !isPreview)
     script function logIntercom(){var urlSlug='#{slug}';var currentUrl=window.location.href;var metadata={'link-id':urlSlug,'target':currentUrl,'linkPlacement':'kentico-cloud-docs'};window.dataLayer.push({'event':'event','eventCategory':'docs-link-opened','metadata':metadata});}
 else
@@ -27,11 +26,11 @@ else
     script function initGTM(){return false;}
 script(src='https://cdn.jsdelivr.net/npm/algoliasearch@3.32.0/dist/algoliasearchLite.min.js', defer='')
 script(src='https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js', defer='')
-script(src='/js/apireference.min.js?v=' + deployVersion, defer='', onload='initGTM()')
+script(src='/js/app.min.js?v=' + deployVersion, defer='', onload='initGTM()')
 if (process.env['Hotjar.id'])
     script (function(h,o,t,j,a,r){h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};h._hjSettings={hjid:#{process.env['Hotjar.id']},hjsv:6};a=o.getElementsByTagName('head')[0];r=o.createElement('script');r.async=1;r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;a.appendChild(r);})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
 title !{title}!{titleSuffix}
-if canonicalUrl && canonicalUrl !== req.originalUrl
+if canonicalUrl
     link(rel='canonical', href=`${canonicalUrl}`)
 link(rel='apple-touch-icon', sizes='57x57', href='/img/favicon/apple-icon-57x57.png')
 link(rel='apple-touch-icon', sizes='60x60', href='/img/favicon/apple-icon-60x60.png')
@@ -51,3 +50,5 @@ meta(name='msapplication-TileColor', content='#ffffff')
 meta(name='msapplication-TileImage', content='/img/favicon/ms-icon-144x144.png')
 meta(name='theme-color', content='#ffffff')
 meta(name='format-detection', content='telephone=no')
+style.
+    body,html {overflow-x: visible;}

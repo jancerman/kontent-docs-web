@@ -39,15 +39,22 @@
     };
 
     const removeInlineElements = (content) => {
-        content = content.replace(/{@[a-z,0-9,-</>]+@}/g, '');
-        content = content.replace(/{~[^~]+~}/g, '');
-        content = content.replace(/\r?\n|\r/g, ' ');
+        
+        if (content) {
+            content = content.replace(/{@[a-z,0-9,-</>]+@}/g, '');
+            content = content.replace(/{~[^~]+~}/g, '');
+            content = content.replace(/\r?\n|\r/g, ' ');
+        }
         return content;
     };
 
     const formatSuggestionContent = (suggestion) => {
         // Get content with highlighted markup
         let content = suggestion._highlightResult.content.value;
+
+        if (!content) {
+            console.log(suggestion);
+        }
 
         // Remove inline icon, code macros and newlines
         content = removeInlineElements(content);
@@ -145,6 +152,7 @@
         hitsSource(query, (suggestions) => {
             searchResultsNumber = suggestions.length;
             let formattedSuggestions = [];
+            console.log(suggestions);
 
             for (let i = 0; i < suggestions.length; i++) {
                 formattedSuggestions.push(formatSuggestionContent(suggestions[i]))
