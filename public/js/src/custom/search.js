@@ -152,7 +152,6 @@
         hitsSource(query, (suggestions) => {
             searchResultsNumber = suggestions.length;
             let formattedSuggestions = [];
-            console.log(suggestions);
 
             for (let i = 0; i < suggestions.length; i++) {
                 formattedSuggestions.push(formatSuggestionContent(suggestions[i]))

@@ -1,26 +1,48 @@
 (() => {
     const redoc = document.querySelector('#redoc');
+    const tabSelector = '[class*="tab-click_"]';
 
-    redoc.addEventListener('click', (e) => {
-        if (e.target && e.target.matches('.react-tabs__tab')) {
-            var idName = e.target.innerHTML.replace(/\./g, '_').toLowerCase();
-            helper.setCookie('KCDOCS.preselectedLanguage', idName);
+    const triggerClick = function (item) {
+        setTimeout(() => {
+            item.click();
+        }, 0);
+    };
 
-            document.querySelectorAll('.react-tabs__tab').forEach((item) => {
-                console.log(idName);
-                var currentIdName = item.innerHTML.replace(/\./g, '_').toLowerCase();
-                if (idName === currentIdName) {
-                    item.click();
+    const clickTab = function () {
+        let tabs = document.querySelectorAll(tabSelector);
+        let clicked = false;
+
+        redoc.addEventListener('click', (e) => {
+            if (e.target && e.target.matches(tabSelector) && !clicked) {
+                let className;
+
+                if (!tabs.length) {
+                    tabs = document.querySelectorAll(tabSelector);
                 }
-            });
-        }
-    });
 
-    /*
-    document.querySelectorAll('.react-tabs__tab').forEach((item) => {
-        item.addEventListener('click', (e) => {
-            console.log(e.target.innerHTML);
+                for (let i = 0; i < e.target.classList.length; i++) {
+                    if (e.target.classList[i].indexOf('tab-click_') > -1) {
+                        className = e.target.classList[i];
+                    }
+                }
+
+                for (let i = 0; i < tabs.length; i++) {
+                    if (tabs[i].classList.contains(className) && tabs[i] !== e.target) {
+                        clicked = true;
+                        triggerClick(tabs[i]);
+                    }
+                }
+
+                setTimeout(() => {
+                    clicked = false;
+                }, 0);
+
+                /*var idName = e.target.innerHTML.replace(/\./g, '_').replace('tab-click_', '').toLowerCase();
+                helper.setCookie('KCDOCS.preselectedLanguage', idName);*/
+            }
         });
-    });*/
+    };
+
+    clickTab();
 
 })();

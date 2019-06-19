@@ -107,7 +107,8 @@ const pageExists = async (req, res, next) => {
 
   if (!exists) {
     urlWhitelist.forEach((item) => {
-      let itemPath = item.split('?')[0];
+      let itemPath = item.split('#')[0];
+      itemPath = itemPath.split('?')[0];
 
       if (itemPath === path) {
         exists = true;
