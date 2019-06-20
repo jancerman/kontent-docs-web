@@ -8,6 +8,7 @@ html(lang='en')
                 iframe(src=`https://www.googletagmanager.com/ns.html?id=${process.env['GTM.id']}`, height='0', width='0', style='display:none;visibility:hidden')
         a(href='#main')
         include ./navigation.pug
+        .search-overlay
         block content
         include ./footer.pug
         if (process.env['Intercom.id'])

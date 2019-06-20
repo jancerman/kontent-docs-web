@@ -12,6 +12,8 @@
     const client = algoliasearch(searchAPI.appid, searchAPI.apikey)
     const tutorials = client.initIndex(searchAPI.indexname);
     const url = window.location;
+    const searchWrapper = document.querySelector('.navigation__search-wrapper');
+    const searchOverlay = document.querySelector('.search-overlay');
     let searchTerm = '';
     let searchResultSelected = false;
     let searchResultsNumber = 0;
@@ -110,9 +112,14 @@
 
         // Template for a single search result suggestion
         return `<a href="${suggestion.resolvedUrl}" class="suggestion">
-                    <span class="suggestion__heading">${removeInlineElements(suggestion._highlightResult.title.value)}</span><span class="suggestion__category">Tutorials</span>
-                    ${suggestion._highlightResult.heading.value ? '<span class="suggestion__sub-heading">'+ removeInlineElements(suggestion._highlightResult.heading.value) +'</span>' : ''}
-                    <p class="suggestion__text">${htmlEntities(suggestion._highlightResult.content.value)}</p>
+                    <div class="suggestion__left">
+                        <span class="suggestion__heading">${removeInlineElements(suggestion._highlightResult.title.value)}</span>
+                        ${suggestion._highlightResult.heading.value ? '<span class="suggestion__sub-heading">'+ removeInlineElements(suggestion._highlightResult.heading.value) +'</span>' : ''}
+                        <p class="suggestion__text">${htmlEntities(suggestion._highlightResult.content.value)}</p>
+                    </div>
+                    <div class="suggestion__right">
+                        <span class="suggestion__category">Tutorials</span>
+                    </div>
                 </a>`;
     };
 
@@ -146,6 +153,19 @@
             logSearchTermNumber(searchTerm);
             logSearchTermErased();
         }
+
+        if (searchWrapper && searchOverlay) {
+            searchWrapper.classList.remove('navigation__search-wrapper--wide');
+            searchOverlay.classList.remove('search-overlay--visible');
+        }
+        
+    };
+
+    const onAutocompleteOpened = () => {
+        if (searchWrapper && searchOverlay) {
+            searchWrapper.classList.add('navigation__search-wrapper--wide');
+            searchOverlay.classList.add('search-overlay--visible');
+        }
     };
 
     const getSuggestionsSource = (hitsSource, query, callback) => {
@@ -178,6 +198,9 @@
                 },
                 displayKey: 'title',
                 templates: {
+                    header: () => {
+                        return `<div class="aa-header">${searchResultsNumber} results for '<strong>${searchTerm}</strong>'</div>`;
+                    },
                     suggestion: (suggestion) => {
                         return formatSuggestion(suggestion, urlMap);
                     },
@@ -186,6 +209,7 @@
                     }
                 }
             }])
+            .on('autocomplete:opened', onAutocompleteOpened)
             .on('autocomplete:selected', (event, suggestion, dataset, context) => {
                 onAutocompleteSelected(suggestion, context);
             })
