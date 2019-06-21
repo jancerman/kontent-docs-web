@@ -87,6 +87,10 @@
                 &:active {
                     color: #008AE1
                 }
+
+                .anchor-copy {
+                    display: none;
+                }
             }
         }
 
@@ -96,32 +100,59 @@
     }
 
     &--fixed {
-        z-index: 3000;
-        overflow: auto;
-        top: .5em;
-        bottom: 0;
-        width: 280px;
-        position: fixed;
-        margin: 0;
-        padding: 0;
+        display: none;
+    }
 
-        &.table-of-contents--top {
-            top: 108px;
+    @media (min-width: 1420px) {
+        &--fixed {
+            display: block;
+            z-index: 3000;
+            overflow: visible;
+            top: 9.5em;
+            width: 1005px;
+            position: fixed;
+            margin: 0;
+            padding: 0;
+            visibility: hidden;
+            opacity: 0;
+            transition: .25s;
+
+            h2.table-of-contents__heading {
+                padding: 0;
+            }
+
+            & > * {
+                position: absolute;
+                right: 0;
+                width: 250px;
+                top: 0;
+            }
+
+            ul.table-of-contents__list {
+                padding: 0;
+                opacity: 1 !important;
+                max-height: 5000px !important;
+                visibility: visible !important;
+                top: 2em;
+                
+                li {
+                    padding: 0;
+
+                    a {
+                        padding-left: 0;
+                        padding-right: 0;
+
+                        &.active {
+                            color: #008AE1;
+                        }
+                    }
+                }
+            }
         }
 
-        &.table-of-contents--bottom {
-            bottom: 120px;
-        }
-
-        h2.table-of-contents__heading {
-            padding: .5em .5em .5em .5em
-        }
-
-        ul.table-of-contents__list {
-            padding: 0 .5em .5em 1.5em;
-            opacity: 1 !important;
-            max-height: 5000px !important;
-            visibility: visible !important;
+        &--visible {
+            opacity: 1;
+            visibility: visible;
         }
     }
 }
