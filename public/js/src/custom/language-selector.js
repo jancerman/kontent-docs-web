@@ -226,9 +226,13 @@
             languageSelector.classList.add('language-selector--fixed');
             var label = document.createElement('div');
             label.classList.add('language-selector__label');
-    
             languageSelector.insertBefore(label, languageSelector.firstChild);
-            
+
+            var text = document.createElement('label');
+            text.classList.add('language-selector__fixed-label');
+            text.innerHTML = UIMessages && UIMessages.technologyLabel ? UIMessages.technologyLabel : 'Technology';
+            languageSelector.insertBefore(text, languageSelector.firstChild);
+
             document.querySelector('body').addEventListener('click', (e) => {
                 if (e.target && e.target.matches('.language-selector--fixed .language-selector__label')) {
                     if (languageSelector.classList.contains('language-selector--opened')) {
