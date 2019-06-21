@@ -5,15 +5,16 @@
 	}
 
 	&__answer {
+		padding: 1.25em 0 0;
 
 		&--answered {
 			.feedback__button:not(.feedback__button--active) {
-				background-color: #d6dde3;
-				border-color: #ccd6de;
+				background-color: #D5DDE3;
+				border-color: #CBD6DE;
 
 				&:hover {
-					background-color: #d6dde3;
-					border-color: #ccd6de;
+					background-color: #D5DDE3;
+					border-color: #CBD6DE;
 				}
 			}
 
@@ -27,9 +28,10 @@
 		display: inline-block;
 		color: #fff !important;
 		text-transform: uppercase;
-		padding: .5em 1em;
+		padding: 0.5em 1.675em .375em;
 		border-bottom: .25em solid;
 		text-decoration: none;
+		margin: 0 .675em 0 0;
 
 		&:hover {
 			color: #fff !important;
@@ -37,33 +39,37 @@
 
 		&--yes,
 		&--yes&--active {
-			background-color: #32a546;
-			border-color: #2c8e42;
+			background-color: #00A54B;
+			border-color: #008A3F;
 
 			&:hover {
-				background-color: #2c8e42;
+				background-color: #008A3F;
 			}
 		}
 
 		&--yes&--active {
+			background-color: #008A3F;
+
 			&:hover {
-				background-color: #32a546;
+				background-color: #008A3F;
 			}
 		}
 
 		&--no,
 		&--no&--active {
-			background-color: #e46952;
-			border-color: #cf6350;
+			background-color: #ED6A56;
+			border-color: #D55F4D;
 
 			&:hover {
-				background-color: #cf6350;
+				background-color: #D55F4D;
 			}
 		}
 
 		&--no&--active {
+			background-color: #D55F4D;
+
 			&:hover {
-				background-color: #e46952;
+				background-color: #D55F4D;
 			}
 		}
 	}
