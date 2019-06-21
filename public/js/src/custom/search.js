@@ -166,6 +166,7 @@
             searchWrapper.classList.add('navigation__search-wrapper--wide');
             searchOverlay.classList.add('search-overlay--visible');
         }
+        searchInput.focus();
     };
 
     const getSuggestionsSource = (hitsSource, query, callback) => {
@@ -187,6 +188,11 @@
             hitsPerPage: 1000
         });
 
+        let searchInputIsFocused = false;
+        if (searchInput === document.activeElement) {
+            searchInputIsFocused = true;
+        }
+
         autocomplete('#nav-search', {
                 autoselect: true,
                 openOnFocus: true,
@@ -199,7 +205,7 @@
                 displayKey: 'title',
                 templates: {
                     header: () => {
-                        return `<div class="aa-header">${searchResultsNumber} results for '<strong>${searchTerm}</strong>'</div>`;
+                        return `<div class="aa-header">${searchResultsNumber} results for '<strong>${decodeURI(searchTerm)}</strong>'</div>`;
                     },
                     suggestion: (suggestion) => {
                         return formatSuggestion(suggestion, urlMap);
@@ -214,6 +220,10 @@
                 onAutocompleteSelected(suggestion, context);
             })
             .on('autocomplete:closed', onAutocompleteClosed)
+
+            if (searchInputIsFocused) {
+                searchInput.focus();
+            }
     };
 
     const logSearchTermErased = () => {

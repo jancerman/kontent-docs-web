@@ -24,25 +24,22 @@ i {
     right: 100%;
 }
 
-@media screen and (min-width: 1024px) {
-    .search-overlay {
-        position: fixed;
-        background-color: #2D373B;
-        opacity: .35;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        z-index: -1;
-        display: none;
+.search-overlay {
+    position: fixed;
+    background-color: #2D373B;
+    opacity: .35;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+    display: none;
 
-        &--visible {
-            display: block;
-            z-index: 5999;
-        }
+    &--visible {
+        display: block;
+        z-index: 5999;
     }
 }
-
 
 .sr-only {
     position: absolute;
@@ -195,14 +192,14 @@ code {
 }
 
 .aa-header {
-    padding: .5em 1.5em;
+    padding: .5em 1.875em;
     color: #AEBCC5;
     font-size: .75em;
     text-transform: uppercase;
     letter-spacing: 1px;
 
     @media screen and (min-width: 768px) {
-        padding: 1.25em 2.43em;
+        padding: 1.25em 3.25em;
     }
 }
 
