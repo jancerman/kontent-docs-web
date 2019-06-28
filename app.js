@@ -171,7 +171,7 @@ app.use('/robots.txt', robots);
 
 app.get('/urlmap', asyncHandler(async (req, res) => {
   res.cacheControl = {
-    maxAge: 300
+    maxAge: 0
   };
   return res.json(cache.get(`urlMap_${res.locals.projectid}`));
 }));
