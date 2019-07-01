@@ -173,11 +173,13 @@
         if (affixHeadings && tableOfContentsElemFixed) {
             for (let i = 0; i < affixHeadings.length; i++) {
                 let nextHeading = affixHeadings[i + 1];
-                let position;
+                let position = 0;
 
                 if (nextHeading) {
                     position = nextHeading.getBoundingClientRect().top;
-                } else {
+                } 
+                
+                if (position === 0) {
                     let body = document.body,
                         html = document.documentElement;
                     position = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
