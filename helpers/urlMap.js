@@ -191,7 +191,7 @@ const getUrlMap = async (res, isSitemap) => {
         .getPromise();
 
     if (isSitemap) {
-        fields = ['url', 'date', 'visibility'];
+        fields = ['codename', 'url', 'date', 'visibility'];
     } else {
         fields = ['codename', 'url'];
     }
