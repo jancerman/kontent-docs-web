@@ -226,10 +226,11 @@ const richTextResolverTemplates = {
         return switcher;
     },
     codeSamples: (item) => {
-        let codeExamples = '';
+        let codeExamples = '<div class="code-samples">';
         item.code_samples.forEach(item => {
             codeExamples += richTextResolverTemplates.codeSample(item);
         });
+        codeExamples += '</div>';
 
         return codeExamples;
     },

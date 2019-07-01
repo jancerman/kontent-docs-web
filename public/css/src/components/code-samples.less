@@ -1,0 +1,32 @@
+.code-samples {
+    &__empty {
+        background-color: #F5F2F0;
+        padding: 2.5em 1em 3em;
+        text-align: center;
+    }
+
+    &__text {
+        color: #7C909B;
+        position: relative;
+        display: inline-block;
+        padding: .675em 1.1875em .675em 3.1875em;
+        white-space: normal;
+
+        &:before {
+            content: '';
+            width: 30px;
+            height: 46px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            margin-top: -23px; 
+            background-image: url('/img/empty-codeblock.png');
+
+            @media screen and (min-width: 480px) {
+                width: 38px;
+            }
+        }
+    }
+}

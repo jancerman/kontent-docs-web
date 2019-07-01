@@ -319,8 +319,44 @@
         }
     };
 
+    const findAndRemoveFromArray = (array, item) => {
+        const  index = array.indexOf(item);
+        if (index > -1) {
+          array.splice(index, 1);
+        }
+        return array;
+    };
+
+    const handleEmptyPlatforms = () => {
+        const codeBlocks = document.querySelectorAll('.code-samples');
+        const message = UIMessages && UIMessages.emptyCodeBlock ? UIMessages.emptyCodeBlock : 'We don\'t have a code sample for the selected technology.';
+
+        codeBlocks.forEach((block) => {
+            let availablePlatforms = [...block.querySelectorAll('[data-platform]')].map((item) => {
+                return item.getAttribute('data-platform');
+            });
+
+            let availableCodeBlocks = [...block.querySelectorAll('[data-platform-code]')].map((item) => {
+                return item.getAttribute('data-platform-code');
+            }); 
+
+            availableCodeBlocks.forEach((item) => {
+                availablePlatforms = findAndRemoveFromArray(availablePlatforms, item);
+            });
+
+            let emptyBlocks = '';
+            availablePlatforms.forEach((platform) => {
+                emptyBlocks += `<pre class="code-samples__empty" data-platform-code="${platform}"><div class="code-samples__text">${message}</div></pre>`;
+                block.querySelector(`[data-platform="${platform}"]`).classList.add('language-selector__empty');
+            });
+
+            block.innerHTML = block.innerHTML + emptyBlocks;
+        });
+    };
+
     cloneLanguageSelectorToCodeBlocks();
     cloneLanguageSelectorToFixed();
+    handleEmptyPlatforms();
     handleFixedSelector();
     window.addEventListener('scroll', handleFixedSelector, supportsPassive ? { passive: true } : false);
     selectLanguage();
