@@ -325,6 +325,21 @@ body {
     }
   }
 
+  [class*="ResponseDetailsWrap"] {
+    [class*="PropertiesTable"] {
+      width: 100%;
+      margin-left: 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    [class*="UnderlinedHeader"] {
+      padding: 0 2em;
+    }
+  }
+
   [class*="ResponsesHeader"] {
     font-style: italic;
     padding: 2em 0 1em;
@@ -386,32 +401,27 @@ body {
 
   [class*="ServerRelativeURL"] {
     position: relative;
-
-    &:before {
-      content: 'See full URL';
-      color: #7C909B;
-      text-transform: uppercase;
-      font-size: 11px;
-      background-color: #1A1F21;
-      display: inline-block;
-      position: absolute;
-      top: 0;
-      right: .375em;
-      font-family: Source Sans Pro, Helvetica, Arial, sans-serif;
-      transition: .25s background-color;
-    }
   }
 
   [class*="EndpointInfo"] {
     transition: .25s background-color;
+    background-color: #1A1F21;
 
     &:hover {
       background-color: #445055;
 
-      [class*="ServerRelativeURL"] {
-        &:before {
-          background-color: #445055;
-        }
+      .see-full-url {
+        background-color: #445055;
+      }
+    }
+
+    [class*="ServerRelativeURL"] {
+      color: #F3F6F7;
+    }
+
+    [class*="ShelfIcon"] {
+      polygon {
+        fill: #f1f1f1;
       }
     }
   }
@@ -428,31 +438,25 @@ body {
     }
   }
 
-  [class*="RightPanelHeader"] {
-    display: block;
-    font-size: 1.17em;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: 700;
+  [class*="SecurityRequirementAndWrap"] {
+    a {
+      font-weight: 400;
+      text-decoration: underline;
+    }
   }
 
-  [class*="InnerPropertiesWrap"] {
-    background-color: #E3E9EC !important;
-    
-    [class*=PropertiesTable] {
-      background-color: #E3E9EC !important;
-      margin-left: 0;
-      width: 100%;
-    }
+  .see-full-url {
+    color: #7C909B;
+    text-transform: uppercase;
+    font-size: 11px;
+    background-color: #1A1F21;
+    display: inline-block;
+    font-family: Source Sans Pro, Helvetica, Arial, sans-serif;
+    transition: .25s background-color;
+    padding: 0 .5em;
+  }
 
-    [class*="InnerPropertiesWrap"] {
-      background-color: #F3F6F7 !important;
-      
-      [class*=PropertiesTable] {
-        background-color: #F3F6F7 !important;
-      }
-    }
+  [class*="ServersOverlay"] {
+    cursor: default;
   }
 }

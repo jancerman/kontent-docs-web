@@ -8,6 +8,7 @@ const general = '--options';
 
 const options = [
     `${general}.disableSearch=true`,
+    `${general}.pathInMiddlePanel=true`,
     `${spacing}.unit=4`,
     `${colors}.primary.main=#2D373B`,
     `${colors}.responses.success.color=#00A54B`,
