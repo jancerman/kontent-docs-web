@@ -65,7 +65,7 @@
     }
 
     ul&__list {
-        padding: 0 0 0 1em;
+        padding: 0;
         background-color: #fff;
 
         li {
@@ -80,16 +80,39 @@
                 color: #7C909B;
                 margin: 0 0 .125em;
                 display: block;
-                padding: .125em .675em;
+                padding: .125em 0 .125em 1em;
                 line-height: 1.375em;
-
-                &:hover,
-                &:active {
-                    color: #008AE1
-                }
+                text-decoration: none;
+                position: relative;
 
                 .anchor-copy {
                     display: none;
+                }
+
+                &:before {
+                    content: '';
+                    top: .125em;
+                    left: 0;
+                    bottom: .125em;
+                    width: .25em;
+                    position: absolute;
+                    transition: .25s background-color;
+                }
+
+                &:hover {
+                    color: #7C909B;
+                    text-decoration: underline;
+                    
+                    &:before {
+                        background-color: #ED6A56;
+                    }
+                }
+
+                &.active,
+                &.active:hover {
+                    &:before {
+                        background-color: #008AE1;
+                    }
                 }
             }
         }
@@ -108,7 +131,7 @@
             display: block;
             z-index: 3000;
             overflow: visible;
-            top: 9.5em;
+            top: 3.75em;
             width: 1005px;
             position: fixed;
             margin: 0;
@@ -116,6 +139,10 @@
             visibility: hidden;
             opacity: 0;
             transition: .25s;
+
+            .language-selector--fixed + & {
+                top: 9.5em;
+            }
 
             h2.table-of-contents__heading {
                 padding: 0;
@@ -134,19 +161,6 @@
                 max-height: 5000px !important;
                 visibility: visible !important;
                 top: 2em;
-                
-                li {
-                    padding: 0;
-
-                    a {
-                        padding-left: 0;
-                        padding-right: 0;
-
-                        &.active {
-                            color: #008AE1;
-                        }
-                    }
-                }
             }
         }
 

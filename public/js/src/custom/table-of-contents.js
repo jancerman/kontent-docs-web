@@ -14,7 +14,7 @@
         let headings = articleContent.querySelectorAll('h2:not(.table-of-contents__heading):not(.feedback__heading), h3, h4');
 
         headings.forEach((item) => {
-            let anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig,'').replace(/\W/g,'-');
+            let anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/\W/g, '-');
             item.setAttribute('id', `a-${anchorName}`);
             item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip"></span></span>`;
         });
@@ -53,7 +53,10 @@
             });
 
             setTimeout(() => {
-                document.getElementById(hash).scrollIntoView({ block: 'start',  behavior: 'smooth' });
+                document.getElementById(hash).scrollIntoView({
+                    block: 'start',
+                    behavior: 'smooth'
+                });
             }, 200);
         }
     };
@@ -91,11 +94,14 @@
     // Scroll to appropriate anchor when a table of content items gets clicked
     const bindSmothScroll = () => {
         const tocs = document.querySelectorAll('.table-of-contents__list');
-        for(let i = 0; i < tocs.length; i++) {
+        for (let i = 0; i < tocs.length; i++) {
             tocs[i].addEventListener('click', (event) => {
-                if(event.target && event.target.nodeName === 'A') {
+                if (event.target && event.target.nodeName === 'A') {
                     event.preventDefault();
-                    document.querySelector(event.target.getAttribute('href')).scrollIntoView({ block: 'start',  behavior: 'smooth' });
+                    document.querySelector(event.target.getAttribute('href')).scrollIntoView({
+                        block: 'start',
+                        behavior: 'smooth'
+                    });
                     history.replaceState(undefined, undefined, `${event.target.getAttribute('href')}`);
                 }
             });
@@ -168,29 +174,63 @@
         }
     };
 
+    const arrayMin = (arr) =>{
+        let len = arr.length;
+        let min = Infinity;
+        let minIndex = 0;
+
+        while (len--) {
+            if (arr[len][0] < min) {
+                min = arr[len][0];
+                minIndex = len;
+            }
+        }
+
+        return arr[minIndex];
+    };
+
+    const filterNonHiddenHeadings = (headings) => {
+        let nonHidden = [];
+
+        for (let i = 0; i < headings.length; i++) {
+            if (!headings[i].parentElement.classList.contains('hidden')) {
+                nonHidden.push(headings[i]);
+            }
+        }
+
+        return nonHidden;
+    };
+
+    const getNextHeadingPosition = (nextHeading) => {
+        let position;
+
+        if (nextHeading) {
+            position = Math.floor(nextHeading.getBoundingClientRect().top);
+        } else {
+            let body = document.body,
+                html = document.documentElement;
+            position = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+        }
+
+        return position;
+    };
+
     const affix = () => {
         let headingsPosition = [];
         if (affixHeadings && tableOfContentsElemFixed) {
-            for (let i = 0; i < affixHeadings.length; i++) {
-                let nextHeading = affixHeadings[i + 1];
-                let position = 0;
+            let affixHeadingsLocal = filterNonHiddenHeadings(affixHeadings);
 
-                if (nextHeading) {
-                    position = nextHeading.getBoundingClientRect().top;
-                } 
-                
-                if (position === 0) {
-                    let body = document.body,
-                        html = document.documentElement;
-                    position = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-                }
+            for (let i = 0; i < affixHeadingsLocal.length; i++) {
+                 
+                let nextHeading = affixHeadingsLocal[i + 1];
+                let position = getNextHeadingPosition(nextHeading);
 
-                headingsPosition.push([position, affixHeadings[i].id]);
+                headingsPosition.push([position, affixHeadingsLocal[i].id]);
             }
 
             let contentOffset = 128; // how many pixels before the heading is right on the top of viewport should the affix nav item get active
             headingsPosition = headingsPosition.filter((item) => item[0] >= contentOffset);
-            let topHeading = headingsPosition[0];
+            let topHeading = arrayMin(headingsPosition);
 
             if (topHeading) {
                 let active = tableOfContentsElemFixed.querySelector(`.active`);
@@ -204,7 +244,6 @@
                     futureActive.classList.add('active');
                 }
             }
-            
         }
     };
 
@@ -215,12 +254,16 @@
             cloneToFixed();
             bindSmothScroll();
             handleFixed();
-            window.addEventListener('scroll', handleFixed, supportsPassive ? { passive: true } : false);
+            window.addEventListener('scroll', handleFixed, supportsPassive ? {
+                passive: true
+            } : false);
             anchorOnLoad();
             toggleItemsFromWithinContentChunks();
             copyAnchorClipboard();
             affix();
-            window.addEventListener('scroll', affix, supportsPassive ? { passive: true } : false);
+            window.addEventListener('scroll', affix, supportsPassive ? {
+                passive: true
+            } : false);
         }, 0);
     }
 })();

@@ -18,6 +18,8 @@
     let searchResultSelected = false;
     let searchResultsNumber = 0;
     let searchInput = document.querySelector('#nav-search');
+    let isClampSupported = CSS.supports('-webkit-line-clamp', '2');
+    let clampDelay = 0;
 
     // Get injected KC API details 
     const projectIdUrl = helper.getParameterByName('projectid');
@@ -36,7 +38,7 @@
     const arrowPress = (e) => {
         e = e || window.event;
         if (e.keyCode == '38' || e.keyCode == '40' || e.keyCode == '37' || e.keyCode == '39') {
-            searchInput.value = decodeURI(searchTerm);
+            searchInput.value = decodeURIComponent(searchTerm);
         }
     };
 
@@ -134,7 +136,7 @@
 
     const onAutocompleteSelected = (suggestion, context) => {
         searchResultSelected = true;
-        searchInput.value = decodeURI(searchTerm);
+        searchInput.value = decodeURIComponent(searchTerm);
 
         logSearchTermSelected(searchTerm, suggestion.resolvedUrl);
         logSearchTermNumber(searchTerm);
@@ -146,6 +148,20 @@
 
         // Change the page (for example, when enter key gets hit)
         window.location.assign(`${suggestion.resolvedUrl}`);
+    };
+
+    const clampItem = (item) => {
+        setTimeout(() => {
+            $clamp(item, {clamp: 2});
+        }, clampDelay);
+    };
+
+    const onAutocompleteUpdated = () => {
+        let searchSummaries = document.querySelectorAll('.suggestion__text');
+
+        for (var i = 0; i < searchSummaries.length; i++) {
+            clampItem(searchSummaries[i]);
+        }
     };
 
     const onAutocompleteClosed = () => {
@@ -167,6 +183,16 @@
             searchOverlay.classList.add('search-overlay--visible');
         }
         searchInput.focus();
+
+        if (searchTerm !== '' && !isClampSupported && searchWrapper) {
+            clampDelay = 250;
+
+            setTimeout(() => {
+                clampDelay = 0;
+            }, 250);
+        } else {
+            clampDelay = 0;
+        }
     };
 
     const getSuggestionsSource = (hitsSource, query, callback) => {
@@ -205,7 +231,7 @@
                 displayKey: 'title',
                 templates: {
                     header: () => {
-                        return `<div class="aa-header">${searchResultsNumber} results for '<strong>${decodeURI(searchTerm)}</strong>'</div>`;
+                        return `<div class="aa-header">${searchResultsNumber} results for '<strong>${decodeURIComponent(searchTerm)}</strong>'</div>`;
                     },
                     suggestion: (suggestion) => {
                         return formatSuggestion(suggestion, urlMap);
@@ -220,6 +246,9 @@
                 onAutocompleteSelected(suggestion, context);
             })
             .on('autocomplete:closed', onAutocompleteClosed)
+            .on('autocomplete:updated', () => {
+                onAutocompleteUpdated();
+            })
 
             if (searchInputIsFocused) {
                 searchInput.focus();
@@ -230,7 +259,7 @@
         window.dataLayer.push({
             'event': 'event',
             'eventCategory': 'search--used',
-            'eventAction': decodeURI(searchTerm),
+            'eventAction': decodeURIComponent(searchTerm),
             'eventLabel': 'Not clicked'
         });
     };
@@ -239,7 +268,7 @@
         window.dataLayer.push({
             'event': 'event',
             'eventCategory': 'search--searched-result',
-            'eventAction': decodeURI(term),
+            'eventAction': decodeURIComponent(term),
             'eventLabel': searchResultsNumber
         });
     };
@@ -248,7 +277,7 @@
         window.dataLayer.push({
             'event': 'event',
             'eventCategory': 'search--used',
-            'eventAction': decodeURI(term),
+            'eventAction': decodeURIComponent(term),
             'eventLabel': url
         });
     };
