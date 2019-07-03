@@ -178,7 +178,7 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
 
 // API Reference
 const prerender = () => {
-  const yaml = 'https://gist.githubusercontent.com/jancerman/248759d3ae8b088dee38c983adca949f/raw/8ac4355e098ae5f38d3e581f91524bd563426a32/OHP%20OAS%20Proto.yaml';// https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/8c47c5270770ffe1f67898affb994da6047acb4f/kcd%2520proto%2520all%2520oas3.yml
+  const yaml = 'https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/8c47c5270770ffe1f67898affb994da6047acb4f/kcd%2520proto%2520all%2520oas3.yml';// https://gist.githubusercontent.com/jancerman/248759d3ae8b088dee38c983adca949f/raw/8ac4355e098ae5f38d3e581f91524bd563426a32/OHP%20OAS%20Proto.yaml
   const options = prerenderOptions.join(' ');
   const template = './views/apiReference/redoc/template.hbs';
 
@@ -192,9 +192,10 @@ const prerender = () => {
   );
 };
 
-prerender();
-
-app.use('/api-reference', apiReference);
+app.use('/api-reference', (req, res, next) => {
+  prerender();
+  return next();
+}, apiReference);
 // End of API Reference
 
 app.use('/', tutorials);
