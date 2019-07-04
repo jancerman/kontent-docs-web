@@ -4,8 +4,9 @@ urlset(xmlns='http://www.sitemaps.org/schemas/sitemap/0.9', xmlns:xhtml='http://
         - var isExcluded = false;
         - if (item.visibility && item.visibility.length && item.visibility.filter(elem => elem.codename === 'excluded_from_search').length) { isExcluded = true }
         if (!isExcluded)
-            url
-                loc
-                    | !{req.protocol + '://' + req.get('Host') + item.url}
-                lastmod
-                    | !{moment(item.date).format("YYYY-MM-DD")}
+            if (item.type !== 'topic')
+                url
+                    loc
+                        | !{req.protocol + '://' + req.get('Host') + item.url}
+                    lastmod
+                        | !{moment(item.date).format("YYYY-MM-DD")}
