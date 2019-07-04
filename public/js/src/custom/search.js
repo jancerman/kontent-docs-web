@@ -156,13 +156,42 @@
         }, clampDelay);
     };
 
-    const onAutocompleteUpdated = () => {
-        let searchSummaries = document.querySelectorAll('.suggestion__text');
+    let prevSearchTerm = searchTerm;
+    let searchScrolled = false;
 
-        for (var i = 0; i < searchSummaries.length; i++) {
-            clampItem(searchSummaries[i]);
-        }
+    const onAutocompleteUpdated = () => {
+        setTimeout(() => {
+            document.querySelector('.aa-dropdown-menu').scrollTop = 0; // Set scroll position to top
+            let searchSummaries = document.querySelectorAll('.suggestion__text');
+            let length = searchSummaries.length <= 4 ? searchSummaries.length : 4;
+            prevSearchTerm = searchTerm;
+            searchScrolled = false;
+
+            // Clamp only items that are visible without scrolling for performance reasons.
+            for (var i = 0; i < length; i++) {  
+                clampItem(searchSummaries[i]);
+            }
+        }, 0);
     };
+
+    const optimizeClamping = () => {
+        document.querySelector('.aa-dropdown-menu').addEventListener('scroll', () => {
+            setTimeout(() => {
+                if (prevSearchTerm === searchTerm && !searchScrolled) {
+                    searchScrolled = true;
+                    let searchSummaries = document.querySelectorAll('.suggestion__text');
+                    let length = searchSummaries.length <= 4 ? searchSummaries.length : 4;
+        
+                    for (var i = length; i < searchSummaries.length; i++) {  
+                        clampItem(searchSummaries[i]);
+                    }
+                }
+            }, 0);
+        }, supportsPassive ? {
+            passive: true
+        } : false);
+    };
+
 
     const onAutocompleteClosed = () => {
         if (searchTerm !== '' && !searchResultSelected) {
@@ -246,9 +275,7 @@
                 onAutocompleteSelected(suggestion, context);
             })
             .on('autocomplete:closed', onAutocompleteClosed)
-            .on('autocomplete:updated', () => {
-                onAutocompleteUpdated();
-            })
+            .on('autocomplete:updated', onAutocompleteUpdated)
 
             if (searchInputIsFocused) {
                 searchInput.focus();
@@ -288,6 +315,7 @@
         // Get urlMap and init the autocomplete
         helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
             initAutocomplete(urlMap);
+            optimizeClamping();
         }, 'json');
     };
 
