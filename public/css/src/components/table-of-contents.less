@@ -126,13 +126,14 @@
         display: none;
     }
 
-    @media (min-width: 1420px) {
+    @media (min-width: 1150px) {
         &--fixed {
+            max-width: 70.5% !important;
             display: block;
             z-index: 3000;
             overflow: visible;
             top: 3.75em;
-            width: 1005px;
+            width: 920px;
             position: fixed;
             margin: 0;
             padding: 0;
@@ -151,7 +152,7 @@
             & > * {
                 position: absolute;
                 right: 0;
-                width: 250px;
+                width: 170px;
                 top: 0;
             }
 
@@ -167,6 +168,16 @@
         &--visible {
             opacity: 1;
             visibility: visible;
+        }
+    }
+
+    @media (min-width: 1420px) {
+        &--fixed {
+            width: 1005px;
+
+            & > * {
+                width: 250px;
+            }
         }
     }
 }
