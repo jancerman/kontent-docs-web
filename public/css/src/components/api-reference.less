@@ -460,3 +460,72 @@ body {
     cursor: default;
   }
 }
+
+.infobar {
+  background-color: #283033;
+
+  &__languages {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  &__lang {
+    line-height: 1.375em;
+    display: inline-block;
+    padding: 0 0.5em !important;
+    border: 0.125em solid #7C909B;
+    color: #7C909B;
+
+    &:before {
+      display: none;
+    }
+  }
+
+  &__copy {
+    display: none;
+  }
+}
+
+::-webkit-scrollbar-corner {
+  background: #171c1e;
+}
+
+figure {
+  margin: 0 0 1.5em;
+
+  figcaption {
+    color: #58666D;
+    font-style: italic;
+    line-height: 1.25em;
+  }
+}
+
+.article {
+  &__add-lightbox {
+    cursor: pointer;
+  }
+
+  &__image-border {
+    border: .25em solid #E3E9EC;
+  }
+
+  img&__image {
+    @media screen and (min-width: 768px) {
+      &--100 {
+        max-width: 75% !important;
+      }
+
+      &--75 {
+        max-width: 56.25% !important;
+      }
+
+      &--50 {
+        max-width: 37.5% !important;
+      }
+
+      &--25 {
+        max-width: 18.75% !important;
+      }
+    }
+  }
+}
