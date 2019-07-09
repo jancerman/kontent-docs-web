@@ -112,17 +112,20 @@ const getResponse = async (query, config) => {
 const requestDelivery = async (config) => {
     defineDeliveryConfig(config);
     const query = defineQuery(deliveryConfig, config);
+    let queryConfigObject = {
+        waitForLoadingNewContent: true
+    };
 
     if (config.resolveRichText) {
-        query.queryConfig({
-            richTextResolver: (item) => {
-                return resolveRichText(item, config);
-            },
-            linkResolver: (link) => {
-                return resolveLink(link, config);
-            }
-        });
+        queryConfigObject.richTextResolver = (item) => {
+            return resolveRichText(item, config);
+        };
+        queryConfigObject.linkResolver = (link) => {
+            return resolveLink(link, config);
+        };
     }
+
+    query.queryConfig(queryConfigObject);
 
     const response = await getResponse(query, config);
     return response ? response.items : response;
