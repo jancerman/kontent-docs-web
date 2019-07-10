@@ -8,6 +8,7 @@ const general = '--options';
 
 const options = [
     `${general}.disableSearch=true`,
+    `${general}.pathInMiddlePanel=true`,
     `${spacing}.unit=4`,
     `${colors}.primary.main=#2D373B`,
     `${colors}.responses.success.color=#00A54B`,
@@ -30,7 +31,6 @@ const options = [
     `${typography}.fontFamily="Source Sans Pro, Helvetica, Arial, sans-serif"`,
     `${typography}.fontSize=1em`,
     `${typography}.fontWeightBold=700`,
-    `${typography}.smoothing=none`,
     `${typography}.headings.fontFamily="Source Sans Pro, Helvetica, Arial, sans-serif"`,
     `${typography}.headings.fontWeight=400`,
     `${typography}.headings.lineHeight=1.25em`,

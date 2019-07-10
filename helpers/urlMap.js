@@ -45,6 +45,9 @@ const getMapItem = (data) => {
             case 'visibility':
                 item.visibility = data.visibility;
                 break;
+            case 'type':
+                item.type = data.type;
+                break;
         };
     });
 
@@ -75,10 +78,11 @@ const handleLangForMultiplatformArticle = (queryString, item) => {
 
 const addItemToMap = (settings) => {
     settings.urlMap.push(getMapItem({
-      codename: settings.item.system.codename,
-      url: `/${settings.url.join('/')}${settings.queryString}`,
-      date: settings.item.system.lastModified,
-      visibility: settings.item.visibility && settings.item.visibility.value.length ? settings.item.visibility.value : null
+        codename: settings.item.system.codename,
+        url: `/${settings.url.join('/')}${settings.queryString}`,
+        date: settings.item.system.lastModified,
+        visibility: settings.item.visibility && settings.item.visibility.value.length ? settings.item.visibility.value : null,
+        type: settings.type
     }, fields));
 
     return settings.urlMap;
@@ -113,7 +117,7 @@ const handleNode = (settings) => {
 
     // Add url to map
     if (typeLevels[settings.item.system.type]) {
-        settings.urlMap = addItemToMap({ urlMap: settings.urlMap, item: settings.item, url: settings.url, queryString: settings.queryString });
+        settings.urlMap = addItemToMap({ urlMap: settings.urlMap, item: settings.item, url: settings.url, queryString: settings.queryString, type: settings.item.system.type });
     }
 
     settings.queryString = '';
@@ -191,7 +195,7 @@ const getUrlMap = async (res, isSitemap) => {
         .getPromise();
 
     if (isSitemap) {
-        fields = ['url', 'date', 'visibility'];
+        fields = ['codename', 'url', 'date', 'visibility', 'type'];
     } else {
         fields = ['codename', 'url'];
     }

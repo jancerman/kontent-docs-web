@@ -12,10 +12,14 @@
     const client = algoliasearch(searchAPI.appid, searchAPI.apikey)
     const tutorials = client.initIndex(searchAPI.indexname);
     const url = window.location;
+    const searchWrapper = document.querySelector('.navigation__search-wrapper');
+    const searchOverlay = document.querySelector('.search-overlay');
     let searchTerm = '';
     let searchResultSelected = false;
     let searchResultsNumber = 0;
     let searchInput = document.querySelector('#nav-search');
+    let isClampSupported = CSS.supports('-webkit-line-clamp', '2');
+    let clampDelay = 0;
 
     // Get injected KC API details 
     const projectIdUrl = helper.getParameterByName('projectid');
@@ -34,7 +38,7 @@
     const arrowPress = (e) => {
         e = e || window.event;
         if (e.keyCode == '38' || e.keyCode == '40' || e.keyCode == '37' || e.keyCode == '39') {
-            searchInput.value = decodeURI(searchTerm);
+            searchInput.value = decodeURIComponent(searchTerm);
         }
     };
 
@@ -110,9 +114,14 @@
 
         // Template for a single search result suggestion
         return `<a href="${suggestion.resolvedUrl}" class="suggestion">
-                    <span class="suggestion__heading">${removeInlineElements(suggestion._highlightResult.title.value)}</span><span class="suggestion__category">Tutorials</span>
-                    ${suggestion._highlightResult.heading.value ? '<span class="suggestion__sub-heading">'+ removeInlineElements(suggestion._highlightResult.heading.value) +'</span>' : ''}
-                    <p class="suggestion__text">${htmlEntities(suggestion._highlightResult.content.value)}</p>
+                    <div class="suggestion__left">
+                        <span class="suggestion__heading">${removeInlineElements(suggestion._highlightResult.title.value)}</span>
+                        ${suggestion._highlightResult.heading.value ? '<span class="suggestion__sub-heading">'+ removeInlineElements(suggestion._highlightResult.heading.value) +'</span>' : ''}
+                        <p class="suggestion__text">${htmlEntities(suggestion._highlightResult.content.value)}</p>
+                    </div>
+                    <div class="suggestion__right">
+                        <span class="suggestion__category">Tutorials</span>
+                    </div>
                 </a>`;
     };
 
@@ -127,7 +136,7 @@
 
     const onAutocompleteSelected = (suggestion, context) => {
         searchResultSelected = true;
-        searchInput.value = decodeURI(searchTerm);
+        searchInput.value = decodeURIComponent(searchTerm);
 
         logSearchTermSelected(searchTerm, suggestion.resolvedUrl);
         logSearchTermNumber(searchTerm);
@@ -141,10 +150,77 @@
         window.location.assign(`${suggestion.resolvedUrl}`);
     };
 
+    const clampItem = (item) => {
+        setTimeout(() => {
+            $clamp(item, {clamp: 2});
+        }, clampDelay);
+    };
+
+    let prevSearchTerm = searchTerm;
+    let searchScrolled = false;
+
+    const onAutocompleteUpdated = () => {
+        setTimeout(() => {
+            document.querySelector('.aa-dropdown-menu').scrollTop = 0; // Set scroll position to top
+            let searchSummaries = document.querySelectorAll('.suggestion__text');
+            let length = searchSummaries.length <= 4 ? searchSummaries.length : 4;
+            prevSearchTerm = searchTerm;
+            searchScrolled = false;
+
+            // Clamp only items that are visible without scrolling for performance reasons.
+            for (var i = 0; i < length; i++) {  
+                clampItem(searchSummaries[i]);
+            }
+        }, 0);
+    };
+
+    const optimizeClamping = () => {
+        document.querySelector('.aa-dropdown-menu').addEventListener('scroll', () => {
+            setTimeout(() => {
+                if (prevSearchTerm === searchTerm && !searchScrolled) {
+                    searchScrolled = true;
+                    let searchSummaries = document.querySelectorAll('.suggestion__text');
+                    let length = searchSummaries.length <= 4 ? searchSummaries.length : 4;
+        
+                    for (var i = length; i < searchSummaries.length; i++) {  
+                        clampItem(searchSummaries[i]);
+                    }
+                }
+            }, 0);
+        }, supportsPassive ? {
+            passive: true
+        } : false);
+    };
+
+
     const onAutocompleteClosed = () => {
         if (searchTerm !== '' && !searchResultSelected) {
             logSearchTermNumber(searchTerm);
             logSearchTermErased();
+        }
+
+        if (searchWrapper && searchOverlay) {
+            searchWrapper.classList.remove('navigation__search-wrapper--wide');
+            searchOverlay.classList.remove('search-overlay--visible');
+        }
+        
+    };
+
+    const onAutocompleteOpened = () => {
+        if (searchWrapper && searchOverlay) {
+            searchWrapper.classList.add('navigation__search-wrapper--wide');
+            searchOverlay.classList.add('search-overlay--visible');
+        }
+        searchInput.focus();
+
+        if (searchTerm !== '' && !isClampSupported && searchWrapper) {
+            clampDelay = 250;
+
+            setTimeout(() => {
+                clampDelay = 0;
+            }, 250);
+        } else {
+            clampDelay = 0;
         }
     };
 
@@ -152,7 +228,6 @@
         hitsSource(query, (suggestions) => {
             searchResultsNumber = suggestions.length;
             let formattedSuggestions = [];
-            console.log(suggestions);
 
             for (let i = 0; i < suggestions.length; i++) {
                 formattedSuggestions.push(formatSuggestionContent(suggestions[i]))
@@ -168,6 +243,11 @@
             hitsPerPage: 1000
         });
 
+        let searchInputIsFocused = false;
+        if (searchInput === document.activeElement) {
+            searchInputIsFocused = true;
+        }
+
         autocomplete('#nav-search', {
                 autoselect: true,
                 openOnFocus: true,
@@ -179,6 +259,9 @@
                 },
                 displayKey: 'title',
                 templates: {
+                    header: () => {
+                        return `<div class="aa-header">${searchResultsNumber} results for '<strong>${decodeURIComponent(searchTerm)}</strong>'</div>`;
+                    },
                     suggestion: (suggestion) => {
                         return formatSuggestion(suggestion, urlMap);
                     },
@@ -187,17 +270,23 @@
                     }
                 }
             }])
+            .on('autocomplete:opened', onAutocompleteOpened)
             .on('autocomplete:selected', (event, suggestion, dataset, context) => {
                 onAutocompleteSelected(suggestion, context);
             })
             .on('autocomplete:closed', onAutocompleteClosed)
+            .on('autocomplete:updated', onAutocompleteUpdated)
+
+            if (searchInputIsFocused) {
+                searchInput.focus();
+            }
     };
 
     const logSearchTermErased = () => {
         window.dataLayer.push({
             'event': 'event',
             'eventCategory': 'search--used',
-            'eventAction': decodeURI(searchTerm),
+            'eventAction': decodeURIComponent(searchTerm),
             'eventLabel': 'Not clicked'
         });
     };
@@ -206,7 +295,7 @@
         window.dataLayer.push({
             'event': 'event',
             'eventCategory': 'search--searched-result',
-            'eventAction': decodeURI(term),
+            'eventAction': decodeURIComponent(term),
             'eventLabel': searchResultsNumber
         });
     };
@@ -215,7 +304,7 @@
         window.dataLayer.push({
             'event': 'event',
             'eventCategory': 'search--used',
-            'eventAction': decodeURI(term),
+            'eventAction': decodeURIComponent(term),
             'eventLabel': url
         });
     };
@@ -226,6 +315,7 @@
         // Get urlMap and init the autocomplete
         helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
             initAutocomplete(urlMap);
+            optimizeClamping();
         }, 'json');
     };
 

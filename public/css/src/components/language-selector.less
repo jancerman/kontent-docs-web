@@ -132,6 +132,18 @@
             &--active {
                 background-color: #8b9ba6;
             }
+
+            &.language-selector__empty {
+                color: #c5cbcd;
+            }
+
+            &.language-selector__empty:hover {
+                color: #eaeaea;
+            }
+
+            &--active.language-selector__empty {
+                color: #b2bec4;
+            }
         }
     }
 
@@ -139,6 +151,7 @@
     &--fixed {
         display: none;
         font-size: 1em;
+        z-index: 4000;;
 
         @media (min-width: 1150px) {
             display: block;
@@ -161,6 +174,7 @@
                 box-sizing: border-box;
                 padding: 0.125em .875em;
                 cursor: pointer;
+                top: 1.75em;
 
                 &:before {
                     font-family: 'kentico-icons';
@@ -178,7 +192,7 @@
                 width: 165px;
                 position: absolute;
                 right: 0;
-                top: 2.125em;
+                top: 3.875em;
                 background-color: #f3f6f7;
                 visibility: hidden;
                 opacity: 0;
@@ -214,6 +228,17 @@
                 &--active {
                     background-color: #378de1;
                 }
+            }
+
+            .language-selector__fixed-label {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 165px;
+                font-size: .875em;
+                color: #AEBCC5;
+                text-transform: uppercase;
+                letter-spacing: 1px;
             }
         }
     }

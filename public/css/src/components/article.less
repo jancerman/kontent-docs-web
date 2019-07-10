@@ -8,6 +8,17 @@
 	&__left {
         @media screen and (min-width: 768px) {
             width: 250px;
+            position: relative;
+
+            &:after {
+                content: '';
+                width: 1px;
+                position: absolute;
+                top: -3.75em;
+                bottom: -6em;
+                right: -.25em;
+                background-color: #E3E9EC;
+            }
         }
 
         @media screen and (min-width: 1024px) {

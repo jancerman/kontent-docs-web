@@ -325,6 +325,21 @@ body {
     }
   }
 
+  [class*="ResponseDetailsWrap"] {
+    [class*="PropertiesTable"] {
+      width: 100%;
+      margin-left: 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    [class*="UnderlinedHeader"] {
+      padding: 0 2em;
+    }
+  }
+
   [class*="ResponsesHeader"] {
     font-style: italic;
     padding: 2em 0 1em;
@@ -386,32 +401,130 @@ body {
 
   [class*="ServerRelativeURL"] {
     position: relative;
-
-    &:before {
-      content: 'See full URL';
-      color: #7C909B;
-      text-transform: uppercase;
-      font-size: 11px;
-      background-color: #1A1F21;
-      display: inline-block;
-      position: absolute;
-      top: 0;
-      right: .375em;
-      font-family: Source Sans Pro, Helvetica, Arial, sans-serif;
-      transition: .25s background-color;
-    }
   }
 
   [class*="EndpointInfo"] {
     transition: .25s background-color;
+    background-color: #1A1F21;
 
     &:hover {
       background-color: #445055;
 
-      [class*="ServerRelativeURL"] {
-        &:before {
-          background-color: #445055;
-        }
+      .see-full-url {
+        background-color: #445055;
+      }
+    }
+
+    [class*="ServerRelativeURL"] {
+      color: #F3F6F7;
+    }
+
+    [class*="ShelfIcon"] {
+      polygon {
+        fill: #f1f1f1;
+      }
+    }
+  }
+
+  .oneOf {
+    background-color: #F3F6F7;
+    margin-left: -2em;
+    width: calc(100% + 4em);
+    padding: 1em 2em 0.75em;
+
+    [class*="OneOfLabel"] {
+      font-family: Source Sans Pro, Helvetica, Arial, sans-serif;
+      font-weight: 400;
+    }
+  }
+
+  [class*="SecurityRequirementAndWrap"] {
+    a {
+      font-weight: 400;
+      text-decoration: underline;
+    }
+  }
+
+  .see-full-url {
+    color: #7C909B;
+    text-transform: uppercase;
+    font-size: 11px;
+    background-color: #1A1F21;
+    display: inline-block;
+    font-family: Source Sans Pro, Helvetica, Arial, sans-serif;
+    transition: .25s background-color;
+    padding: 0 .5em;
+  }
+
+  [class*="ServersOverlay"] {
+    cursor: default;
+  }
+}
+
+.infobar {
+  background-color: #283033;
+
+  &__languages {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  &__lang {
+    line-height: 1.375em;
+    display: inline-block;
+    padding: 0 0.5em !important;
+    border: 0.125em solid #7C909B;
+    color: #7C909B;
+
+    &:before {
+      display: none;
+    }
+  }
+
+  &__copy {
+    display: none;
+  }
+}
+
+::-webkit-scrollbar-corner {
+  background: #171c1e;
+}
+
+figure {
+  margin: 0 0 1.5em;
+
+  figcaption {
+    color: #58666D;
+    font-style: italic;
+    line-height: 1.25em;
+  }
+}
+
+.article {
+  &__add-lightbox {
+    cursor: pointer;
+  }
+
+  &__image-border {
+    border: .25em solid #E3E9EC;
+  }
+
+  img&__image {
+    @media screen and (min-width: 768px) {
+      &--100 {
+        max-width: 75% !important;
+      }
+
+      &--75 {
+        max-width: 56.25% !important;
+      }
+
+      &--50 {
+        max-width: 37.5% !important;
+      }
+
+      &--25 {
+        max-width: 18.75% !important;
       }
     }
   }
