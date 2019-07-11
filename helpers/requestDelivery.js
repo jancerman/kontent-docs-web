@@ -41,6 +41,7 @@ const defineQuery = (deliveryConfig, config) => {
     let query = deliveryClient.items()
 
         if (config.type) { query.type(config.type); }
+        if (config.types) { query.types(config.types); }
         if (config.codename) { query.equalsFilter('system.codename', config.codename); }
         if (config.depth) { query.depthParameter(config.depth); }
         if (config.slug) { query.equalsFilter('elements.url', config.slug); }

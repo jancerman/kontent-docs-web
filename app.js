@@ -26,6 +26,7 @@ const redirectUrls = require('./routes/redirectUrls');
 const previewUrls = require('./routes/previewUrls');
 const cacheInvalidate = require('./routes/cacheInvalidate');
 const apiReference = require('./routes/apiReference');
+const reference = require('./routes/reference');
 const error = require('./routes/error');
 const form = require('./routes/form');
 
@@ -184,10 +185,7 @@ const prerender = (next) => {
 
   cmd.get(
       `node ./helpers/redoc-cli/index.js bundle ${yaml} -t ${template} ${options}`,
-      function(err, data, stderr) {
-          console.log(data);
-          console.log(err);
-          console.log(stderr);
+      function() {
           return next();
       }
   );
@@ -198,6 +196,8 @@ app.use('/api-reference', (req, res, next) => {
   // return next();
 }, apiReference);
 // End of API Reference
+
+app.use('/new-reference', reference);
 
 app.use('/', tutorials);
 

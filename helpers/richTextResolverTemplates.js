@@ -76,7 +76,7 @@ const richTextResolverTemplates = {
                 `,
             netlify: `
                 <div class="embed${cssClass}">
-                    <iframe class="lazy" data-src="https://${netlifyId[0]}.netlify.com/${netlifyId[1]}"></iframe>
+                    <iframe class="lazy lazy--exclude-dnt" data-src="https://${netlifyId[0]}.netlify.com/${netlifyId[1]}"></iframe>
                     <noscript>
                         <iframe src="https://${netlifyId[0]}.netlify.com${netlifyId[1]}"></iframe>
                     </noscript>

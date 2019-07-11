@@ -14,6 +14,7 @@
     const url = window.location;
     const searchWrapper = document.querySelector('.navigation__search-wrapper');
     const searchOverlay = document.querySelector('.search-overlay');
+    const navigation = document.querySelector('.navigation');
     let searchTerm = '';
     let searchResultSelected = false;
     let searchResultsNumber = 0;
@@ -200,6 +201,7 @@
         }
 
         if (searchWrapper && searchOverlay) {
+            navigation.classList.remove('navigation--search-active');
             searchWrapper.classList.remove('navigation__search-wrapper--wide');
             searchOverlay.classList.remove('search-overlay--visible');
         }
@@ -208,6 +210,7 @@
 
     const onAutocompleteOpened = () => {
         if (searchWrapper && searchOverlay) {
+            navigation.classList.add('navigation--search-active');
             searchWrapper.classList.add('navigation__search-wrapper--wide');
             searchOverlay.classList.add('search-overlay--visible');
         }

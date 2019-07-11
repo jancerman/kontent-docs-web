@@ -101,6 +101,7 @@ router.post('/', (req, res) => {
 
             if (itemsByTypes.articles.length) {
                 deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'articles', 'article');
+                deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'articles', 'reference');
                 cache.del(`articles_${KCDetails.projectid}`);
                 cache.del(`rss_articles_${KCDetails.projectid}`);
             }

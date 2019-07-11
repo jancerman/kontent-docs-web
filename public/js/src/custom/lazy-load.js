@@ -4,7 +4,11 @@
 (() => {
     let lazyloadElems = document.querySelectorAll('.lazy');
 
-    const beLazyOnIntersectionObserver = () => {
+    const beLazyOnIntersectionObserver = (flag) => {
+        if (flag === 'dnt-excluded') {
+            lazyloadElems = document.querySelectorAll('.lazy.lazy--exclude-dnt');
+        }
+
         var elemObserver = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
@@ -44,8 +48,12 @@
         }
     };
     
-    const beLazyFallback = () => {
+    const beLazyFallback = (flag) => {
         var lazyloadThrottleTimeout;
+
+        if (flag === 'dnt-excluded') {
+            lazyloadElems = document.querySelectorAll('.lazy.lazy--exclude-dnt');
+        }
     
         var lazyload = () => {
             if (lazyloadThrottleTimeout) {
@@ -65,11 +73,11 @@
     
     // On scroll, check elements with the "lazy" class name and transform their data-src attribute into src
     // Implementation uses IntersectionObserver if is available, otherwise fallbacks to using scroll, resize and orientationChange events
-    const loadOnScroll = () => {
+    const loadOnScroll = (flag) => {
         if ('IntersectionObserver' in window) {
-            beLazyOnIntersectionObserver();
+            beLazyOnIntersectionObserver(flag);
         } else {
-            beLazyFallback();
+            beLazyFallback(flag);
         }
     };
     
@@ -95,7 +103,8 @@
     };
     
     const loadOnClick = () => {
-        let lazy = document.querySelectorAll('.lazy');
+        let lazy = document.querySelectorAll('.lazy:not(.lazy--exclude-dnt)');
+        let dntExcluded = document.querySelectorAll('.lazy--exclude-dnt');
         let label = UIMessages ? UIMessages.dntLabel : '';
     
         lazy.forEach(item => {
@@ -127,6 +136,7 @@
         if (window.doNotTrack || navigator.doNotTrack || navigator.msDoNotTrack) {
             if (window.doNotTrack === '1' || navigator.doNotTrack === 'yes' || navigator.doNotTrack === '1' || navigator.msDoNotTrack === '1') {
                 loadOnClick();
+                loadOnScroll('dnt-excluded');
             } else {
                 loadOnScroll();
             }

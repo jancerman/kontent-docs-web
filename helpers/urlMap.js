@@ -18,11 +18,14 @@ const typeLevels = {
     certification: {
         urlLength: 2
     },
+    zapi_specification: {
+        urlLength: 2
+    },
     topic: {
         urlLength: 3
     },
     article: {
-        urlLength: 4
+        urlLength: [2, 4]
     },
     multiplatform_article: {
         urlLength: 4
@@ -55,9 +58,10 @@ const getMapItem = (data) => {
 };
 
 const redefineTypeLevel = (response) => {
-    let level = 4;
+    let level = [2, 4];
+
     if (response.system && response.system.type === 'multiplatform_article') {
-      level = 5;
+      level = [2, 5];
     }
 
     return level;
@@ -88,11 +92,30 @@ const addItemToMap = (settings) => {
     return settings.urlMap;
 };
 
+const getTypeLevel = (typeLength, urlLength) => {
+    let typeLevel = 0;
+
+    if (Array.isArray(typeLength)) {
+        for (let i = 0; i < typeLength.length; i++) {
+            if (typeLength[i] >= urlLength) {
+                typeLevel = typeLength[i];
+                break;
+            }
+        }
+    } else {
+        typeLevel = typeLength;
+    }
+
+    return typeLevel;
+};
+
 const handleNode = (settings) => {
     typeLevels.article.urlLength = redefineTypeLevel(settings.response);
 
     if (settings.item.elements.url && typeLevels[settings.item.system.type]) {
-        settings.url.length = typeLevels[settings.item.system.type].urlLength;
+        const typeLevel = getTypeLevel(typeLevels[settings.item.system.type].urlLength, settings.url.length);
+
+        settings.url.length = typeLevel;
         let slug = '';
 
         if (settings.response.system && settings.response.system.type === 'multiplatform_article') {
