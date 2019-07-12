@@ -80,20 +80,23 @@ router.get('/:slug', asyncHandler(async (req, res, next) => {
         };
 
         const prerender = () => {
-            const yaml = 'https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/7c5a287f89163b226e134a7b21be296a5bcf2370/kcd%2520proto%2520all%2520oas3.yml';
+            const yaml = 'https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/efbd64954fefa9edbda332027dac1b74c3d3bb49/kcd%2520proto%2520all%2520oas3.yml';
             const options = prerenderOptions.join(' ');
-            const template = '../views/apiReference/redoc/template.hbs';
+            const template = './views/apiReference/redoc/template.hbs';
 
-            cmd.get(
-                `node ../helpers/redoc-cli/index.js bundle ${yaml} -t ${template} ${options}`,
+            return cmd.get(
+                `node ./helpers/redoc-cli/index.js bundle ${yaml} -t ${template} ${options}`,
                 function () {
-                    console.log('bundled');
-                    return res.render(view, data);
+                    return renderPage();
                 }
             );
         };
 
-        prerender();
+        const renderPage = () => {
+            return res.render(view, data);
+        };
+
+        return prerender();
     } else {
         view = 'apiReference/pages/reference';
         data = {

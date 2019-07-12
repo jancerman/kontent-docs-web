@@ -10,10 +10,8 @@ const asyncHandler = require('express-async-handler');
 const cache = require('memory-cache');
 const cacheControl = require('express-cache-controller');
 const serveStatic = require('serve-static');
-const cmd = require('node-cmd');
 
 const handleCache = require('./helpers/handleCache');
-const prerenderOptions = require('./helpers/redoc-cli/prerender-options.js');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -25,7 +23,6 @@ const urlAliases = require('./routes/urlAliases');
 const redirectUrls = require('./routes/redirectUrls');
 const previewUrls = require('./routes/previewUrls');
 const cacheInvalidate = require('./routes/cacheInvalidate');
-const apiReference = require('./routes/apiReference');
 const reference = require('./routes/reference');
 const error = require('./routes/error');
 const form = require('./routes/form');
@@ -176,26 +173,6 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
   };
   return res.json(cache.get(`urlMap_${res.locals.projectid}`));
 }));
-
-// API Reference
-const prerender = (next) => {
-  const yaml = 'https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/7c5a287f89163b226e134a7b21be296a5bcf2370/kcd%2520proto%2520all%2520oas3.yml';
-  const options = prerenderOptions.join(' ');
-  const template = './views/apiReference/redoc/template.hbs';
-
-  cmd.get(
-      `node ./helpers/redoc-cli/index.js bundle ${yaml} -t ${template} ${options}`,
-      function() {
-          return next();
-      }
-  );
-};
-
-app.use('/api-reference', (req, res, next) => {
-  return prerender(next);
-  // return next();
-}, apiReference);
-// End of API Reference
 
 app.use('/new-reference', reference);
 
