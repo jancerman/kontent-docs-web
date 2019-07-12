@@ -3,7 +3,7 @@ const asyncHandler = require('express-async-handler');
 const router = express.Router();
 const cache = require('memory-cache');
 const moment = require('moment');
-const cmd = require('node-cmd');
+// const cmd = require('node-cmd');
 
 const getUrlMap = require('../helpers/urlMap');
 const commonContent = require('../helpers/commonContent');
@@ -12,7 +12,7 @@ const requestDelivery = require('../helpers/requestDelivery');
 const helper = require('../helpers/helperFunctions');
 const isPreview = require('../helpers/isPreview');
 const minify = require('../helpers/minify');
-const prerenderOptions = require('../helpers/redoc-cli/prerender-options.js');
+// const prerenderOptions = require('../helpers/redoc-cli/prerender-options.js');
 
 const getSubNavigation = async (res, slug) => {
     return await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
@@ -79,7 +79,7 @@ router.get('/:slug', asyncHandler(async (req, res, next) => {
             helper: helper
         };
 
-        const prerender = () => {
+        /* const prerender = () => {
             const yaml = 'https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/efbd64954fefa9edbda332027dac1b74c3d3bb49/kcd%2520proto%2520all%2520oas3.yml';
             const options = prerenderOptions.join(' ');
             const template = './views/apiReference/redoc/template.hbs';
@@ -96,7 +96,8 @@ router.get('/:slug', asyncHandler(async (req, res, next) => {
             return res.render(view, data);
         };
 
-        return prerender();
+        return prerender(); */
+        return res.render(view, data);
     } else {
         view = 'apiReference/pages/reference';
         data = {
