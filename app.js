@@ -179,7 +179,7 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
 
 app.use('/new-reference', reference);
 
-const prerender = () => {
+const prerender = (res, next) => {
   const yaml = 'https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/efbd64954fefa9edbda332027dac1b74c3d3bb49/kcd%2520proto%2520all%2520oas3.yml';
   const options = prerenderOptions.join(' ');
   const template = './views/apiReference/redoc/template.hbs';
@@ -190,13 +190,20 @@ const prerender = () => {
           console.log(err);
           console.log(data);
           console.log(stderr);
+
+          if (stderr) {
+            res.send(stderr);
+          }
+
+          return next();
       }
   );
 };
 
 app.use('/prerender-reference', (req, res, next) => {
-  prerender();
-  res.end();
+  return prerender(res, next);
+}, (req, res, next) => {
+  return res.redirect(301, '/new-reference/delivery-api');
 });
 
 app.use('/', tutorials);
