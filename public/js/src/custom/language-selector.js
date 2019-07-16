@@ -25,11 +25,11 @@
         });
     };
 
-    const highlightSelector = (articleContent, e) => { 
-        let fixedLabel = document.querySelector('.language-selector__label'); 
+    const highlightSelector = (articleContent, e) => {
+        let fixedLabel = document.querySelector('.language-selector__label');
         let textTofixedLabel;
-        
-        if (e) {  
+
+        if (e) {
             helper.setCookie('KCDOCS.preselectedLanguage', e.target.getAttribute('data-platform'));
             articleContent.querySelectorAll('.language-selector__link--active').forEach(item => item.classList.remove('language-selector__link--active'));
             articleContent.querySelectorAll(`[data-platform=${e.target.getAttribute('data-platform')}]`).forEach(item => item.classList.add('language-selector__link--active'));
@@ -48,7 +48,7 @@
             } else {
                 let firstPlatformElem = document.querySelectorAll('.language-selector__item:first-child .language-selector__link');
                 firstPlatformElem.forEach(item => {
-                    item.classList.add('language-selector__link--active'); 
+                    item.classList.add('language-selector__link--active');
                 });
 
                 if (firstPlatformElem.length) {
@@ -60,7 +60,6 @@
         if (fixedLabel && textTofixedLabel) {
             fixedLabel.innerHTML = textTofixedLabel;
         }
-
     };
 
     const getSelectedPlatform = (e) => {
@@ -116,7 +115,7 @@
 
     const getFirstElemInViewport = (selector) => {
         const elements = document.querySelectorAll(selector);
-        for (var i = 0; i < elements.length; i++) {            
+        for (var i = 0; i < elements.length; i++) {
             if ((elements[i].getBoundingClientRect().top >= 0) && (elements[i].offsetWidth > 0 && elements[i].offsetHeight > 0)) {
                 return elements[i];
             }
@@ -151,9 +150,9 @@
                 if (offsetTarget) {
                     prevElemOffset = offsetTarget.getBoundingClientRect().top;
                 }
-                
+
                 actionOnClick(e, articleContent);
-                
+
                 if (offsetTarget) {
                     scrollPosition = getScrollPosition();
                     newElemOffset = offsetTarget.getBoundingClientRect().top;
@@ -170,7 +169,7 @@
 
     const hidePlaformInContentChunk = (item, languageSelector) => {
         let chunkParent = helper.findAncestor(item, '[data-platform-chunk]');
-        
+
         if (chunkParent) {
             let languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');
             let chunkPlatforms = chunkParent.getAttribute('data-platform-chunk').split('|');
@@ -187,7 +186,7 @@
     };
 
     const showAllPlatformsInContentChunk = (languageSelector) => {
-        let languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');       
+        let languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');
         languageSelectorItems.forEach((elem) => {
             let elemParent = helper.findAncestor(elem, '.language-selector__item');
             elemParent.style.display = 'block';
@@ -204,13 +203,13 @@
             let codeBlocks = document.querySelectorAll('*:not([data-platform-code]) + [data-platform-code]:not([data-platform-code=""]), [data-platform-code]:first-child:not([data-platform-code=""])');
 
             languageSelector.classList.add('language-selector--code-block');
-    
+
             codeBlocks.forEach(item => {
                 languageSelector = hidePlaformInContentChunk(item, languageSelector);
 
                 let clonedSelector = item.parentNode.insertBefore(languageSelector, item);
                 languageSelector = clonedSelector.cloneNode(true);
-                
+
                 languageSelector = showAllPlatformsInContentChunk(languageSelector);
             });
         }
@@ -244,7 +243,7 @@
                     languageSelector.classList.remove('language-selector--opened');
                 }
             });
-    
+
             content.appendChild(languageSelector);
         }
     };
@@ -275,7 +274,7 @@
             copyButtons.forEach(item => {
                 item.innerHTML = (UIMessages ? UIMessages.copyCode : '');
             });
-        
+
             articleContent.addEventListener('click', (e) => {
                 if (e.target && e.target.matches('.infobar__copy')) {
                     e.preventDefault();
@@ -294,14 +293,14 @@
     const selectLanguage = () => {
         let articleContent = document.querySelector('.article__content');
         let selector = document.querySelectorAll('.language-selector__list:not(.language-selector__list--static)');
-        
+
         if (selector.length) {
             highlightSelector();
             selectCode();
             switchContentChunk();
             selectLanguageOnClick(articleContent);
         } else {
-            let fixedLabel = document.querySelector('.language-selector__label'); 
+            let fixedLabel = document.querySelector('.language-selector__label');
             let activeSelector = document.querySelector('.language-selector__link--active');
             if (fixedLabel && activeSelector) {
                 fixedLabel.innerHTML = activeSelector.innerHTML;
@@ -320,7 +319,7 @@
     };
 
     const findAndRemoveFromArray = (array, item) => {
-        const  index = array.indexOf(item);
+        const index = array.indexOf(item);
         if (index > -1) {
           array.splice(index, 1);
         }
@@ -338,7 +337,7 @@
 
             let availableCodeBlocks = [...block.querySelectorAll('[data-platform-code]')].map((item) => {
                 return item.getAttribute('data-platform-code');
-            }); 
+            });
 
             availableCodeBlocks.forEach((item) => {
                 availablePlatforms = findAndRemoveFromArray(availablePlatforms, item);
@@ -364,5 +363,4 @@
     setTimeout(() => {
         makeInfobarsVisible();
     }, 0);
-    
 })();

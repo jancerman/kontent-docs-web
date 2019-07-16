@@ -6,7 +6,7 @@
             item.classList.remove('form__input--value');
         }
     };
-    
+
     const handleLabels = () => {
         let inputs = document.querySelectorAll('.form__input');
 
@@ -19,6 +19,6 @@
             });
         }
     };
-    
+
     handleLabels();
 })();

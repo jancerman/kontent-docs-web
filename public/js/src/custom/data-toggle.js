@@ -1,6 +1,6 @@
 
-/** 
- * Shows/hides element with animation when a trigger element is clicked 
+/**
+ * Shows/hides element with animation when a trigger element is clicked
  * */
 (() => {
     // Bind click event to all triggers
@@ -15,14 +15,14 @@
             // Add/remove class names that show/hide target elements
             if (elemToToggle.classList.contains('toggle-active')) {
                 item.classList.remove('trigger-active');
-                elemToToggle.classList.remove('toggle-active');  
+                elemToToggle.classList.remove('toggle-active');
             } else {
                 item.classList.add('trigger-active');
                 elemToToggle.classList.add('toggle-active');
 
                 // In case target contains input, set focus on it
                 let input = elemToToggle.querySelector('#nav-search');
-                
+
                 if (input) {
                     setTimeout(() => {
                         input.focus();

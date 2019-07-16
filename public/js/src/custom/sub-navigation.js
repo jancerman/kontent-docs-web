@@ -5,7 +5,7 @@
     // On click 2nd level of the sub-navigation make the 3rd level collapse
     const actionOnLevel2 = (event) => {
         var isLevel3 = false;
-    
+
         helper.getParents(event.target).forEach(item => {
             if (item && item.classList && item.classList.contains('sub-navigation--level-3')) {
                 isLevel3 = true;
@@ -25,7 +25,7 @@
 
     const toggleLevel2 = () => {
         let level2 = document.querySelector('.sub-navigation--level-2');
-        
+
         if (level2) {
             level2.addEventListener('click', event => {
                 if (event.target && event.target.classList.contains('sub-navigation__link')) {
@@ -35,7 +35,7 @@
         }
     };
 
-    // Make the sub-navigation fixed to top/bottom of the sreen, or to header/footer 
+    // Make the sub-navigation fixed to top/bottom of the sreen, or to header/footer
     const fixSubNav = () => {
         let subNavigation = document.querySelector('.sub-navigation.sub-navigation--level-1');
         let viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);

@@ -26,7 +26,7 @@ if (!Array.from) {
         };
 
         // The length property of the from method is 1.
-        return function from(arrayLike /*, mapFn, thisArg */ ) {
+        return function from(arrayLike /*, mapFn, thisArg */) {
             // 1. Let C be the this value.
             var C = this;
 
@@ -59,7 +59,7 @@ if (!Array.from) {
             var len = toLength(items.length);
 
             // 13. If IsConstructor(C) is true, then
-            // 13. a. Let A be the result of calling the [[Construct]] internal method 
+            // 13. a. Let A be the result of calling the [[Construct]] internal method
             // of C with an argument list containing the single item len.
             // 14. a. Else, Let A be ArrayCreate(len).
             var A = isCallable(C) ? Object(new C(len)) : new Array(len);
@@ -85,9 +85,9 @@ if (!Array.from) {
     }());
 }
 
-if (typeof Object.assign != 'function') {
+if (typeof Object.assign !== 'function') {
     // Must be writable: true, enumerable: false, configurable: true
-    Object.defineProperty(Object, "assign", {
+    Object.defineProperty(Object, 'assign', {
         value: function assign(target, varArgs) { // .length of function is 2
             'use strict';
             if (target == null) { // TypeError if undefined or null
@@ -123,6 +123,6 @@ try {
             supportsPassive = true;
         }
     });
-    window.addEventListener("testPassive", null, opts);
-    window.removeEventListener("testPassive", null, opts);
+    window.addEventListener('testPassive', null, opts);
+    window.removeEventListener('testPassive', null, opts);
 } catch (e) {}

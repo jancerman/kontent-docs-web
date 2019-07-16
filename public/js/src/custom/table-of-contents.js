@@ -174,7 +174,7 @@
         }
     };
 
-    const arrayMin = (arr) =>{
+    const arrayMin = (arr) => {
         let len = arr.length;
         let min = Infinity;
         let minIndex = 0;
@@ -207,8 +207,8 @@
         if (nextHeading) {
             position = Math.floor(nextHeading.getBoundingClientRect().top);
         } else {
-            let body = document.body,
-                html = document.documentElement;
+            let body = document.body;
+                let html = document.documentElement;
             position = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
         }
 
@@ -221,7 +221,6 @@
             let affixHeadingsLocal = filterNonHiddenHeadings(affixHeadings);
 
             for (let i = 0; i < affixHeadingsLocal.length; i++) {
-                 
                 let nextHeading = affixHeadingsLocal[i + 1];
                 let position = getNextHeadingPosition(nextHeading);
 

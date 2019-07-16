@@ -8,5 +8,25 @@
         "space-before-function-paren": "off",
         "space-infix-ops": "off",
         "no-return-await": "off"
+    },
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "globals": {
+        "grecaptcha": false,
+        "helperForm": false,
+        "Prism": false,
+        "searchAPI": false,
+        "helper": false,
+        "autocomplete": false,
+        "supportsPassive": false,
+        "$clamp": false,
+        "UIMessages": false,
+        "Intercom": false,
+        "dntExcluded": false,
+        "basicLightbox": false,
+        "algoliasearch": false,
+        "renderReCaptcha": false
     }
 }

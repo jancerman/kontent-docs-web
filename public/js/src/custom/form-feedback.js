@@ -43,11 +43,15 @@
             e.preventDefault();
 
             helperForm.validateAndSubmitForm(form, e.target, () => {
-                clearMessages();
-                helperForm.disableInputs(form, recaptchaCover);
-                helperForm.addLoadingToButton(submitButton);
-                var data = collectData();
-                helperForm.submitData('/form/feedback', data, processData);
+                helperForm.submitForm({
+                    clearMessages: clearMessages,
+                    form: form,
+                    recaptchaCover: recaptchaCover,
+                    processData: processData,
+                    submitButton: submitButton,
+                    collectData: collectData,
+                    endpoint: '/form/feedback'
+                });
             });
         });
     }

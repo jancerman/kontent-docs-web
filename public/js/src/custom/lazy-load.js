@@ -22,17 +22,17 @@
                 }
             });
         });
-    
+
         lazyloadElems.forEach((elem) => {
             elemObserver.observe(elem);
         });
     };
-    
+
     const handleLazyFallback = (lazyloadElems, lazyload) => {
         var scrollTop = window.pageYOffset;
         lazyloadElems.forEach((el) => {
             let offsetTop = el.offsetTop === 0 ? el.offsetParent.offsetTop : el.offsetTop;
-    
+
             if (offsetTop < (window.innerHeight + scrollTop)) {
                 if (el.classList.contains('lazy') && el.hasAttribute('data-src')) {
                     el.src = el.dataset.src;
@@ -47,30 +47,30 @@
             window.removeEventListener('orientationChange', lazyload);
         }
     };
-    
+
     const beLazyFallback = (flag) => {
         var lazyloadThrottleTimeout;
 
         if (flag === 'dnt-excluded') {
             lazyloadElems = document.querySelectorAll('.lazy.lazy--exclude-dnt');
         }
-    
+
         var lazyload = () => {
             if (lazyloadThrottleTimeout) {
                 clearTimeout(lazyloadThrottleTimeout);
             }
-    
+
             lazyloadThrottleTimeout = setTimeout(() => {
                 handleLazyFallback(lazyloadElems, lazyload);
             }, 20);
         }
-        
+
         lazyload();
         document.addEventListener('scroll', lazyload, supportsPassive ? { passive: true } : false);
         window.addEventListener('resize', lazyload);
         window.addEventListener('orientationChange', lazyload);
     };
-    
+
     // On scroll, check elements with the "lazy" class name and transform their data-src attribute into src
     // Implementation uses IntersectionObserver if is available, otherwise fallbacks to using scroll, resize and orientationChange events
     const loadOnScroll = (flag) => {
@@ -80,7 +80,7 @@
             beLazyFallback(flag);
         }
     };
-    
+
     const handleLazyEmbed = (target) => {
         // If embed wrapper element child gets clicked, find the parent embed wrapper
         if (!target.classList.contains('embed__dnt-enable')) {
@@ -92,7 +92,7 @@
                 return isEmbedWrapper;
             })[0];
         }
-    
+
         let el = target.nextElementSibling;
         if (el.classList.contains('lazy') && el.hasAttribute('data-src')) {
             el.src = el.dataset.src;
@@ -101,17 +101,16 @@
             target.parentNode.removeChild(target);
         }
     };
-    
+
     const loadOnClick = () => {
         let lazy = document.querySelectorAll('.lazy:not(.lazy--exclude-dnt)');
-        let dntExcluded = document.querySelectorAll('.lazy--exclude-dnt');
         let label = UIMessages ? UIMessages.dntLabel : '';
-    
+
         lazy.forEach(item => {
             let wrapper = helper.getParents(item);
             wrapper[0].insertBefore(helper.createElementFromHTML(`<div class="embed__dnt-enable">${helper.decodeHTMLEntities(label)}</div>`), wrapper[0].firstChild);
         });
-    
+
         document.querySelector('body').addEventListener('click', (e) => {
             e.stopPropagation();
             if (e.target && e.target.matches('div.embed__dnt-enable, div.embed__dnt-enable *')) {
@@ -119,18 +118,18 @@
             }
         });
     };
-    
+
     // Conditionally load stylesheets
     const loadFonts = () => {
         if (document.querySelector('code, pre')) {
             helper.addStylesheet('https://fonts.googleapis.com/css?family=Inconsolata');
         }
     };
-    
+
     // Fire on DOMContentLoaded
     document.addEventListener('DOMContentLoaded', () => {
         loadFonts();
-    
+
         // Check if "Do not flag" is enabled in the browser settings
         // If yes, make embeds load on click, otherwise lazyload on scroll
         if (window.doNotTrack || navigator.doNotTrack || navigator.msDoNotTrack) {

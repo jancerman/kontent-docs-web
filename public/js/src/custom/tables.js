@@ -34,13 +34,13 @@
                 let cellCount = item.querySelector('tr').childElementCount;
 
                 if (cellCount >= 6) {
-                    item.style.width = `${tableWidth}px`; 
+                    item.style.width = `${tableWidth}px`;
                 }
             });
-        }   
+        }
     }, 250);
 
-    // If cell count is lower than 6, set a max-size to them to prevent overflowing the table from the website container 
+    // If cell count is lower than 6, set a max-size to them to prevent overflowing the table from the website container
     const setCellMaxWidth = () => {
         let contentWidth = articleContent.offsetWidth;
 
@@ -52,7 +52,7 @@
                     let maxWidth = Math.floor(contentWidth / cellCount);
                     item.setAttribute('id', `table-${index}`);
                     item.insertAdjacentHTML('beforebegin', `<style>#table-${index} td{max-width:${maxWidth}px}</style>`);
-                } 
+                }
             });
         }
     };
@@ -61,7 +61,7 @@
         wrapTables();
         setWrapperSize();
         setCellMaxWidth();
-    
+
         window.addEventListener('resize', setWrapperSize);
     }
 })();

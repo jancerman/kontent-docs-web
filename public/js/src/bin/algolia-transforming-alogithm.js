@@ -9,14 +9,12 @@
                         tempItem.codename = item.codename;
 
                         // Filter only objectss that match the codename
-                        var contentCodename = suggestions.filter(codenameItem => codenameItem.codename === item.codename);                        
+                        var contentCodename = suggestions.filter(codenameItem => codenameItem.codename === item.codename);
 
                         // Sort them by order
                         var compare = (a, b) => {
-                            if (a.order < b.order)
-                                return -1;
-                            if (a.order > b.order)
-                                return 1;
+                            if (a.order < b.order) { return -1; }
+                            if (a.order > b.order) { return 1; }
                             return 0;
                         }
                         contentCodename.sort(compare);
@@ -44,9 +42,6 @@
                     }
                 });
 
-
-
-
                 hitsSource(query, (suggestions) => {
                     var limitedSuggestions = [];
 
@@ -54,11 +49,11 @@
                         if (limitedSuggestions.filter(groupedItem => groupedItem.codename === item.codename).length === 0) {
                             limitedSuggestions.push(item);
                         }
-    
+
                         if (limitedSuggestions.length === 8) {
                             callback(limitedSuggestions);
                         }
                     });
-    
+
                     callback(limitedSuggestions);
                 });

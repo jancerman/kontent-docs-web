@@ -1,38 +1,16 @@
 (function () {
-
     /* Helper methods */
-    var setCookie = (name, value, days) => {
-      var expires = '';
-      if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = '; expires=' + date.toUTCString();
-      }
-      document.cookie = name + '=' + (value || '') + expires + '; path=/';
-    };
-  
-    var getCookie = (name) => {
-      var nameEQ = name + '=';
-      var ca = document.cookie.split(';');
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-      }
-      return null;
-    };
-  
     var triggerClick = function (item) {
       setTimeout(function () {
         item.click();
       }, 0);
     };
-  
+
     /* Code blocks inside documentation body */
     var getPrismClassName = function (item) {
       var lang = 'lang-';
       item = item.toLowerCase();
-  
+
       if (item) {
         switch (item) {
           case 'rest':
@@ -80,13 +58,13 @@
       } else {
         lang += 'clike';
       }
-  
+
       return lang;
     };
-  
+
     var codeBlocks = function () {
       var blocks = document.querySelectorAll('[data-platform-code]');
-  
+
       var interval = setInterval(function () {
         blocks = document.querySelectorAll('[data-platform-code]');
         if (blocks.length) {
@@ -95,7 +73,7 @@
         }
       }, 100);
     };
-  
+
     var createHighlightedBlock = function (block) {
       setTimeout(function () {
         var cleanCode = block.querySelector('.clean-code').innerHTML;
@@ -106,27 +84,26 @@
         block.classList.add('hidden');
       }, 0);
     };
-  
+
     var initCodeBlocks = function (blocks) {
       for (var i = 0; i < blocks.length; i++) {
         createHighlightedBlock(blocks[i]);
       }
     };
-  
+
     codeBlocks();
-  
+
     document.addEventListener('click', (e) => {
       if (e.target && e.target.matches('.language-selector__link')) {
         e.preventDefault();
-  
-  
+
         var platform = e.target.getAttribute('data-platform');
         var links = document.querySelectorAll('.language-selector__link');
         var linkRedoc = document.querySelector('.tab-click_' + platform);
         var blocks = document.querySelectorAll('[data-platform-code]');
-  
-        setCookie('KCDOCS.preselectedLanguage', platform);
-  
+
+        helper.setCookie('KCDOCS.preselectedLanguage', platform);
+
         for (var i = 0; i < links.length; i++) {
           if (links[i].getAttribute('data-platform') === platform) {
             links[i].classList.add('language-selector__link--active');
@@ -134,36 +111,35 @@
             links[i].classList.remove('language-selector__link--active');
           }
         }
-  
-        for (var i = 0; i < blocks.length; i++) {
-          if (blocks[i].getAttribute('data-platform-code') === platform) {
-            blocks[i].classList.remove('hidden');
-            Prism.highlightElement(blocks[i].querySelector('code'));
+
+        for (var j = 0; j < blocks.length; j++) {
+          if (blocks[j].getAttribute('data-platform-code') === platform) {
+            blocks[j].classList.remove('hidden');
+            Prism.highlightElement(blocks[j].querySelector('code'));
           } else {
-            blocks[i].classList.add('hidden');
+            blocks[j].classList.add('hidden');
           }
         }
-  
+
         if (linkRedoc) {
           linkRedoc.click();
         }
       }
     });
-  
-  
+
     /* Code blocks for requests and responses */
     var initPlatfromFromCookie = function () {
       var clicked = false;
-  
-      var cookie = getCookie('KCDOCS.preselectedLanguage');
-  
+
+      var cookie = helper.getCookie('KCDOCS.preselectedLanguage');
+
       if (cookie && !clicked) {
         var tabs = document.querySelectorAll('[class="tab-click_' + cookie + '"], [data-platform="' + cookie + '"]');
         for (var i = 0; i < tabs.length; i++) {
           clicked = true;
           triggerClick(tabs[i]);
         }
-  
+
         setTimeout(function () {
           clicked = false;
         }, 0);
@@ -171,7 +147,7 @@
         triggerClick(document.querySelector('[data-platform]'));
       }
     };
-  
+
     var getPlatformFromClassName = function (className) {
       var classNames = className.split(' ');
       var platform = '';
@@ -180,15 +156,15 @@
           platform = classNames[i].replace('tab-click_', '');
         }
       }
-  
+
       return platform;
     };
-  
+
     var clickTab = function () {
       var tabs = document.querySelectorAll('[class*="tab-click_"], [data-platform]');
       var body = document.querySelector('body');
       var clicked = false;
-  
+
       var interval = setInterval(function () {
         tabs = document.querySelectorAll('[class*="tab-click_"], [data-platform]');
         if (tabs.length) {
@@ -196,33 +172,31 @@
           clearInterval(interval);
         }
       }, 100);
-  
+
       body.addEventListener('click', function (e) {
         if (e.target && e.target.className.indexOf('tab-click_') > -1 && !clicked) {
-  
           var platform = getPlatformFromClassName(e.target.className);
           var className = 'tab-click_' + platform;
-  
-          setCookie('KCDOCS.preselectedLanguage', platform);
-  
+
+          helper.setCookie('KCDOCS.preselectedLanguage', platform);
+
           if (!tabs.length) {
             tabs = document.querySelectorAll('[class*="tab-click_"], [data-platform]');
           }
-  
+
           for (var i = 0; i < tabs.length; i++) {
             if ((tabs[i].classList.contains(className) || tabs[i].getAttribute('data-platform') === platform) && tabs[i] !== e.target) {
               clicked = true;
               triggerClick(tabs[i]);
             }
           }
-  
+
           setTimeout(function () {
             clicked = false;
           }, 0);
         }
       });
     };
-  
+
     clickTab();
   })();
-  
