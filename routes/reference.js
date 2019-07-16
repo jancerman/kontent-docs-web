@@ -14,20 +14,12 @@ const isPreview = require('../helpers/isPreview');
 const minify = require('../helpers/minify');
 // const prerenderOptions = require('../helpers/redoc-cli/prerender-options.js');
 
-const getSubNavigation = async (res, slug) => {
-    return await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
-        return await requestDelivery({
-            type: 'navigation_item',
-            depth: 3,
-            slug: slug,
-            ...commonContent.getKCDetails(res)
-        });
-    });
-};
-
 router.get('/', asyncHandler(async (req, res) => {
     const slug = req.originalUrl.split('/')[1];
-    const subNavigation = await getSubNavigation(res, slug);
+    const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
+        return await commonContent.getSubNavigation(res, slug);
+    });
+
     let redirectSlug = '';
 
     if (subNavigation[0] && subNavigation[0].children[0] && subNavigation[0].children[0].url) {
@@ -45,7 +37,9 @@ router.get('/:slug', asyncHandler(async (req, res, next) => {
     const home = cache.get(`home_${KCDetails.projectid}`);
     const footer = cache.get(`footer_${KCDetails.projectid}`);
     const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
-    const subNavigation = await getSubNavigation(res, parentSlug);
+    const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
+        return await commonContent.getSubNavigation(res, parentSlug);
+    });
 
     const content = await handleCache.evaluateSingle(res, `reference_${slug}_${KCDetails.projectid}`, async () => {
         return await requestDelivery({

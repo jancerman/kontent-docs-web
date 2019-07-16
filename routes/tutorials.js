@@ -13,17 +13,6 @@ const moment = require('moment');
 const cache = require('memory-cache');
 let cookiesPlatform;
 
-const getSubNavigation = async (res, slug) => {
-    return await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
-        return await requestDelivery({
-            type: 'navigation_item',
-            depth: 3,
-            slug: slug,
-            ...commonContent.getKCDetails(res)
-        });
-    });
-};
-
 const getSubNavigationLevels = (req) => {
     return [
         typeof req.params.scenario !== 'undefined' ? req.params.scenario : null,
@@ -93,11 +82,54 @@ const getPlatformsConfig = (projectId) =>
     ? cache.get(`platformsConfig_${projectId}`)[0].options
     : null;
 
+const getDefaultPlatform = (req, content, preselectedPlatform) => {
+    preselectedPlatform = req.cookies['KCDOCS.preselectedLanguage'];
+
+    if (content.children && content.children.length) {
+        preselectedPlatform = content.children[0].elements.platform.value[0].codename;
+    } else if (content.platform && content.platform.value.length) {
+        preselectedPlatform = content.platform.value[0].codename;
+    }
+
+    return preselectedPlatform;
+};
+
+const getAvailablePlatform = (content, preselectedPlatform) => {
+    let platformItems;
+    if (content.children) {
+        platformItems = content.children.filter(item => {
+            if (item.platform.value.length) {
+                return item.platform.value[0].codename === preselectedPlatform;
+            }
+            return false;
+        });
+
+        if (platformItems.length) {
+            preselectedPlatform = platformItems[0].platform.value[0].codename;
+        } else {
+            preselectedPlatform = content.children[0].platform.value[0].codename;
+        }
+    } else {
+        platformItems = content.platform.value.filter(item => item.codename === preselectedPlatform);
+
+        if (platformItems.length) {
+            preselectedPlatform = platformItems[0].codename;
+        } else {
+            if (content.platform.value.length) {
+                preselectedPlatform = content.platform.value[0].codename;
+            }
+        }
+    }
+
+    return preselectedPlatform;
+};
+
 const getPreselectedPlatform = (content, req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
     const platformsConfig = getPlatformsConfig(KCDetails.projectid);
 
     let preselectedPlatform = req.query.tech;
+
     if (preselectedPlatform) {
         let tempPlatforms = platformsConfig ? platformsConfig.filter(item => item.elements.url.value === preselectedPlatform) : null;
         if (tempPlatforms && tempPlatforms.length) {
@@ -110,41 +142,9 @@ const getPreselectedPlatform = (content, req, res) => {
     }
 
     if (!preselectedPlatform) {
-        preselectedPlatform = req.cookies['KCDOCS.preselectedLanguage'];
-    }
-
-    if (!preselectedPlatform) {
-        if (content.children && content.children.length) {
-            preselectedPlatform = content.children[0].elements.platform.value[0].codename;
-        } else if (content.platform && content.platform.value.length) {
-            preselectedPlatform = content.platform.value[0].codename;
-        }
+        preselectedPlatform = getDefaultPlatform(req, content, preselectedPlatform);
     } else {
-        let platformItems;
-        if (content.children) {
-            platformItems = content.children.filter(item => {
-                if (item.platform.value.length) {
-                    return item.platform.value[0].codename === preselectedPlatform;
-                }
-                return false;
-            });
-
-            if (platformItems.length) {
-                preselectedPlatform = platformItems[0].platform.value[0].codename;
-            } else {
-                preselectedPlatform = content.children[0].platform.value[0].codename;
-            }
-        } else {
-            platformItems = content.platform.value.filter(item => item.codename === preselectedPlatform);
-
-            if (platformItems.length) {
-                preselectedPlatform = platformItems[0].codename;
-            } else {
-                if (content.platform.value.length) {
-                    preselectedPlatform = content.platform.value[0].codename;
-                }
-            }
-        }
+        preselectedPlatform = getAvailablePlatform(content, preselectedPlatform);
     }
 
     return preselectedPlatform;
@@ -164,7 +164,9 @@ const getContent = async (req, res) => {
     const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
     const home = cache.get(`home_${KCDetails.projectid}`);
     const slug = req.originalUrl.split('/')[1];
-    const subNavigation = await getSubNavigation(res, slug);
+    const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
+        return await commonContent.getSubNavigation(res, slug);
+    });
     const subNavigationLevels = getSubNavigationLevels(req);
     const currentLevel = getCurrentLevel(subNavigationLevels);
     const footer = cache.get(`footer_${KCDetails.projectid}`);

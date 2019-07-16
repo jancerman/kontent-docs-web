@@ -14,19 +14,19 @@
         "node": true
     },
     "globals": {
-        "grecaptcha": false,
-        "helperForm": false,
-        "Prism": false,
-        "searchAPI": false,
-        "helper": false,
-        "autocomplete": false,
-        "supportsPassive": false,
-        "$clamp": false,
-        "UIMessages": false,
-        "Intercom": false,
-        "dntExcluded": false,
-        "basicLightbox": false,
-        "algoliasearch": false,
-        "renderReCaptcha": false
+        "grecaptcha": "readonly",
+        "helperForm": "readonly",
+        "Prism": "readonly",
+        "searchAPI": "readonly",
+        "helper": "readonly",
+        "autocomplete": "readonly",
+        "supportsPassive": "readonly",
+        "$clamp": "readonly",
+        "UIMessages": "readonly",
+        "Intercom": "readonly",
+        "dntExcluded": "readonly",
+        "basicLightbox": "readonly",
+        "algoliasearch": "readonly",
+        "renderReCaptcha": "readonly"
     }
 }
