@@ -143,7 +143,7 @@ window.helper = (() => {
                 }
                 return callback(data);
             } catch (err) {
-                return;
+                throw new Error(err);
             }
         }
     }
