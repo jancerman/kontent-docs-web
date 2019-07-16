@@ -1,6 +1,9 @@
 /**
  * Helper functions used in other JS files in the ../custom folder
  */
+
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "renderReCaptcha" }] */
+
 let recaptchaKey;
 window.helper = (() => {
     // Find a parent of the "el" element specified by the "parentSelector" param
