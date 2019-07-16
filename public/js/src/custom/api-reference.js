@@ -62,18 +62,6 @@
       return lang;
     };
 
-    var codeBlocks = function () {
-      var blocks = document.querySelectorAll('[data-platform-code]');
-
-      var interval = setInterval(function () {
-        blocks = document.querySelectorAll('[data-platform-code]');
-        if (blocks.length) {
-          initCodeBlocks(blocks);
-          clearInterval(interval);
-        }
-      }, 100);
-    };
-
     var createHighlightedBlock = function (block) {
       setTimeout(function () {
         var cleanCode = block.querySelector('.clean-code').innerHTML;
@@ -89,6 +77,18 @@
       for (var i = 0; i < blocks.length; i++) {
         createHighlightedBlock(blocks[i]);
       }
+    };
+
+    var codeBlocks = function () {
+      var blocks = document.querySelectorAll('[data-platform-code]');
+
+      var interval = setInterval(function () {
+        blocks = document.querySelectorAll('[data-platform-code]');
+        if (blocks.length) {
+          initCodeBlocks(blocks);
+          clearInterval(interval);
+        }
+      }, 100);
     };
 
     codeBlocks();

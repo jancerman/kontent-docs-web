@@ -126,3 +126,17 @@ try {
     window.addEventListener('testPassive', null, opts);
     window.removeEventListener('testPassive', null, opts);
 } catch (e) {}
+
+// Adds forEach function to NodeList class prototype
+// Adds matches function for IE11
+(function () {
+    if (typeof NodeList.prototype.forEach === 'function') {
+        return false;
+    } else {
+        NodeList.prototype.forEach = Array.prototype.forEach;
+    }
+
+    if (!Element.prototype.matches) {
+        Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+    }
+})();

@@ -56,10 +56,6 @@
         // Get content with highlighted markup
         let content = suggestion._highlightResult.content.value;
 
-        if (!content) {
-            console.log(suggestion);
-        }
-
         // Remove inline icon, code macros and newlines
         content = removeInlineElements(content);
 
@@ -132,6 +128,24 @@
         return `<div class="suggestion suggestion--empty">
                     <span class="suggestion__heading">${UIMessages ? UIMessages.searchNoResults : ''}</span>
                 </div>`;
+    };
+
+    const logSearchTermNumber = (term) => {
+        window.dataLayer.push({
+            'event': 'event',
+            'eventCategory': 'search--searched-result',
+            'eventAction': decodeURIComponent(term),
+            'eventLabel': searchResultsNumber
+        });
+    };
+
+    const logSearchTermErased = () => {
+        window.dataLayer.push({
+            'event': 'event',
+            'eventCategory': 'search--used',
+            'eventAction': decodeURIComponent(searchTerm),
+            'eventLabel': 'Not clicked'
+        });
     };
 
     const onAutocompleteSelected = (suggestion, context) => {
@@ -280,24 +294,6 @@
             if (searchInputIsFocused) {
                 searchInput.focus();
             }
-    };
-
-    const logSearchTermErased = () => {
-        window.dataLayer.push({
-            'event': 'event',
-            'eventCategory': 'search--used',
-            'eventAction': decodeURIComponent(searchTerm),
-            'eventLabel': 'Not clicked'
-        });
-    };
-
-    const logSearchTermNumber = (term) => {
-        window.dataLayer.push({
-            'event': 'event',
-            'eventCategory': 'search--searched-result',
-            'eventAction': decodeURIComponent(term),
-            'eventLabel': searchResultsNumber
-        });
     };
 
     const logSearchTermSelected = (term, url) => {

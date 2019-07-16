@@ -317,17 +317,3 @@ const renderReCaptcha = function () {
         'theme': 'light'
     });
 };
-
-// Adds forEach function to NodeList class prototype
-// Adds matches function for IE11
-(() => {
-    if (typeof NodeList.prototype.forEach === 'function') {
-        return false;
-    } else {
-        NodeList.prototype.forEach = Array.prototype.forEach;
-    }
-
-    if (!Element.prototype.matches) {
-        Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
-    }
-})();

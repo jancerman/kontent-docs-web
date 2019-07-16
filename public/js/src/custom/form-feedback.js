@@ -1,21 +1,21 @@
 (() => {
-    const form = document.querySelector('.feedback__form');
-    if (form) {
-        const submitButton = form.querySelector('.form__button');
-        const recaptchaCover = form.querySelector('.form__recaptcha-disabled');
+    const formFeedback = document.querySelector('.feedback__form');
+    if (formFeedback) {
+        const submitButtonFeedback = formFeedback.querySelector('.form__button');
+        const recaptchaCoverFeedback = formFeedback.querySelector('.form__recaptcha-disabled');
 
-        const collectData = () => {
+        const collectFeedbackData = () => {
             var data = {};
-            data.feedback = form.querySelector('#feedback').value;
-            data.email = form.querySelector('#email').value;
+            data.feedback = formFeedback.querySelector('#feedback').value;
+            data.email = formFeedback.querySelector('#email').value;
             data['g-recaptcha-response'] = grecaptcha.getResponse();
             data.url = window.location.href;
             return data;
         };
 
-        const clearMessages = () => {
+        const clearFeedbackMessages = () => {
             document.querySelector(`.feedback__message`).classList.add('feedback__message--hidden');
-            form.querySelectorAll('[data-form-error]').forEach((item) => {
+            formFeedback.querySelectorAll('[data-form-error]').forEach((item) => {
                 item.innerHTML = '';
             });
         };
@@ -25,34 +25,35 @@
             document.querySelector(`.feedback__message--no`).classList.add('feedback__message--hidden');
         };
 
-        const processData = (data) => {
-            helperForm.enableInputs(form, recaptchaCover);
-            helperForm.removeLoadingFromButton(submitButton);
+        const processFeedbackData = (data) => {
+            helperForm.enableInputs(formFeedback, recaptchaCoverFeedback);
+            helperForm.removeLoadingFromButton(submitButtonFeedback);
             grecaptcha.reset();
 
             if (data.isValid) {
-                helperForm.clearForm(form);
-                helperForm.hideForm(form);
+                helperForm.clearForm(formFeedback);
+                helperForm.hideForm(formFeedback);
                 displaySuccessMessage();
             } else {
-                helperForm.displayValidationMessages(data, form);
+                helperForm.displayValidationMessages(data, formFeedback);
             }
         };
 
-        submitButton.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            helperForm.validateAndSubmitForm(form, e.target, () => {
-                helperForm.submitForm({
-                    clearMessages: clearMessages,
-                    form: form,
-                    recaptchaCover: recaptchaCover,
-                    processData: processData,
-                    submitButton: submitButton,
-                    collectData: collectData,
-                    endpoint: '/form/feedback'
-                });
+        const submitFeedbackForm = () => {
+            helperForm.submitForm({
+                clearMessages: clearFeedbackMessages,
+                form: formFeedback,
+                recaptchaCover: recaptchaCoverFeedback,
+                processData: processFeedbackData,
+                submitButton: submitButtonFeedback,
+                collectData: collectFeedbackData,
+                endpoint: '/form/feedback'
             });
+        };
+
+        submitButtonFeedback.addEventListener('click', (e) => {
+            e.preventDefault();
+            helperForm.validateAndSubmitForm(formFeedback, e.target, submitFeedbackForm);
         });
     }
 })();

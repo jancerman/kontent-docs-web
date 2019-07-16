@@ -2,7 +2,7 @@ const { DeliveryClient } = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
 const cache = require('memory-cache');
 let fields = ['codename', 'url'];
-// let globalConfig;
+let createUrlMap, handleNode;
 
 // Define length of url for specific content types (number of path elements)
 const typeLevels = {
@@ -51,7 +51,9 @@ const getMapItem = (data) => {
             case 'type':
                 item.type = data.type;
                 break;
-        };
+            default:
+                item[field] = 'is-unknown-field';
+        }
     });
 
     return item;
@@ -109,7 +111,24 @@ const getTypeLevel = (typeLength, urlLength) => {
     return typeLevel;
 };
 
-const handleNode = (settings) => {
+createUrlMap = (response, url, urlMap = []) => {
+    let node = '';
+    let queryString = '';
+
+    if (response.items) node = 'items';
+    if (response.navigation) node = 'navigation';
+    if (response.children) node = 'children';
+
+    if (response[node]) {
+        response[node].forEach(item => {
+            urlMap = handleNode({ response, item, urlMap, url, queryString });
+        });
+    }
+
+    return urlMap;
+};
+
+handleNode = (settings) => {
     typeLevels.article.urlLength = redefineTypeLevel(settings.response);
 
     if (settings.item.elements.url && typeLevels[settings.item.system.type]) {
@@ -146,23 +165,6 @@ const handleNode = (settings) => {
     settings.queryString = '';
 
     return createUrlMap(settings.item, settings.url, settings.urlMap);
-};
-
-const createUrlMap = (response, url, urlMap = []) => {
-    let node = '';
-    let queryString = '';
-
-    if (response.items) node = 'items';
-    if (response.navigation) node = 'navigation';
-    if (response.children) node = 'children';
-
-    if (response[node]) {
-        response[node].forEach(item => {
-            urlMap = handleNode({ response, item, urlMap, url, queryString });
-        });
-    }
-
-    return urlMap;
 };
 
 const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {

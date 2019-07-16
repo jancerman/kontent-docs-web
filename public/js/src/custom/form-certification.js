@@ -56,19 +56,21 @@
             }
         };
 
+        const submitForm = () => {
+            helperForm.submitForm({
+                clearMessages: clearMessages,
+                form: form,
+                recaptchaCover: recaptchaCover,
+                processData: processData,
+                submitButton: submitButton,
+                collectData: collectData,
+                endpoint: '/form/certification'
+            });
+        };
+
         submitButton.addEventListener('click', (e) => {
             e.preventDefault();
-            helperForm.validateAndSubmitForm(form, e.target, () => {
-                helperForm.submitForm({
-                    clearMessages: clearMessages,
-                    form: form,
-                    recaptchaCover: recaptchaCover,
-                    processData: processData,
-                    submitButton: submitButton,
-                    collectData: collectData,
-                    endpoint: '/form/certification'
-                });
-            });
+            helperForm.validateAndSubmitForm(form, e.target, submitForm);
         });
     }
 })();

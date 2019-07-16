@@ -41,8 +41,8 @@ const deleteSpecificKeys = (KCDetails, items, keyNameToCheck, keyNameToDelete) =
                 if (items[i].codename === cacheItems[j].system.codename) {
                     cache.del(`${keyNameToDelete}_${cacheItems[j].elements.url.value}_${KCDetails.projectid}`);
                 }
-            };
-        };
+            }
+        }
     } else if (items) {
         items.forEach(async (item) => {
             await requestItemAndDeleteCacheKey(keyNameToDelete, item.codename, KCDetails);

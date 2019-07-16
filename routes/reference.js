@@ -25,7 +25,7 @@ const getSubNavigation = async (res, slug) => {
     });
 };
 
-router.get('/', asyncHandler(async (req, res, next) => {
+router.get('/', asyncHandler(async (req, res) => {
     const slug = req.originalUrl.split('/')[1];
     const subNavigation = await getSubNavigation(res, slug);
     let redirectSlug = '';
@@ -79,24 +79,6 @@ router.get('/:slug', asyncHandler(async (req, res, next) => {
             helper: helper
         };
 
-        /* const prerender = () => {
-            const yaml = 'https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/efbd64954fefa9edbda332027dac1b74c3d3bb49/kcd%2520proto%2520all%2520oas3.yml';
-            const options = prerenderOptions.join(' ');
-            const template = './views/apiReference/redoc/template.hbs';
-
-            return cmd.get(
-                `node ./helpers/redoc-cli/index.js bundle ${yaml} -t ${template} ${options}`,
-                function () {
-                    return renderPage();
-                }
-            );
-        };
-
-        const renderPage = () => {
-            return res.render(view, data);
-        };
-
-        return prerender(); */
         return res.render(view, data);
     } else {
         view = 'apiReference/pages/reference';
