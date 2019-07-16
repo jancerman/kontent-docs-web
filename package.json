@@ -35,6 +35,8 @@
     "cheerio": "^1.0.0-rc.2",
     "chokidar": "^2.0.4",
     "compression": "^1.7.3",
+    "consola": "^2.9.0",
+    "console": "^0.7.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "dotenv": "^6.2.0",

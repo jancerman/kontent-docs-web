@@ -8,7 +8,7 @@
             var data = {};
             data.feedback = formFeedback.querySelector('#feedback').value;
             data.email = formFeedback.querySelector('#email').value;
-            data['g-recaptcha-response'] = grecaptcha.getResponse();
+            data['g-recaptcha-response'] = window.grecaptcha.getResponse();
             data.url = window.location.href;
             return data;
         };
@@ -26,21 +26,21 @@
         };
 
         const processFeedbackData = (data) => {
-            helperForm.enableInputs(formFeedback, recaptchaCoverFeedback);
-            helperForm.removeLoadingFromButton(submitButtonFeedback);
-            grecaptcha.reset();
+            window.helperForm.enableInputs(formFeedback, recaptchaCoverFeedback);
+            window.helperForm.removeLoadingFromButton(submitButtonFeedback);
+            window.grecaptcha.reset();
 
             if (data.isValid) {
-                helperForm.clearForm(formFeedback);
-                helperForm.hideForm(formFeedback);
+                window.helperForm.clearForm(formFeedback);
+                window.helperForm.hideForm(formFeedback);
                 displaySuccessMessage();
             } else {
-                helperForm.displayValidationMessages(data, formFeedback);
+                window.helperForm.displayValidationMessages(data, formFeedback);
             }
         };
 
         const submitFeedbackForm = () => {
-            helperForm.submitForm({
+            window.helperForm.submitForm({
                 clearMessages: clearFeedbackMessages,
                 form: formFeedback,
                 recaptchaCover: recaptchaCoverFeedback,
@@ -53,7 +53,7 @@
 
         submitButtonFeedback.addEventListener('click', (e) => {
             e.preventDefault();
-            helperForm.validateAndSubmitForm(formFeedback, e.target, submitFeedbackForm);
+            window.helperForm.validateAndSubmitForm(formFeedback, e.target, submitFeedbackForm);
         });
     }
 })();

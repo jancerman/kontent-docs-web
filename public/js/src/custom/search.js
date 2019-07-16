@@ -5,12 +5,12 @@
 (() => {
     // Get Algolia API details from object in the global scope (should be present in the page head)
     // Or use API detail injected with url parameters
-    searchAPI.appid = helper.getParameterByName('searchappid') || searchAPI.appid;
-    searchAPI.apikey = helper.getParameterByName('searchapikey') || searchAPI.apikey;
-    searchAPI.indexname = helper.getParameterByName('searchindexname') || searchAPI.indexname;
+    window.searchAPI.appid = window.helper.getParameterByName('searchappid') || window.searchAPI.appid;
+    window.searchAPI.apikey = window.helper.getParameterByName('window.searchAPIkey') || window.searchAPI.apikey;
+    window.searchAPI.indexname = window.helper.getParameterByName('searchindexname') || window.searchAPI.indexname;
 
-    const client = algoliasearch(searchAPI.appid, searchAPI.apikey);
-    const tutorials = client.initIndex(searchAPI.indexname);
+    const client = window.algoliasearch(window.searchAPI.appid, window.searchAPI.apikey);
+    const tutorials = client.initIndex(window.searchAPI.indexname);
     const url = window.location;
     const searchWrapper = document.querySelector('.navigation__search-wrapper');
     const searchOverlay = document.querySelector('.search-overlay');
@@ -23,8 +23,8 @@
     let clampDelay = 0;
 
     // Get injected KC API details
-    const projectIdUrl = helper.getParameterByName('projectid');
-    const previewApiKeyUrl = helper.getParameterByName('previewapikey');
+    const projectIdUrl = window.helper.getParameterByName('projectid');
+    const previewApiKeyUrl = window.helper.getParameterByName('previewapikey');
 
     // Build query string with injected KC API details for the urlMap
     const queryString = (() => {
@@ -126,7 +126,7 @@
 
         // Template for a empty result
         return `<div class="suggestion suggestion--empty">
-                    <span class="suggestion__heading">${UIMessages ? UIMessages.searchNoResults : ''}</span>
+                    <span class="suggestion__heading">${window.UIMessages ? window.UIMessages.searchNoResults : ''}</span>
                 </div>`;
     };
 
@@ -166,7 +166,7 @@
 
     const clampItem = (item) => {
         setTimeout(() => {
-            $clamp(item, { clamp: 2 });
+            window.$clamp(item, { clamp: 2 });
         }, clampDelay);
     };
 
@@ -201,7 +201,7 @@
                     }
                 }
             }, 0);
-        }, supportsPassive ? {
+        }, window.supportsPassive ? {
             passive: true
         } : false);
     };
@@ -253,7 +253,7 @@
     // Init Algolia
     const initAutocomplete = (urlMap) => {
         // Init autocomplete and set maximum of suggested search items
-        var hitsSource = autocomplete.sources.hits(tutorials, {
+        var hitsSource = window.autocomplete.sources.hits(tutorials, {
             hitsPerPage: 1000
         });
 
@@ -262,7 +262,7 @@
             searchInputIsFocused = true;
         }
 
-        autocomplete('#nav-search', {
+        window.autocomplete('#nav-search', {
                 autoselect: true,
                 openOnFocus: true,
                 clearOnSelected: false,
@@ -309,7 +309,7 @@
         document.onkeydown = arrowPress;
 
         // Get urlMap and init the autocomplete
-        helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
+        window.helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
             initAutocomplete(urlMap);
             optimizeClamping();
         }, 'json');
@@ -325,7 +325,7 @@
         }
     };
 
-    if (searchAPI) {
+    if (window.searchAPI) {
         initAlgoliaSearch();
         setFocusOnMagnifier('navigation');
         setFocusOnMagnifier('hero');

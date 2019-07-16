@@ -102,7 +102,7 @@
         var linkRedoc = document.querySelector('.tab-click_' + platform);
         var blocks = document.querySelectorAll('[data-platform-code]');
 
-        helper.setCookie('KCDOCS.preselectedLanguage', platform);
+        window.helper.setCookie('KCDOCS.preselectedLanguage', platform);
 
         for (var i = 0; i < links.length; i++) {
           if (links[i].getAttribute('data-platform') === platform) {
@@ -115,7 +115,7 @@
         for (var j = 0; j < blocks.length; j++) {
           if (blocks[j].getAttribute('data-platform-code') === platform) {
             blocks[j].classList.remove('hidden');
-            Prism.highlightElement(blocks[j].querySelector('code'));
+            window.Prism.highlightElement(blocks[j].querySelector('code'));
           } else {
             blocks[j].classList.add('hidden');
           }
@@ -131,7 +131,7 @@
     var initPlatfromFromCookie = function () {
       var clicked = false;
 
-      var cookie = helper.getCookie('KCDOCS.preselectedLanguage');
+      var cookie = window.helper.getCookie('KCDOCS.preselectedLanguage');
 
       if (cookie && !clicked) {
         var tabs = document.querySelectorAll('[class="tab-click_' + cookie + '"], [data-platform="' + cookie + '"]');
@@ -178,7 +178,7 @@
           var platform = getPlatformFromClassName(e.target.className);
           var className = 'tab-click_' + platform;
 
-          helper.setCookie('KCDOCS.preselectedLanguage', platform);
+          window.helper.setCookie('KCDOCS.preselectedLanguage', platform);
 
           if (!tabs.length) {
             tabs = document.querySelectorAll('[class*="tab-click_"], [data-platform]');

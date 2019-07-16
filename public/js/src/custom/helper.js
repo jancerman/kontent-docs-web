@@ -130,26 +130,30 @@ window.helper = (() => {
         document.body.removeChild(textArea);
     };
 
+    const evaluateAjaxResponse = (xmlhttp, callback, type) => {
+        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            try {
+                var data;
+
+                if (type === 'json') {
+                    // Parse JSON if specified in the "type" param
+                    data = JSON.parse(xmlhttp.responseText);
+                } else {
+                    data = xmlhttp.responseText
+                }
+                return callback(data);
+            } catch (err) {
+                return;
+            }
+        }
+    }
+
     // Ajax GET call
     const ajaxGet = (url, callback, type) => {
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.open('GET', url, true);
         xmlhttp.onreadystatechange = () => {
-            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-                try {
-                    var data;
-
-                    if (type === 'json') {
-                        // Parse JSON if specified in the "type" param
-                        data = JSON.parse(xmlhttp.responseText);
-                    } else {
-                        data = xmlhttp.responseText
-                    }
-                } catch (err) {
-                    return;
-                }
-                callback(data);
-            }
+            return evaluateAjaxResponse(xmlhttp, callback, type);
         };
 
         xmlhttp.send();
@@ -161,21 +165,7 @@ window.helper = (() => {
         xmlhttp.open('POST', url, true);
         xmlhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         xmlhttp.onload = () => {
-            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-                try {
-                    var data;
-
-                    if (type === 'json') {
-                        // Parse JSON if specified in the "type" param
-                        data = JSON.parse(xmlhttp.responseText);
-                    } else {
-                        data = xmlhttp.responseText
-                    }
-                } catch (err) {
-                    return;
-                }
-                return callback(data);
-            }
+            return evaluateAjaxResponse(xmlhttp, callback, type);
         };
         xmlhttp.send(JSON.stringify(requestData));
     };
@@ -312,7 +302,7 @@ window.helper = (() => {
 })();
 
 const renderReCaptcha = function () {
-    grecaptcha.render('g-recaptcha-placeholder', {
+    window.grecaptcha.render('g-recaptcha-placeholder', {
         'sitekey': recaptchaKey,
         'theme': 'light'
     });

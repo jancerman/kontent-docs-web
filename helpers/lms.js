@@ -1,5 +1,6 @@
 const axios = require('axios');
 const generator = require('generate-password');
+const consola = require('consola');
 
 const lms = {
     registerAddtoCourse: async (data) => {
@@ -28,7 +29,7 @@ const lms = {
                 auth: settings.auth
             });
         } catch (error) {
-            console.error(error.response.data);
+            consola.error(error.response.data);
         }
 
         // Add the user to a course by email
@@ -46,7 +47,7 @@ const lms = {
             });
             addedToCourse = inCourse.data;
         } catch (error) {
-            console.error(error.response.data);
+            consola.error(error.response.data);
             addedToCourse = error.response.data;
         }
 

@@ -6,7 +6,7 @@
     const actionOnLevel2 = (event) => {
         var isLevel3 = false;
 
-        helper.getParents(event.target).forEach(item => {
+        window.helper.getParents(event.target).forEach(item => {
             if (item && item.classList && item.classList.contains('sub-navigation--level-3')) {
                 isLevel3 = true;
             }
@@ -44,7 +44,7 @@
             let topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
             let isTop = topOffset <= document.querySelector('.navigation').offsetHeight;
 
-            let isBottom = (window.innerHeight + window.pageYOffset + helper.outerHeight(document.querySelector('.footer'))) >= document.body.offsetHeight;
+            let isBottom = (window.innerHeight + window.pageYOffset + window.helper.outerHeight(document.querySelector('.footer'))) >= document.body.offsetHeight;
 
             if (isTop) {
                 subNavigation.classList.add('sub-navigation--top');
@@ -63,5 +63,5 @@
     toggleLevel2();
     fixSubNav();
 
-    window.addEventListener('scroll', fixSubNav, supportsPassive ? { passive: true } : false);
+    window.addEventListener('scroll', fixSubNav, window.supportsPassive ? { passive: true } : false);
 })();

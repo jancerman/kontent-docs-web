@@ -28,7 +28,7 @@
             item.addEventListener('click', () => {
                 let hash = item.parentElement.getAttribute('id');
                 let url = window.location.href.split('#')[0];
-                helper.copyToClipboard(`${url}#${hash}`);
+                window.helper.copyToClipboard(`${url}#${hash}`);
 
                 let tooltip = item.querySelector('.anchor-copy__tooltip');
                 tooltip.classList.add('anchor-copy__tooltip--active');
@@ -253,14 +253,14 @@
             cloneToFixed();
             bindSmothScroll();
             handleFixed();
-            window.addEventListener('scroll', handleFixed, supportsPassive ? {
+            window.addEventListener('scroll', handleFixed, window.supportsPassive ? {
                 passive: true
             } : false);
             anchorOnLoad();
             toggleItemsFromWithinContentChunks();
             copyAnchorClipboard();
             affix();
-            window.addEventListener('scroll', affix, supportsPassive ? {
+            window.addEventListener('scroll', affix, window.supportsPassive ? {
                 passive: true
             } : false);
         }, 0);

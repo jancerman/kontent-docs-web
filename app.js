@@ -10,6 +10,7 @@ const asyncHandler = require('express-async-handler');
 const cache = require('memory-cache');
 const cacheControl = require('express-cache-controller');
 const serveStatic = require('serve-static');
+const consola = require('consola');
 const cmd = require('node-cmd');
 
 const handleCache = require('./helpers/handleCache');
@@ -187,9 +188,9 @@ const prerender = (res, next) => {
   cmd.get(
       `node ./helpers/redoc-cli/index.js bundle ${yaml} -t ${template} ${options}`,
       function (err, data, stderr) {
-          console.log(err);
-          console.log(data);
-          console.log(stderr);
+          consola.log(err);
+          consola.log(data);
+          consola.log(stderr);
 
           if (stderr) {
             res.send(stderr);
@@ -202,7 +203,7 @@ const prerender = (res, next) => {
 
 app.use('/prerender-reference', (req, res, next) => {
   return prerender(res, next);
-}, (req, res, next) => {
+}, (req, res) => {
   return res.redirect(301, '/new-reference/delivery-api');
 });
 
@@ -220,7 +221,7 @@ app.use(async(err, req, res, _next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-  console.error(err.stack);
+  consola.error(err.stack);
   if (appInsights && appInsights.defaultClient) {
     appInsights.defaultClient.trackTrace({ message: 'ERR_STACK_TRACE: ' + err.stack });
   }

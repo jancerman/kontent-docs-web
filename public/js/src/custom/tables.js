@@ -23,7 +23,7 @@
     };
 
     // Force size of table to the very right of the viewport if number of cells if more than 5
-    const setWrapperSize = helper.debounce(() => {
+    const setWrapperSize = window.helper.debounce(() => {
         if (tables.length > 0) {
             let viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
             let websiteWidth = document.querySelector('main').offsetWidth;

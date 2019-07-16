@@ -66,7 +66,7 @@
         }
 
         lazyload();
-        document.addEventListener('scroll', lazyload, supportsPassive ? { passive: true } : false);
+        document.addEventListener('scroll', lazyload, window.supportsPassive ? { passive: true } : false);
         window.addEventListener('resize', lazyload);
         window.addEventListener('orientationChange', lazyload);
     };
@@ -84,7 +84,7 @@
     const handleLazyEmbed = (target) => {
         // If embed wrapper element child gets clicked, find the parent embed wrapper
         if (!target.classList.contains('embed__dnt-enable')) {
-            target = helper.getParents(target).filter(item => {
+            target = window.helper.getParents(target).filter(item => {
                 let isEmbedWrapper = false;
                 if (item.classList) {
                     isEmbedWrapper = item.classList.contains('embed__dnt-enable');
@@ -104,11 +104,11 @@
 
     const loadOnClick = () => {
         let lazy = document.querySelectorAll('.lazy:not(.lazy--exclude-dnt)');
-        let label = UIMessages ? UIMessages.dntLabel : '';
+        let label = window.UIMessages ? window.UIMessages.dntLabel : '';
 
         lazy.forEach(item => {
-            let wrapper = helper.getParents(item);
-            wrapper[0].insertBefore(helper.createElementFromHTML(`<div class="embed__dnt-enable">${helper.decodeHTMLEntities(label)}</div>`), wrapper[0].firstChild);
+            let wrapper = window.helper.getParents(item);
+            wrapper[0].insertBefore(window.helper.createElementFromHTML(`<div class="embed__dnt-enable">${window.helper.decodeHTMLEntities(label)}</div>`), wrapper[0].firstChild);
         });
 
         document.querySelector('body').addEventListener('click', (e) => {
@@ -122,7 +122,7 @@
     // Conditionally load stylesheets
     const loadFonts = () => {
         if (document.querySelector('code, pre')) {
-            helper.addStylesheet('https://fonts.googleapis.com/css?family=Inconsolata');
+            window.helper.addStylesheet('https://fonts.googleapis.com/css?family=Inconsolata');
         }
     };
 

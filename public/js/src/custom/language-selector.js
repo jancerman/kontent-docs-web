@@ -30,13 +30,13 @@
         let textTofixedLabel;
 
         if (e) {
-            helper.setCookie('KCDOCS.preselectedLanguage', e.target.getAttribute('data-platform'));
+            window.helper.setCookie('KCDOCS.preselectedLanguage', e.target.getAttribute('data-platform'));
             articleContent.querySelectorAll('.language-selector__link--active').forEach(item => item.classList.remove('language-selector__link--active'));
             articleContent.querySelectorAll(`[data-platform=${e.target.getAttribute('data-platform')}]`).forEach(item => item.classList.add('language-selector__link--active'));
             updatePlatformInUrls(e.target.getAttribute('data-slug'));
             textTofixedLabel = e.target.innerHTML;
         } else {
-            let preselectedPlatform = helper.getCookie('KCDOCS.preselectedLanguage');
+            let preselectedPlatform = window.helper.getCookie('KCDOCS.preselectedLanguage');
             let preselectedElem = document.querySelectorAll(`[data-platform="${preselectedPlatform}"]`);
 
             if (preselectedPlatform && preselectedElem.length) {
@@ -130,7 +130,7 @@
             switchContentChunk(e);
             replaceLanguageInUrl(e);
             document.querySelectorAll(`pre[data-platform-code=${e.target.getAttribute('data-platform')}] code`).forEach((item) => {
-                Prism.highlightElement(item);
+                window.Prism.highlightElement(item);
             });
         };
 
@@ -143,7 +143,7 @@
                 let scrollPosition;
                 let newElemOffset;
 
-                if (helper.findAncestor(offsetTarget, '.language-selector--fixed')) {
+                if (window.helper.findAncestor(offsetTarget, '.language-selector--fixed')) {
                     offsetTarget = getFirstElemInViewport('.language-selector--code-block');
                 }
 
@@ -168,13 +168,13 @@
     };
 
     const hidePlaformInContentChunk = (item, languageSelector) => {
-        let chunkParent = helper.findAncestor(item, '[data-platform-chunk]');
+        let chunkParent = window.helper.findAncestor(item, '[data-platform-chunk]');
 
         if (chunkParent) {
             let languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');
             let chunkPlatforms = chunkParent.getAttribute('data-platform-chunk').split('|');
             languageSelectorItems.forEach((elem) => {
-                let elemParent = helper.findAncestor(elem, '.language-selector__item');
+                let elemParent = window.helper.findAncestor(elem, '.language-selector__item');
                 elemParent.style.display = 'none';
                 if (chunkPlatforms.indexOf(elem.getAttribute('data-platform')) > -1) {
                     elemParent.style.display = 'block';
@@ -188,7 +188,7 @@
     const showAllPlatformsInContentChunk = (languageSelector) => {
         let languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');
         languageSelectorItems.forEach((elem) => {
-            let elemParent = helper.findAncestor(elem, '.language-selector__item');
+            let elemParent = window.helper.findAncestor(elem, '.language-selector__item');
             elemParent.style.display = 'block';
         });
 
@@ -229,7 +229,7 @@
 
             var text = document.createElement('label');
             text.classList.add('language-selector__fixed-label');
-            text.innerHTML = UIMessages && UIMessages.technologyLabel ? UIMessages.technologyLabel : 'Technology';
+            text.innerHTML = window.UIMessages && window.UIMessages.technologyLabel ? window.UIMessages.technologyLabel : 'Technology';
             languageSelector.insertBefore(text, languageSelector.firstChild);
 
             document.querySelector('body').addEventListener('click', (e) => {
@@ -272,19 +272,19 @@
             let copyButtons = articleContent.querySelectorAll('.infobar__copy');
 
             copyButtons.forEach(item => {
-                item.innerHTML = (UIMessages ? UIMessages.copyCode : '');
+                item.innerHTML = (window.UIMessages ? window.UIMessages.copyCode : '');
             });
 
             articleContent.addEventListener('click', (e) => {
                 if (e.target && e.target.matches('.infobar__copy')) {
                     e.preventDefault();
                     let text = e.target.innerHTML;
-                    e.target.innerHTML = (UIMessages ? UIMessages.copyCodeActive : '');
+                    e.target.innerHTML = (window.UIMessages ? window.UIMessages.copyCodeActive : '');
                     setTimeout(() => {
                         e.target.innerHTML = text;
                     }, 1500);
-                    let code = helper.findAncestor(e.target, 'pre').querySelector('.clean-code').innerHTML;
-                    helper.copyToClipboard(helper.htmlDecode(code));
+                    let code = window.helper.findAncestor(e.target, 'pre').querySelector('.clean-code').innerHTML;
+                    window.helper.copyToClipboard(window.helper.htmlDecode(code));
                 }
             });
         }
@@ -328,7 +328,7 @@
 
     const handleEmptyPlatforms = () => {
         const codeBlocks = document.querySelectorAll('.code-samples');
-        const message = UIMessages && UIMessages.emptyCodeBlock ? UIMessages.emptyCodeBlock : 'We don\'t have a code sample for the selected technology.';
+        const message = window.UIMessages && window.UIMessages.emptyCodeBlock ? window.UIMessages.emptyCodeBlock : 'We don\'t have a code sample for the selected technology.';
 
         codeBlocks.forEach((block) => {
             let availablePlatforms = [...block.querySelectorAll('[data-platform]')].map((item) => {
@@ -357,7 +357,7 @@
     cloneLanguageSelectorToFixed();
     handleEmptyPlatforms();
     handleFixedSelector();
-    window.addEventListener('scroll', handleFixedSelector, supportsPassive ? { passive: true } : false);
+    window.addEventListener('scroll', handleFixedSelector, window.supportsPassive ? { passive: true } : false);
     selectLanguage();
     copyCode();
     setTimeout(() => {

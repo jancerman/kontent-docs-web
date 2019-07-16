@@ -49,7 +49,7 @@ window.helperForm = (() => {
     };
 
     const submitData = (endpoint, data, callback) => {
-        return helper.ajaxPost(endpoint, data, callback, 'json');
+        return window.helper.ajaxPost(endpoint, data, callback, 'json');
     };
 
     const clearForm = (form) => {
@@ -67,7 +67,7 @@ window.helperForm = (() => {
         disableInputs(settings.form, settings.recaptchaCover);
         addLoadingToButton(settings.submitButton);
         var data = settings.collectData();
-        helperForm.submitData(settings.endpoint, data, settings.processData);
+        window.helperForm.submitData(settings.endpoint, data, settings.processData);
     };
 
     return {

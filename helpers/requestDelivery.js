@@ -1,6 +1,7 @@
 const KenticoCloud = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
 const enhanceMarkup = require('./enhanceMarkup');
+const consola = require('consola');
 
 const richTextResolverTemplates = require('./richTextResolverTemplates');
 const linksResolverTemplates = require('./linksResolverTemplates');
@@ -93,7 +94,7 @@ const getResponse = async (query, config) => {
     const response = await query
         .getPromise()
         .catch(err => {
-            console.error(err);
+            consola.error(err);
         });
 
     if (config.resolveRichText && response) {

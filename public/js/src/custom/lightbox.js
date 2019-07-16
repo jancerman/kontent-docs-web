@@ -5,15 +5,6 @@
     setTimeout(() => {
       let imgs = document.querySelectorAll('img.article__add-lightbox');
 
-      let interval = setInterval(() => {
-        imgs = document.querySelectorAll('img.article__add-lightbox');
-
-        if (imgs.length) {
-          initLightbox();
-          clearInterval(interval);
-        }
-      }, 100);
-
       const initLightbox = () => {
         document.querySelectorAll('img.article__add-lightbox').forEach((item) => {
           let figcaption = '';
@@ -37,9 +28,18 @@
 
           // Init lighbox with caption
           item.addEventListener('click', () => {
-            basicLightbox.create(`<img src="${item.getAttribute('src').split('?')[0] + '?w=1600&fm=jpg&auto=format'}">${figcaption}`).show();
+            window.basicLightbox.create(`<img src="${item.getAttribute('src').split('?')[0] + '?w=1600&fm=jpg&auto=format'}">${figcaption}`).show();
           });
         });
       }
+
+      let interval = setInterval(() => {
+        imgs = document.querySelectorAll('img.article__add-lightbox');
+
+        if (imgs.length) {
+          initLightbox();
+          clearInterval(interval);
+        }
+      }, 100);
     }, 0);
   })();

@@ -138,7 +138,7 @@ const getPreselectedPlatform = (content, req, res) => {
             cookiesPlatform = preselectedPlatform;
         } else {
             return null;
-        };
+        }
     }
 
     if (!preselectedPlatform) {
