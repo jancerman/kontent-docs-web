@@ -96,6 +96,12 @@
         toggleBlock(e, 'data-platform-chunk', true, '*=');
     };
 
+    const removeParameterfromUrlSearch = (urlSearch, param) => {
+        urlSearch = urlSearch.replace('?', '').split('&');
+        urlSearch = urlSearch.filter(item => item.indexOf(param) !== 0 && item !== '');
+        return urlSearch.length ? '?' + urlSearch.join('&') : '';
+    };
+
     const replaceLanguageInUrl = (e) => {
         let selectedPlatform = e.target.getAttribute('data-slug');
         let url = window.location;
@@ -160,11 +166,6 @@
                 }
             }
         });
-    };
-    const removeParameterfromUrlSearch = (urlSearch, param) => {
-        urlSearch = urlSearch.replace('?', '').split('&');
-        urlSearch = urlSearch.filter(item => item.indexOf(param) !== 0 && item !== '');
-        return urlSearch.length ? '?' + urlSearch.join('&') : '';
     };
 
     const hidePlaformInContentChunk = (item, languageSelector) => {

@@ -94,7 +94,7 @@ const handleKCKeys = (req, res) => {
   }
 };
 
-const pageExists = async (req, res, next) => {
+const pageExists = async (req, res) => {
   const urlMap = cache.get(`urlMap_${res.locals.projectid}`);
   const path = req.originalUrl.split('?')[0];
   let exists = false;
@@ -217,7 +217,7 @@ app.use((req, res, next) => {
 });
 
 // error handler
-app.use(async(err, req, res, _next) => {
+app.use(async(err, req, res, _next) => { // eslint-disable-line no-unused-vars
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

@@ -2,8 +2,6 @@
  * Helper functions used in other JS files in the ../custom folder
  */
 
-/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "renderReCaptcha" }] */
-
 let recaptchaKey;
 window.helper = (() => {
     // Find a parent of the "el" element specified by the "parentSelector" param
@@ -124,7 +122,7 @@ window.helper = (() => {
         try {
             document.execCommand('copy');
         } catch (err) {
-            console.log('Oops, unable to copy');
+            throw new Error('Oops, unable to copy');
         }
 
         document.body.removeChild(textArea);
@@ -156,7 +154,7 @@ window.helper = (() => {
             return evaluateAjaxResponse(xmlhttp, callback, type);
         };
 
-        xmlhttp.send();
+        return xmlhttp.send();
     };
 
     // Ajax POST call
@@ -167,7 +165,7 @@ window.helper = (() => {
         xmlhttp.onload = () => {
             return evaluateAjaxResponse(xmlhttp, callback, type);
         };
-        xmlhttp.send(JSON.stringify(requestData));
+        return xmlhttp.send(JSON.stringify(requestData));
     };
 
     // Get url parameter by its name
@@ -207,12 +205,12 @@ window.helper = (() => {
         var link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = url;
-        document.head.appendChild(link);
+        return document.head.appendChild(link);
     };
 
     // Request stylesheet, append additional font-display property and in-line it in page head
     const loadStylesheet = (url) => {
-        ajaxGet(url, css => {
+        return ajaxGet(url, css => {
             css = css.replace(/}/g, 'font-display: swap; }');
 
             const head = document.getElementsByTagName('head')[0];
@@ -251,6 +249,7 @@ window.helper = (() => {
             expires = '; expires=' + date.toUTCString();
         }
         document.cookie = name + '=' + (value || '') + expires + '; path=/';
+        return document.cookie;
     };
 
     const getCookie = (name) => {
@@ -266,6 +265,7 @@ window.helper = (() => {
 
     const eraseCookie = (name) => {
         document.cookie = name + '=; Max-Age=-99999999;';
+        return document.cookie;
     };
 
     const loadRecaptcha = () => {
@@ -277,6 +277,8 @@ window.helper = (() => {
             script.src = 'https://www.google.com/recaptcha/api.js?onload=renderReCaptcha';
             recaptchaElem.appendChild(script);
         }
+
+        return recaptchaKey;
     };
 
     return {
@@ -301,7 +303,7 @@ window.helper = (() => {
     }
 })();
 
-const renderReCaptcha = function () {
+const renderReCaptcha = function () { // eslint-disable-line no-unused-vars
     window.grecaptcha.render('g-recaptcha-placeholder', {
         'sitekey': recaptchaKey,
         'theme': 'light'

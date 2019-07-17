@@ -148,6 +148,15 @@
         });
     };
 
+    const logSearchTermSelected = (term, url) => {
+        window.dataLayer.push({
+            'event': 'event',
+            'eventCategory': 'search--used',
+            'eventAction': decodeURIComponent(term),
+            'eventLabel': url
+        });
+    };
+
     const onAutocompleteSelected = (suggestion, context) => {
         searchResultSelected = true;
         searchInput.value = decodeURIComponent(searchTerm);
@@ -294,15 +303,6 @@
             if (searchInputIsFocused) {
                 searchInput.focus();
             }
-    };
-
-    const logSearchTermSelected = (term, url) => {
-        window.dataLayer.push({
-            'event': 'event',
-            'eventCategory': 'search--used',
-            'eventAction': decodeURIComponent(term),
-            'eventLabel': url
-        });
     };
 
     const initAlgoliaSearch = () => {
