@@ -8,58 +8,34 @@
 
     /* Code blocks inside documentation body */
     var getPrismClassName = function (item) {
-      var lang = 'lang-';
-      item = item.toLowerCase();
-
-      if (item) {
-        switch (item) {
-          case 'rest':
-            lang += 'shell';
-            break;
-          case 'shell':
-            lang += 'shell';
-            break;
-          case 'curl':
-            lang += 'shell';
-            break;
-          case '_net':
-            lang += 'dotnet';
-            break;
-          case 'javascript':
-            lang += 'js';
-            break;
-          case 'typescript':
-            lang += 'ts';
-            break;
-          case 'java':
-            lang += 'java';
-            break;
-          case 'android':
-            lang += 'java';
-            break;
-          case 'javarx':
-            lang += 'java';
-            break;
-          case 'php':
-            lang += 'php';
-            break;
-          case 'ios':
-            lang += 'swift';
-            break;
-          case 'python':
-            lang += 'python';
-            break;
-          case 'ruby':
-            lang += 'ruby';
-            break;
-          default:
-            lang += 'clike';
-        }
-      } else {
-        lang += 'clike';
+      var lang;
+      var pairings = {
+          'rest': 'shell',
+          'shell': 'shell',
+          'curl': 'shell',
+          '_net': 'dotnet',
+          'c_': 'dotnet',
+          'javascript': 'js',
+          'json': 'js',
+          'typescript': 'ts',
+          'java': 'java',
+          'android': 'java',
+          'javarx': 'java',
+          'php': 'php',
+          'swift': 'swift',
+          'python': 'python',
+          'ruby': 'ruby'
       }
 
-      return lang;
+      if (item && item.codename) {
+          lang = pairings[item.codename];
+      }
+
+      if (!lang) {
+          lang = 'clike';
+      }
+
+      return 'lang-'+ lang;
     };
 
     var createHighlightedBlock = function (block) {

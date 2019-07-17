@@ -17,6 +17,17 @@
         });
     };
 
+    const handleFeedback = (e) => {
+        e.preventDefault();
+        if (e.target) {
+            if (e.target.matches('.feedback__button--yes')) {
+                onBtnClick(yesBtn, yesMsg, 1);
+            } else if (e.target.matches('.feedback__button--no')) {
+                onBtnClick(noBtn, noMsg, 0);
+            }
+        }
+    };
+
     const onBtnClick = (btn, msg, value) => {
         btnArea.removeEventListener('click', handleFeedback);
         btnArea.classList.add('feedback__answer--answered');
@@ -33,17 +44,6 @@
         if (form && value === 0) {
             form.classList.remove('feedback__form--hidden');
             window.helper.loadRecaptcha();
-        }
-    };
-
-    const handleFeedback = (e) => {
-        e.preventDefault();
-        if (e.target) {
-            if (e.target.matches('.feedback__button--yes')) {
-                onBtnClick(yesBtn, yesMsg, 1);
-            } else if (e.target.matches('.feedback__button--no')) {
-                onBtnClick(noBtn, noMsg, 0);
-            }
         }
     };
 

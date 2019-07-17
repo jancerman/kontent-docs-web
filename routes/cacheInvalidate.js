@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const cache = require('memory-cache');
 const crypto = require('crypto');
+const asyncHandler = require('express-async-handler');
 const commonContent = require('../helpers/commonContent');
 const requestDelivery = require('../helpers/requestDelivery');
 const app = require('../app');
@@ -33,7 +34,7 @@ const requestItemAndDeleteCacheKey = async (keyNameToDelete, codename, KCDetails
     }
 };
 
-const deleteSpecificKeys = (KCDetails, items, keyNameToCheck, keyNameToDelete) => {
+const deleteSpecificKeys = async (KCDetails, items, keyNameToCheck, keyNameToDelete) => {
     let cacheItems = cache.get(`${keyNameToCheck}_${KCDetails.projectid}`);
     if (items && cacheItems) {
         for (let i = 0; i < items.length; i++) {
@@ -83,7 +84,44 @@ const splitPayloadByContentType = (items) => {
     return itemsByTypes;
 };
 
-router.post('/', (req, res) => {
+const invalidateGeneral = (itemsByTypes, KCDetails, type, keyName) => {
+    if (!keyName) {
+        keyName = type;
+    }
+
+    if (itemsByTypes[type].length) {
+        cache.del(`${keyName}_${KCDetails.projectid}`);
+    }
+
+    return false;
+};
+
+const invalidateMultiple = async (itemsByTypes, KCDetails, type, keyName) => {
+    if (!keyName) {
+        keyName = type;
+    }
+
+    if (itemsByTypes[type].length) {
+        itemsByTypes[type].forEach(async (item) => {
+            await requestItemAndDeleteCacheKey(keyName, item.codename, KCDetails);
+        });
+    }
+
+    return false;
+};
+
+const invalidateArticles = async (itemsByTypes, KCDetails) => {
+    if (itemsByTypes.articles.length) {
+        await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'articles', 'article');
+        await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'articles', 'reference');
+        cache.del(`articles_${KCDetails.projectid}`);
+        cache.del(`rss_articles_${KCDetails.projectid}`);
+    }
+
+    return false;
+};
+
+router.post('/', asyncHandler(async (req, res) => {
     if (process.env['Webhook.Cache.Invalidate.CommonContent']) {
         if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
             const KCDetails = commonContent.getKCDetails(res);
@@ -91,40 +129,13 @@ router.post('/', (req, res) => {
             const keys = cache.keys();
             let itemsByTypes = splitPayloadByContentType(items);
 
-            if (itemsByTypes.footer.length) {
-                cache.del(`footer_${KCDetails.projectid}`);
-            }
-
-            if (itemsByTypes.UIMessages.length) {
-                cache.del(`UIMessages_${KCDetails.projectid}`);
-            }
-
-            if (itemsByTypes.articles.length) {
-                deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'articles', 'article');
-                deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'articles', 'reference');
-                cache.del(`articles_${KCDetails.projectid}`);
-                cache.del(`rss_articles_${KCDetails.projectid}`);
-            }
-
-            if (itemsByTypes.scenarios.length) {
-                itemsByTypes.scenarios.forEach(async (item) => {
-                    await requestItemAndDeleteCacheKey('scenario', item.codename, KCDetails);
-                });
-            }
-
-            if (itemsByTypes.topics.length) {
-                itemsByTypes.topics.forEach(async (item) => {
-                    await requestItemAndDeleteCacheKey('topic', item.codename, KCDetails);
-                });
-            }
-
-            if (itemsByTypes.notFound.length) {
-                cache.del(`notFound_${KCDetails.projectid}`);
-            }
-
-            if (itemsByTypes.picker.length) {
-                cache.del(`platformsConfig_${KCDetails.projectid}`);
-            }
+            invalidateGeneral(itemsByTypes, KCDetails, 'footer');
+            invalidateGeneral(itemsByTypes, KCDetails, 'UIMessages');
+            invalidateGeneral(itemsByTypes, KCDetails, 'notFound');
+            invalidateGeneral(itemsByTypes, KCDetails, 'picker', 'platformsConfig');
+            await invalidateArticles(itemsByTypes, KCDetails);
+            await invalidateMultiple(itemsByTypes, KCDetails, 'scenarios', 'scenario');
+            await invalidateMultiple(itemsByTypes, KCDetails, 'topics', 'topic');
 
             cache.del(`home_${KCDetails.projectid}`);
 
@@ -138,6 +149,6 @@ router.post('/', (req, res) => {
     }
 
     return res.end();
-});
+}));
 
 module.exports = router;
