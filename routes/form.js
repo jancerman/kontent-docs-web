@@ -57,14 +57,7 @@ const validateDataFeedback = async (data, req, res) => {
     return validation;
 };
 
-const validateDataCertification = async (data, req, res) => {
-    const KCDetails = commonContent.getKCDetails(res);
-    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
-
-    let validation = {
-        isValid: true
-    };
-
+const validateFieldsCertification = (data, validation, UIMessages) => {
     if (!data.first_name) {
         validation = setFalseValidation(validation, 'first_name', UIMessages);
     }
@@ -81,6 +74,18 @@ const validateDataCertification = async (data, req, res) => {
         validation = setFalseValidation(validation, 'custom_field_1', UIMessages);
     }
 
+    return validation;
+};
+
+const validateDataCertification = async (data, req, res) => {
+    const KCDetails = commonContent.getKCDetails(res);
+    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+
+    let validation = {
+        isValid: true
+    };
+
+    validation = validateFieldsCertification(data, validation, UIMessages);
     validation = await validateReCaptcha(validation, data, UIMessages);
 
     if (validation.isValid) {
@@ -96,18 +101,19 @@ const validateDataCertification = async (data, req, res) => {
     return validation;
 };
 
-router.post('/feedback', async (req, res, next) => {
+const manageRequest = async (req, res, validate) => {
     let data = JSON.parse(req.body);
 
-    let validation = await validateDataFeedback(data, req, res);
+    let validation = await validate(data, req, res);
     return res.json(validation);
+};
+
+router.post('/feedback', async (req, res) => {
+    return await manageRequest(req, res, validateDataFeedback);
 });
 
-router.post('/certification', async (req, res, next) => {
-    let data = JSON.parse(req.body);
-
-    let validation = await validateDataCertification(data, req, res);
-    return res.json(validation);
+router.post('/certification', async (req, res) => {
+    return await manageRequest(req, res, validateDataCertification);
 });
 
 module.exports = router;

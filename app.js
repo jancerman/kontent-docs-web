@@ -10,6 +10,7 @@ const asyncHandler = require('express-async-handler');
 const cache = require('memory-cache');
 const cacheControl = require('express-cache-controller');
 const serveStatic = require('serve-static');
+const consola = require('consola');
 const cmd = require('node-cmd');
 
 const handleCache = require('./helpers/handleCache');
@@ -25,7 +26,7 @@ const urlAliases = require('./routes/urlAliases');
 const redirectUrls = require('./routes/redirectUrls');
 const previewUrls = require('./routes/previewUrls');
 const cacheInvalidate = require('./routes/cacheInvalidate');
-const apiReference = require('./routes/apiReference');
+const reference = require('./routes/reference');
 const error = require('./routes/error');
 const form = require('./routes/form');
 
@@ -44,7 +45,8 @@ const urlWhitelist = [
   '/redirect-urls',
   '/cache-invalidate',
   '/robots.txt',
-  '/sitemap.xml'
+  '/sitemap.xml',
+  '/prerender-reference'
 ];
 
 // Azure Application Insights monitors
@@ -92,7 +94,7 @@ const handleKCKeys = (req, res) => {
   }
 };
 
-const pageExists = async (req, res, next) => {
+const pageExists = async (req, res) => {
   const urlMap = cache.get(`urlMap_${res.locals.projectid}`);
   const path = req.originalUrl.split('?')[0];
   let exists = false;
@@ -176,28 +178,34 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
   return res.json(cache.get(`urlMap_${res.locals.projectid}`));
 }));
 
-// API Reference
-const prerender = (next) => {
-  const yaml = 'https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/7c5a287f89163b226e134a7b21be296a5bcf2370/kcd%2520proto%2520all%2520oas3.yml';
+app.use('/new-reference', reference);
+
+const prerender = (res, next) => {
+  const yaml = 'https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/efbd64954fefa9edbda332027dac1b74c3d3bb49/kcd%2520proto%2520all%2520oas3.yml';
   const options = prerenderOptions.join(' ');
   const template = './views/apiReference/redoc/template.hbs';
 
   cmd.get(
       `node ./helpers/redoc-cli/index.js bundle ${yaml} -t ${template} ${options}`,
-      function(err, data, stderr) {
-          console.log(data);
-          console.log(err);
-          console.log(stderr);
+      function (err, data, stderr) {
+          consola.log(err);
+          consola.log(data);
+          consola.log(stderr);
+
+          if (stderr) {
+            res.send(stderr);
+          }
+
           return next();
       }
   );
 };
 
-app.use('/api-reference', (req, res, next) => {
-  return prerender(next);
-  // return next();
-}, apiReference);
-// End of API Reference
+app.use('/prerender-reference', (req, res, next) => {
+  return prerender(res, next);
+}, (req, res) => {
+  return res.redirect(301, '/new-reference/delivery-api');
+});
 
 app.use('/', tutorials);
 
@@ -209,11 +217,11 @@ app.use((req, res, next) => {
 });
 
 // error handler
-app.use(async(err, req, res, _next) => {
+app.use(async(err, req, res, _next) => { // eslint-disable-line no-unused-vars
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-  console.error(err.stack);
+  consola.error(err.stack);
   if (appInsights && appInsights.defaultClient) {
     appInsights.defaultClient.trackTrace({ message: 'ERR_STACK_TRACE: ' + err.stack });
   }

@@ -5,8 +5,8 @@
     // On click 2nd level of the sub-navigation make the 3rd level collapse
     const actionOnLevel2 = (event) => {
         var isLevel3 = false;
-    
-        helper.getParents(event.target).forEach(item => {
+
+        window.helper.getParents(event.target).forEach(item => {
             if (item && item.classList && item.classList.contains('sub-navigation--level-3')) {
                 isLevel3 = true;
             }
@@ -25,7 +25,7 @@
 
     const toggleLevel2 = () => {
         let level2 = document.querySelector('.sub-navigation--level-2');
-        
+
         if (level2) {
             level2.addEventListener('click', event => {
                 if (event.target && event.target.classList.contains('sub-navigation__link')) {
@@ -35,7 +35,7 @@
         }
     };
 
-    // Make the sub-navigation fixed to top/bottom of the sreen, or to header/footer 
+    // Make the sub-navigation fixed to top/bottom of the sreen, or to header/footer
     const fixSubNav = () => {
         let subNavigation = document.querySelector('.sub-navigation.sub-navigation--level-1');
         let viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -44,7 +44,7 @@
             let topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
             let isTop = topOffset <= document.querySelector('.navigation').offsetHeight;
 
-            let isBottom = (window.innerHeight + window.pageYOffset + helper.outerHeight(document.querySelector('.footer'))) >= document.body.offsetHeight;
+            let isBottom = (window.innerHeight + window.pageYOffset + window.helper.outerHeight(document.querySelector('.footer'))) >= document.body.offsetHeight;
 
             if (isTop) {
                 subNavigation.classList.add('sub-navigation--top');
@@ -63,5 +63,5 @@
     toggleLevel2();
     fixSubNav();
 
-    window.addEventListener('scroll', fixSubNav, supportsPassive ? { passive: true } : false);
+    window.addEventListener('scroll', fixSubNav, window.supportsPassive ? { passive: true } : false);
 })();

@@ -7,7 +7,7 @@
         let headings = document.querySelector('.article__content').querySelectorAll('h2:not(.table-of-contents__heading), h3, h4');
 
         headings.forEach((item) => {
-            let anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig,'').replace(/\W/g,'-');
+            let anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/\W/g, '-');
             item.setAttribute('id', anchorName);
             item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip">Copy URL</span></span>`;
         });
@@ -47,7 +47,7 @@
             });
 
             setTimeout(() => {
-                document.getElementById(hash).scrollIntoView({ block: 'start',  behavior: 'smooth' });
+                document.getElementById(hash).scrollIntoView({ block: 'start', behavior: 'smooth' });
             }, 200);
         }
     };
@@ -85,9 +85,9 @@
     const bindSmothScroll = () => {
         let tableOfContentsWrapper = document.querySelector('.table-of-contents__list');
         tableOfContentsWrapper.addEventListener('click', (event) => {
-            if(event.target && event.target.nodeName === 'A') {
+            if (event.target && event.target.nodeName === 'A') {
                 event.preventDefault();
-                document.querySelector(event.target.getAttribute('href')).scrollIntoView({ block: 'start',  behavior: 'smooth' });
+                document.querySelector(event.target.getAttribute('href')).scrollIntoView({ block: 'start', behavior: 'smooth' });
                 history.replaceState(undefined, undefined, `${event.target.getAttribute('href')}`);
             }
         });
@@ -138,7 +138,7 @@
             fixTableOfContents();
             anchorOnLoad();
             copyAnchorClipboard();
-    
+
             window.addEventListener('scroll', fixTableOfContents, supportsPassive ? { passive: true } : false);
             window.addEventListener('resize', fixTableOfContents);
         }, 0);

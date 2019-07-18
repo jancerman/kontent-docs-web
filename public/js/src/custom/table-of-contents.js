@@ -28,7 +28,7 @@
             item.addEventListener('click', () => {
                 let hash = item.parentElement.getAttribute('id');
                 let url = window.location.href.split('#')[0];
-                helper.copyToClipboard(`${url}#${hash}`);
+                window.helper.copyToClipboard(`${url}#${hash}`);
 
                 let tooltip = item.querySelector('.anchor-copy__tooltip');
                 tooltip.classList.add('anchor-copy__tooltip--active');
@@ -174,7 +174,7 @@
         }
     };
 
-    const arrayMin = (arr) =>{
+    const arrayMin = (arr) => {
         let len = arr.length;
         let min = Infinity;
         let minIndex = 0;
@@ -207,8 +207,8 @@
         if (nextHeading) {
             position = Math.floor(nextHeading.getBoundingClientRect().top);
         } else {
-            let body = document.body,
-                html = document.documentElement;
+            let body = document.body;
+                let html = document.documentElement;
             position = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
         }
 
@@ -221,7 +221,6 @@
             let affixHeadingsLocal = filterNonHiddenHeadings(affixHeadings);
 
             for (let i = 0; i < affixHeadingsLocal.length; i++) {
-                 
                 let nextHeading = affixHeadingsLocal[i + 1];
                 let position = getNextHeadingPosition(nextHeading);
 
@@ -254,14 +253,14 @@
             cloneToFixed();
             bindSmothScroll();
             handleFixed();
-            window.addEventListener('scroll', handleFixed, supportsPassive ? {
+            window.addEventListener('scroll', handleFixed, window.supportsPassive ? {
                 passive: true
             } : false);
             anchorOnLoad();
             toggleItemsFromWithinContentChunks();
             copyAnchorClipboard();
             affix();
-            window.addEventListener('scroll', affix, supportsPassive ? {
+            window.addEventListener('scroll', affix, window.supportsPassive ? {
                 passive: true
             } : false);
         }, 0);

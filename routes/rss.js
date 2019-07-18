@@ -8,7 +8,7 @@ const entities = new Entities();
 const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 
-router.get('/articles', (req, res, next) => {
+router.get('/articles', (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
 
     const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);

@@ -1,4 +1,4 @@
-const requestDelivery = require('../helpers/requestDelivery');
+const requestDelivery = require('./requestDelivery');
 const cache = require('memory-cache');
 
 const commonContent = {
@@ -22,6 +22,14 @@ const commonContent = {
     getFooter: async (res) => {
         return await requestDelivery({
             type: 'footer',
+            ...commonContent.getKCDetails(res)
+        });
+    },
+    getSubNavigation: async (res, slug) => {
+        return await requestDelivery({
+            type: 'navigation_item',
+            depth: 3,
+            slug: slug,
             ...commonContent.getKCDetails(res)
         });
     },

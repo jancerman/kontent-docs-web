@@ -1,6 +1,7 @@
 const KenticoCloud = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
 const enhanceMarkup = require('./enhanceMarkup');
+const consola = require('consola');
 
 const richTextResolverTemplates = require('./richTextResolverTemplates');
 const linksResolverTemplates = require('./linksResolverTemplates');
@@ -41,6 +42,7 @@ const defineQuery = (deliveryConfig, config) => {
     let query = deliveryClient.items()
 
         if (config.type) { query.type(config.type); }
+        if (config.types) { query.types(config.types); }
         if (config.codename) { query.equalsFilter('system.codename', config.codename); }
         if (config.depth) { query.depthParameter(config.depth); }
         if (config.slug) { query.equalsFilter('elements.url', config.slug); }
@@ -92,7 +94,7 @@ const getResponse = async (query, config) => {
     const response = await query
         .getPromise()
         .catch(err => {
-            console.error(err);
+            consola.error(err);
         });
 
     if (config.resolveRichText && response) {

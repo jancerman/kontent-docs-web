@@ -81,5 +81,6 @@ const evaluateSingle = async (res, keyName, method) => {
 
 module.exports = {
     evaluateCommon,
-    evaluateSingle
+    evaluateSingle,
+    KCDetails
 }

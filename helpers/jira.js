@@ -1,4 +1,5 @@
 const axios = require('axios');
+const consola = require('consola');
 
 const jira = {
     createIssue: async (data) => {
@@ -37,7 +38,7 @@ const jira = {
                 headers: settings.headers
             });
         } catch (error) {
-            console.error(error.response.data);
+            consola.error(error.response.data);
         }
     }
 }

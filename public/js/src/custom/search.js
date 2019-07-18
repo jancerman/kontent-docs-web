@@ -5,27 +5,28 @@
 (() => {
     // Get Algolia API details from object in the global scope (should be present in the page head)
     // Or use API detail injected with url parameters
-    searchAPI.appid = helper.getParameterByName('searchappid') || searchAPI.appid;
-    searchAPI.apikey = helper.getParameterByName('searchapikey') || searchAPI.apikey;
-    searchAPI.indexname = helper.getParameterByName('searchindexname') || searchAPI.indexname;
+    window.searchAPI.appid = window.helper.getParameterByName('searchappid') || window.searchAPI.appid;
+    window.searchAPI.apikey = window.helper.getParameterByName('window.searchAPIkey') || window.searchAPI.apikey;
+    window.searchAPI.indexname = window.helper.getParameterByName('searchindexname') || window.searchAPI.indexname;
 
-    const client = algoliasearch(searchAPI.appid, searchAPI.apikey)
-    const tutorials = client.initIndex(searchAPI.indexname);
+    const client = window.algoliasearch(window.searchAPI.appid, window.searchAPI.apikey);
+    const tutorials = client.initIndex(window.searchAPI.indexname);
     const url = window.location;
     const searchWrapper = document.querySelector('.navigation__search-wrapper');
     const searchOverlay = document.querySelector('.search-overlay');
+    const navigation = document.querySelector('.navigation');
     let searchTerm = '';
     let searchResultSelected = false;
     let searchResultsNumber = 0;
     let searchInput = document.querySelector('#nav-search');
-    let isClampSupported = CSS.supports('-webkit-line-clamp', '2');
+    let isClampSupported = (typeof CSS !== 'undefined' && CSS.supports('-webkit-line-clamp', '2'));
     let clampDelay = 0;
 
-    // Get injected KC API details 
-    const projectIdUrl = helper.getParameterByName('projectid');
-    const previewApiKeyUrl = helper.getParameterByName('previewapikey');
+    // Get injected KC API details
+    const projectIdUrl = window.helper.getParameterByName('projectid');
+    const previewApiKeyUrl = window.helper.getParameterByName('previewapikey');
 
-    // Build query string with injected KC API details for the urlMap 
+    // Build query string with injected KC API details for the urlMap
     const queryString = (() => {
         let qString = '';
         qString += (typeof projectIdUrl !== 'undefined' && projectIdUrl !== null) ? `projectid=${projectIdUrl}&` : '';
@@ -37,13 +38,12 @@
 
     const arrowPress = (e) => {
         e = e || window.event;
-        if (e.keyCode == '38' || e.keyCode == '40' || e.keyCode == '37' || e.keyCode == '39') {
+        if (e.keyCode === 38 || e.keyCode === 40 || e.keyCode === 37 || e.keyCode === 39) {
             searchInput.value = decodeURIComponent(searchTerm);
         }
     };
 
     const removeInlineElements = (content) => {
-        
         if (content) {
             content = content.replace(/{@[a-z,0-9,-</>]+@}/g, '');
             content = content.replace(/{~[^~]+~}/g, '');
@@ -55,10 +55,6 @@
     const formatSuggestionContent = (suggestion) => {
         // Get content with highlighted markup
         let content = suggestion._highlightResult.content.value;
-
-        if (!content) {
-            console.log(suggestion);
-        }
 
         // Remove inline icon, code macros and newlines
         content = removeInlineElements(content);
@@ -109,7 +105,7 @@
         const suggestionUrl = urlMap.filter(item => item.codename === suggestion.codename);
 
         // Add an anchor to the url if available
-        const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g,'-')}` : '';
+        const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g, '-')}` : '';
         suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}${anchor}` : '';
 
         // Template for a single search result suggestion
@@ -130,8 +126,35 @@
 
         // Template for a empty result
         return `<div class="suggestion suggestion--empty">
-                    <span class="suggestion__heading">${UIMessages ? UIMessages.searchNoResults : ''}</span>
+                    <span class="suggestion__heading">${window.UIMessages ? window.UIMessages.searchNoResults : ''}</span>
                 </div>`;
+    };
+
+    const logSearchTermNumber = (term) => {
+        window.dataLayer.push({
+            'event': 'event',
+            'eventCategory': 'search--searched-result',
+            'eventAction': decodeURIComponent(term),
+            'eventLabel': searchResultsNumber
+        });
+    };
+
+    const logSearchTermErased = () => {
+        window.dataLayer.push({
+            'event': 'event',
+            'eventCategory': 'search--used',
+            'eventAction': decodeURIComponent(searchTerm),
+            'eventLabel': 'Not clicked'
+        });
+    };
+
+    const logSearchTermSelected = (term, url) => {
+        window.dataLayer.push({
+            'event': 'event',
+            'eventCategory': 'search--used',
+            'eventAction': decodeURIComponent(term),
+            'eventLabel': url
+        });
     };
 
     const onAutocompleteSelected = (suggestion, context) => {
@@ -141,7 +164,7 @@
         logSearchTermSelected(searchTerm, suggestion.resolvedUrl);
         logSearchTermNumber(searchTerm);
 
-        // Do nothing on click, as the browser will handle <a> tag by default 
+        // Do nothing on click, as the browser will handle <a> tag by default
         if (context.selectionMethod === 'click') {
             return;
         }
@@ -152,7 +175,7 @@
 
     const clampItem = (item) => {
         setTimeout(() => {
-            $clamp(item, {clamp: 2});
+            window.$clamp(item, { clamp: 2 });
         }, clampDelay);
     };
 
@@ -168,7 +191,7 @@
             searchScrolled = false;
 
             // Clamp only items that are visible without scrolling for performance reasons.
-            for (var i = 0; i < length; i++) {  
+            for (var i = 0; i < length; i++) {
                 clampItem(searchSummaries[i]);
             }
         }, 0);
@@ -181,17 +204,16 @@
                     searchScrolled = true;
                     let searchSummaries = document.querySelectorAll('.suggestion__text');
                     let length = searchSummaries.length <= 4 ? searchSummaries.length : 4;
-        
-                    for (var i = length; i < searchSummaries.length; i++) {  
+
+                    for (var i = length; i < searchSummaries.length; i++) {
                         clampItem(searchSummaries[i]);
                     }
                 }
             }, 0);
-        }, supportsPassive ? {
+        }, window.supportsPassive ? {
             passive: true
         } : false);
     };
-
 
     const onAutocompleteClosed = () => {
         if (searchTerm !== '' && !searchResultSelected) {
@@ -200,14 +222,15 @@
         }
 
         if (searchWrapper && searchOverlay) {
+            navigation.classList.remove('navigation--search-active');
             searchWrapper.classList.remove('navigation__search-wrapper--wide');
             searchOverlay.classList.remove('search-overlay--visible');
         }
-        
     };
 
     const onAutocompleteOpened = () => {
         if (searchWrapper && searchOverlay) {
+            navigation.classList.add('navigation--search-active');
             searchWrapper.classList.add('navigation__search-wrapper--wide');
             searchOverlay.classList.add('search-overlay--visible');
         }
@@ -238,8 +261,8 @@
 
     // Init Algolia
     const initAutocomplete = (urlMap) => {
-        // Init autocomplete and set maximum of suggested search items 
-        var hitsSource = autocomplete.sources.hits(tutorials, {
+        // Init autocomplete and set maximum of suggested search items
+        var hitsSource = window.autocomplete.sources.hits(tutorials, {
             hitsPerPage: 1000
         });
 
@@ -248,7 +271,7 @@
             searchInputIsFocused = true;
         }
 
-        autocomplete('#nav-search', {
+        window.autocomplete('#nav-search', {
                 autoselect: true,
                 openOnFocus: true,
                 clearOnSelected: false,
@@ -282,38 +305,11 @@
             }
     };
 
-    const logSearchTermErased = () => {
-        window.dataLayer.push({
-            'event': 'event',
-            'eventCategory': 'search--used',
-            'eventAction': decodeURIComponent(searchTerm),
-            'eventLabel': 'Not clicked'
-        });
-    };
-
-    const logSearchTermNumber = (term) => {
-        window.dataLayer.push({
-            'event': 'event',
-            'eventCategory': 'search--searched-result',
-            'eventAction': decodeURIComponent(term),
-            'eventLabel': searchResultsNumber
-        });
-    };
-
-    const logSearchTermSelected = (term, url) => {
-        window.dataLayer.push({
-            'event': 'event',
-            'eventCategory': 'search--used',
-            'eventAction': decodeURIComponent(term),
-            'eventLabel': url
-        });
-    };
-
     const initAlgoliaSearch = () => {
         document.onkeydown = arrowPress;
 
         // Get urlMap and init the autocomplete
-        helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
+        window.helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
             initAutocomplete(urlMap);
             optimizeClamping();
         }, 'json');
@@ -329,7 +325,7 @@
         }
     };
 
-    if (searchAPI) {
+    if (window.searchAPI) {
         initAlgoliaSearch();
         setFocusOnMagnifier('navigation');
         setFocusOnMagnifier('hero');

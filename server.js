@@ -1,6 +1,7 @@
 const app = require('./app');
 const debug = require('debug')('app:server');
 const http = require('http');
+const consola = require('consola');
 
 // Normalize a port into a number, string, or false.
 const normalizePort = val => {
@@ -32,15 +33,14 @@ const onError = error => {
     var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
     // Handle specific listen errors with friendly messages
-    switch (error.code) {
-        case 'EACCES':
-            console.error(bind + ' requires elevated privileges');
-            process.exit(1);
-        case 'EADDRINUSE':
-            console.error(bind + ' is already in use');
-            process.exit(1);
-        default:
-            throw error;
+    if (error.code === 'EACCES') {
+        consola.error(bind + ' requires elevated privileges');
+        process.exit(1);
+    } else if (error.code === 'EACCES') {
+        consola.error(bind + ' is already in use');
+        process.exit(1);
+    } else {
+        throw error;
     }
 };
 

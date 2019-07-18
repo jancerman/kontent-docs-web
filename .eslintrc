@@ -1,0 +1,31 @@
+{
+    "extends": "standard",
+    "rules": {
+        "semi": "off",
+        "indent": "off",
+        "comma-dangle": "off",
+        "operator-linebreak": "off",
+        "space-before-function-paren": "off",
+        "space-infix-ops": "off",
+        "no-return-await": "off"
+    },
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "globals": {
+        "grecaptcha": "writable",
+        "helperForm": "writable",
+        "Prism": "writable",
+        "searchAPI": "writable",
+        "helper": "writable",
+        "autocomplete": "writable",
+        "supportsPassive": "writable",
+        "$clamp": "writable",
+        "UIMessages": "writable",
+        "Intercom": "writable",
+        "basicLightbox": "writable",
+        "algoliasearch": "writable",
+        "renderReCaptcha": "writable"
+    }
+}

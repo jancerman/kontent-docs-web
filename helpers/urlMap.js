@@ -2,7 +2,7 @@ const { DeliveryClient } = require('kentico-cloud-delivery');
 const { deliveryConfig } = require('../config');
 const cache = require('memory-cache');
 let fields = ['codename', 'url'];
-// let globalConfig;
+let createUrlMap, handleNode;
 
 // Define length of url for specific content types (number of path elements)
 const typeLevels = {
@@ -18,11 +18,14 @@ const typeLevels = {
     certification: {
         urlLength: 2
     },
+    zapi_specification: {
+        urlLength: 2
+    },
     topic: {
         urlLength: 3
     },
     article: {
-        urlLength: 4
+        urlLength: [2, 4]
     },
     multiplatform_article: {
         urlLength: 4
@@ -48,16 +51,19 @@ const getMapItem = (data) => {
             case 'type':
                 item.type = data.type;
                 break;
-        };
+            default:
+                item[field] = 'is-unknown-field';
+        }
     });
 
     return item;
 };
 
 const redefineTypeLevel = (response) => {
-    let level = 4;
+    let level = [2, 4];
+
     if (response.system && response.system.type === 'multiplatform_article') {
-      level = 5;
+      level = [2, 5];
     }
 
     return level;
@@ -88,11 +94,47 @@ const addItemToMap = (settings) => {
     return settings.urlMap;
 };
 
-const handleNode = (settings) => {
+const getTypeLevel = (typeLength, urlLength) => {
+    let typeLevel = 0;
+
+    if (Array.isArray(typeLength)) {
+        for (let i = 0; i < typeLength.length; i++) {
+            if (typeLength[i] >= urlLength) {
+                typeLevel = typeLength[i];
+                break;
+            }
+        }
+    } else {
+        typeLevel = typeLength;
+    }
+
+    return typeLevel;
+};
+
+createUrlMap = (response, url, urlMap = []) => {
+    let node = '';
+    let queryString = '';
+
+    if (response.items) node = 'items';
+    if (response.navigation) node = 'navigation';
+    if (response.children) node = 'children';
+
+    if (response[node]) {
+        response[node].forEach(item => {
+            urlMap = handleNode({ response, item, urlMap, url, queryString });
+        });
+    }
+
+    return urlMap;
+};
+
+handleNode = (settings) => {
     typeLevels.article.urlLength = redefineTypeLevel(settings.response);
 
     if (settings.item.elements.url && typeLevels[settings.item.system.type]) {
-        settings.url.length = typeLevels[settings.item.system.type].urlLength;
+        const typeLevel = getTypeLevel(typeLevels[settings.item.system.type].urlLength, settings.url.length);
+
+        settings.url.length = typeLevel;
         let slug = '';
 
         if (settings.response.system && settings.response.system.type === 'multiplatform_article') {
@@ -123,23 +165,6 @@ const handleNode = (settings) => {
     settings.queryString = '';
 
     return createUrlMap(settings.item, settings.url, settings.urlMap);
-};
-
-const createUrlMap = (response, url, urlMap = []) => {
-    let node = '';
-    let queryString = '';
-
-    if (response.items) node = 'items';
-    if (response.navigation) node = 'navigation';
-    if (response.children) node = 'children';
-
-    if (response[node]) {
-        response[node].forEach(item => {
-            urlMap = handleNode({ response, item, urlMap, url, queryString });
-        });
-    }
-
-    return urlMap;
 };
 
 const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {

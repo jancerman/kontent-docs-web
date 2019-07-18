@@ -6,7 +6,7 @@
 * http://sam.zoy.org/wtfpl/
 */
 
-(function(){
+(function() {
     /**
      * Clamps a text node.
      * @param {HTMLElement} element. Element containing the text node to clamp.
@@ -15,30 +15,29 @@
     function clamp(element, options) {
         options = options || {};
 
-        var self = this,
-            win = window,
-            opt = {
-                clamp:              options.clamp || 2,
-                useNativeClamp:     typeof(options.useNativeClamp) != 'undefined' ? options.useNativeClamp : true,
-                splitOnChars:       options.splitOnChars || ['.', '-', '–', '—', ' '], //Split on sentences (periods), hypens, en-dashes, em-dashes, and words (spaces).
-                animate:            options.animate || false,
-                truncationChar:     options.truncationChar || '…',
-                truncationHTML:     options.truncationHTML
-            },
+        var self = this;
+            var win = window;
+            var opt = {
+                clamp: options.clamp || 2,
+                useNativeClamp: typeof (options.useNativeClamp) !== 'undefined' ? options.useNativeClamp : true,
+                splitOnChars: options.splitOnChars || ['.', '-', '–', '—', ' '], // Split on sentences (periods), hypens, en-dashes, em-dashes, and words (spaces).
+                animate: options.animate || false,
+                truncationChar: options.truncationChar || '…',
+                truncationHTML: options.truncationHTML
+            };
 
-            sty = element.style,
-            originalText = element.innerHTML,
+            var sty = element.style;
+            var originalText = element.innerHTML;
 
-            supportsNativeClamp = typeof(element.style.webkitLineClamp) != 'undefined',
-            clampValue = opt.clamp,
-            isCSSValue = clampValue.indexOf && (clampValue.indexOf('px') > -1 || clampValue.indexOf('em') > -1),
-            truncationHTMLContainer;
-            
+            var supportsNativeClamp = typeof (element.style.webkitLineClamp) !== 'undefined';
+            var clampValue = opt.clamp;
+            var isCSSValue = clampValue.indexOf && (clampValue.indexOf('px') > -1 || clampValue.indexOf('em') > -1);
+            var truncationHTMLContainer;
+
         if (opt.truncationHTML) {
             truncationHTMLContainer = document.createElement('span');
             truncationHTMLContainer.innerHTML = opt.truncationHTML;
         }
-
 
 // UTILITY FUNCTIONS __________________________________________________________
 
@@ -74,8 +73,8 @@
          * on the current height of the element and the line-height of the text.
          */
         function getMaxLines(height) {
-            var availHeight = height || element.clientHeight,
-                lineHeight = getLineHeight(element);
+            var availHeight = height || element.clientHeight;
+                var lineHeight = getLineHeight(element);
 
             return Math.max(Math.floor(availHeight/lineHeight), 0);
         }
@@ -102,39 +101,38 @@
             return parseInt(lh);
         }
 
-
 // MEAT AND POTATOES (MMMM, POTATOES...) ______________________________________
-        var splitOnChars = opt.splitOnChars.slice(0),
-            splitChar = splitOnChars[0],
-            chunks,
-            lastChunk;
-        
+        var splitOnChars = opt.splitOnChars.slice(0);
+            var splitChar = splitOnChars[0];
+            var chunks;
+            var lastChunk;
+
         /**
          * Gets an element's last child. That may be another node or a node's contents.
          */
         function getLastChild(elem) {
-            //Current element has children, need to go deeper and get last child as a text node
+            // Current element has children, need to go deeper and get last child as a text node
             if (elem.lastChild.children && elem.lastChild.children.length > 0) {
                 return getLastChild(Array.prototype.slice.call(elem.children).pop());
             }
-            //This is the absolute last child, a text node, but something's wrong with it. Remove it and keep trying
+            // This is the absolute last child, a text node, but something's wrong with it. Remove it and keep trying
             else if (!elem.lastChild || !elem.lastChild.nodeValue || elem.lastChild.nodeValue == '' || elem.lastChild.nodeValue == opt.truncationChar) {
                 elem.lastChild.parentNode.removeChild(elem.lastChild);
                 return getLastChild(element);
             }
-            //This is the last child we want, return it
+            // This is the last child we want, return it
             else {
                 return elem.lastChild;
             }
         }
-        
+
         /**
          * Removes one character at a time from the text until its width or
          * height is beneath the passed-in max param.
          */
         function truncate(target, maxHeight) {
-            if (!maxHeight) {return;}
-            
+            if (!maxHeight) { return; }
+
             /**
              * Resets global variables.
              */
@@ -144,24 +142,24 @@
                 chunks = null;
                 lastChunk = null;
             }
-            
+
             var nodeValue = target.nodeValue.replace(opt.truncationChar, '');
-            
-            //Grab the next chunks
+
+            // Grab the next chunks
             if (!chunks) {
-                //If there are more characters to try, grab the next one
+                // If there are more characters to try, grab the next one
                 if (splitOnChars.length > 0) {
                     splitChar = splitOnChars.shift();
                 }
-                //No characters to chunk by. Go character-by-character
+                // No characters to chunk by. Go character-by-character
                 else {
                     splitChar = '';
                 }
-                
+
                 chunks = nodeValue.split(splitChar);
             }
-            
-            //If there are chunks left to remove, remove the last one and see if
+
+            // If there are chunks left to remove, remove the last one and see if
             // the nodeValue fits.
             if (chunks.length > 1) {
                 // console.log('chunks', chunks);
@@ -169,66 +167,63 @@
                 // console.log('lastChunk', lastChunk);
                 applyEllipsis(target, chunks.join(splitChar));
             }
-            //No more chunks can be removed using this character
+            // No more chunks can be removed using this character
             else {
                 chunks = null;
             }
-            
-            //Insert the custom HTML before the truncation character
+
+            // Insert the custom HTML before the truncation character
             if (truncationHTMLContainer) {
                 target.nodeValue = target.nodeValue.replace(opt.truncationChar, '');
                 element.innerHTML = target.nodeValue + ' ' + truncationHTMLContainer.innerHTML + opt.truncationChar;
             }
 
-            //Search produced valid chunks
+            // Search produced valid chunks
             if (chunks) {
-                //It fits
+                // It fits
                 if (element.clientHeight <= maxHeight) {
-                    //There's still more characters to try splitting on, not quite done yet
+                    // There's still more characters to try splitting on, not quite done yet
                     if (splitOnChars.length >= 0 && splitChar != '') {
                         applyEllipsis(target, chunks.join(splitChar) + splitChar + lastChunk);
                         chunks = null;
                     }
-                    //Finished!
+                    // Finished!
                     else {
                         return element.innerHTML;
                     }
                 }
             }
-            //No valid chunks produced
+            // No valid chunks produced
             else {
-                //No valid chunks even when splitting by letter, time to move
-                //on to the next node
+                // No valid chunks even when splitting by letter, time to move
+                // on to the next node
                 if (splitChar == '') {
                     applyEllipsis(target, '');
                     target = getLastChild(element);
-                    
+
                     reset();
                 }
             }
-            
-            //If you get here it means still too big, let's keep truncating
+
+            // If you get here it means still too big, let's keep truncating
             if (opt.animate) {
                 setTimeout(function() {
                     truncate(target, maxHeight);
                 }, opt.animate === true ? 10 : opt.animate);
-            }
-            else {
+            } else {
                 return truncate(target, maxHeight);
             }
         }
-        
+
         function applyEllipsis(elem, str) {
             elem.nodeValue = str + opt.truncationChar;
         }
-
 
 // CONSTRUCTOR ________________________________________________________________
 
         if (clampValue == 'auto') {
             clampValue = getMaxLines();
-        }
-        else if (isCSSValue) {
+        } else if (isCSSValue) {
             clampValue = getMaxLines(parseInt(clampValue));
         }
 
@@ -243,14 +238,13 @@
             if (isCSSValue) {
                 sty.height = opt.clamp + 'px';
             }
-        }
-        else {
+        } else {
             var height = getMaxHeight(clampValue);
             if (height <= element.clientHeight) {
                 clampedText = truncate(getLastChild(element), height);
             }
         }
-        
+
         return {
             'original': originalText,
             'clamped': clampedText

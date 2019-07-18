@@ -1,5 +1,65 @@
 const helper = require('./helperFunctions');
 
+const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
+    return {
+        youtube: `
+            <div class="embed${cssClass}">
+                <iframe class="lazy" width="560" height="315" data-src="https://www.youtube-nocookie.com/embed/${item.id.value}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
+                <noscript>
+                    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/${item.id.value}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
+                </noscript>
+            </div>
+            <p class="print-only"> 
+                <i>Play video on <a href="https://www.youtube.com/watch?v=${item.id.value}"> https://www.youtube.com/watch?v=${item.id.value}</a></i>
+            </p>
+            `,
+        codepen: `
+            <div class="embed${cssClass}">
+                <iframe class="lazy" height="265" scrolling="no" data-src="https://codepen.io/${item.id.value.replace('/pen/', '/embed/')}/?height=265&amp;theme-id=0" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
+                <noscript>
+                    <iframe height="265" scrolling="no" src="https://codepen.io/${item.id.value}/?height=265&amp;theme-id=0" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
+                </noscript>
+            </div>
+            <p class="print-only"> 
+                <i>See the code example on <a href="https://codepen.io/${item.id.value}">https://codepen.io/${item.id.value}</a></i>
+            </p>
+            `,
+        stackblitz: `
+            <div class="embed${cssClass}">
+                <iframe class="lazy" data-src="https://stackblitz.com/edit/${item.id.value}?embed=1"></iframe>
+                <noscript>
+                    <iframe src="https://stackblitz.com/edit/${item.id.value}?embed=1"></iframe>
+                </noscript>
+            </div>
+            <p class="print-only"> 
+                <i>See the code example on <a href="https://stackblitz.com/edit/${item.id.value}">https://stackblitz.com/edit/${item.id.value}</a></i>
+            </p>
+            `,
+        codesandbox: `
+            <div class="embed${cssClass}">
+                <iframe class="lazy" data-src="https://codesandbox.io/embed/${item.id.value}"></iframe>
+                <noscript>
+                    <iframe src="https://codesandbox.io/embed/${item.id.value}"></iframe>
+                </noscript>
+            </div>
+            <p class="print-only"> 
+                <i>See the code example on <a href="https://codesandbox.io/s/${item.id.value}">https://codesandbox.io/s/${item.id.value}</a></i>
+            </p>
+            `,
+        netlify: `
+            <div class="embed${cssClass}">
+                <iframe class="lazy lazy--exclude-dnt" data-src="https://${netlifyId[0]}.netlify.com/${netlifyId[1]}"></iframe>
+                <noscript>
+                    <iframe src="https://${netlifyId[0]}.netlify.com${netlifyId[1]}"></iframe>
+                </noscript>
+            </div>
+            <p class="print-only"> 
+                <i>See the code example on <a href="https://${netlifyId[0]}.netlify.com${netlifyId[1]}">https://${netlifyId[0]}.netlify.com${netlifyId[1]}</a></i>
+            </p>
+            `
+    }
+};
+
 const richTextResolverTemplates = {
     embeddedContent: (item) => {
         let cssClass = '';
@@ -29,65 +89,7 @@ const richTextResolverTemplates = {
             }
         }
 
-        const templates = {
-            youtube: `
-                <div class="embed${cssClass}">
-                    <iframe class="lazy" width="560" height="315" data-src="https://www.youtube-nocookie.com/embed/${item.id.value}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
-                    <noscript>
-                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/${item.id.value}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
-                    </noscript>
-                </div>
-                <p class="print-only"> 
-                    <i>Play video on <a href="https://www.youtube.com/watch?v=${item.id.value}"> https://www.youtube.com/watch?v=${item.id.value}</a></i>
-                </p>
-                `,
-            codepen: `
-                <div class="embed${cssClass}">
-                    <iframe class="lazy" height="265" scrolling="no" data-src="https://codepen.io/${item.id.value.replace('/pen/', '/embed/')}/?height=265&amp;theme-id=0" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
-                    <noscript>
-                        <iframe height="265" scrolling="no" src="https://codepen.io/${item.id.value}/?height=265&amp;theme-id=0" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
-                    </noscript>
-                </div>
-                <p class="print-only"> 
-                    <i>See the code example on <a href="https://codepen.io/${item.id.value}">https://codepen.io/${item.id.value}</a></i>
-                </p>
-                `,
-            stackblitz: `
-                <div class="embed${cssClass}">
-                    <iframe class="lazy" data-src="https://stackblitz.com/edit/${item.id.value}?embed=1"></iframe>
-                    <noscript>
-                        <iframe src="https://stackblitz.com/edit/${item.id.value}?embed=1"></iframe>
-                    </noscript>
-                </div>
-                <p class="print-only"> 
-                    <i>See the code example on <a href="https://stackblitz.com/edit/${item.id.value}">https://stackblitz.com/edit/${item.id.value}</a></i>
-                </p>
-                `,
-            codesandbox: `
-                <div class="embed${cssClass}">
-                    <iframe class="lazy" data-src="https://codesandbox.io/embed/${item.id.value}"></iframe>
-                    <noscript>
-                        <iframe src="https://codesandbox.io/embed/${item.id.value}"></iframe>
-                    </noscript>
-                </div>
-                <p class="print-only"> 
-                    <i>See the code example on <a href="https://codesandbox.io/s/${item.id.value}">https://codesandbox.io/s/${item.id.value}</a></i>
-                </p>
-                `,
-            netlify: `
-                <div class="embed${cssClass}">
-                    <iframe class="lazy" data-src="https://${netlifyId[0]}.netlify.com/${netlifyId[1]}"></iframe>
-                    <noscript>
-                        <iframe src="https://${netlifyId[0]}.netlify.com${netlifyId[1]}"></iframe>
-                    </noscript>
-                </div>
-                <p class="print-only"> 
-                    <i>See the code example on <a href="https://${netlifyId[0]}.netlify.com${netlifyId[1]}">https://${netlifyId[0]}.netlify.com${netlifyId[1]}</a></i>
-                </p>
-                `
-        };
-
-        return templates[item.provider.value[0].codename];
+        return getEmbeddedTemplate(cssClass, item, netlifyId)[item.provider.value[0].codename];
     },
     signpost: (item) => {
         let type = '';

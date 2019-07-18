@@ -25,18 +25,18 @@
         });
     };
 
-    const highlightSelector = (articleContent, e) => { 
-        let fixedLabel = document.querySelector('.language-selector__label'); 
+    const highlightSelector = (articleContent, e) => {
+        let fixedLabel = document.querySelector('.language-selector__label');
         let textTofixedLabel;
-        
-        if (e) {  
-            helper.setCookie('KCDOCS.preselectedLanguage', e.target.getAttribute('data-platform'));
+
+        if (e) {
+            window.helper.setCookie('KCDOCS.preselectedLanguage', e.target.getAttribute('data-platform'));
             articleContent.querySelectorAll('.language-selector__link--active').forEach(item => item.classList.remove('language-selector__link--active'));
             articleContent.querySelectorAll(`[data-platform=${e.target.getAttribute('data-platform')}]`).forEach(item => item.classList.add('language-selector__link--active'));
             updatePlatformInUrls(e.target.getAttribute('data-slug'));
             textTofixedLabel = e.target.innerHTML;
         } else {
-            let preselectedPlatform = helper.getCookie('KCDOCS.preselectedLanguage');
+            let preselectedPlatform = window.helper.getCookie('KCDOCS.preselectedLanguage');
             let preselectedElem = document.querySelectorAll(`[data-platform="${preselectedPlatform}"]`);
 
             if (preselectedPlatform && preselectedElem.length) {
@@ -48,7 +48,7 @@
             } else {
                 let firstPlatformElem = document.querySelectorAll('.language-selector__item:first-child .language-selector__link');
                 firstPlatformElem.forEach(item => {
-                    item.classList.add('language-selector__link--active'); 
+                    item.classList.add('language-selector__link--active');
                 });
 
                 if (firstPlatformElem.length) {
@@ -60,7 +60,6 @@
         if (fixedLabel && textTofixedLabel) {
             fixedLabel.innerHTML = textTofixedLabel;
         }
-
     };
 
     const getSelectedPlatform = (e) => {
@@ -97,6 +96,12 @@
         toggleBlock(e, 'data-platform-chunk', true, '*=');
     };
 
+    const removeParameterfromUrlSearch = (urlSearch, param) => {
+        urlSearch = urlSearch.replace('?', '').split('&');
+        urlSearch = urlSearch.filter(item => item.indexOf(param) !== 0 && item !== '');
+        return urlSearch.length ? '?' + urlSearch.join('&') : '';
+    };
+
     const replaceLanguageInUrl = (e) => {
         let selectedPlatform = e.target.getAttribute('data-slug');
         let url = window.location;
@@ -116,7 +121,7 @@
 
     const getFirstElemInViewport = (selector) => {
         const elements = document.querySelectorAll(selector);
-        for (var i = 0; i < elements.length; i++) {            
+        for (var i = 0; i < elements.length; i++) {
             if ((elements[i].getBoundingClientRect().top >= 0) && (elements[i].offsetWidth > 0 && elements[i].offsetHeight > 0)) {
                 return elements[i];
             }
@@ -131,7 +136,7 @@
             switchContentChunk(e);
             replaceLanguageInUrl(e);
             document.querySelectorAll(`pre[data-platform-code=${e.target.getAttribute('data-platform')}] code`).forEach((item) => {
-                Prism.highlightElement(item);
+                window.Prism.highlightElement(item);
             });
         };
 
@@ -144,16 +149,16 @@
                 let scrollPosition;
                 let newElemOffset;
 
-                if (helper.findAncestor(offsetTarget, '.language-selector--fixed')) {
+                if (window.helper.findAncestor(offsetTarget, '.language-selector--fixed')) {
                     offsetTarget = getFirstElemInViewport('.language-selector--code-block');
                 }
 
                 if (offsetTarget) {
                     prevElemOffset = offsetTarget.getBoundingClientRect().top;
                 }
-                
+
                 actionOnClick(e, articleContent);
-                
+
                 if (offsetTarget) {
                     scrollPosition = getScrollPosition();
                     newElemOffset = offsetTarget.getBoundingClientRect().top;
@@ -162,20 +167,15 @@
             }
         });
     };
-    const removeParameterfromUrlSearch = (urlSearch, param) => {
-        urlSearch = urlSearch.replace('?', '').split('&');
-        urlSearch = urlSearch.filter(item => item.indexOf(param) !== 0 && item !== '');
-        return urlSearch.length ? '?' + urlSearch.join('&') : '';
-    };
 
     const hidePlaformInContentChunk = (item, languageSelector) => {
-        let chunkParent = helper.findAncestor(item, '[data-platform-chunk]');
-        
+        let chunkParent = window.helper.findAncestor(item, '[data-platform-chunk]');
+
         if (chunkParent) {
             let languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');
             let chunkPlatforms = chunkParent.getAttribute('data-platform-chunk').split('|');
             languageSelectorItems.forEach((elem) => {
-                let elemParent = helper.findAncestor(elem, '.language-selector__item');
+                let elemParent = window.helper.findAncestor(elem, '.language-selector__item');
                 elemParent.style.display = 'none';
                 if (chunkPlatforms.indexOf(elem.getAttribute('data-platform')) > -1) {
                     elemParent.style.display = 'block';
@@ -187,9 +187,9 @@
     };
 
     const showAllPlatformsInContentChunk = (languageSelector) => {
-        let languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');       
+        let languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');
         languageSelectorItems.forEach((elem) => {
-            let elemParent = helper.findAncestor(elem, '.language-selector__item');
+            let elemParent = window.helper.findAncestor(elem, '.language-selector__item');
             elemParent.style.display = 'block';
         });
 
@@ -204,13 +204,13 @@
             let codeBlocks = document.querySelectorAll('*:not([data-platform-code]) + [data-platform-code]:not([data-platform-code=""]), [data-platform-code]:first-child:not([data-platform-code=""])');
 
             languageSelector.classList.add('language-selector--code-block');
-    
+
             codeBlocks.forEach(item => {
                 languageSelector = hidePlaformInContentChunk(item, languageSelector);
 
                 let clonedSelector = item.parentNode.insertBefore(languageSelector, item);
                 languageSelector = clonedSelector.cloneNode(true);
-                
+
                 languageSelector = showAllPlatformsInContentChunk(languageSelector);
             });
         }
@@ -230,7 +230,7 @@
 
             var text = document.createElement('label');
             text.classList.add('language-selector__fixed-label');
-            text.innerHTML = UIMessages && UIMessages.technologyLabel ? UIMessages.technologyLabel : 'Technology';
+            text.innerHTML = window.UIMessages && window.UIMessages.technologyLabel ? window.UIMessages.technologyLabel : 'Technology';
             languageSelector.insertBefore(text, languageSelector.firstChild);
 
             document.querySelector('body').addEventListener('click', (e) => {
@@ -244,7 +244,7 @@
                     languageSelector.classList.remove('language-selector--opened');
                 }
             });
-    
+
             content.appendChild(languageSelector);
         }
     };
@@ -273,19 +273,19 @@
             let copyButtons = articleContent.querySelectorAll('.infobar__copy');
 
             copyButtons.forEach(item => {
-                item.innerHTML = (UIMessages ? UIMessages.copyCode : '');
+                item.innerHTML = (window.UIMessages ? window.UIMessages.copyCode : '');
             });
-        
+
             articleContent.addEventListener('click', (e) => {
                 if (e.target && e.target.matches('.infobar__copy')) {
                     e.preventDefault();
                     let text = e.target.innerHTML;
-                    e.target.innerHTML = (UIMessages ? UIMessages.copyCodeActive : '');
+                    e.target.innerHTML = (window.UIMessages ? window.UIMessages.copyCodeActive : '');
                     setTimeout(() => {
                         e.target.innerHTML = text;
                     }, 1500);
-                    let code = helper.findAncestor(e.target, 'pre').querySelector('.clean-code').innerHTML;
-                    helper.copyToClipboard(helper.htmlDecode(code));
+                    let code = window.helper.findAncestor(e.target, 'pre').querySelector('.clean-code').innerHTML;
+                    window.helper.copyToClipboard(window.helper.htmlDecode(code));
                 }
             });
         }
@@ -294,14 +294,14 @@
     const selectLanguage = () => {
         let articleContent = document.querySelector('.article__content');
         let selector = document.querySelectorAll('.language-selector__list:not(.language-selector__list--static)');
-        
+
         if (selector.length) {
             highlightSelector();
             selectCode();
             switchContentChunk();
             selectLanguageOnClick(articleContent);
         } else {
-            let fixedLabel = document.querySelector('.language-selector__label'); 
+            let fixedLabel = document.querySelector('.language-selector__label');
             let activeSelector = document.querySelector('.language-selector__link--active');
             if (fixedLabel && activeSelector) {
                 fixedLabel.innerHTML = activeSelector.innerHTML;
@@ -320,7 +320,7 @@
     };
 
     const findAndRemoveFromArray = (array, item) => {
-        const  index = array.indexOf(item);
+        const index = array.indexOf(item);
         if (index > -1) {
           array.splice(index, 1);
         }
@@ -329,7 +329,7 @@
 
     const handleEmptyPlatforms = () => {
         const codeBlocks = document.querySelectorAll('.code-samples');
-        const message = UIMessages && UIMessages.emptyCodeBlock ? UIMessages.emptyCodeBlock : 'We don\'t have a code sample for the selected technology.';
+        const message = window.UIMessages && window.UIMessages.emptyCodeBlock ? window.UIMessages.emptyCodeBlock : 'We don\'t have a code sample for the selected technology.';
 
         codeBlocks.forEach((block) => {
             let availablePlatforms = [...block.querySelectorAll('[data-platform]')].map((item) => {
@@ -338,7 +338,7 @@
 
             let availableCodeBlocks = [...block.querySelectorAll('[data-platform-code]')].map((item) => {
                 return item.getAttribute('data-platform-code');
-            }); 
+            });
 
             availableCodeBlocks.forEach((item) => {
                 availablePlatforms = findAndRemoveFromArray(availablePlatforms, item);
@@ -358,11 +358,10 @@
     cloneLanguageSelectorToFixed();
     handleEmptyPlatforms();
     handleFixedSelector();
-    window.addEventListener('scroll', handleFixedSelector, supportsPassive ? { passive: true } : false);
+    window.addEventListener('scroll', handleFixedSelector, window.supportsPassive ? { passive: true } : false);
     selectLanguage();
     copyCode();
     setTimeout(() => {
         makeInfobarsVisible();
     }, 0);
-    
 })();

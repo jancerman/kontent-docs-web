@@ -1,9 +1,9 @@
 /**
  * Helper functions used in other JS files in the ../custom folder
  */
+
 let recaptchaKey;
 window.helper = (() => {
-
     // Find a parent of the "el" element specified by the "parentSelector" param
     const getParents = (el, parentSelector) => {
         if (parentSelector === undefined) {
@@ -49,8 +49,8 @@ window.helper = (() => {
         var timeout;
 
         return function () {
-            var context = this,
-                args = arguments;
+            var context = this;
+                var args = arguments;
 
             var later = function () {
                 timeout = null;
@@ -75,7 +75,7 @@ window.helper = (() => {
 
     // Stores text in a clipboard
     const copyToClipboard = (text) => {
-        var textArea = document.createElement("textarea");
+        var textArea = document.createElement('textarea');
 
         //
         // *** This styling is an extra step which is likely not required. ***
@@ -113,7 +113,6 @@ window.helper = (() => {
         // Avoid flash of white box if rendered for any reason.
         textArea.style.background = 'transparent';
 
-
         textArea.value = text;
 
         document.body.appendChild(textArea);
@@ -123,35 +122,39 @@ window.helper = (() => {
         try {
             document.execCommand('copy');
         } catch (err) {
-            console.log('Oops, unable to copy');
+            throw new Error('Oops, unable to copy');
         }
 
         document.body.removeChild(textArea);
     };
+
+    const evaluateAjaxResponse = (xmlhttp, callback, type) => {
+        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            try {
+                var data;
+
+                if (type === 'json') {
+                    // Parse JSON if specified in the "type" param
+                    data = JSON.parse(xmlhttp.responseText);
+                } else {
+                    data = xmlhttp.responseText
+                }
+                return callback(data);
+            } catch (err) {
+                throw new Error(err);
+            }
+        }
+    }
 
     // Ajax GET call
     const ajaxGet = (url, callback, type) => {
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.open('GET', url, true);
         xmlhttp.onreadystatechange = () => {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                try {
-                    var data;
-
-                    if (type === 'json') {
-                        // Parse JSON if specified in the "type" param
-                        data = JSON.parse(xmlhttp.responseText);
-                    } else {
-                        data = xmlhttp.responseText
-                    }
-                } catch (err) {
-                    return;
-                }
-                callback(data);
-            }
+            return evaluateAjaxResponse(xmlhttp, callback, type);
         };
 
-        xmlhttp.send();
+        return xmlhttp.send();
     };
 
     // Ajax POST call
@@ -160,31 +163,17 @@ window.helper = (() => {
         xmlhttp.open('POST', url, true);
         xmlhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         xmlhttp.onload = () => {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                try {
-                    var data;
-
-                    if (type === 'json') {
-                        // Parse JSON if specified in the "type" param
-                        data = JSON.parse(xmlhttp.responseText);
-                    } else {
-                        data = xmlhttp.responseText
-                    }
-                } catch (err) {
-                    return;
-                }
-                return callback(data);
-            }
+            return evaluateAjaxResponse(xmlhttp, callback, type);
         };
-        xmlhttp.send(JSON.stringify(requestData));
+        return xmlhttp.send(JSON.stringify(requestData));
     };
 
     // Get url parameter by its name
     const getParameterByName = (name, url) => {
         if (!url) url = window.location.href;
-        name = name.replace(/[\[\]]/g, '\\$&');
-        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-            results = regex.exec(url);
+        name = name.replace(/[[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+            var results = regex.exec(url);
         if (!results) return null;
         if (!results[2]) return '';
         return decodeURIComponent(results[2].replace(/\+/g, ' '));
@@ -216,12 +205,12 @@ window.helper = (() => {
         var link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = url;
-        document.head.appendChild(link);
+        return document.head.appendChild(link);
     };
 
     // Request stylesheet, append additional font-display property and in-line it in page head
     const loadStylesheet = (url) => {
-        ajaxGet(url, css => {
+        return ajaxGet(url, css => {
             css = css.replace(/}/g, 'font-display: swap; }');
 
             const head = document.getElementsByTagName('head')[0];
@@ -260,6 +249,7 @@ window.helper = (() => {
             expires = '; expires=' + date.toUTCString();
         }
         document.cookie = name + '=' + (value || '') + expires + '; path=/';
+        return document.cookie;
     };
 
     const getCookie = (name) => {
@@ -275,6 +265,7 @@ window.helper = (() => {
 
     const eraseCookie = (name) => {
         document.cookie = name + '=; Max-Age=-99999999;';
+        return document.cookie;
     };
 
     const loadRecaptcha = () => {
@@ -286,6 +277,8 @@ window.helper = (() => {
             script.src = 'https://www.google.com/recaptcha/api.js?onload=renderReCaptcha';
             recaptchaElem.appendChild(script);
         }
+
+        return recaptchaKey;
     };
 
     return {
@@ -310,23 +303,9 @@ window.helper = (() => {
     }
 })();
 
-const renderReCaptcha = function () {
-    grecaptcha.render('g-recaptcha-placeholder', {
+const renderReCaptcha = function () { // eslint-disable-line no-unused-vars
+    window.grecaptcha.render('g-recaptcha-placeholder', {
         'sitekey': recaptchaKey,
         'theme': 'light'
     });
 };
-
-// Adds forEach function to NodeList class prototype
-// Adds matches function for IE11
-(() => {
-    if (typeof NodeList.prototype.forEach === 'function') {
-        return false;
-    } else {
-        NodeList.prototype.forEach = Array.prototype.forEach;
-    }
-
-    if (!Element.prototype.matches) {
-        Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
-    }
-})();

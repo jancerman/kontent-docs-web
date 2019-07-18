@@ -16,7 +16,7 @@
             data.first_name = form.querySelector('#first_name').value;
             data.last_name = form.querySelector('#last_name').value;
             data.email = form.querySelector('#email').value;
-            data['g-recaptcha-response'] = grecaptcha.getResponse();
+            data['g-recaptcha-response'] = window.grecaptcha.getResponse();
 
             return data;
         };
@@ -37,9 +37,9 @@
         };
 
         const processData = (data) => {
-            helperForm.enableInputs(form, recaptchaCover);
-            helperForm.removeLoadingFromButton(submitButton);
-            grecaptcha.reset();
+            window.helperForm.enableInputs(form, recaptchaCover);
+            window.helperForm.removeLoadingFromButton(submitButton);
+            window.grecaptcha.reset();
 
             if (data.isValid) {
                 if (data.warning) {
@@ -47,25 +47,30 @@
                 }
 
                 if (data.success) {
-                    helperForm.clearForm(form);
-                    helperForm.hideForm(form);
+                    window.helperForm.clearForm(form);
+                    window.helperForm.hideForm(form);
                     displaySuccessMessage(data);
                 }
             } else {
-                helperForm.displayValidationMessages(data, form);
+                window.helperForm.displayValidationMessages(data, form);
             }
+        };
+
+        const submitForm = () => {
+            window.helperForm.submitForm({
+                clearMessages: clearMessages,
+                form: form,
+                recaptchaCover: recaptchaCover,
+                processData: processData,
+                submitButton: submitButton,
+                collectData: collectData,
+                endpoint: '/form/certification'
+            });
         };
 
         submitButton.addEventListener('click', (e) => {
             e.preventDefault();
-
-            helperForm.validateAndSubmitForm(form, e.target, () => {
-                clearMessages();
-                helperForm.disableInputs(form, recaptchaCover);
-                helperForm.addLoadingToButton(submitButton);
-                var data = collectData();
-                helperForm.submitData('/form/certification', data, processData);
-            });
+            window.helperForm.validateAndSubmitForm(form, e.target, submitForm);
         });
     }
 })();
