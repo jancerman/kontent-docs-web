@@ -13,6 +13,7 @@ body {
     background-color: #fff;
     border-right: 1px solid #E3E9EC;
     padding: 1em 1em 0;
+    z-index: 9999 !important; 
   }
 
   // Code samples
@@ -593,4 +594,52 @@ figure {
 
 .hidden {
   display: none !important;
+}
+
+.breadcrumbs {
+  background-color: #f3f6f7;
+  padding: 1.5em 2.5em;
+  margin: -1em 0 1em -1em;
+  width: ~"calc(100% + 2em)";
+
+  li {
+    display: inline-block;
+
+    &:after {
+      content: '/';
+      color: #7e909c;
+      padding: 0 .5em;
+    }
+
+    &:last-child {
+      &:after {
+        display: none;
+      }
+    }
+  }
+
+  a {
+    color: #007DCC;
+
+    &:hover {
+      color: #e46952;
+    }
+  }
+
+  span {
+    color: #7e909c;
+  }
+}
+
+[class*="FloatingButton"] {
+  z-index: 99999 !important;
+  top: 8px !important;
+}
+
+.nav-trigger-top {
+  top: 66px !important;
+
+  .menu-content[open]+& {
+    top: 8px !important;
+  }
 }

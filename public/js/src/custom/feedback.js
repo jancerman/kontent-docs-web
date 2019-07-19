@@ -6,6 +6,7 @@
     let btnArea = document.querySelector('.feedback__answer');
     let form = document.querySelector('.feedback__form');
     let posted = document.querySelector('.feedback--posted');
+    let onBtnClick, handleFeedback;
 
     const sendFeedback = (value) => {
         window.dataLayer.push({
@@ -17,7 +18,7 @@
         });
     };
 
-    const handleFeedback = (e) => {
+    handleFeedback = (e) => {
         e.preventDefault();
         if (e.target) {
             if (e.target.matches('.feedback__button--yes')) {
@@ -28,7 +29,7 @@
         }
     };
 
-    const onBtnClick = (btn, msg, value) => {
+    onBtnClick = (btn, msg, value) => {
         btnArea.removeEventListener('click', handleFeedback);
         btnArea.classList.add('feedback__answer--answered');
         btn.classList.add('feedback__button--active');
