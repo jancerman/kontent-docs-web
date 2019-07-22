@@ -4,35 +4,44 @@ const yaml = require('js-yaml');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
-var findComments = function (context) {
-    var foundComments = [];
-    var elementPath = [context];
-    while (elementPath.length > 0) {
-        var el = elementPath.pop();
-        for (var i = 0; i < el.childNodes.length; i++) {
-            var node = el.childNodes[i];
-            if (node.nodeType === 8) {
-                foundComments.push(node);
-            } else {
-                elementPath.push(node);
-                console.log(node.nodeValue);
-            }
-        }
+const resolveCallouts = (content) => {
+    const dom = new JSDOM(content);
+    let callouts = dom.window.document.documentElement.querySelectorAll('.Callout');
+    for (var i = 0; i < callouts.length; i++) {
+        callouts[i].classList.add('callout--' + callouts[i].getAttribute('type'));
+        callouts[i].setAttribute('class', callouts[i].getAttribute('class').toLowerCase());
+        callouts[i].removeAttribute('type');
     }
 
-    return foundComments;
+    return dom.window.document.documentElement.querySelector('body').innerHTML;
 };
 
-const findComponents = (obj, key) => {
+const resolveCodeSample = (content) => {
+    const dom = new JSDOM(content);
+    let codeSample = dom.window.document.documentElement.querySelectorAll('.CodeSample');
+    console.log(content);
+    for (var i = 0; i < codeSample.length; i++) {
+        let language = codeSample[i].getAttribute('programmingLanguage');
+        let platform = codeSample[i].getAttribute('platform');
+        let content = codeSample[i].innerHTML;
+        codeSample[i].outerHTML = '<pre class="line-numbers" data-platform-code="' + platform + '"><div class="infobar"><ul class="infobar__languages"><li class="infobar__lang">' + language + '</li></ul><div class="infobar__copy"></div></div><div class="clean-code">' + content + '</div></pre>'; 
+        console.log(codeSample[i].outerHTML);
+    }
+
+    return dom.window.document.documentElement.querySelector('body').innerHTML;
+};
+
+const convertCommentsToTags = (obj, key) => {
     if (key === 'description') {
-        obj.componentsToResolve = [];
         const dom = new JSDOM(obj[key]);
-        var commentNodes = findComments(dom.window.document);
-        for (var i = 0; i < commentNodes.length; i++) {
-            if (commentNodes[i].nodeValue.split(' ')[0].indexOf('-end') === -1) {
-                obj.componentsToResolve.push(commentNodes[i].nodeValue);
-            }
-        }
+        let content = dom.window.document.documentElement.querySelector('body').innerHTML;
+        let regexOpeningTag = /<!--(Callout|CodeSample|CodeSamples)([ a-zA-Z=0-9]*)-->/g;
+        let regexClosingTag = /<!--(Callout-end|CodeSample-end|CodeSamples-end)-->/g;
+        content = content.replace(regexOpeningTag, '<div class="$1"$2>');
+        content = content.replace(regexClosingTag, '</div>');
+        content = resolveCallout(content);
+        content = resolveCodeSample(content);
+        obj[key] = content;
     }
 
     return obj;
@@ -52,14 +61,14 @@ const traverseObject = (obj, callback) => {
 const renderCodeBlocksMarkup = (url) => {
     request.get(url, function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            // Render code blocks
-            var json = yaml.safeLoad(body);
-            json = traverseObject(json, findComponents);
-            //console.log(json);
 
-            var stream = fs.createWriteStream('./helpers/redoc-cli/openapi.yml');
+            var json = yaml.safeLoad(body);
+            json = traverseObject(json, convertCommentsToTags);
+            json = JSON.stringify(json);
+
+            var stream = fs.createWriteStream('./helpers/redoc-cli/openapi.json');
             stream.once('open', function (fd) {
-                stream.write(body);
+                stream.write(json);
                 stream.end();
             });
         }

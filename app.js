@@ -47,7 +47,9 @@ const urlWhitelist = [
   '/cache-invalidate',
   '/robots.txt',
   '/sitemap.xml',
-  '/prerender-reference'
+  '/prerender-reference',
+  '/new-reference',
+  '/new-reference/*'
 ];
 
 // Azure Application Insights monitors
@@ -182,7 +184,8 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
 app.use('/new-reference', reference);
 
 const prerender = (res, next) => {
-  const yaml = renderCodeBlocksMarkup('https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/ac1c49e7544ea8c4dd8921efee361b24130f46f8/kcd%2520proto%2520all%2520oas3.yml');
+  //const yaml = renderCodeBlocksMarkup('https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/ac1c49e7544ea8c4dd8921efee361b24130f46f8/kcd%2520proto%2520all%2520oas3.yml');
+  const yaml = './helpers/redoc-cli/openapi.json';
   const options = prerenderOptions.join(' ');
   const template = './views/apiReference/redoc/template.hbs';
 
