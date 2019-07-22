@@ -15,6 +15,7 @@ const cmd = require('node-cmd');
 
 const handleCache = require('./helpers/handleCache');
 const prerenderOptions = require('./helpers/redoc-cli/prerender-options.js');
+const renderCodeBlocksMarkup = require('./helpers/renderCodeBlocksMarkup');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -181,7 +182,7 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
 app.use('/new-reference', reference);
 
 const prerender = (res, next) => {
-  const yaml = 'https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/efbd64954fefa9edbda332027dac1b74c3d3bb49/kcd%2520proto%2520all%2520oas3.yml';
+  const yaml = renderCodeBlocksMarkup('https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/ac1c49e7544ea8c4dd8921efee361b24130f46f8/kcd%2520proto%2520all%2520oas3.yml');
   const options = prerenderOptions.join(' ');
   const template = './views/apiReference/redoc/template.hbs';
 
