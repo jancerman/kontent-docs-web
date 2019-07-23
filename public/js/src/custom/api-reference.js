@@ -25,17 +25,17 @@
       'swift': 'swift',
       'python': 'python',
       'ruby': 'ruby'
-    }
+    };
 
-    if (item && item.codename) {
-      lang = pairings[item.codename];
+    if (item) {
+      lang = pairings[item];
     }
 
     if (!lang) {
       lang = 'clike';
     }
 
-    return 'lang-' + lang;
+    return 'language-' + lang;
   };
 
   var createHighlightedBlock = function (block) {
@@ -45,7 +45,12 @@
       codeElem.innerHTML = cleanCode;
       codeElem.classList.add(getPrismClassName(block.getAttribute('data-platform-code')));
       block.appendChild(codeElem);
-      block.classList.add('hidden');
+      if (block.parentNode.classList.contains('code-samples')) {
+        block.classList.add('hidden');
+      } else {
+        block.classList.add(getPrismClassName(block.getAttribute('data-platform-code')));
+        window.Prism.highlightElement(codeElem);
+      }
     }, 0);
   };
 
@@ -89,11 +94,13 @@
       }
 
       for (var j = 0; j < blocks.length; j++) {
-        if (blocks[j].getAttribute('data-platform-code') === platform) {
-          blocks[j].classList.remove('hidden');
-          window.Prism.highlightElement(blocks[j].querySelector('code'));
-        } else {
-          blocks[j].classList.add('hidden');
+        if (blocks[j].parentNode.classList.contains('code-samples')) {
+          if (blocks[j].getAttribute('data-platform-code') === platform) {
+            blocks[j].classList.remove('hidden');
+            window.Prism.highlightElement(blocks[j].querySelector('code'));
+          } else {
+            blocks[j].classList.add('hidden');
+          }
         }
       }
 
