@@ -86,9 +86,21 @@ const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
                 </noscript>
             </div>
             <p class="print-only"> 
-                <i>See the code example on <a href="https://${netlifyId[0]}.netlify.com${netlifyId[1]}">https://${netlifyId[0]}.netlify.com${netlifyId[1]}</a></i>
+                <i>See the example on <a href="https://${netlifyId[0]}.netlify.com${netlifyId[1]}">https://${netlifyId[0]}.netlify.com${netlifyId[1]}</a></i>
             </p>
-            `
+            `,
+        giphy: `
+            <div class="embed embed--giphy${cssClass}">
+                <iframe class="lazy" data-src="https://giphy.com/embed/${item.id.value}"></iframe>
+                <noscript>
+                    <iframe src="https://giphy.com/embed/${item.id.value}"></iframe>
+                </noscript>
+                <a class="embed__link" href="https://giphy.com/gifs/tZpGRRMUoXgeQ" target="_blank">via GIPHY</a>
+            </div>
+            <p class="print-only"> 
+                <i>See the image on <a href="https://giphy.com/embed/${item.id.value}">https://giphy.com/embed/${item.id.value}</a></i>
+            </p>
+            `,
     }
 };
 
