@@ -113,7 +113,7 @@ const renderReference = (url) => {
             json = JSON.stringify(json);
 
             let stream = fs.createWriteStream(filePath);
-            stream.once('open', function (fd) {
+            stream.once('open', function () {
                 stream.write(json);
                 stream.end();
                 renderRedoc(filePath);
