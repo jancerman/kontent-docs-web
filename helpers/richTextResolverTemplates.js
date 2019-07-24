@@ -92,6 +92,7 @@ const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
         giphy: `
             <div class="embed embed--giphy${cssClass}">
                 <iframe class="lazy" data-src="https://giphy.com/embed/${item.id.value}"></iframe>
+                <div class="embed__overlay" aria-hidden="true"></div>
                 <noscript>
                     <iframe src="https://giphy.com/embed/${item.id.value}"></iframe>
                 </noscript>
