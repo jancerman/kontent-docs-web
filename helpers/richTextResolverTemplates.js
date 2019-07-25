@@ -96,7 +96,7 @@ const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
                 <noscript>
                     <iframe src="https://giphy.com/embed/${item.id.value}"></iframe>
                 </noscript>
-                <a class="embed__link" href="https://giphy.com/gifs/tZpGRRMUoXgeQ" target="_blank">via GIPHY</a>
+                <a class="embed__link" href="https://giphy.com/gifs/${item.id.value}" target="_blank">via GIPHY</a>
             </div>
             <p class="print-only"> 
                 <i>See the image on <a href="https://giphy.com/embed/${item.id.value}">https://giphy.com/embed/${item.id.value}</a></i>
