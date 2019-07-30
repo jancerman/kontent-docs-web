@@ -1,5 +1,37 @@
 const helper = require('./helperFunctions');
 
+const getImageAttributes = (item, cssClass, transformationQueryString) => {
+    switch (item.image_width.value[0].codename) {
+        case 'n25_':
+            cssClass += ' article__image--25';
+            transformationQueryString += '168';
+            break;
+        case 'n50_':
+            cssClass += ' article__image--50';
+            transformationQueryString += '336';
+            break;
+        case 'n75_':
+            cssClass += ' article__image--75';
+            transformationQueryString += '504';
+            break;
+        case 'n100_':
+            cssClass += ' article__image--100';
+            transformationQueryString += '672';
+            break;
+        default:
+            transformationQueryString += '896';
+    }
+
+    if (item.image.value[0].url.endsWith('.gif')) {
+        transformationQueryString = '';
+    }
+
+    return {
+        cssClass: cssClass,
+        transformationQueryString: transformationQueryString
+    }
+}
+
 const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
     return {
         youtube: `
@@ -54,9 +86,22 @@ const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
                 </noscript>
             </div>
             <p class="print-only"> 
-                <i>See the code example on <a href="https://${netlifyId[0]}.netlify.com${netlifyId[1]}">https://${netlifyId[0]}.netlify.com${netlifyId[1]}</a></i>
+                <i>See the example on <a href="https://${netlifyId[0]}.netlify.com${netlifyId[1]}">https://${netlifyId[0]}.netlify.com${netlifyId[1]}</a></i>
             </p>
-            `
+            `,
+        giphy: `
+            <div class="embed embed--giphy${cssClass}">
+                <iframe class="lazy" data-src="https://giphy.com/embed/${item.id.value}"></iframe>
+                <div class="embed__overlay" aria-hidden="true"></div>
+                <noscript>
+                    <iframe src="https://giphy.com/embed/${item.id.value}"></iframe>
+                </noscript>
+                <a class="embed__link" href="https://giphy.com/gifs/${item.id.value}" target="_blank">via GIPHY</a>
+            </div>
+            <p class="print-only"> 
+                <i>See the image on <a href="https://giphy.com/embed/${item.id.value}">https://giphy.com/embed/${item.id.value}</a></i>
+            </p>
+            `,
     }
 };
 
@@ -142,39 +187,16 @@ const richTextResolverTemplates = {
             let openLinkTag = url ? '<a href="'+ url +'" target="_blank" class="no-icon">' : '';
             let closeLinkTag = url ? '</a>' : '';
 
-            switch (item.image_width.value[0].codename) {
-                case 'n25_':
-                    cssClass += ' article__image--25';
-                    transformationQueryString += '168';
-                    break;
-                case 'n50_':
-                    cssClass += ' article__image--50';
-                    transformationQueryString += '336';
-                    break;
-                case 'n75_':
-                    cssClass += ' article__image--75';
-                    transformationQueryString += '504';
-                    break;
-                case 'n100_':
-                    cssClass += ' article__image--100';
-                    transformationQueryString += '672';
-                    break;
-                default:
-                    transformationQueryString += '896';
-            }
-
-            if (item.image.value[0].url.endsWith('.gif')) {
-                transformationQueryString = '';
-            }
+            const attributes = getImageAttributes(item, cssClass, transformationQueryString);
 
             return `
                 <figure>
                     ${openLinkTag}
-                        <img class="${cssClass}" alt="${alt}" src="${item.image.value[0].url}${transformationQueryString}">
+                        <img class="${attributes.cssClass}" alt="${alt}" src="${item.image.value[0].url}${attributes.transformationQueryString}">
                     ${closeLinkTag}
                     <noscript>
                         ${openLinkTag}
-                            <img class="article__image-border" alt="${alt}" src="${item.image.value[0].url}${transformationQueryString}">
+                            <img class="article__image-border" alt="${alt}" src="${item.image.value[0].url}${attributes.transformationQueryString}">
                         ${closeLinkTag}
                     </noscript>
                     ${item.description.value && item.description.value !== '<p><br></p>' ? '<figcaption>'+ item.description.value +'</figcaption>' : ''}

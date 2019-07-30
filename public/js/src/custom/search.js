@@ -175,7 +175,9 @@
 
     const clampItem = (item) => {
         setTimeout(() => {
-            window.$clamp(item, { clamp: 2 });
+            window.$clamp(item, {
+                clamp: 2
+            });
         }, clampDelay);
     };
 
@@ -259,6 +261,27 @@
         });
     };
 
+    const autocompleteSettings = {
+        autoselect: true,
+        openOnFocus: true,
+        clearOnSelected: false,
+        debug: false
+    };
+
+    const getAutocompleteTemplates = (urlMap) => {
+        return {
+            header: () => {
+                return `<div class="aa-header">${searchResultsNumber} results for '<strong>${decodeURIComponent(searchTerm)}</strong>'</div>`;
+            },
+            suggestion: (suggestion) => {
+                return formatSuggestion(suggestion, urlMap);
+            },
+            empty: () => {
+                return formatEmptySuggestion();
+            }
+        };
+    };
+
     // Init Algolia
     const initAutocomplete = (urlMap) => {
         // Init autocomplete and set maximum of suggested search items
@@ -271,27 +294,12 @@
             searchInputIsFocused = true;
         }
 
-        window.autocomplete('#nav-search', {
-                autoselect: true,
-                openOnFocus: true,
-                clearOnSelected: false,
-                debug: false
-            }, [{
+        window.autocomplete('#nav-search', autocompleteSettings, [{
                 source: (query, callback) => {
                     getSuggestionsSource(hitsSource, query, callback);
                 },
                 displayKey: 'title',
-                templates: {
-                    header: () => {
-                        return `<div class="aa-header">${searchResultsNumber} results for '<strong>${decodeURIComponent(searchTerm)}</strong>'</div>`;
-                    },
-                    suggestion: (suggestion) => {
-                        return formatSuggestion(suggestion, urlMap);
-                    },
-                    empty: () => {
-                        return formatEmptySuggestion();
-                    }
-                }
+                templates: getAutocompleteTemplates(urlMap)
             }])
             .on('autocomplete:opened', onAutocompleteOpened)
             .on('autocomplete:selected', (event, suggestion, dataset, context) => {
@@ -300,9 +308,9 @@
             .on('autocomplete:closed', onAutocompleteClosed)
             .on('autocomplete:updated', onAutocompleteUpdated)
 
-            if (searchInputIsFocused) {
-                searchInput.focus();
-            }
+        if (searchInputIsFocused) {
+            searchInput.focus();
+        }
     };
 
     const initAlgoliaSearch = () => {

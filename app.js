@@ -11,10 +11,9 @@ const cache = require('memory-cache');
 const cacheControl = require('express-cache-controller');
 const serveStatic = require('serve-static');
 const consola = require('consola');
-const cmd = require('node-cmd');
 
 const handleCache = require('./helpers/handleCache');
-const prerenderOptions = require('./helpers/redoc-cli/prerender-options.js');
+const renderReference = require('./helpers/renderReference');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -46,7 +45,7 @@ const urlWhitelist = [
   '/cache-invalidate',
   '/robots.txt',
   '/sitemap.xml',
-  '/prerender-reference'
+  '/render-reference'
 ];
 
 // Azure Application Insights monitors
@@ -180,31 +179,9 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
 
 app.use('/new-reference', reference);
 
-const prerender = (res, next) => {
-  const yaml = 'https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/efbd64954fefa9edbda332027dac1b74c3d3bb49/kcd%2520proto%2520all%2520oas3.yml';
-  const options = prerenderOptions.join(' ');
-  const template = './views/apiReference/redoc/template.hbs';
-
-  cmd.get(
-      `node ./helpers/redoc-cli/index.js bundle ${yaml} -t ${template} ${options}`,
-      function (err, data, stderr) {
-          consola.log(err);
-          consola.log(data);
-          consola.log(stderr);
-
-          if (stderr) {
-            res.send(stderr);
-          }
-
-          return next();
-      }
-  );
-};
-
-app.use('/prerender-reference', (req, res, next) => {
-  return prerender(res, next);
-}, (req, res) => {
-  return res.redirect(301, '/new-reference/delivery-api');
+app.use('/render-reference', (req, res) => {
+  renderReference('https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/ac1c49e7544ea8c4dd8921efee361b24130f46f8/kcd%2520proto%2520all%2520oas3.yml');
+  return res.end();
 });
 
 app.use('/', tutorials);

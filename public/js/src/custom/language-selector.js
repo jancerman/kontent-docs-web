@@ -129,42 +129,46 @@
         return null;
     };
 
-    const selectLanguageOnClick = (articleContent) => {
-        const actionOnClick = (e, articleContent) => {
-            highlightSelector(articleContent, e);
-            selectCode(e);
-            switchContentChunk(e);
-            replaceLanguageInUrl(e);
-            document.querySelectorAll(`pre[data-platform-code=${e.target.getAttribute('data-platform')}] code`).forEach((item) => {
-                window.Prism.highlightElement(item);
-            });
-        };
+    const actionLanguageOnClick = (e, articleContent) => {
+        highlightSelector(articleContent, e);
+        selectCode(e);
+        switchContentChunk(e);
+        replaceLanguageInUrl(e);
+        document.querySelectorAll(`pre[data-platform-code=${e.target.getAttribute('data-platform')}] code`).forEach((item) => {
+            window.Prism.highlightElement(item);
+        });
+    };
 
-        articleContent.addEventListener('click', (e) => {
-            if (e.target && e.target.matches('.language-selector__link')) {
-                e.preventDefault();
+    const handleLanguageSelection = (e, articleContent) => {
+        if (e.target && e.target.matches('.language-selector__link')) {
+            e.preventDefault();
 
-                let offsetTarget = e.target;
-                let prevElemOffset;
-                let scrollPosition;
-                let newElemOffset;
+            let offsetTarget = e.target;
+            let prevElemOffset;
+            let scrollPosition;
+            let newElemOffset;
 
-                if (window.helper.findAncestor(offsetTarget, '.language-selector--fixed')) {
-                    offsetTarget = getFirstElemInViewport('.language-selector--code-block');
-                }
-
-                if (offsetTarget) {
-                    prevElemOffset = offsetTarget.getBoundingClientRect().top;
-                }
-
-                actionOnClick(e, articleContent);
-
-                if (offsetTarget) {
-                    scrollPosition = getScrollPosition();
-                    newElemOffset = offsetTarget.getBoundingClientRect().top;
-                    window.scrollTo(0, scrollPosition - (prevElemOffset - newElemOffset));
-                }
+            if (window.helper.findAncestor(offsetTarget, '.language-selector--fixed')) {
+                offsetTarget = getFirstElemInViewport('.language-selector--code-block');
             }
+
+            if (offsetTarget) {
+                prevElemOffset = offsetTarget.getBoundingClientRect().top;
+            }
+
+            actionLanguageOnClick(e, articleContent);
+
+            if (offsetTarget) {
+                scrollPosition = getScrollPosition();
+                newElemOffset = offsetTarget.getBoundingClientRect().top;
+                window.scrollTo(0, scrollPosition - (prevElemOffset - newElemOffset));
+            }
+        }
+    };
+
+    const selectLanguageOnClick = (articleContent) => {
+        articleContent.addEventListener('click', (e) => {
+            handleLanguageSelection(e, articleContent);
         });
     };
 

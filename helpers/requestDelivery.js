@@ -52,34 +52,52 @@ const defineQuery = (deliveryConfig, config) => {
     return query;
 };
 
+const components = [{
+        type: 'embedded_content',
+        resolver: richTextResolverTemplates.embeddedContent
+    }, {
+        type: 'signpost',
+        resolver: richTextResolverTemplates.signpost
+    }, {
+        type: 'callout',
+        resolver: richTextResolverTemplates.callout
+    }, {
+        type: 'home__link_to_content_item',
+        resolver: richTextResolverTemplates.homeLinkToContentItem
+    }, {
+        type: 'image',
+        resolver: richTextResolverTemplates.image
+    }, {
+        type: 'call_to_action',
+        resolver: richTextResolverTemplates.callToAction
+    }, {
+        type: 'home__link_to_external_url',
+        resolver: richTextResolverTemplates.homeLinkToExternalUrl
+    }, {
+        type: 'code_sample',
+        resolver: richTextResolverTemplates.codeSample
+    }, {
+        type: 'code_samples',
+        resolver: richTextResolverTemplates.codeSamples
+    }, {
+        type: 'content_chunk',
+        resolver: richTextResolverTemplates.contentChunk
+    }, {
+        type: 'content_switcher',
+        resolver: richTextResolverTemplates.contentSwitcher
+    }
+];
+
 const resolveRichText = (item, config) => {
     item = linksResolverTemplates.resolveInnerRichTextLinks(item, config.urlMap);
 
-    if (item.system.type === 'embedded_content') {
-        return richTextResolverTemplates.embeddedContent(item);
-    } else if (item.system.type === 'signpost') {
-        return richTextResolverTemplates.signpost(item);
-    } else if (item.system.type === 'callout') {
-        return richTextResolverTemplates.callout(item);
-    } else if (item.system.type === 'home__link_to_content_item') {
-        return richTextResolverTemplates.homeLinkToContentItem(item, config.urlMap);
-    } else if (item.system.type === 'image') {
-        return richTextResolverTemplates.image(item);
-    } else if (item.system.type === 'call_to_action') {
-        return richTextResolverTemplates.callToAction(item);
-    } else if (item.system.type === 'home__link_to_external_url') {
-        return richTextResolverTemplates.homeLinkToExternalUrl(item);
-    } else if (item.system.type === 'code_sample') {
-        return richTextResolverTemplates.codeSample(item);
-    } else if (item.system.type === 'code_samples') {
-        return richTextResolverTemplates.codeSamples(item);
-    } else if (item.system.type === 'content_chunk') {
-        return richTextResolverTemplates.contentChunk(item);
-    } else if (item.system.type === 'content_switcher') {
-        return richTextResolverTemplates.contentSwitcher(item);
-    } else {
-        return `Missing Rich text resolver for the ${item.system.type} type.`;
+    for (var i = 0; i < components.length; i++) {
+        if (item.system.type === components[i].type) {
+            return components[i].resolver(item, config.urlMap);
+        }
     }
+
+    return `Missing Rich text resolver for the ${item.system.type} type.`;
 };
 
 const resolveLink = (link, config) => {
