@@ -183,10 +183,13 @@ const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
         });
 
         if (!isInUrlMap) {
-            urlMap.push({
+            urlMap.push(getMapItem({
                 codename: articleItem.system.codename,
-                url: `/other/${articleItem.elements.url.value}`
-            });
+                url: `/other/${articleItem.elements.url.value}`,
+                date: articleItem.system.lastModified,
+                visibility: articleItem.visibility && articleItem.visibility.value.length ? articleItem.visibility.value : null,
+                type: 'article'
+            }, fields));
         }
     });
 
