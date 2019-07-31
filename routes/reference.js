@@ -82,6 +82,7 @@ router.get('/:slug', asyncHandler(async (req, res, next) => {
             slug: slug,
             parentSlug: parentSlug,
             isPreview: isPreview(res.locals.previewapikey),
+            platform: content[0].platform && content[0].platform.value.length ? await commonContent.normalizePlatforms(content[0].platform.value, res) : null,
             title: content[0].title.value,
             titleSuffix: ` | ${home[0] ? home[0].title.value : 'Kentico Cloud Docs'}`,
             navigation: home[0].navigation,

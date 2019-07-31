@@ -22,7 +22,7 @@ block content
                                 each item in platform
                                     li.language-selector__item
                                         a(href=`#`, data-platform=item.codename, data-slug=item.slug, class=`language-selector__link`) #{item.title}
-                    if (availablePlatforms.length)
+                    if (availablePlatforms && availablePlatforms.length)
                         .language-selector
                             ul.language-selector__list.language-selector__list--static
                                 - var highlighIndex = 0; availablePlatforms.forEach((item, index) => { if (preselectedPlatform === item.slug) { highlighIndex = index } });
