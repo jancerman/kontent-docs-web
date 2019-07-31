@@ -143,7 +143,7 @@ app.use('/kentico-icons.min.css', kenticoIcons);
 
 app.use('/', asyncHandler(async (req, res, next) => {
   if (!req.originalUrl.startsWith('/cache-invalidate') && !req.originalUrl.startsWith('/kentico-icons.min.css') && !req.originalUrl.startsWith('/form')) {
-    await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home']);
+    await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home', 'navigationItems']);
   }
 
   const exists = await pageExists(req, res, next);
@@ -177,14 +177,23 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
   return res.json(cache.get(`urlMap_${res.locals.projectid}`));
 }));
 
-app.use('/new-reference', reference);
-
 app.use('/render-reference', (req, res) => {
   renderReference('https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/ac1c49e7544ea8c4dd8921efee361b24130f46f8/kcd%2520proto%2520all%2520oas3.yml');
   return res.end();
 });
 
-app.use('/', tutorials);
+// Dynamic routing setup
+app.use('/', (req, res, next) => {
+  let topLevel = req.originalUrl.split('/')[1];
+  let navigationItems = cache.get(`navigationItems_${res.locals.projectid}`);
+  res.locals.router = navigationItems.filter(item => topLevel === item.elements.url.value);
+
+  if (res.locals.router.length) {
+    res.locals.router = res.locals.router[0].elements.type.value[0].codename;
+  }
+
+  return next();
+}, tutorials, reference);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

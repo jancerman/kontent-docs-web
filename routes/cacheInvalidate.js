@@ -78,6 +78,8 @@ const splitPayloadByContentType = (items) => {
             itemsByTypes.notFound.push(item);
         } else if (item.type === 'platform_picker') {
             itemsByTypes.picker.push(item);
+        } else if (item.type === 'navigation_item') {
+            itemsByTypes.navigationItems.push(item);
         }
     }
 
@@ -133,6 +135,7 @@ router.post('/', asyncHandler(async (req, res) => {
             invalidateGeneral(itemsByTypes, KCDetails, 'UIMessages');
             invalidateGeneral(itemsByTypes, KCDetails, 'notFound');
             invalidateGeneral(itemsByTypes, KCDetails, 'picker', 'platformsConfig');
+            invalidateGeneral(itemsByTypes, KCDetails, 'navigationItems');
             await invalidateArticles(itemsByTypes, KCDetails);
             await invalidateMultiple(itemsByTypes, KCDetails, 'scenarios', 'scenario');
             await invalidateMultiple(itemsByTypes, KCDetails, 'topics', 'topic');

@@ -53,6 +53,9 @@ const cacheKeys = [{
     }, {
         name: 'not_found',
         method: commonContent.getNotFound
+    }, {
+        name: 'navigationItems',
+        method: commonContent.getNavigationItems
     }
 ];
 

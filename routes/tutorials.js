@@ -274,6 +274,10 @@ const getContent = async (req, res) => {
 };
 
 router.get(['/other/:article', '/:main', '/:main/:scenario', '/:main/:scenario/:topic', '/:main/:scenario/:topic/:article'], asyncHandler(async (req, res, next) => {
+    if (res.locals.router !== 'tutorials') {
+        return next();
+    }
+
     let data = await getContent(req, res, next);
     if (data && !data.view) return res.redirect(301, data);
     if (!data) return next();

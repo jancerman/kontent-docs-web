@@ -14,7 +14,11 @@ const isPreview = require('../helpers/isPreview');
 const minify = require('../helpers/minify');
 // const prerenderOptions = require('../helpers/redoc-cli/prerender-options.js');
 
-router.get('/', asyncHandler(async (req, res) => {
+router.get('/:main', asyncHandler(async (req, res, next) => {
+    if (res.locals.router !== 'reference') {
+        return next();
+    }
+
     const slug = req.originalUrl.split('/')[1];
     const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
         return await commonContent.getSubNavigation(res, slug);
@@ -29,7 +33,11 @@ router.get('/', asyncHandler(async (req, res) => {
     return res.redirect(301, `/${slug}/${redirectSlug}`);
 }));
 
-router.get('/:slug', asyncHandler(async (req, res, next) => {
+router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
+    if (res.locals.router !== 'reference') {
+        return next();
+    }
+
     const KCDetails = commonContent.getKCDetails(res);
     const urlMap = await getUrlMap(res, true);
     const parentSlug = req.originalUrl.split('/')[1];
