@@ -8,7 +8,7 @@ const requestDelivery = require('../helpers/requestDelivery');
 const app = require('../app');
 
 const isValidSignature = (req, secret) => {
-    const givenSignature = req.headers['x-kc-signature'];
+    const givenSignature = req.headers['X-KC-Signature'];
     const computedSignature = crypto.createHmac('sha256', secret)
         .update(req.body)
         .digest();
