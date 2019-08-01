@@ -14,6 +14,7 @@ const consola = require('consola');
 
 const handleCache = require('./helpers/handleCache');
 const renderReference = require('./helpers/renderReference');
+const getUrlMap = require('./helpers/urlMap');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -64,13 +65,15 @@ app.set('view engine', 'pug');
 app.use(compression());
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({
-    extended: false
+  extended: false
 }));
 app.use(cookieParser());
 app.use(serveStatic(path.join(__dirname, 'public'), {
   maxAge: 2592000
 }));
-app.use(cacheControl({ maxAge: 604800 }));
+app.use(cacheControl({
+  maxAge: 604800
+}));
 app.enable('trust proxy');
 
 const handleKCKeys = (req, res) => {
@@ -94,7 +97,10 @@ const handleKCKeys = (req, res) => {
 };
 
 const pageExists = async (req, res) => {
-  const urlMap = cache.get(`urlMap_${res.locals.projectid}`);
+  const urlMap = await handleCache.evaluateSingle(res, `urlMap`, async () => {
+    return await getUrlMap(res);
+  });
+
   const path = req.originalUrl.split('?')[0];
   let exists = false;
 
@@ -133,11 +139,15 @@ app.use(async (req, res, next) => {
   return next();
 });
 
-app.use('/cache-invalidate', bodyParser.text({ type: '*/*' }), cacheInvalidate);
+app.use('/cache-invalidate', bodyParser.text({
+  type: '*/*'
+}), cacheInvalidate);
 
 app.use('/', previewUrls);
 
-app.use('/form', bodyParser.text({ type: '*/*' }), form);
+app.use('/form', bodyParser.text({
+  type: '*/*'
+}), form);
 
 app.use('/kentico-icons.min.css', kenticoIcons);
 
@@ -188,9 +198,9 @@ app.use('/', (req, res, next) => {
   let navigationItems = cache.get(`navigationItems_${res.locals.projectid}`);
   res.locals.router = navigationItems.filter(item => topLevel === item.elements.url.value);
 
-  if (res.locals.router.length) {
+  if (res.locals.router.length && res.locals.router[0].elements.type.value.length) {
     res.locals.router = res.locals.router[0].elements.type.value[0].codename;
-  } else if (topLevel === 'other' || topLevel === 'article') {
+  } else /* if (topLevel === 'other' || topLevel === 'article') */ {
     res.locals.router = 'tutorials';
   }
 
@@ -205,13 +215,15 @@ app.use((req, res, next) => {
 });
 
 // error handler
-app.use(async(err, req, res, _next) => { // eslint-disable-line no-unused-vars
+app.use(async (err, req, res, _next) => { // eslint-disable-line no-unused-vars
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   consola.error(err.stack);
   if (appInsights && appInsights.defaultClient) {
-    appInsights.defaultClient.trackTrace({ message: 'ERR_STACK_TRACE: ' + err.stack });
+    appInsights.defaultClient.trackTrace({
+      message: 'ERR_STACK_TRACE: ' + err.stack
+    });
   }
   // render the error page
   res.status(err.status || 500);

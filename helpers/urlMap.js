@@ -1,5 +1,9 @@
-const { DeliveryClient } = require('kentico-cloud-delivery');
-const { deliveryConfig } = require('../config');
+const {
+    DeliveryClient
+} = require('kentico-cloud-delivery');
+const {
+    deliveryConfig
+} = require('../config');
 const cache = require('memory-cache');
 let fields = ['codename', 'url'];
 let createUrlMap, handleNode;
@@ -28,7 +32,7 @@ const typeLevels = {
         urlLength: [2, 4]
     },
     multiplatform_article: {
-        urlLength: 4
+        urlLength: [2, 4]
     }
 };
 
@@ -59,24 +63,28 @@ const getMapItem = (data) => {
     return item;
 };
 
-const redefineTypeLevel = (response) => {
+const redefineTypeLevel = (response, urlLength) => {
     let level = [2, 4];
 
     if (response.system && response.system.type === 'multiplatform_article') {
-      level = [2, 5];
+        if (urlLength === 4) {
+            level = [2, 5];
+        } else if (urlLength === 2) {
+            level = [3, 4];
+        }
     }
 
     return level;
-  };
+};
 
 const handleLangForMultiplatformArticle = (queryString, item) => {
     queryString = '?tech=';
     const cachedPlatforms = cache.get(`platformsConfig_${deliveryConfig.projectId}`);
     if (cachedPlatforms && cachedPlatforms.length && item.elements.platform.value.length) {
-      let tempPlatform = cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename);
-      if (tempPlatform.length) {
-        queryString += tempPlatform[0].url.value;
-      }
+        let tempPlatform = cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename);
+        if (tempPlatform.length) {
+            queryString += tempPlatform[0].url.value;
+        }
     }
 
     return queryString;
@@ -121,7 +129,13 @@ createUrlMap = (response, url, urlMap = []) => {
 
     if (response[node]) {
         response[node].forEach(item => {
-            urlMap = handleNode({ response, item, urlMap, url, queryString });
+            urlMap = handleNode({
+                response,
+                item,
+                urlMap,
+                url,
+                queryString
+            });
         });
     }
 
@@ -129,7 +143,7 @@ createUrlMap = (response, url, urlMap = []) => {
 };
 
 handleNode = (settings) => {
-    typeLevels.article.urlLength = redefineTypeLevel(settings.response);
+    typeLevels.article.urlLength = redefineTypeLevel(settings.response, settings.url.length);
 
     if (settings.item.elements.url && typeLevels[settings.item.system.type]) {
         const typeLevel = getTypeLevel(typeLevels[settings.item.system.type].urlLength, settings.url.length);
@@ -140,12 +154,12 @@ handleNode = (settings) => {
         if (settings.response.system && settings.response.system.type === 'multiplatform_article') {
             // Handle "lang" query string in case articles are assigned to "multiplatform_article"
             settings.queryString = handleLangForMultiplatformArticle(settings.queryString, settings.item);
-        /* }  else if (settings.item.system && settings.item.system.type === 'article' && globalConfig.isSitemap) {
-            // Handle "lang" query string in case "article" has values selected in the "Platform" field
-            let tempProperties = handleLangForPlatformField({ item: settings.item, slug, url: settings.url, urlMap: settings.urlMap });
-            settings.urlMap = tempProperties.urlMap;
-            slug = tempProperties.slug;
-            settings.url = tempProperties.url; */
+            /* }  else if (settings.item.system && settings.item.system.type === 'article' && globalConfig.isSitemap) {
+                // Handle "lang" query string in case "article" has values selected in the "Platform" field
+                let tempProperties = handleLangForPlatformField({ item: settings.item, slug, url: settings.url, urlMap: settings.urlMap });
+                settings.urlMap = tempProperties.urlMap;
+                slug = tempProperties.slug;
+                settings.url = tempProperties.url; */
         } else {
             slug = settings.item.elements.url.value;
         }
@@ -159,7 +173,13 @@ handleNode = (settings) => {
 
     // Add url to map
     if (typeLevels[settings.item.system.type]) {
-        settings.urlMap = addItemToMap({ urlMap: settings.urlMap, item: settings.item, url: settings.url, queryString: settings.queryString, type: settings.item.system.type });
+        settings.urlMap = addItemToMap({
+            urlMap: settings.urlMap,
+            item: settings.item,
+            url: settings.url,
+            queryString: settings.queryString,
+            type: settings.item.system.type
+        });
     }
 
     settings.queryString = '';

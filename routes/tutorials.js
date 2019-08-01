@@ -8,6 +8,7 @@ const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 const handleCache = require('../helpers/handleCache');
+const platforms = require('../helpers/platforms');
 
 const moment = require('moment');
 const cache = require('memory-cache');
@@ -67,98 +68,6 @@ const getCurrentLevel = (levels) => {
     return index;
 };
 
-const getSelectedPlatform = (platformsConfig, cookiesPlatform) => {
-    let platform = platformsConfig ? platformsConfig.filter(item => item.system.codename === cookiesPlatform) : null;
-    if (platform && platform.length) {
-        platform = platform[0].elements.url.value
-    } else {
-        platform = null;
-    }
-    return platform;
-};
-
-const getPlatformsConfig = (projectId) =>
-    cache.get(`platformsConfig_${projectId}`) && cache.get(`platformsConfig_${projectId}`).length
-    ? cache.get(`platformsConfig_${projectId}`)[0].options
-    : null;
-
-const getDefaultPlatform = (req, content, preselectedPlatform) => {
-    preselectedPlatform = req.cookies['KCDOCS.preselectedLanguage'];
-
-    if (content.children && content.children.length) {
-        preselectedPlatform = content.children[0].elements.platform.value[0].codename;
-    } else if (content.platform && content.platform.value.length) {
-        preselectedPlatform = content.platform.value[0].codename;
-    }
-
-    return preselectedPlatform;
-};
-
-const getAvailablePlatform = (content, preselectedPlatform) => {
-    let platformItems;
-    if (content.children) {
-        platformItems = content.children.filter(item => {
-            if (item.platform.value.length) {
-                return item.platform.value[0].codename === preselectedPlatform;
-            }
-            return false;
-        });
-
-        if (platformItems.length) {
-            preselectedPlatform = platformItems[0].platform.value[0].codename;
-        } else {
-            preselectedPlatform = content.children[0].platform.value[0].codename;
-        }
-    } else {
-        platformItems = content.platform.value.filter(item => item.codename === preselectedPlatform);
-
-        if (platformItems.length) {
-            preselectedPlatform = platformItems[0].codename;
-        } else {
-            if (content.platform.value.length) {
-                preselectedPlatform = content.platform.value[0].codename;
-            }
-        }
-    }
-
-    return preselectedPlatform;
-};
-
-const getPreselectedPlatform = (content, req, res) => {
-    const KCDetails = commonContent.getKCDetails(res);
-    const platformsConfig = getPlatformsConfig(KCDetails.projectid);
-
-    let preselectedPlatform = req.query.tech;
-
-    if (preselectedPlatform) {
-        let tempPlatforms = platformsConfig ? platformsConfig.filter(item => item.elements.url.value === preselectedPlatform) : null;
-        if (tempPlatforms && tempPlatforms.length) {
-            preselectedPlatform = tempPlatforms[0].system.codename;
-            res.cookie('KCDOCS.preselectedLanguage', preselectedPlatform);
-            cookiesPlatform = preselectedPlatform;
-        } else {
-            return null;
-        }
-    }
-
-    if (!preselectedPlatform) {
-        preselectedPlatform = getDefaultPlatform(req, content, preselectedPlatform);
-    } else {
-        preselectedPlatform = getAvailablePlatform(content, preselectedPlatform);
-    }
-
-    return preselectedPlatform;
-};
-
-const getCanonicalUrl = (urlMap, content, preselectedPlatform) => {
-    let canonicalUrl;
-    if ((content.system.type === 'article' && content.platform.value.length > 1) || (content.system.type === 'multiplatform_article' && content.children.length && preselectedPlatform === content.children[0].platform.value[0].codename)) {
-        canonicalUrl = urlMap.filter(item => item.codename === content.system.codename);
-        canonicalUrl = canonicalUrl.length ? canonicalUrl[0].url : null;
-    }
-    return canonicalUrl;
-};
-
 const getContent = async (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
     const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
@@ -176,7 +85,7 @@ const getContent = async (req, res) => {
     let availablePlatforms;
 
     let queryHash = req.url.split('?')[1];
-    const platformsConfig = getPlatformsConfig(KCDetails.projectid);
+    const platformsConfig = platforms.getPlatformsConfig(KCDetails.projectid);
     let preselectedPlatform;
     let canonicalUrl;
     cookiesPlatform = req.cookies['KCDOCS.preselectedLanguage'];
@@ -193,45 +102,33 @@ const getContent = async (req, res) => {
         } else if (currentLevel === 1) {
             return `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else if (currentLevel === 2) {
-            preselectedPlatform = getPreselectedPlatform(content[0], req, res);
-            canonicalUrl = getCanonicalUrl(urlMap, content[0], preselectedPlatform);
+            let preselectedPlatformSettings = platforms.getPreselectedPlatform(content[0], cookiesPlatform, req, res);
+
+            if (!preselectedPlatformSettings) {
+                return null;
+            }
+
+            preselectedPlatform = preselectedPlatformSettings.preselectedPlatform;
+            cookiesPlatform = preselectedPlatformSettings.cookiesPlatform;
+
+            if (cookiesPlatform) {
+                res.cookie('KCDOCS.preselectedLanguage', cookiesPlatform);
+            }
+
+            canonicalUrl = platforms.getCanonicalUrl(urlMap, content[0], preselectedPlatform);
 
             if (content[0].system.type === 'multiplatform_article') {
-                let platformItem = content[0].children.filter(item => {
-                    if (item.platform.value.length) {
-                        return item.platform.value[0].codename === preselectedPlatform;
-                    }
-                    return false;
-                });
+                const multiplatformArticleContent = await platforms.getMultiplatformArticleContent(content, preselectedPlatform, urlMap, KCDetails, res);
 
-                availablePlatforms = content[0].children;
+               if (!multiplatformArticleContent) {
+                   return null;
+               }
 
-                if (!platformItem.length && availablePlatforms.length) {
-                    platformItem.push(availablePlatforms[0]);
-                }
-
-                if (platformItem.length) {
-                    content = await handleCache.evaluateSingle(res, `article_${platformItem[0].elements.url.value}`, async () => {
-                        return await requestDelivery({
-                            codename: platformItem[0].system.codename,
-                            type: 'article',
-                            depth: 2,
-                            resolveRichText: true,
-                            urlMap: urlMap,
-                            ...KCDetails
-                        });
-                    });
-                } else {
-                    return null;
-                }
+               content = multiplatformArticleContent.content;
+               availablePlatforms = multiplatformArticleContent.availablePlatforms;
             }
 
-            preselectedPlatform = platformsConfig ? platformsConfig.filter(item => item.system.codename === preselectedPlatform) : null;
-            if (preselectedPlatform && preselectedPlatform.length) {
-                preselectedPlatform = preselectedPlatform[0].elements.url.value;
-            } else {
-                preselectedPlatform = null;
-            }
+            preselectedPlatform = platforms.getPreselectedPlatformByConfig(preselectedPlatform, platformsConfig);
         }
     } else {
         return null;
@@ -257,7 +154,7 @@ const getContent = async (req, res) => {
         description: content[0].introduction ? helper.stripTags(content[0].introduction.value).substring(0, 300) : '',
         platform: content[0].platform && content[0].platform.value.length ? await commonContent.normalizePlatforms(content[0].platform.value, res) : null,
         availablePlatforms: await commonContent.normalizePlatforms(availablePlatforms, res),
-        selectedPlatform: getSelectedPlatform(platformsConfig, cookiesPlatform),
+        selectedPlatform: platforms.getSelectedPlatform(platformsConfig, cookiesPlatform),
         canonicalUrl: canonicalUrl,
         introduction: content[0].introduction ? content[0].introduction.value : null,
         nextSteps: content[0].next_steps ? content[0].next_steps : '',
