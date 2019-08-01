@@ -8,7 +8,7 @@ const requestDelivery = require('../helpers/requestDelivery');
 const app = require('../app');
 
 const isValidSignature = (req, secret) => {
-    const givenSignature = req.headers['X-KC-Signature'];
+    const givenSignature = req.headers['x-kc-signature'];
     const computedSignature = crypto.createHmac('sha256', secret)
         .update(req.body)
         .digest();
@@ -59,7 +59,8 @@ const splitPayloadByContentType = (items) => {
         scenarios: [],
         topics: [],
         notFound: [],
-        picker: []
+        picker: [],
+        navigationItems: []
     };
 
     for (let i = 0; i < items.length; i++) {
@@ -125,7 +126,7 @@ const invalidateArticles = async (itemsByTypes, KCDetails) => {
 
 router.post('/', asyncHandler(async (req, res) => {
     if (process.env['Webhook.Cache.Invalidate.CommonContent']) {
-        if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
+       if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
             const KCDetails = commonContent.getKCDetails(res);
             const items = JSON.parse(req.body).data.items;
             const keys = cache.keys();

@@ -66,46 +66,52 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
 
     let view, data;
 
-    if (content[0].system.type === 'zapi_specification') {
-        view = 'apiReference/pages/redoc';
-        data = {
-            req: req,
-            minify: minify,
-            slug: slug,
-            isPreview: isPreview(res.locals.previewapikey),
-            title: content[0].title.value,
-            titleSuffix: ` | ${home[0] ? home[0].title.value : 'Kentico Cloud Docs'}`,
-            navigation: home[0].navigation,
-            footer: footer[0] ? footer[0] : {},
-            UIMessages: UIMessages[0],
-            helper: helper
-        };
+    if (content.length) {
+        if (content[0].system.type === 'zapi_specification') {
+            view = 'apiReference/pages/redoc';
+            data = {
+                req: req,
+                minify: minify,
+                slug: slug,
+                isPreview: isPreview(res.locals.previewapikey),
+                title: content[0].title.value,
+                titleSuffix: ` | ${home[0] ? home[0].title.value : 'Kentico Cloud Docs'}`,
+                navigation: home[0].navigation,
+                footer: footer[0] ? footer[0] : {},
+                UIMessages: UIMessages[0],
+                helper: helper
+            };
 
-        return res.render(view, data);
-    } else {
-        view = 'apiReference/pages/reference';
-        data = {
-            req: req,
-            minify: minify,
-            slug: slug,
-            parentSlug: parentSlug,
-            isPreview: isPreview(res.locals.previewapikey),
-            platform: content[0].platform && content[0].platform.value.length ? await commonContent.normalizePlatforms(content[0].platform.value, res) : null,
-            title: content[0].title.value,
-            titleSuffix: ` | ${home[0] ? home[0].title.value : 'Kentico Cloud Docs'}`,
-            navigation: home[0].navigation,
-            introduction: content[0].introduction ? content[0].introduction.value : null,
-            nextSteps: content[0].next_steps ? content[0].next_steps : '',
-            content: content[0],
-            footer: footer[0] ? footer[0] : {},
-            UIMessages: UIMessages[0],
-            helper: helper,
-            subNavigation: subNavigation[0] ? subNavigation[0].children : [],
-            moment: moment
-        };
+            return res.render(view, data);
+        } else if (content[0].system.type === 'article') {
+            view = 'apiReference/pages/reference';
+            data = {
+                req: req,
+                minify: minify,
+                slug: slug,
+                parentSlug: parentSlug,
+                isPreview: isPreview(res.locals.previewapikey),
+                platform: content[0].platform && content[0].platform.value.length ? await commonContent.normalizePlatforms(content[0].platform.value, res) : null,
+                title: content[0].title.value,
+                titleSuffix: ` | ${home[0] ? home[0].title.value : 'Kentico Cloud Docs'}`,
+                navigation: home[0].navigation,
+                introduction: content[0].introduction ? content[0].introduction.value : null,
+                nextSteps: content[0].next_steps ? content[0].next_steps : '',
+                content: content[0],
+                footer: footer[0] ? footer[0] : {},
+                UIMessages: UIMessages[0],
+                helper: helper,
+                subNavigation: subNavigation[0] ? subNavigation[0].children : [],
+                moment: moment
+            };
 
-        return res.render(view, data);
+            return res.render(view, data);
+        } else if (content[0].system.type === 'multiplatform_article') {
+
+        }
     }
+
+    return next();
 }));
 
 module.exports = router;
