@@ -358,6 +358,20 @@
         });
     };
 
+    const ensureCorrectTech = () => {
+        const links = document.querySelectorAll('.sub-navigation__link');
+        const cookieTech = helper.getCookie('KCDOCS.preselectedLanguage');
+
+        for (let i = 0; i < links.length; i++) {
+            let link = links[i].getAttribute('href');
+            let linkTech = helper.getParameterByName('tech', link);
+
+            if (linkTech && linkTech !== cookieTech) {
+                links[i].setAttribute('href', helper.replaceUrlParam(link, 'tech', cookieTech));
+            }
+        }
+    };
+
     cloneLanguageSelectorToCodeBlocks();
     cloneLanguageSelectorToFixed();
     handleEmptyPlatforms();
@@ -365,6 +379,7 @@
     window.addEventListener('scroll', handleFixedSelector, window.supportsPassive ? { passive: true } : false);
     selectLanguage();
     copyCode();
+    ensureCorrectTech();
     setTimeout(() => {
         makeInfobarsVisible();
     }, 0);

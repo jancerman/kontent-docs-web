@@ -162,7 +162,7 @@ const getContent = async (req, res) => {
         subNavigation: subNavigation[0] ? subNavigation[0].children : [],
         subNavigationLevels: subNavigationLevels,
         content: content[0],
-        footer: footer[0] ? footer[0] : {},
+        footer: footer && footer.length ? footer[0] : {},
         UIMessages: UIMessages[0],
         helper: helper,
         getFormValue: helper.getFormValue,

@@ -198,7 +198,19 @@ window.helper = (() => {
         }
         qString = qString.join('&');
         return path[0] + (qString ? '?' + qString : '') + (hash ? '#' + hash : '');
-    }
+    };
+
+    const replaceUrlParam = (url, paramName, paramValue) => {
+        if (paramValue == null) {
+            paramValue = '';
+        }
+        var pattern = new RegExp('\\b('+paramName+'=).*?(&|#|$)');
+        if (url.search(pattern)>=0) {
+            return url.replace(pattern, '$1' + paramValue + '$2');
+        }
+        url = url.replace(/[?#]$/, '');
+        return url + (url.indexOf('?')>0 ? '&' : '?') + paramName + '=' + paramValue;
+    };
 
     // Add link tag to page head and make it load and behave as stylesheet
     const addStylesheet = (url) => {
@@ -293,6 +305,7 @@ window.helper = (() => {
         ajaxPost: ajaxPost,
         getParameterByName: getParameterByName,
         removeParametersByNames: removeParametersByNames,
+        replaceUrlParam: replaceUrlParam,
         loadStylesheet: loadStylesheet,
         addStylesheet: addStylesheet,
         decodeHTMLEntities: decodeHTMLEntities,
