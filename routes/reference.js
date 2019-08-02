@@ -3,6 +3,7 @@ const asyncHandler = require('express-async-handler');
 const router = express.Router();
 const cache = require('memory-cache');
 const moment = require('moment');
+const axios = require('axios');
 // const cmd = require('node-cmd');
 
 const getUrlMap = require('../helpers/urlMap');
@@ -68,6 +69,22 @@ const handleArticle = async (settings, req, res) => {
     return settings.renderSettings;
 };
 
+const getRedocReference = async (res) => {
+    return await handleCache.evaluateSingle(res, `reDocReference_`, async () => {
+        let baseURL = process.env['baseURL'];
+        let axiosInstance;
+
+        if (baseURL) {
+            axiosInstance = axios.create({ baseURL: 'http://localhost:3000' });
+        } else {
+            axiosInstance = axios.create();
+        }
+
+        let data = await axiosInstance.get('/serve-reference');
+        return data.data;
+    });
+};
+
 router.get('/:main', asyncHandler(async (req, res, next) => {
     if (res.locals.router !== 'reference') {
         return next();
@@ -130,7 +147,9 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
         }
     };
 
-    if (content.length && content[0].system.type !== 'zapi_specification') {
+    if (content.length && content[0].system.type === 'zapi_specification') {
+        renderSettings.data.content = await getRedocReference(res);
+    } else {
         const settings = {
             renderSettings: renderSettings,
             content: content,

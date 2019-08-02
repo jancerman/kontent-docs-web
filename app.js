@@ -11,6 +11,7 @@ const cache = require('memory-cache');
 const cacheControl = require('express-cache-controller');
 const serveStatic = require('serve-static');
 const consola = require('consola');
+const fs = require('fs');
 
 const handleCache = require('./helpers/handleCache');
 const renderReference = require('./helpers/renderReference');
@@ -46,7 +47,8 @@ const urlWhitelist = [
   '/cache-invalidate',
   '/robots.txt',
   '/sitemap.xml',
-  '/render-reference'
+  '/render-reference',
+  '/serve-reference'
 ];
 
 // Azure Application Insights monitors
@@ -187,9 +189,26 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
   return res.json(cache.get(`urlMap_${res.locals.projectid}`));
 }));
 
+// Reference
 app.use('/render-reference', (req, res) => {
   renderReference('https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/ac1c49e7544ea8c4dd8921efee361b24130f46f8/kcd%2520proto%2520all%2520oas3.yml');
   return res.end();
+});
+
+app.get('/serve-reference', (req, res) => {
+  fs.readFile('./redoc-static.html', (err, data) => {
+    if (err) {
+        throw err;
+    }
+    let result;
+
+    if (Buffer.isBuffer(data)) {
+      result = data.toString('utf8');
+    }
+
+    res.type('text/html; charset=utf8');
+    return res.send(result);
+  });
 });
 
 // Dynamic routing setup
