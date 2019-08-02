@@ -121,11 +121,11 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
             minify: minify,
             slug: slug,
             isPreview: isPreview(res.locals.previewapikey),
-            title: content[0].title.value,
-            titleSuffix: ` | ${home[0] ? home[0].title.value : 'Kentico Cloud Docs'}`,
-            navigation: home[0].navigation,
+            title: content && content.length ? content[0].title.value : '',
+            titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Cloud Docs'}`,
+            navigation: home && home.length ? home[0].navigation : {},
             footer: footer[0] ? footer[0] : {},
-            UIMessages: UIMessages[0],
+            UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : {},
             helper: helper
         }
     };

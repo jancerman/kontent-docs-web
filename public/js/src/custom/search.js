@@ -286,7 +286,7 @@
     const initAutocomplete = (urlMap) => {
         // Init autocomplete and set maximum of suggested search items
         var hitsSource = window.autocomplete.sources.hits(tutorials, {
-            hitsPerPage: 1000
+            hitsPerPage: 50
         });
 
         let searchInputIsFocused = false;

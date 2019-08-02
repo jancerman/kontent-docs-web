@@ -19,12 +19,12 @@ const error = (req, res) => {
         req: req,
         minify: minify,
         slug: '404',
-        navigation: home[0] ? home[0].navigation : [],
-        title: content[0] ? content[0].title.value : '',
-        titleSuffix: ` | ${home[0] ? home[0].title.value : 'Kentico Cloud Docs'}`,
-        content: content[0] ? content[0].content.value : '',
-        footer: footer[0] ? footer[0] : {},
-        UIMessages: UIMessages[0],
+        navigation: home && home.length ? home[0].navigation : [],
+        title: content && content.length ? content[0].title.value : '',
+        titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Cloud Docs'}`,
+        content: content && content.length ? content[0].content.value : '',
+        footer: footer && footer.length ? footer[0] : {},
+        UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : {},
         helper: helper
     });
 };
