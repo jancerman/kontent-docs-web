@@ -142,7 +142,6 @@ const getResponse = async (query, config) => {
                         elem[key].value = enhanceMarkup(elem[key].resolvedHtml);
                     });
             }
-
         });
     }
 
