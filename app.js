@@ -72,7 +72,7 @@ app.use(serveStatic(path.join(__dirname, 'public'), {
   maxAge: 2592000
 }));
 app.use(cacheControl({
-  maxAge: 604800
+  noCache: true
 }));
 app.enable('trust proxy');
 
