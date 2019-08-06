@@ -130,7 +130,7 @@ const getResponse = async (query, config) => {
             consola.error(err);
         });
 
-    if (config.resolveRichText && response) {
+    if (config.resolveRichText && response && response.items) {
         response.items.forEach((elem) => {
             const keys = Object.keys(elem);
 

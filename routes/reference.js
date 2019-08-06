@@ -73,14 +73,15 @@ const getRedocReference = async (res) => {
     return await handleCache.evaluateSingle(res, `reDocReference_`, async () => {
         let baseURL = process.env['baseURL'];
         let axiosInstance;
+        let data;
 
         if (baseURL) {
             axiosInstance = axios.create({ baseURL: 'http://localhost:3000' });
+            data = await axiosInstance.get('/serve-reference');
         } else {
-            axiosInstance = axios.create();
+            data = await axios.get('https://kcd-web-preview-dev.azurewebsites.net/serve-reference');
         }
 
-        let data = await axiosInstance.get('/serve-reference');
         return data.data;
     });
 };

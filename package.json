@@ -50,7 +50,7 @@
     "isarray": "^2.0.4",
     "js-yaml": "^3.13.1",
     "kentico-cloud-delivery": "5.3.2",
-    "kentico-cloud-docs-redoc": "^2.0.6",
+    "kentico-cloud-docs-redoc": "^2.0.11",
     "memory-cache": "^0.2.0",
     "mkdirp": "^0.5.1",
     "mobx": "^4.2.0",
