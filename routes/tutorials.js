@@ -161,9 +161,9 @@ const getContent = async (req, res) => {
         navigation: home && home.length ? home[0].navigation : [],
         subNavigation: subNavigation && subNavigation.length ? subNavigation[0].children : [],
         subNavigationLevels: subNavigationLevels,
-        content: content && content.length ? content[0] : {},
-        footer: footer && footer.length ? footer[0] : {},
-        UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : {},
+        content: content && content.length ? content[0] : null,
+        footer: footer && footer.length ? footer[0] : null,
+        UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
         helper: helper,
         getFormValue: helper.getFormValue,
         preselectedPlatform: preselectedPlatform

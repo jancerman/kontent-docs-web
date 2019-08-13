@@ -23,8 +23,8 @@ const error = (req, res) => {
         title: content && content.length ? content[0].title.value : '',
         titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Cloud Docs'}`,
         content: content && content.length ? content[0].content.value : '',
-        footer: footer && footer.length ? footer[0] : {},
-        UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : {},
+        footer: footer && footer.length ? footer[0] : null,
+        UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
         helper: helper
     });
 };

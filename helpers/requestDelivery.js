@@ -138,8 +138,10 @@ const getResponse = async (query, config) => {
                 keys
                     .filter((key) => elem.hasOwnProperty(key) && elem[key].hasOwnProperty('type') && elem[key].type === `rich_text`)
                     .forEach((key) => {
-                        elem[key].getHtml();
-                        elem[key].value = enhanceMarkup(elem[key].resolvedHtml);
+                        if (elem[key]) {
+                            elem[key].getHtml();
+                            elem[key].value = enhanceMarkup(elem[key].resolvedHtml);
+                        }
                     });
             }
         });

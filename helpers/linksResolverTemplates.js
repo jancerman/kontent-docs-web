@@ -13,7 +13,11 @@ const updateLinkAttribute = (element, resolvedUrl, link) => {
 
 const resolveLinkUrlsInElement = (element, item, urlMap) => {
     element.links.forEach((link) => {
-        let resolvedUrl = urlMap.filter(elem => elem.codename === link.codename);
+        let resolvedUrl = [];
+
+        if (urlMap) {
+            resolvedUrl = urlMap.filter(elem => elem.codename === link.codename);
+        }
 
         if (resolvedUrl.length > 0) {
             resolvedUrl = resolvedUrl[0].url;
@@ -30,7 +34,11 @@ const resolveLinkUrlsInElement = (element, item, urlMap) => {
 
 const linksResolverTemplates = {
     resolve: (item, urlMap) => {
-        let url = urlMap.filter(elem => elem.codename === item.codename);
+        let url = [];
+
+        if (urlMap) {
+            url = urlMap.filter(elem => elem.codename === item.codename);
+        }
 
         if (url.length > 0) {
             return url[0].url;

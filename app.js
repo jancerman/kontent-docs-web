@@ -215,7 +215,9 @@ app.get('/serve-reference', (req, res) => {
 app.use('/', (req, res, next) => {
   let topLevel = req.originalUrl.split('/')[1];
   let navigationItems = cache.get(`navigationItems_${res.locals.projectid}`);
-  res.locals.router = navigationItems.filter(item => topLevel === item.elements.url.value);
+  if (navigationItems) {
+    res.locals.router = navigationItems.filter(item => topLevel === item.elements.url.value);
+  }
 
   if (res.locals.router.length && res.locals.router[0].elements.type.value.length) {
     res.locals.router = res.locals.router[0].elements.type.value[0].codename;
