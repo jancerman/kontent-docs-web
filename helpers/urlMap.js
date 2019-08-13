@@ -159,7 +159,6 @@ handleNode = (settings) => {
         let slug = '';
 
         if (settings.response.system && settings.item.system && settings.response.system.type === 'multiplatform_article' && settings.item.system.type === 'article') {
-            // console.log(settings.response.system ? settings.response.system.codename : '', settings.url);
             // Handle "lang" query string in case articles are assigned to "multiplatform_article"
             settings.queryString = handleLangForMultiplatformArticle(settings.queryString, settings.item);
             /* }  else if (settings.item.system && settings.item.system.type === 'article' && globalConfig.isSitemap) {
