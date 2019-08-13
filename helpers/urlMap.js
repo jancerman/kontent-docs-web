@@ -63,7 +63,7 @@ const getMapItem = (data) => {
     return item;
 };
 
-const redefineTypeLevel = (response, urlLength) => {
+const redefineTypeLevelArticle = (response, urlLength) => {
     let level = [2, 4];
 
     if (response.system && response.system.type === 'multiplatform_article') {
@@ -80,7 +80,7 @@ const redefineTypeLevel = (response, urlLength) => {
 const handleLangForMultiplatformArticle = (queryString, item) => {
     queryString = '?tech=';
     const cachedPlatforms = cache.get(`platformsConfig_${deliveryConfig.projectId}`);
-    if (cachedPlatforms && cachedPlatforms.length && item.elements.platform.value.length) {
+    if (cachedPlatforms && cachedPlatforms.length && item.elements.platform && item.elements.platform.value.length) {
         let tempPlatform = cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename);
         if (tempPlatform.length) {
             queryString += tempPlatform[0].url.value;
@@ -120,30 +120,37 @@ const getTypeLevel = (typeLength, urlLength) => {
 };
 
 createUrlMap = (response, url, urlMap = []) => {
-    let node = '';
+    let nodes = [];
     let queryString = '';
 
-    if (response.items) node = 'items';
-    if (response.navigation) node = 'navigation';
-    if (response.children) node = 'children';
+    if (response.items) nodes.push('items');
+    if (response.navigation) nodes.push('navigation');
+    if (response.children) nodes.push('children');
+    if (response.topics) nodes.push('topics');
 
-    if (response[node]) {
-        response[node].forEach(item => {
-            urlMap = handleNode({
-                response,
-                item,
-                urlMap,
-                url,
-                queryString
+    for (let i = 0; i < nodes.length; i++) {
+        if (response[nodes[i]]) {
+            response[nodes[i]].forEach(item => {
+                urlMap = handleNode({
+                    response,
+                    item,
+                    urlMap,
+                    url,
+                    queryString
+                });
             });
-        });
+        }
     }
 
     return urlMap;
 };
 
 handleNode = (settings) => {
-    typeLevels.article.urlLength = redefineTypeLevel(settings.response, settings.url.length);
+    if (settings.response.system && settings.item.system && settings.response.system.type === 'navigation_item' && settings.item.system.type === 'multiplatform_article') {
+        settings.url.length = 2;
+    }
+
+    typeLevels.article.urlLength = redefineTypeLevelArticle(settings.response, settings.url.length);
 
     if (settings.item.elements.url && typeLevels[settings.item.system.type]) {
         const typeLevel = getTypeLevel(typeLevels[settings.item.system.type].urlLength, settings.url.length);
@@ -151,7 +158,8 @@ handleNode = (settings) => {
         settings.url.length = typeLevel;
         let slug = '';
 
-        if (settings.response.system && settings.response.system.type === 'multiplatform_article') {
+        if (settings.response.system && settings.item.system && settings.response.system.type === 'multiplatform_article' && settings.item.system.type === 'article') {
+            // console.log(settings.response.system ? settings.response.system.codename : '', settings.url);
             // Handle "lang" query string in case articles are assigned to "multiplatform_article"
             settings.queryString = handleLangForMultiplatformArticle(settings.queryString, settings.item);
             /* }  else if (settings.item.system && settings.item.system.type === 'article' && globalConfig.isSitemap) {

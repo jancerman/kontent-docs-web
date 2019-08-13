@@ -3,10 +3,11 @@ ul.sub-navigation.sub-navigation--level-1.sub-navigation--top(data-toggle-target
     if subNavigation.length > 1
         each scenario in subNavigation
             li.sub-navigation__item
-                a(href=`/${req.params.main}/${scenario.url.value}`, class=`sub-navigation__link${subNavigationLevels[0] === scenario.url.value ? ' sub-navigation__link--active' : ''}`) !{scenario.short_title && scenario.short_title.value ? scenario.short_title.value : scenario.title.value}
+                a(href=`/${req.params.main}/${scenario.url.value}${selectedPlatform && scenario.system.type === 'multiplatform_article' ? '?tech=' + selectedPlatform : ''}`, class=`sub-navigation__link${subNavigationLevels[0] === scenario.url.value ? ' sub-navigation__link--active' : ''}`) !{scenario.short_title && scenario.short_title.value ? scenario.short_title.value : scenario.title.value}
                 if ((subNavigationLevels[0] === scenario.url.value) && scenario.children)
                     ul.sub-navigation.sub-navigation--level-2
-                        each topic in scenario.children
+                        - let level2 = scenario.topics ? scenario.topics : scenario.children
+                        each topic in level2
                             li.sub-navigation__item
                                 a(href=`#`, class=`sub-navigation__link${subNavigationLevels[1] === topic.url.value ? ' sub-navigation__link--active sub-navigation__link--on-path' : ''}`) !{topic.title.value}
                                 ul.sub-navigation.sub-navigation--level-3

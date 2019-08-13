@@ -37,7 +37,7 @@ const getContentLevel = async (currentLevel, urlMap, req, res) => {
         settings.slug = req.originalUrl.split('/')[1];
         delete settings.depth;
     } else if (currentLevel === 0) {
-        settings.type = ['scenario', 'certification'];
+        settings.type = ['scenario', 'certification', 'multiplatform_article'];
         settings.resolveRichText = true;
         settings.urlMap = urlMap;
     } else if (currentLevel === 1) {
@@ -93,15 +93,15 @@ const getContent = async (req, res) => {
     if (content[0]) {
         if (currentLevel === -1) {
             return `/${slug}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
-        } else if (currentLevel === 0) {
+        } else if (currentLevel === 0 && content[0].system.type !== 'multiplatform_article') {
             if (content[0].system.type === 'certification') {
                 view = 'tutorials/pages/certification';
-            } else {
+            } else if (content[0].system.type === 'scenario') {
                 view = 'tutorials/pages/scenario';
             }
         } else if (currentLevel === 1) {
             return `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
-        } else if (currentLevel === 2) {
+        } else {
             let preselectedPlatformSettings = platforms.getPreselectedPlatform(content[0], cookiesPlatform, req, res);
 
             if (!preselectedPlatformSettings) {
@@ -150,13 +150,13 @@ const getContent = async (req, res) => {
         isPreview: isPreview(res.locals.previewapikey),
         projectId: res.locals.projectid,
         title: content && content.length ? content[0].title.value : '',
-        titleSuffix: ` | ${content && content.length ? home[0].title.value : 'Kentico Cloud Docs'}`,
+        titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Cloud Docs'}`,
         description: content && content.length && content[0].introduction ? helper.stripTags(content[0].introduction.value).substring(0, 300) : '',
         platform: content && content.length && content[0].platform && content[0].platform.value.length ? await commonContent.normalizePlatforms(content[0].platform.value, res) : null,
         availablePlatforms: await commonContent.normalizePlatforms(availablePlatforms, res),
         selectedPlatform: platforms.getSelectedPlatform(platformsConfig, cookiesPlatform),
         canonicalUrl: canonicalUrl,
-        introduction: content && content.length && content[0].introduction ? content[0].introduction.value : null,
+        introduction: content && content.length && content[0].introduction ? content[0].introduction.value : '',
         nextSteps: content && content.length && content[0].next_steps ? content[0].next_steps : '',
         navigation: home && home.length ? home[0].navigation : [],
         subNavigation: subNavigation && subNavigation.length ? subNavigation[0].children : [],
