@@ -159,7 +159,7 @@ body {
         }
       }
 
-      &>div:not([class]) {
+      &>div[class*="SamplesWrapper"] {
         &>div {
           &>div {
             &:first-child {
@@ -286,7 +286,7 @@ body {
 
             &>div {
               &>div {
-                &:first-child {
+                &:first-child:not([class*="MediaSamplesWrap"]) {
                   padding: .675em 2em .675em .875em;
                   border-radius: 0;
                   //margin-bottom: .75em;
@@ -306,6 +306,16 @@ body {
     }
   }
 
+  [class*="PropertyCell"] {
+    [class*="ShelfIcon"] {
+      top: 0;
+    }
+  }
+
+  [class*="InnerPropertiesWrap"] {
+    background: #f3f6f7 !important;
+  }
+
   [class*="PropertiesTable"] {
     background-color: #F3F6F7;
     margin-left: -2em;
@@ -322,6 +332,14 @@ body {
       code {
         background-color: #F3F6F7;
         color: #007DCC;
+      }
+    }
+  }
+
+  [class*="ResponseDetailsWrap"] {
+    [class*="PropertiesTable"] {
+      [class*="PropertiesTable"] {
+        padding: 0 0 .75em;
       }
     }
   }
@@ -668,5 +686,22 @@ span.api-status {
 
   [class*="headers"] & {
     top: -.5em;
+  }
+}
+
+[class*="RightPanelHeader"],
+h3[class*="RightPanelHeader"] {
+  font-size: 1.125em;
+  font-weight: 700;
+  margin: .75em 0;
+}
+
+[class*="DropdownLabel"] {
+  display: none;
+}
+
+[class*="DropdownWrapper"] {
+  [class*="StyledDropdown"] {
+    padding: 0 !important;
   }
 }

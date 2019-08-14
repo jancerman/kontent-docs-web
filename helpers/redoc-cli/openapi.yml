@@ -318,6 +318,10 @@ tags:
     # x-displayName: Assets
     description: |
       Assets in Kentico Cloud consist of a reference to a binary file and metadata describing the file. Each binary file can be referenced only by a single asset. Once an asset is created, the file it references cannot be changed, you can only modify the asset's descriptions and title. Note that binary files that are not used by any assets will not be visible in the Kentico Cloud UI.
+
+      Schema definition for the Asset object:
+      
+      <SchemaDefinition schemaRef="#/components/schemas/Asset" />
   - name: Taxonomy
     # x-displayName: Taxonomy
     description: |
@@ -582,6 +586,7 @@ paths:
 
                       Components and content items in the modular_content collection are returned in no particular order and cannot be filtered. See Linked content for more details and where they are ordered.
                     additionalProperties:
+                      x-additionalPropertiesName: <content_item_codename>
                       $ref: '#/components/schemas/ContentItemTest'
               example:
                 $ref: 'https://deliver.kenticocloud.com/758a2067-bd67-00de-213a-e0a3aa2bd865/items/origins?elements=title,teaser_image,personas,body_copy,summary'

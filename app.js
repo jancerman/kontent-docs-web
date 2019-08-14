@@ -191,7 +191,7 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
 
 // Reference
 app.use('/render-reference', (req, res) => {
-  renderReference('https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/2717cf8d56b181588d6afc4317314387b8bf8d26/kcd%2520proto%2520all%2520oas3.yml');
+  renderReference('https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/f5f480909a450831438ab744b8b4cb5e7fd005b0/kcd%20proto%20all%20oas3.yml');
   return res.end();
 });
 

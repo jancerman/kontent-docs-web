@@ -142,7 +142,7 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
             title: content && content.length ? content[0].title.value : '',
             titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Cloud Docs'}`,
             navigation: home && home.length ? home[0].navigation : null,
-            footer: footer[0] ? footer[0] : null,
+            footer: footer && footer.length ? footer[0] : null,
             UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
             helper: helper
         }
