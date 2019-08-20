@@ -1,5 +1,7 @@
 const KenticoCloud = require('kentico-cloud-delivery');
-const { deliveryConfig } = require('../config');
+const {
+    deliveryConfig
+} = require('../config');
 const enhanceMarkup = require('./enhanceMarkup');
 const consola = require('consola');
 
@@ -41,52 +43,65 @@ const defineQuery = (deliveryConfig, config) => {
 
     let query = deliveryClient.items()
 
-        if (config.type) { query.type(config.type); }
-        if (config.types) { query.types(config.types); }
-        if (config.codename) { query.equalsFilter('system.codename', config.codename); }
-        if (config.depth) { query.depthParameter(config.depth); }
-        if (config.slug) { query.equalsFilter('elements.url', config.slug); }
-        if (config.limit) { query.limitParameter(config.limit) }
-        if (config.order) { query = addQueryToOrder(query, config); }
+    if (config.type) {
+        query.type(config.type);
+    }
+    if (config.types) {
+        query.types(config.types);
+    }
+    if (config.codename) {
+        query.equalsFilter('system.codename', config.codename);
+    }
+    if (config.depth) {
+        query.depthParameter(config.depth);
+    }
+    if (config.slug) {
+        query.equalsFilter('elements.url', config.slug);
+    }
+    if (config.limit) {
+        query.limitParameter(config.limit)
+    }
+    if (config.order) {
+        query = addQueryToOrder(query, config);
+    }
 
     return query;
 };
 
 const components = [{
-        type: 'embedded_content',
-        resolver: richTextResolverTemplates.embeddedContent
-    }, {
-        type: 'signpost',
-        resolver: richTextResolverTemplates.signpost
-    }, {
-        type: 'callout',
-        resolver: richTextResolverTemplates.callout
-    }, {
-        type: 'home__link_to_content_item',
-        resolver: richTextResolverTemplates.homeLinkToContentItem
-    }, {
-        type: 'image',
-        resolver: richTextResolverTemplates.image
-    }, {
-        type: 'call_to_action',
-        resolver: richTextResolverTemplates.callToAction
-    }, {
-        type: 'home__link_to_external_url',
-        resolver: richTextResolverTemplates.homeLinkToExternalUrl
-    }, {
-        type: 'code_sample',
-        resolver: richTextResolverTemplates.codeSample
-    }, {
-        type: 'code_samples',
-        resolver: richTextResolverTemplates.codeSamples
-    }, {
-        type: 'content_chunk',
-        resolver: richTextResolverTemplates.contentChunk
-    }, {
-        type: 'content_switcher',
-        resolver: richTextResolverTemplates.contentSwitcher
-    }
-];
+    type: 'embedded_content',
+    resolver: richTextResolverTemplates.embeddedContent
+}, {
+    type: 'signpost',
+    resolver: richTextResolverTemplates.signpost
+}, {
+    type: 'callout',
+    resolver: richTextResolverTemplates.callout
+}, {
+    type: 'home__link_to_content_item',
+    resolver: richTextResolverTemplates.homeLinkToContentItem
+}, {
+    type: 'image',
+    resolver: richTextResolverTemplates.image
+}, {
+    type: 'call_to_action',
+    resolver: richTextResolverTemplates.callToAction
+}, {
+    type: 'home__link_to_external_url',
+    resolver: richTextResolverTemplates.homeLinkToExternalUrl
+}, {
+    type: 'code_sample',
+    resolver: richTextResolverTemplates.codeSample
+}, {
+    type: 'code_samples',
+    resolver: richTextResolverTemplates.codeSamples
+}, {
+    type: 'content_chunk',
+    resolver: richTextResolverTemplates.contentChunk
+}, {
+    type: 'content_switcher',
+    resolver: richTextResolverTemplates.contentSwitcher
+}];
 
 const resolveRichText = (item, config) => {
     item = linksResolverTemplates.resolveInnerRichTextLinks(item, config.urlMap);
@@ -115,14 +130,20 @@ const getResponse = async (query, config) => {
             consola.error(err);
         });
 
-    if (config.resolveRichText && response) {
+    if (config.resolveRichText && response && response.items) {
         response.items.forEach((elem) => {
-            Object.keys(elem)
-                .filter((key) => elem.hasOwnProperty(key) && elem[key].hasOwnProperty('type') && elem[key].type === `rich_text`)
-                .forEach((key) => {
-                    elem[key].getHtml();
-                    elem[key].value = enhanceMarkup(elem[key].resolvedHtml);
-                });
+            const keys = Object.keys(elem);
+
+            if (keys) {
+                keys
+                    .filter((key) => elem.hasOwnProperty(key) && elem[key].hasOwnProperty('type') && elem[key].type === `rich_text`)
+                    .forEach((key) => {
+                        if (elem[key]) {
+                            elem[key].getHtml();
+                            elem[key].value = enhanceMarkup(elem[key].resolvedHtml);
+                        }
+                    });
+            }
         });
     }
 

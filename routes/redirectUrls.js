@@ -44,8 +44,8 @@ router.get('/', async (req, res) => {
     title: 'Redirect URLs',
     navigation: home[0] ? home[0].navigation : [],
     redirectMap: redirectMap,
-    footer: footer[0] ? footer[0] : {},
-    UIMessages: UIMessages[0],
+    footer: footer[0] ? footer[0] : null,
+    UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
     helper: helper
   });
 });

@@ -3,30 +3,27 @@ const getUrlMap = require('./urlMap');
 const commonContent = require('./commonContent');
 const isPreview = require('./isPreview');
 
-let KCDetails;
-let isPreviewRequest;
-
-const deleteCache = (keyName) => {
+const deleteCache = (keyName, KCDetails, isPreviewRequest) => {
     if (isPreviewRequest && cache.get(`${keyName}_${KCDetails.projectid}`)) {
         cache.del(`${keyName}_${KCDetails.projectid}`);
     }
 };
 
-const getCache = (keyName) => {
+const getCache = (keyName, KCDetails) => {
     return cache.get(`${keyName}_${KCDetails.projectid}`);
 };
 
-const putCache = (keyName, data) => {
+const putCache = (keyName, data, KCDetails) => {
     cache.put(`${keyName}_${KCDetails.projectid}`, data);
 };
 
-const manageCache = async (keyName, dataRetrieval) => {
-    deleteCache(keyName);
-    if (!getCache(keyName)) {
+const manageCache = async (keyName, dataRetrieval, KCDetails, isPreviewRequest) => {
+    deleteCache(keyName, KCDetails, isPreviewRequest);
+    if (!getCache(keyName, KCDetails)) {
         const data = await dataRetrieval();
-        putCache(keyName, data);
+        putCache(keyName, data, KCDetails);
     }
-    return getCache(keyName);
+    return getCache(keyName, KCDetails);
 };
 
 const cacheKeys = [{
@@ -53,19 +50,22 @@ const cacheKeys = [{
     }, {
         name: 'not_found',
         method: commonContent.getNotFound
+    }, {
+        name: 'navigationItems',
+        method: commonContent.getNavigationItems
     }
 ];
 
 const evaluateCommon = async (res, keysTohandle) => {
-    KCDetails = commonContent.getKCDetails(res);
-    isPreviewRequest = isPreview(res.locals.previewapikey);
+    const KCDetails = commonContent.getKCDetails(res);
+    const isPreviewRequest = isPreview(res.locals.previewapikey);
 
     const processCache = async (array) => {
         for (const item of array) {
             if (keysTohandle.indexOf(item.name) > -1) {
                 await manageCache(item.name, async () => {
                     return await item.method(res);
-                });
+                }, KCDetails, isPreviewRequest);
             }
         }
     }
@@ -74,13 +74,15 @@ const evaluateCommon = async (res, keysTohandle) => {
 };
 
 const evaluateSingle = async (res, keyName, method) => {
+    const KCDetails = commonContent.getKCDetails(res);
+    const isPreviewRequest = isPreview(res.locals.previewapikey);
+
     return await manageCache(keyName, async () => {
         return await method(res);
-    });
+    }, KCDetails, isPreviewRequest);
 };
 
 module.exports = {
     evaluateCommon,
-    evaluateSingle,
-    KCDetails
+    evaluateSingle
 }

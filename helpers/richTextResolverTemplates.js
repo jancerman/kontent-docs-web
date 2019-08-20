@@ -1,28 +1,30 @@
 const helper = require('./helperFunctions');
 
 const getImageAttributes = (item, cssClass, transformationQueryString) => {
-    switch (item.image_width.value[0].codename) {
-        case 'n25_':
-            cssClass += ' article__image--25';
-            transformationQueryString += '168';
-            break;
-        case 'n50_':
-            cssClass += ' article__image--50';
-            transformationQueryString += '336';
-            break;
-        case 'n75_':
-            cssClass += ' article__image--75';
-            transformationQueryString += '504';
-            break;
-        case 'n100_':
-            cssClass += ' article__image--100';
-            transformationQueryString += '672';
-            break;
-        default:
-            transformationQueryString += '896';
+    if (item.image_width.value.length) {
+        switch (item.image_width.value[0].codename) {
+            case 'n25_':
+                cssClass += ' article__image--25';
+                transformationQueryString += '168';
+                break;
+            case 'n50_':
+                cssClass += ' article__image--50';
+                transformationQueryString += '336';
+                break;
+            case 'n75_':
+                cssClass += ' article__image--75';
+                transformationQueryString += '504';
+                break;
+            case 'n100_':
+                cssClass += ' article__image--100';
+                transformationQueryString += '672';
+                break;
+            default:
+                transformationQueryString += '896';
+        }
     }
 
-    if (item.image.value[0].url.endsWith('.gif')) {
+    if (item.image.value.length && item.image.value[0].url.endsWith('.gif')) {
         transformationQueryString = '';
     }
 
@@ -126,7 +128,7 @@ const richTextResolverTemplates = {
             }
         }
 
-        if (item.provider.value[0].codename === 'netlify') {
+        if (item.provider.value.length && item.provider.value[0].codename === 'netlify') {
             netlifyId = item.id.value.trim().split(';');
 
             if (!netlifyId[1]) {
@@ -134,13 +136,17 @@ const richTextResolverTemplates = {
             }
         }
 
-        return getEmbeddedTemplate(cssClass, item, netlifyId)[item.provider.value[0].codename];
+        if (item.provider.value.length) {
+            return getEmbeddedTemplate(cssClass, item, netlifyId)[item.provider.value[0].codename];
+        } else {
+            return '';
+        }
     },
     signpost: (item) => {
         let type = '';
         let listClass = '';
 
-        if (item.type.value[0]) type = item.type.value[0].codename;
+        if (item.type.value.length) type = item.type.value[0].codename;
         if (type === 'platform_selection') listClass = ' selection--platforms';
 
         return `
@@ -156,7 +162,7 @@ const richTextResolverTemplates = {
     homeLinkToContentItem: (item, urlMap) => {
         let resolvedUrl = '';
 
-        if (item.linked_item[0]) {
+        if (item.linked_item[0] && urlMap) {
             resolvedUrl = urlMap.filter(elem => elem.codename === item.linked_item[0].system.codename)[0].url;
         }
 
@@ -178,12 +184,12 @@ const richTextResolverTemplates = {
             </div>`;
     },
     image: (item) => {
-        if (item.image.value[0]) {
+        if (item.image.value.length) {
             let alt = item.image.value[0].description ? item.image.value[0].description : '';
             let url = encodeURI(item.url.value.trim());
             let transformationQueryString = '?fm=jpg&auto=format&w=';
-            let cssClass = item.border.value[0].codename === 'show' ? ' article__image-border' : '';
-            cssClass += item.zoomable.value[0].codename === 'true' && !url ? ' article__add-lightbox' : '';
+            let cssClass = item.border.value.length && item.border.value[0].codename === 'show' ? ' article__image-border' : '';
+            cssClass += item.zoomable.value.length && item.zoomable.value[0].codename === 'true' && !url ? ' article__add-lightbox' : '';
             let openLinkTag = url ? '<a href="'+ url +'" target="_blank" class="no-icon">' : '';
             let closeLinkTag = url ? '</a>' : '';
 
@@ -230,20 +236,20 @@ const richTextResolverTemplates = {
         `;
     },
     codeSample: (item) => {
-        const lang = helper.getPrismClassName(item.programming_language.value[0]);
+        const lang = helper.getPrismClassName(item.programming_language.value.length ? item.programming_language.value[0] : '');
         let infoBar = '<div class="infobar"><ul class="infobar__languages">';
         item.programming_language.value.forEach(item => {
             infoBar += `<li class="infobar__lang">${item.name}</li>`;
         });
         infoBar += `</ul><div class="infobar__copy"></div></div>`;
 
-    return `<pre class="line-numbers" data-platform-code="${item.platform.value[0] ? item.platform.value[0].codename : ''}">${infoBar}<div class="clean-code">${helper.escapeHtml(item.code.value)}</div><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>`;
+    return `<pre class="line-numbers" data-platform-code="${item.platform.value.length ? item.platform.value[0].codename : ''}">${infoBar}<div class="clean-code">${helper.escapeHtml(item.code.value)}</div><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>`;
     },
     contentSwitcher: (item) => {
         let switcher = '<div class="language-selector"><ul class="language-selector__list">';
 
         item.children.forEach(item => {
-            switcher += `<li class="language-selector__item"><a class="language-selector__link" href="" data-platform="${item.platform.value[0].codename}">${item.platform.value[0].name}</a></li>`
+            switcher += `<li class="language-selector__item"><a class="language-selector__link" href="" data-platform="${item.platform.value.length ? item.platform.value[0].codename : ''}">${item.platform.value.length ? item.platform.value[0].name : ''}</a></li>`
         })
         switcher += '</ul></div>';
 

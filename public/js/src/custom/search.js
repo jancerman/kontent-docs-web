@@ -39,7 +39,7 @@
     const arrowPress = (e) => {
         e = e || window.event;
         if (e.keyCode === 38 || e.keyCode === 40 || e.keyCode === 37 || e.keyCode === 39) {
-            searchInput.value = decodeURIComponent(searchTerm);
+            searchInput.value = window.filterXSS(decodeURIComponent(searchTerm));
         }
     };
 
@@ -134,7 +134,7 @@
         window.dataLayer.push({
             'event': 'event',
             'eventCategory': 'search--searched-result',
-            'eventAction': decodeURIComponent(term),
+            'eventAction': window.filterXSS(decodeURIComponent(term)),
             'eventLabel': searchResultsNumber
         });
     };
@@ -143,7 +143,7 @@
         window.dataLayer.push({
             'event': 'event',
             'eventCategory': 'search--used',
-            'eventAction': decodeURIComponent(searchTerm),
+            'eventAction': window.filterXSS(decodeURIComponent(searchTerm)),
             'eventLabel': 'Not clicked'
         });
     };
@@ -159,7 +159,7 @@
 
     const onAutocompleteSelected = (suggestion, context) => {
         searchResultSelected = true;
-        searchInput.value = decodeURIComponent(searchTerm);
+        searchInput.value = window.filterXSS(decodeURIComponent(searchTerm));
 
         logSearchTermSelected(searchTerm, suggestion.resolvedUrl);
         logSearchTermNumber(searchTerm);
@@ -271,7 +271,7 @@
     const getAutocompleteTemplates = (urlMap) => {
         return {
             header: () => {
-                return `<div class="aa-header">${searchResultsNumber} results for '<strong>${decodeURIComponent(searchTerm)}</strong>'</div>`;
+                return `<div class="aa-header">${searchResultsNumber} results for '<strong>${window.filterXSS(decodeURIComponent(searchTerm))}</strong>'</div>`;
             },
             suggestion: (suggestion) => {
                 return formatSuggestion(suggestion, urlMap);
@@ -286,7 +286,7 @@
     const initAutocomplete = (urlMap) => {
         // Init autocomplete and set maximum of suggested search items
         var hitsSource = window.autocomplete.sources.hits(tutorials, {
-            hitsPerPage: 1000
+            hitsPerPage: 50
         });
 
         let searchInputIsFocused = false;

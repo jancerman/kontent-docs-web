@@ -30,8 +30,8 @@ router.get('/', (req, res, next) => {
     introNote: home[0].intro_note.value,
     signposts: home[0].signposts.value,
     support: home[0].support.value,
-    footer: footer[0] ? footer[0] : {},
-    UIMessages: UIMessages[0],
+    footer: footer && footer.length ? footer[0] : null,
+    UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
     helper: helper
   });
 });

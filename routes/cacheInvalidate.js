@@ -59,7 +59,8 @@ const splitPayloadByContentType = (items) => {
         scenarios: [],
         topics: [],
         notFound: [],
-        picker: []
+        picker: [],
+        navigationItems: []
     };
 
     for (let i = 0; i < items.length; i++) {
@@ -78,6 +79,8 @@ const splitPayloadByContentType = (items) => {
             itemsByTypes.notFound.push(item);
         } else if (item.type === 'platform_picker') {
             itemsByTypes.picker.push(item);
+        } else if (item.type === 'navigation_item') {
+            itemsByTypes.navigationItems.push(item);
         }
     }
 
@@ -123,7 +126,7 @@ const invalidateArticles = async (itemsByTypes, KCDetails) => {
 
 router.post('/', asyncHandler(async (req, res) => {
     if (process.env['Webhook.Cache.Invalidate.CommonContent']) {
-        if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
+       if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
             const KCDetails = commonContent.getKCDetails(res);
             const items = JSON.parse(req.body).data.items;
             const keys = cache.keys();
@@ -133,6 +136,7 @@ router.post('/', asyncHandler(async (req, res) => {
             invalidateGeneral(itemsByTypes, KCDetails, 'UIMessages');
             invalidateGeneral(itemsByTypes, KCDetails, 'notFound');
             invalidateGeneral(itemsByTypes, KCDetails, 'picker', 'platformsConfig');
+            invalidateGeneral(itemsByTypes, KCDetails, 'navigationItems');
             await invalidateArticles(itemsByTypes, KCDetails);
             await invalidateMultiple(itemsByTypes, KCDetails, 'scenarios', 'scenario');
             await invalidateMultiple(itemsByTypes, KCDetails, 'topics', 'topic');

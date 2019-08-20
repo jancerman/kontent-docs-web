@@ -4,10 +4,19 @@ const yaml = require('js-yaml');
 const cheerio = require('cheerio');
 const cmd = require('node-cmd');
 const consola = require('consola');
+const htmlparser2 = require('htmlparser2');
 const prerenderOptions = require('./redoc-cli/prerender-options.js');
 
+const parserOptions = {
+    lowerCaseTags: false,
+    lowerCaseAttributeNames: false,
+    recognizeSelfClosing: false,
+    decodeEntities: true
+}
+
 const resolveCallout = (content) => {
-    const $ = cheerio.load(content);
+    const dom = htmlparser2.parseDOM(content, parserOptions);
+    const $ = cheerio.load(dom);
     let callouts = $('.Callout');
 
     for (var i = 0; i < callouts.length; i++) {
@@ -17,11 +26,12 @@ const resolveCallout = (content) => {
         callout.removeAttr('type');
     }
 
-    return $('body').eq(0).html().trim();
+    return $.root().html().trim();
 };
 
 const resolveCodeSample = (content) => {
-    const $ = cheerio.load(content);
+    const dom = htmlparser2.parseDOM(content, parserOptions);
+    const $ = cheerio.load(dom);
     let codeSamples = $('.CodeSample');
 
     for (var i = 0; i < codeSamples.length; i++) {
@@ -32,11 +42,12 @@ const resolveCodeSample = (content) => {
         codeSample.replaceWith(`<pre class="line-numbers" data-platform-code-original="${platform}" data-platform-code="${platform.toLowerCase()}"><div class="infobar"><ul class="infobar__languages"><li class="infobar__lang">${language}</li></ul><div class="infobar__copy"></div></div><div class="clean-code">${content.trim().replace(/\n\n/g, '\n&nbsp;\n')}</div></pre>`);
     }
 
-    return $('body').eq(0).html().trim();
+    return $.root().html().trim();
 };
 
 const resolveCodeSamples = (content) => {
-    const $ = cheerio.load(content);
+    const dom = htmlparser2.parseDOM(content, parserOptions);
+    const $ = cheerio.load(dom);
     let codeSamples = $('.CodeSamples');
 
     for (var i = 0; i < codeSamples.length; i++) {
@@ -56,13 +67,14 @@ const resolveCodeSamples = (content) => {
         }
     }
 
-    return $('body').eq(0).html().trim();
+    return $.root().html().trim();
 };
 
 const resolveComponents = (obj, key) => {
     if (key === 'description' && typeof obj[key] === 'string') {
-        const $ = cheerio.load(obj[key]);
-        let content = $('body').eq(0).html().trim();
+        const dom = htmlparser2.parseDOM(obj[key], parserOptions);
+        const $ = cheerio.load(dom);
+        let content = $.root().html().trim();
         let regexOpeningTag = /<!--(Callout|CodeSample[s]?)([ a-zA-Z=0-9_#]*)-->/g;
         let regexClosingTag = /<!--(Callout-end|CodeSample[s]?-end)-->/g;
         let regexCode = /```[a-z]*/g;

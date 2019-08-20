@@ -82,6 +82,12 @@ const commonContent = {
             ...KCDetails
         });
     },
+    getNavigationItems: async (res) => {
+        return await requestDelivery({
+            type: 'navigation_item',
+            ...commonContent.getKCDetails(res)
+        });
+    },
     getPlatformsConfig: async (res) => {
         return await requestDelivery({
             type: 'platform_picker',

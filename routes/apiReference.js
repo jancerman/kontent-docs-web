@@ -22,8 +22,8 @@ router.get('/', asyncHandler(async (req, res) => {
         title: 'Api reference',
         titleSuffix: 'Kentico Cloud Docs',
         navigation: home[0].navigation,
-        footer: footer[0] ? footer[0] : {},
-        UIMessages: UIMessages[0],
+        footer: footer[0] ? footer[0] : null,
+        UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
         helper: helper
     };
 
