@@ -13,6 +13,7 @@ router.get('/', asyncHandler(async (req, res) => {
     const home = cache.get(`home_${KCDetails.projectid}`);
     const footer = cache.get(`footer_${KCDetails.projectid}`);
     const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+    const platformsConfigPairings = commonContent.getPlatformsConfigPairings(res);
 
     let data = {
         req: req,
@@ -24,6 +25,7 @@ router.get('/', asyncHandler(async (req, res) => {
         navigation: home[0].navigation,
         footer: footer[0] ? footer[0] : null,
         UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
+        platformsConfig: platformsConfigPairings && platformsConfigPairings.length ? platformsConfigPairings : null,
         helper: helper
     };
 

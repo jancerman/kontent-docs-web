@@ -7,6 +7,7 @@ const error = (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
     const footer = cache.get(`footer_${KCDetails.projectid}`);
     const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+    const platformsConfigPairings = commonContent.getPlatformsConfigPairings(res);
 
     if (!footer) {
         return res.status(500).send('Unexpected error, please check site logs.');
@@ -25,6 +26,7 @@ const error = (req, res) => {
         content: content && content.length ? content[0].content.value : '',
         footer: footer && footer.length ? footer[0] : null,
         UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
+        platformsConfig: platformsConfigPairings && platformsConfigPairings.length ? platformsConfigPairings : null,
         helper: helper
     });
 };

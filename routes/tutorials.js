@@ -80,6 +80,7 @@ const getContent = async (req, res) => {
     const currentLevel = getCurrentLevel(subNavigationLevels);
     const footer = cache.get(`footer_${KCDetails.projectid}`);
     const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+    const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
     let content = await getContentLevel(currentLevel, urlMap, req, res);
     let view = 'tutorials/pages/article';
     let availablePlatforms;
@@ -164,6 +165,7 @@ const getContent = async (req, res) => {
         content: content && content.length ? content[0] : null,
         footer: footer && footer.length ? footer[0] : null,
         UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
+        platformsConfig: platformsConfigPairings && platformsConfigPairings.length ? platformsConfigPairings : null,
         helper: helper,
         getFormValue: helper.getFormValue,
         preselectedPlatform: preselectedPlatform

@@ -36,6 +36,7 @@ router.get('/', async (req, res) => {
   const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
   const home = cache.get(`home_${KCDetails.projectid}`);
   const redirectMap = getRedirectUrls(res);
+  const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
 
   return res.render('tutorials/pages/redirectUrls', {
     req: req,
@@ -46,6 +47,7 @@ router.get('/', async (req, res) => {
     redirectMap: redirectMap,
     footer: footer[0] ? footer[0] : null,
     UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
+    platformsConfig: platformsConfigPairings && platformsConfigPairings.length ? platformsConfigPairings : null,
     helper: helper
   });
 });

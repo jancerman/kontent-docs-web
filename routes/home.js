@@ -17,6 +17,7 @@ router.get('/', (req, res, next) => {
 
   const footer = cache.get(`footer_${KCDetails.projectid}`);
   const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+  const platformsConfigPairings = commonContent.getPlatformsConfigPairings(res);
 
   return res.render('tutorials/pages/home', {
     req: req,
@@ -32,6 +33,7 @@ router.get('/', (req, res, next) => {
     support: home[0].support.value,
     footer: footer && footer.length ? footer[0] : null,
     UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
+    platformsConfig: platformsConfigPairings && platformsConfigPairings.length ? platformsConfigPairings : null,
     helper: helper
   });
 });
