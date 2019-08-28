@@ -182,9 +182,9 @@ handleNode = (settings) => {
                 slug = tempProperties.slug;
                 settings.url = tempProperties.url; */
         } else if (settings.item.system.type === 'zapi__category') {
-            settings.hash = `/#tag/${settings.item.elements.url.value}`;
+            settings.hash = `#tag/${settings.item.elements.url.value}`;
         } else if (settings.item.system.type === 'zapi_path_operation') {
-            settings.hash = `/#operation/${settings.item.elements.url.value}`;
+            settings.hash = `#operation/${settings.item.elements.url.value}`;
         } else {
             slug = settings.item.elements.url.value;
         }
