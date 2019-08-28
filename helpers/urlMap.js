@@ -31,6 +31,9 @@ const typeLevels = {
     zapi_path_operation: {
         urlLength: 3
     },
+    zapi_security_scheme: {
+        urlLength: 3
+    },
     topic: {
         urlLength: 3
     },
@@ -138,6 +141,7 @@ createUrlMap = (response, isSitemap, url, urlMap = []) => {
     if (!isSitemap) {
         if (response.categories) nodes.push('categories');
         if (response.path_operations) nodes.push('path_operations');
+        if (response.security) nodes.push('security');
     }
 
     for (let i = 0; i < nodes.length; i++) {
@@ -166,7 +170,7 @@ handleNode = (settings) => {
 
     typeLevels.article.urlLength = redefineTypeLevelArticle(settings.response, settings.url.length);
 
-    if (settings.item.elements.url && typeLevels[settings.item.system.type]) {
+    if ((settings.item.elements.url || settings.item.system.type === 'zapi_security_scheme') && typeLevels[settings.item.system.type]) {
         const typeLevel = getTypeLevel(typeLevels[settings.item.system.type].urlLength, settings.url.length);
 
         settings.url.length = typeLevel;
@@ -185,6 +189,8 @@ handleNode = (settings) => {
             settings.hash = `#tag/${settings.item.elements.url.value}`;
         } else if (settings.item.system.type === 'zapi_path_operation') {
             settings.hash = `#operation/${settings.item.elements.url.value}`;
+        } else if (settings.item.system.type === 'zapi_security_scheme') {
+            settings.hash = `#section/Authentication`;
         } else {
             slug = settings.item.elements.url.value;
         }
