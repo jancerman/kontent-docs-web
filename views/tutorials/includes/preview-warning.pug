@@ -1,0 +1,8 @@
+if isPreview
+    .preview-warning
+        .preview-warning__container
+            - const host = req.headers.host;
+            if (host.indexOf('localhost') > -1 || host.indexOf('-dev') > -1)
+                | !{UIMessages.banner_for_dev_environment.value}
+            else
+                | !{UIMessages.banner_for_preview_environment.value}
