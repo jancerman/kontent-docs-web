@@ -5,6 +5,7 @@ const {
     deliveryConfig
 } = require('../config');
 const cache = require('memory-cache');
+const helper = require('./helperFunctions');
 let fields = ['codename', 'url'];
 let createUrlMap, handleNode;
 
@@ -186,7 +187,7 @@ handleNode = (settings) => {
                 slug = tempProperties.slug;
                 settings.url = tempProperties.url; */
         } else if (settings.item.system.type === 'zapi__category') {
-            settings.hash = `#tag/${settings.item.elements.url.value}`;
+            settings.hash = `#tag/${helper.capitalizeFirstLetter(settings.item.elements.url.value)}`;
         } else if (settings.item.system.type === 'zapi_path_operation') {
             settings.hash = `#operation/${settings.item.elements.url.value}`;
         } else if (settings.item.system.type === 'zapi_security_scheme') {
