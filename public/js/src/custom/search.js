@@ -97,6 +97,20 @@
         return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/&lt;em&gt;/g, '<em>').replace(/&lt;\/em&gt;/g, '</em>');
     };
 
+    const getTech = (platform) => {
+        let tech = platform;
+
+        if (window.platformsConfig && window.platformsConfig.length) {
+            for (var i = 0; i < window.platformsConfig.length; i++) {
+                if (window.platformsConfig[i].platform === platform) {
+                    tech = window.platformsConfig[i].url;
+                }
+            }
+        }
+
+        return tech;
+    };
+
     const formatSuggestion = (suggestion, urlMap) => {
         // Store current search input value for use of querystring that is used in Google Analytics search terms
         searchTerm = encodeURIComponent(searchInput.value);
@@ -106,7 +120,8 @@
 
         // Add an anchor to the url if available
         const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g, '-')}` : '';
-        suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}${anchor}` : '';
+        const tech = suggestion.platforms.length === 1 ? `?tech=${getTech(suggestion.platforms[0])}` : '';
+        suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}${suggestionUrl[0].url.indexOf('?tech') === -1 ? tech : ''}${anchor}` : '';
 
         // Template for a single search result suggestion
         return `<a href="${suggestion.resolvedUrl}" class="suggestion">
@@ -265,7 +280,7 @@
         autoselect: true,
         openOnFocus: true,
         clearOnSelected: false,
-        debug: false
+        debug: true
     };
 
     const getAutocompleteTemplates = (urlMap) => {

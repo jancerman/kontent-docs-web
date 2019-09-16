@@ -80,6 +80,7 @@ const getContent = async (req, res) => {
     const currentLevel = getCurrentLevel(subNavigationLevels);
     const footer = cache.get(`footer_${KCDetails.projectid}`);
     const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+    const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
     let content = await getContentLevel(currentLevel, urlMap, req, res);
     let view = 'tutorials/pages/article';
     let availablePlatforms;
@@ -150,7 +151,7 @@ const getContent = async (req, res) => {
         isPreview: isPreview(res.locals.previewapikey),
         projectId: res.locals.projectid,
         title: content && content.length ? content[0].title.value : '',
-        titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Cloud Docs'}`,
+        titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Kontent Docs'}`,
         description: content && content.length && content[0].introduction ? helper.stripTags(content[0].introduction.value).substring(0, 300) : '',
         platform: content && content.length && content[0].platform && content[0].platform.value.length ? await commonContent.normalizePlatforms(content[0].platform.value, res) : null,
         availablePlatforms: await commonContent.normalizePlatforms(availablePlatforms, res),
@@ -164,6 +165,7 @@ const getContent = async (req, res) => {
         content: content && content.length ? content[0] : null,
         footer: footer && footer.length ? footer[0] : null,
         UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
+        platformsConfig: platformsConfigPairings && platformsConfigPairings.length ? platformsConfigPairings : null,
         helper: helper,
         getFormValue: helper.getFormValue,
         preselectedPlatform: preselectedPlatform

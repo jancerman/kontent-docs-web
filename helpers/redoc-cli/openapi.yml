@@ -1,11 +1,11 @@
 openapi: 3.0.2
 x-api-status: beta
 info:
-  title: Kentico Cloud API
+  title: Kentico Kontent API
   description: |
     ## Introduction
 
-    The Delivery API is a read-only REST API that serves published content from your Kentico Cloud projects.
+    The Delivery API is a read-only REST API that serves published content from your Kentico Kontent projects.
 
     Use the API to deliver large amounts of content to your website or app. The content is cached on the CDN level, which makes it quickly available from wherever you are. The Delivery API provides content filtering options that allow you to retrieve only the parts of the content you need.
 
@@ -42,12 +42,12 @@ info:
     You can work with the Delivery API in two ways – either retrieve published versions of content items or preview their yet unpublished versions. In both cases, you use the same methods to request data but with a different base URL.
 
     Retrieve published content items from your project using the production URL:
-    `https://deliver.kenticocloud.com/<YOUR_PROJECT_ID>/items`
+    `https://deliver.kontent.ai/<YOUR_PROJECT_ID>/items`
 
     Note: To protect your published content, use the Delivery API with secure access enabled.
 
     Preview unpublished content items from your project using the preview URL:
-    `https://preview-deliver.kenticocloud.com/<YOUR_PROJECT_ID>/items`
+    `https://preview-deliver.kontent.ai/<YOUR_PROJECT_ID>/items`
 
     If you want to preview unpublished content in your project, you need to authorize your request.
 
@@ -178,7 +178,7 @@ info:
     <!--CodeSample programmingLanguage=cURL platform=REST-->
     ```
     curl --request GET \
-      --url "https://deliver.kenticocloud.com/975bf280-fd91-488c-994c-2f04416e5ee3/items"
+      --url "https://deliver.kontent.ai/975bf280-fd91-488c-994c-2f04416e5ee3/items"
       --header "content-type: application/json"
     ```
     <!--CodeSample-end-->
@@ -212,7 +212,7 @@ info:
 
     ## Images and lists
 
-    <ol><li>In Kentico Cloud, choose a project.</li><li>From the app menu, choose&nbsp;<strong>Project settings </strong><i aria-hidden="true" class="icon icon-settings"></i>.</li><li>Under Development, choose&nbsp;<strong>API keys</strong>.</li><li>In the&nbsp;<strong>Delivery API</strong>&nbsp;box, click the switch to activate secure access.</li></ol>
+    <ol><li>In Kentico Kontent, choose a project.</li><li>From the app menu, choose&nbsp;<strong>Project settings </strong><i aria-hidden="true" class="icon icon-settings"></i>.</li><li>Under Development, choose&nbsp;<strong>API keys</strong>.</li><li>In the&nbsp;<strong>Delivery API</strong>&nbsp;box, click the switch to activate secure access.</li></ol>
 
     Gif, not zoomable, with caption, with border
 
@@ -226,24 +226,24 @@ info:
     <figure><a href="https://app.getpostman.com/run-collection/1af99683a4dd120ddbc6" target="_blank" class="no-icon"><img class="article__image--100" alt="" src="https://assets-us-01.kc-usercontent.com:443/ad858591-7c5b-00e9-52c1-796f3aebc535/efb5cade-4c99-4b0c-8d71-8ae993568db7/run%20in%20postman%20button.svg?fm=jpg&amp;auto=format&amp;w=672"></a><noscript><a href="https://app.getpostman.com/run-collection/1af99683a4dd120ddbc6" target="_blank" class="no-icon"><img class="article__image-border" alt="" src="https://assets-us-01.kc-usercontent.com:443/ad858591-7c5b-00e9-52c1-796f3aebc535/efb5cade-4c99-4b0c-8d71-8ae993568db7/run%20in%20postman%20button.svg?fm=jpg&auto=format&w=672"></a></noscript></figure>
 
     Static image, zoomable, with caption, with border
-    <figure><img class="article__image-border article__add-lightbox article__image--100" alt="" src="https://assets-us-01.kc-usercontent.com:443/ad858591-7c5b-00e9-52c1-796f3aebc535/e2d95225-f8a4-42cf-a1c2-ef9ea1888ba8/a504d6a-PostmanCollection.png?fm=jpg&amp;auto=format&amp;w=672"><noscript><img class="article__image-border" alt="" src="https://assets-us-01.kc-usercontent.com:443/ad858591-7c5b-00e9-52c1-796f3aebc535/e2d95225-f8a4-42cf-a1c2-ef9ea1888ba8/a504d6a-PostmanCollection.png?fm=jpg&auto=format&w=672"></noscript><figcaption><p>The Kentico Cloud collection for Postman</p></figcaption></figure>
+    <figure><img class="article__image-border article__add-lightbox article__image--100" alt="" src="https://assets-us-01.kc-usercontent.com:443/ad858591-7c5b-00e9-52c1-796f3aebc535/e2d95225-f8a4-42cf-a1c2-ef9ea1888ba8/a504d6a-PostmanCollection.png?fm=jpg&amp;auto=format&amp;w=672"><noscript><img class="article__image-border" alt="" src="https://assets-us-01.kc-usercontent.com:443/ad858591-7c5b-00e9-52c1-796f3aebc535/e2d95225-f8a4-42cf-a1c2-ef9ea1888ba8/a504d6a-PostmanCollection.png?fm=jpg&auto=format&w=672"></noscript><figcaption><p>The Kentico Kontent collection for Postman</p></figcaption></figure>
   version: "2.0"
-  termsOfService: https://kenticocloud.com/terms-of-service
+  termsOfService: https://kontent.ai/terms-of-service
   contact:
-    name: Kentico Cloud
-    url: https://kenticocloud.com/contact
+    name: Kentico Kontent
+    url: https://kontent.ai/contact
     email: cloud@kentico.com
 security:
   - Bearer: []
 servers:
   - description: PROD Content Management API v2
-    url: https://manage.kenticocloud.com/v2/projects
+    url: https://manage.kontent.ai/v2/projects
   - description: QA Content Management API v2
     url: https://qa-manage.global.ssl.fastly.net/v2/projects
   - description: Delivery API
-    url: https://deliver.kenticocloud.com/
+    url: https://deliver.kontent.ai/
   - description: Delivery Preview API
-    url: https://preview-deliver.kenticocloud.com
+    url: https://preview-deliver.kontent.ai
 tags:
   - name: Content elements
     description: |
@@ -265,7 +265,7 @@ tags:
         "images": {},
         "links": {},
         "modular_content": [],
-        "value": "&lt;p&gt;&lt;a href=\"http://www.kenticocloud.com\" title=\"#1 CMS\"&gt;Kentico Cloud&lt;/a&gt;&lt;/p&gt;"
+        "value": "&lt;p&gt;&lt;a href=\"http://www.kontent.ai\" title=\"#1 CMS\"&gt;Kentico Kontent&lt;/a&gt;&lt;/p&gt;"
       }
 
       # Content Management API v2
@@ -273,7 +273,7 @@ tags:
         "element": {
           "id": "0ddd5a94-0360-5126-92e6-264dfbb61849"
         },
-        "value": "&lt;p&gt;&lt;a href=\"http://www.kenticocloud.com\" title=\"#1 CMS\"&gt;Kentico Cloud&lt;/a&gt;&lt;/p&gt;"
+        "value": "&lt;p&gt;&lt;a href=\"http://www.kontent.ai\" title=\"#1 CMS\"&gt;Kentico Kontent&lt;/a&gt;&lt;/p&gt;"
       }
       ```
       <!--CodeSample-end-->
@@ -300,24 +300,24 @@ tags:
 
       ### Assets in Rich text
 
-      Assets in Rich text elements are defined by the block element `<figure>` which requires one of the following attributes: `data-asset-id` or `data-asset-external-id`. The data-asset-external-id attribute can also reference an object that was not yet imported to Kentico Cloud. For more details, see Referencing by external ID.
+      Assets in Rich text elements are defined by the block element `<figure>` which requires one of the following attributes: `data-asset-id` or `data-asset-external-id`. The data-asset-external-id attribute can also reference an object that was not yet imported to Kentico Kontent. For more details, see Referencing by external ID.
 
       When inserting values in Rich text elements, the `<img>` element is optional. Otherwise, the `<img>` element requires the attributes `src` and `data-asset-id`.
   - name: Content items
     # x-displayName: Content items
     description: |
-      The content item object contains metadata about your content, such as the name of the content item and the sitemap locations it is placed in. The content item object does not store the content itself. The content for each language variant of a content item is saved in [language variants](https://developer.kenticocloud.com/reference#content-management-api-v2-language-variant-object), with each content item having as many variants as there are active languages in your project.
+      The content item object contains metadata about your content, such as the name of the content item and the sitemap locations it is placed in. The content item object does not store the content itself. The content for each language variant of a content item is saved in [language variants](https://developer.kontent.ai/reference#content-management-api-v2-language-variant-object), with each content item having as many variants as there are active languages in your project.
 
       To manage content items via the Content Management API, you need to send requests to URIs based on the following patterns:
       * Using internal IDs: `<base_URL>/items/<content_item_id>`
       * Using codenames: `<base_URL>/items/codename/<content_item_codename>`
       * Using external IDs: `<base_URL>/items/external-id/<content_item_external_identifier>`
 
-      To retrieve [retrieve language variants](https://developer.kenticocloud.com/reference#content-management-api-v2-list-variants) of a specific content item, you can list the variants by specifying the internal ID, codename, or external ID of the content item.
+      To retrieve [retrieve language variants](https://developer.kontent.ai/reference#content-management-api-v2-list-variants) of a specific content item, you can list the variants by specifying the internal ID, codename, or external ID of the content item.
   - name: Assets
     # x-displayName: Assets
     description: |
-      Assets in Kentico Cloud consist of a reference to a binary file and metadata describing the file. Each binary file can be referenced only by a single asset. Once an asset is created, the file it references cannot be changed, you can only modify the asset's descriptions and title. Note that binary files that are not used by any assets will not be visible in the Kentico Cloud UI.
+      Assets in Kentico Kontent consist of a reference to a binary file and metadata describing the file. Each binary file can be referenced only by a single asset. Once an asset is created, the file it references cannot be changed, you can only modify the asset's descriptions and title. Note that binary files that are not used by any assets will not be visible in the Kentico Kontent UI.
 
       Schema definition for the Asset object:
       
@@ -425,7 +425,7 @@ tags:
           .orderByDesc("system.last_modified")
           .build();
 
-      // Create strongly typed models according to https://developer.kenticocloud.com/docs/strongly-typed-models
+      // Create strongly typed models according to https://developer.kontent.ai/docs/strongly-typed-models
       List&lt;ArticleItem&gt; items = client.getItems(ArticleItem.class, params);
       ```
       <!--CodeSample-end-->
@@ -433,7 +433,7 @@ tags:
       ```javascript
       const KenticoCloud = require("kentico-cloud-delivery");
 
-      // Create strongly typed models according to https://developer.kenticocloud.com/docs/strongly-typed-models
+      // Create strongly typed models according to https://developer.kontent.ai/docs/strongly-typed-models
       class Article extends KenticoCloud.ContentItem {
           constructor() {
               super();
@@ -465,7 +465,7 @@ tags:
             .Build();
 
       // Gets the 3 latest articles ordered by their last modified time
-      // Create strongly typed models according to https://developer.kenticocloud.com/docs/strongly-typed-models
+      // Create strongly typed models according to https://developer.kontent.ai/docs/strongly-typed-models
       DeliveryItemListingResponse&lt;Article&gt; response = await client.GetItemsAsync&lt;Article&gt;(
           new EqualsFilter("system.type", "article"),
           new LimitParameter(3),
@@ -496,7 +496,7 @@ tags:
       <!--CodeSample programmingLanguage=cURL platform=REST-->
       ```
       curl --request GET \
-        --url "https://deliver.kenticocloud.com/975bf280-fd91-488c-994c-2f04416e5ee3/items?system.type=article&amp;limit=3&amp;order=system.last_modified[desc]"
+        --url "https://deliver.kontent.ai/975bf280-fd91-488c-994c-2f04416e5ee3/items?system.type=article&amp;limit=3&amp;order=system.last_modified[desc]"
         --header "content-type: application/json"
       ```
       <!--CodeSample-end-->
@@ -518,7 +518,7 @@ tags:
       ```typescript
       import { ContentItem, DeliveryClient, Fields, SortOrder, TypeResolver } from "kentico-cloud-delivery";
 
-      // Create strongly typed models according to https://developer.kenticocloud.com/docs/strongly-typed-models
+      // Create strongly typed models according to https://developer.kontent.ai/docs/strongly-typed-models
       export class Article extends ContentItem {
           public title: Fields.TextField;
           public summary: Fields.TextField;
@@ -589,7 +589,7 @@ paths:
                       x-additionalPropertiesName: <content_item_codename>
                       $ref: '#/components/schemas/ContentItemTest'
               example:
-                $ref: 'https://deliver.kenticocloud.com/758a2067-bd67-00de-213a-e0a3aa2bd865/items/origins?elements=title,teaser_image,personas,body_copy,summary'
+                $ref: 'https://deliver.kontent.ai/758a2067-bd67-00de-213a-e0a3aa2bd865/items/origins?elements=title,teaser_image,personas,body_copy,summary'
   /{project_id}/items:
     get:
       tags:
@@ -653,11 +653,11 @@ paths:
       - lang: cURL
         source: |
           curl --request GET \
-            --url 'https://deliver.kenticocloud.com/975bf280-fd91-488c-994c-2f04416e5ee3/items?system.type=article&elements=title%2Csummary%2Cpost_date&order=elements.post_date' \
+            --url 'https://deliver.kontent.ai/975bf280-fd91-488c-994c-2f04416e5ee3/items?system.type=article&elements=title%2Csummary%2Cpost_date&order=elements.post_date' \
             --header 'content-type: application/json'
       - lang: .NET
         source: |
-          // Tip: Find more about .NET SDKs at https://developer.kenticocloud.com/docs/net
+          // Tip: Find more about .NET SDKs at https://developer.kontent.ai/docs/net
           using KenticoCloud.Delivery;
 
           // Initializes a content delivery client
@@ -666,7 +666,7 @@ paths:
                 .Build();
 
           // Gets specific elements of 3 articles ordered by the "Post date" element
-          // Create strongly typed models according to https://developer.kenticocloud.com/docs/strongly-typed-models
+          // Create strongly typed models according to https://developer.kontent.ai/docs/strongly-typed-models
           DeliveryItemListingResponse<Article> response = await client.GetItemsAsync<Article>(
               new EqualsFilter("system.type", "article"),
               new ElementsParameter("title", "summary", "post_date"),
@@ -676,10 +676,10 @@ paths:
           var items = response.Items;
       - lang: TypeScript
         source: |
-          // Tip: Find more about JS/TS SDKs at https://developer.kenticocloud.com/docs/javascript
+          // Tip: Find more about JS/TS SDKs at https://developer.kontent.ai/docs/javascript
           import { ContentItem, DeliveryClient, Fields, SortOrder, TypeResolver } from 'kentico-cloud-delivery';
 
-          // Create strongly typed models according to https://developer.kenticocloud.com/docs/strongly-typed-models
+          // Create strongly typed models according to https://developer.kontent.ai/docs/strongly-typed-models
           export class Article extends ContentItem {
               public title: Fields.TextField;
               public summary: Fields.TextField;
@@ -703,10 +703,10 @@ paths:
               .subscribe(response => console.log(response));
       - lang: JavaScript
         source: |
-          // Tip: Find more about JS/TS SDKs at https://developer.kenticocloud.com/docs/javascript
+          // Tip: Find more about JS/TS SDKs at https://developer.kontent.ai/docs/javascript
           const KenticoCloud = require('kentico-cloud-delivery');
 
-          // Create strongly typed models according to https://developer.kenticocloud.com/docs/strongly-typed-models
+          // Create strongly typed models according to https://developer.kontent.ai/docs/strongly-typed-models
           class Article extends KenticoCloud.ContentItem {
               constructor() {
                   super();
@@ -728,7 +728,7 @@ paths:
               .subscribe(response => console.log(response));
       - lang: Java
         source: |
-          // Tip: Find more about Java/JavaRx SDKs at https://developer.kenticocloud.com/docs/javaandroid
+          // Tip: Find more about Java/JavaRx SDKs at https://developer.kontent.ai/docs/javaandroid
           import com.kenticocloud.delivery;
 
           DeliveryClient client = new DeliveryClient("975bf280-fd91-488c-994c-2f04416e5ee3");
@@ -739,11 +739,11 @@ paths:
               .orderByDesc("elements.post_date")
               .build();
 
-          // Create strongly typed models according to https://developer.kenticocloud.com/docs/strongly-typed-models
+          // Create strongly typed models according to https://developer.kontent.ai/docs/strongly-typed-models
           List<ArticleItem> items = client.getItems(ArticleItem.class, params);
       - lang: iOS
         source: |
-          // Tip: Find more about Swift SDK at https://developer.kenticocloud.com/docs/ios
+          // Tip: Find more about Swift SDK at https://developer.kontent.ai/docs/ios
           import KenticoCloud
           
           let client = DeliveryClient.init(projectId:"975bf280-fd91-488c-994c-2f04416e5ee3")
@@ -761,7 +761,7 @@ paths:
                 }
       - lang: Android
         source: |
-          // Tip: Find more about Java/JavaRx SDKs at https://developer.kenticocloud.com/docs/javaandroid
+          // Tip: Find more about Java/JavaRx SDKs at https://developer.kontent.ai/docs/javaandroid
           import com.kenticocloud.delivery_core.*;
           import com.kenticocloud.delivery_rx.*;
 
@@ -824,7 +824,7 @@ paths:
       - lang: PHP
         source: |
           <?php
-          // Tip: Find more about PHP SDKs at https://developer.kenticocloud.com/docs/php
+          // Tip: Find more about PHP SDKs at https://developer.kontent.ai/docs/php
 
           // Defined by Composer to include required libraries
           require __DIR__ . '/vendor/autoload.php';
@@ -943,7 +943,7 @@ paths:
       - lang: cURL
         source: |
           curl --request POST \
-          --url https://manage.kenticocloud.com/v2/projects/975bf280-fd91-488c-994c-2f04416e5ee3/items \
+          --url https://manage.kontent.ai/v2/projects/975bf280-fd91-488c-994c-2f04416e5ee3/items \
           --header 'Authorization: Bearer <YOUR_API_KEY>' \
           --header 'Content-type: application/json' \
           --data '{...}'
@@ -1030,9 +1030,9 @@ paths:
       - lang: cURL
         source: |
           curl --request DELETE \
-            --url https://manage.kenticocloud.com/v2/projects/975bf280-fd91-488c-994c-2f04416e5ee3/items/f4b3fc05-e988-4dae-9ac1-a94aba566474 \
-          # --url https://manage.kenticocloud.com/v2/projects/f4b3fc05-e988-4dae-9ac1-a94aba566474/items/codename/on_roasts \
-          # --url https://manage.kenticocloud.com/v2/projects/975bf280-fd91-488c-994c-2f04416e5ee3/items/external-id/59713 \
+            --url https://manage.kontent.ai/v2/projects/975bf280-fd91-488c-994c-2f04416e5ee3/items/f4b3fc05-e988-4dae-9ac1-a94aba566474 \
+          # --url https://manage.kontent.ai/v2/projects/f4b3fc05-e988-4dae-9ac1-a94aba566474/items/codename/on_roasts \
+          # --url https://manage.kontent.ai/v2/projects/975bf280-fd91-488c-994c-2f04416e5ee3/items/external-id/59713 \
             --header 'Authorization: Bearer <YOUR_API_KEY>' \
             --header 'Content-type: application/json'
       - lang: .NET
@@ -1161,7 +1161,7 @@ paths:
         source: |
           # Insert via external ID
           curl --request PUT \
-            --url https://manage.kenticocloud.com/v2/projects/975bf280-fd91-488c-994c-2f04416e5ee3/items/external-id/59713 \
+            --url https://manage.kontent.ai/v2/projects/975bf280-fd91-488c-994c-2f04416e5ee3/items/external-id/59713 \
             --header 'Authorization: Bearer <YOUR_API_KEY>' \
             --header 'Content-type: application/json' \
             --data '
@@ -1179,8 +1179,8 @@ paths:
           
           # Update via internal ID or codename
           curl --request PUT \
-            --url https://manage.kenticocloud.com/v2/projects/975bf280-fd91-488c-994c-2f04416e5ee3/items/f4b3fc05-e988-4dae-9ac1-a94aba566474 \
-          # --url https://manage.kenticocloud.com/v2/projects/975bf280-fd91-488c-994c-2f04416e5ee3/items/codename/on_roasts  \
+            --url https://manage.kontent.ai/v2/projects/975bf280-fd91-488c-994c-2f04416e5ee3/items/f4b3fc05-e988-4dae-9ac1-a94aba566474 \
+          # --url https://manage.kontent.ai/v2/projects/975bf280-fd91-488c-994c-2f04416e5ee3/items/codename/on_roasts  \
             --header 'Authorization: Bearer <YOUR_API_KEY>' \
             --header 'Content-type: application/json' \
             --data '
@@ -1221,7 +1221,7 @@ paths:
         - Assets
       summary: Upload a binary file
       description: |
-        Add a new file. The uploaded file will not be visible in the Kentico Cloud UI unless there is an asset using it, see how to [Add an asset](#link).
+        Add a new file. The uploaded file will not be visible in the Kentico Kontent UI unless there is an asset using it, see how to [Add an asset](#link).
 
         **Note**: Maximum size limit for binary files is **100 MB**.
       operationId: upload-a-binary-file
@@ -1278,7 +1278,7 @@ paths:
       - lang: cURL
         source: |
           curl --request POST \
-          --url https://manage.kenticocloud.com/v1/projects/975bf280-fd91-488c-994c-2f04416e5ee3/files/which-brewing-fits-you-1080px.jpg \
+          --url https://manage.kontent.ai/v1/projects/975bf280-fd91-488c-994c-2f04416e5ee3/files/which-brewing-fits-you-1080px.jpg \
           --data-binary "@which-brewing-fits-you-1080px.jpg" \
           --header 'Authorization: Bearer <YOUR_API_KEY>' \
           --header 'Content-type: image/jpeg' \
@@ -1364,7 +1364,7 @@ paths:
         - lang: cURL
           source: |
             curl --request POST \
-              --url https://manage.kenticocloud.com/projects/v2/975bf280-fd91-488c-994c-2f04416e5ee3/assets \
+              --url https://manage.kontent.ai/projects/v2/975bf280-fd91-488c-994c-2f04416e5ee3/assets \
               --header 'Authorization: Bearer <YOUR_API_KEY>' \
               --header 'Content-type: application/json' \
               --data '
@@ -1484,7 +1484,7 @@ components:
     Bearer:
       type: http
       description: |
-        API key to authorize requests to the API. If you don't have an API key for this API yet, get yours in [Kentico Cloud](https://app.kenticocloud.com/) > Project settings > API keys.
+        API key to authorize requests to the API. If you don't have an API key for this API yet, get yours in [Kentico Kontent](https://app.kontent.ai/) > Project settings > API keys.
 
         <!--Callout type=Warning-->
         <p><strong>Warning: This is fine</strong></p><p>We recommend that you use the `Authorization` header when making requests to the API to avoid getting hurt.</p>
@@ -1597,7 +1597,7 @@ components:
     Asset:
       type: object
       description: |
-        Assets in Kentico Cloud consist of a reference to a binary file and metadata describing the file.
+        Assets in Kentico Kontent consist of a reference to a binary file and metadata describing the file.
       properties:
         id:
           type: string
@@ -2039,7 +2039,7 @@ components:
     Reference:
       type: object
       description: |
-        Reference to an object in the Kentico Cloud project. You can reference objects by their internal ID, codename, or external ID. See [Referencing objects](#tag/Referencing-objects) for more information.
+        Reference to an object in the Kentico Kontent project. You can reference objects by their internal ID, codename, or external ID. See [Referencing objects](#tag/Referencing-objects) for more information.
       properties:
         id:
           type: string

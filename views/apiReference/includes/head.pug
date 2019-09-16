@@ -17,6 +17,13 @@ if helper
     script var searchAPI={appid:"#{process.env['Search.AppId']}",apikey:"#{process.env['Search.ApiKey']}",indexname:"#{process.env['Search.IndexName']}"};
 if UIMessages
     script var UIMessages={copyUrl:"#{UIMessages.heading___copy_url_hover.value}",copyUrlActive:"#{UIMessages.heading___copy_url_active.value}",searchNoResults:"#{UIMessages.search___no_results.value}",dntLabel:"#{helper.removeNewLines(UIMessages.embedded_content_dnt_notice.value)}",copyCode:"#{UIMessages.code_block___copy_code_button.value}",copyCodeActive:"#{UIMessages.code_block___copy_code_button_active.value}"};
+if platformsConfig
+    script var platformsConfig=[
+        each item, index in platformsConfig
+            | {url:"#{item.url}",platform:"#{item.platform}"}
+            if index < platformsConfig.length - 1
+                | ,
+        | ]
 if (process.env['GTM.id'])
     script function initGTM(){(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','#{process.env['GTM.id']}');};
 else 

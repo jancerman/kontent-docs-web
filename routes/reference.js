@@ -116,6 +116,7 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
     const home = cache.get(`home_${KCDetails.projectid}`);
     const footer = cache.get(`footer_${KCDetails.projectid}`);
     const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+    const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
 
     let content = await handleCache.evaluateSingle(res, `reference_${slug}_${KCDetails.projectid}`, async () => {
         return await requestDelivery({
@@ -140,10 +141,11 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
             slug: slug,
             isPreview: isPreview(res.locals.previewapikey),
             title: content && content.length ? content[0].title.value : '',
-            titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Cloud Docs'}`,
+            titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Kontent Docs'}`,
             navigation: home && home.length ? home[0].navigation : null,
             footer: footer && footer.length ? footer[0] : null,
             UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
+            platformsConfig: platformsConfigPairings && platformsConfigPairings.length ? platformsConfigPairings : null,
             helper: helper
         }
     };

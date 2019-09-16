@@ -18,12 +18,12 @@
 </tr>
 </tbody>
 </table>
-<h1 id="kentico-cloud-documentation-website">Kentico Cloud Documentation - Website</h1>
-<p>Kentico Cloud documentation portal, which utilizes <a href="https://app.kenticocloud.com/">Kentico Cloud</a> as a source of its content.</p>
+<h1 id="kentico-cloud-documentation-website">Kentico Kontent Documentation - Website</h1>
+<p>Kentico Kontent documentation portal, which utilizes <a href="https://app.kontent.ai/">Kentico Kontent</a> as a source of its content.</p>
 <h2 id="overview">Overview</h2>
 <ol>
 <li>The website is written in JavaScript.</li>
-<li>It uses <a href="https://expressjs.com/">express.js</a> framework for server-side rendering and <a href="https://github.com/Kentico/kentico-cloud-js/tree/master/packages/delivery">Kentico Cloud Delivery SDK</a> for content retrieval from Kentico Cloud project.</li>
+<li>It uses <a href="https://expressjs.com/">express.js</a> framework for server-side rendering and <a href="https://github.com/Kentico/kentico-cloud-js/tree/master/packages/delivery">Kentico Kontent Delivery SDK</a> for content retrieval from Kentico Kontent project.</li>
 <li>Additionally, <a href="https://github.com/algolia/autocomplete.js">Autocomplete.js</a> package supports the search box that is connected to the indexed content on Algolia.</li>
 </ol>
 <h2 id="setup">Setup</h2>
@@ -31,7 +31,7 @@
 <ol>
 <li>Node (+npm) installed</li>
 <li>Any JavaScript IDE installed</li>
-<li>Subscription on Kentico Cloud</li>
+<li>Subscription on Kentico Kontent</li>
 </ol>
 <h3 id="instructions">Instructions</h3>
 <ol>
@@ -42,8 +42,8 @@
 </ol>
 <h4 id="required-environmental-variables">Required environmental variables</h4>
 <ul>
-<li><code>KC.ProjectId</code> - Kentico Cloud project ID</li>
-<li><code>KC.PreviewApiKey</code> - Kentico Cloud preview API key (set this key to retrieve preview content from Kentico Cloud)</li>
+<li><code>KC.ProjectId</code> - Kentico Kontent project ID</li>
+<li><code>KC.PreviewApiKey</code> - Kentico Kontent preview API key (set this key to retrieve preview content from Kentico Kontent)</li>
 </ul>
 <h4 id="optional-environmental-variables">Optional environmental variables</h4>
 <p>Without the following variables, related features will not work on the website.</p>
@@ -60,9 +60,9 @@
 <li><code>Recaptcha-v2.secret</code> - Google Recaptcha v2 secret API key (used for forms robot protection)</li>
 <li><code>Recaptcha-v2.site</code> - Google Recaptcha v2 site API key (used for forms robot protection)</li>
 <li><code>Hotjar.id</code> - Hotjar account ID (used for analytics)</li>
-<li><code>Webhook.Cache.Invalidate.PlatformsConfig</code> - Kentico Cloud Webhook token (used for PlatformsConfig cache invalidation)</li>
-<li><code>Webhook.Cache.Invalidate.UrlMap</code> - Kentico Cloud Webhook token (used for UrlMap cache invalidation)</li>
-<li><code>Webhook.Cache.Invalidate.CommonContent</code> - Kentico Cloud Webhook token (used for common content cache invalidation)</li>
+<li><code>Webhook.Cache.Invalidate.PlatformsConfig</code> - Kentico Kontent Webhook token (used for PlatformsConfig cache invalidation)</li>
+<li><code>Webhook.Cache.Invalidate.UrlMap</code> - Kentico Kontent Webhook token (used for UrlMap cache invalidation)</li>
+<li><code>Webhook.Cache.Invalidate.CommonContent</code> - Kentico Kontent Webhook token (used for common content cache invalidation)</li>
 <li><code>Jira.User</code> - User email for a Jira account (used for feedback form)</li>
 <li><code>Jira.Token</code> - Jira API key (used for feedback form)</li>
 <li><code>Jira.TMSNTST</code> - Jira Project codename (used for feedback form)</li>

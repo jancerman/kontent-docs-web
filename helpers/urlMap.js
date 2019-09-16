@@ -5,6 +5,7 @@ const {
     deliveryConfig
 } = require('../config');
 const cache = require('memory-cache');
+const helper = require('./helperFunctions');
 let fields = ['codename', 'url'];
 let createUrlMap, handleNode;
 
@@ -24,6 +25,15 @@ const typeLevels = {
     },
     zapi_specification: {
         urlLength: 2
+    },
+    zapi__category: {
+        urlLength: 3
+    },
+    zapi_path_operation: {
+        urlLength: 3
+    },
+    zapi_security_scheme: {
+        urlLength: 3
     },
     topic: {
         urlLength: 3
@@ -93,7 +103,7 @@ const handleLangForMultiplatformArticle = (queryString, item) => {
 const addItemToMap = (settings) => {
     settings.urlMap.push(getMapItem({
         codename: settings.item.system.codename,
-        url: `/${settings.url.join('/')}${settings.queryString}`,
+        url: `/${settings.url.join('/')}${settings.queryString}${settings.hash}`,
         date: settings.item.system.lastModified,
         visibility: settings.item.visibility && settings.item.visibility.value.length ? settings.item.visibility.value : null,
         type: settings.type
@@ -119,14 +129,21 @@ const getTypeLevel = (typeLength, urlLength) => {
     return typeLevel;
 };
 
-createUrlMap = (response, url, urlMap = []) => {
+createUrlMap = (response, isSitemap, url, urlMap = []) => {
     let nodes = [];
     let queryString = '';
+    let hash = '';
 
     if (response.items) nodes.push('items');
     if (response.navigation) nodes.push('navigation');
     if (response.children) nodes.push('children');
     if (response.topics) nodes.push('topics');
+
+    if (!isSitemap) {
+        if (response.categories) nodes.push('categories');
+        if (response.path_operations) nodes.push('path_operations');
+        if (response.security) nodes.push('security');
+    }
 
     for (let i = 0; i < nodes.length; i++) {
         if (response[nodes[i]]) {
@@ -136,7 +153,9 @@ createUrlMap = (response, url, urlMap = []) => {
                     item,
                     urlMap,
                     url,
-                    queryString
+                    queryString,
+                    hash,
+                    isSitemap
                 });
             });
         }
@@ -152,7 +171,7 @@ handleNode = (settings) => {
 
     typeLevels.article.urlLength = redefineTypeLevelArticle(settings.response, settings.url.length);
 
-    if (settings.item.elements.url && typeLevels[settings.item.system.type]) {
+    if ((settings.item.elements.url || settings.item.system.type === 'zapi_security_scheme') && typeLevels[settings.item.system.type]) {
         const typeLevel = getTypeLevel(typeLevels[settings.item.system.type].urlLength, settings.url.length);
 
         settings.url.length = typeLevel;
@@ -167,6 +186,12 @@ handleNode = (settings) => {
                 settings.urlMap = tempProperties.urlMap;
                 slug = tempProperties.slug;
                 settings.url = tempProperties.url; */
+        } else if (settings.item.system.type === 'zapi__category') {
+            settings.hash = `#tag/${helper.capitalizeFirstLetter(settings.item.elements.url.value)}`;
+        } else if (settings.item.system.type === 'zapi_path_operation') {
+            settings.hash = `#operation/${settings.item.elements.url.value}`;
+        } else if (settings.item.system.type === 'zapi_security_scheme') {
+            settings.hash = `#section/Authentication`;
         } else {
             slug = settings.item.elements.url.value;
         }
@@ -185,13 +210,15 @@ handleNode = (settings) => {
             item: settings.item,
             url: settings.url,
             queryString: settings.queryString,
+            hash: settings.hash,
             type: settings.item.system.type
         });
     }
 
     settings.queryString = '';
+    settings.hash = '';
 
-    return createUrlMap(settings.item, settings.url, settings.urlMap);
+    return createUrlMap(settings.item, settings.isSitemap, settings.url, settings.urlMap);
 };
 
 const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
@@ -255,7 +282,7 @@ const getUrlMap = async (res, isSitemap) => {
         fields = ['codename', 'url'];
     }
 
-    let urlMap = createUrlMap(response, []);
+    let urlMap = createUrlMap(response, isSitemap, []);
     urlMap = await addUnusedArtilesToUrlMap(deliveryClient, urlMap);
     return urlMap;
 };
