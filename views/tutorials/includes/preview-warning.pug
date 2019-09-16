@@ -1,5 +1,5 @@
 - const host = req.headers.host;
-if ((host.indexOf('localhost') > -1 || host.indexOf('-dev') > -1 || host.indexOf('-master') > -1) && (UIMessages.banner_for_dev_environment.value !== '<p><br></p>' && UIMessages.banner_for_preview_environment.value !== '<p><br></p>'))
+if ((host.indexOf('localhost') > -1 || host.indexOf('preview-') > -1) && (UIMessages.banner_for_dev_environment.value !== '<p><br></p>' && UIMessages.banner_for_preview_environment.value !== '<p><br></p>'))
     .preview-warning
         .preview-warning__container
             if (host.indexOf('localhost') > -1 || host.indexOf('-dev') > -1)
