@@ -280,7 +280,7 @@
         autoselect: true,
         openOnFocus: true,
         clearOnSelected: false,
-        debug: true
+        debug: false
     };
 
     const getAutocompleteTemplates = (urlMap) => {
