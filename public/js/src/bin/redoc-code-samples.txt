@@ -175,7 +175,7 @@
     <!--CodeSample programmingLanguage=cURL platform=REST-->
     ```
     curl --request GET \
-      --url "https://deliver.kenticocloud.com/975bf280-fd91-488c-994c-2f04416e5ee3/items"
+      --url "https://deliver.kontent.ai/975bf280-fd91-488c-994c-2f04416e5ee3/items"
       --header "content-type: application/json"
     ```
     <!--CodeSample-end-->
@@ -340,7 +340,7 @@
     <pre class="line-numbers" data-platform-code="rest">
     <div class="infobar"><ul class="infobar__languages"><li class="infobar__lang">cURL</li></ul><div class="infobar__copy">Copy</div></div>
     <div class="clean-code">curl --request GET \
-      --url "https://deliver.kenticocloud.com/975bf280-fd91-488c-994c-2f04416e5ee3/items"
+      --url "https://deliver.kontent.ai/975bf280-fd91-488c-994c-2f04416e5ee3/items"
       --header "content-type: application/json"
     </div></pre>
     <pre class="line-numbers" data-platform-code="ruby">
@@ -377,7 +377,7 @@
         "images": {},
         "links": {},
         "modular_content": [],
-        "value": "&lt;p&gt;&lt;a href=\"http://www.kenticocloud.com\" title=\"#1 CMS\"&gt;Kentico Cloud&lt;/a&gt;&lt;/p&gt;"
+        "value": "&lt;p&gt;&lt;a href=\"http://www.kontent.ai\" title=\"#1 CMS\"&gt;Kentico Kontent&lt;/a&gt;&lt;/p&gt;"
       }
 
       # Content Management API v2
@@ -385,7 +385,7 @@
         "element": {
           "id": "0ddd5a94-0360-5126-92e6-264dfbb61849"
         },
-        "value": "&lt;p&gt;&lt;a href=\"http://www.kenticocloud.com\" title=\"#1 CMS\"&gt;Kentico Cloud&lt;/a&gt;&lt;/p&gt;"
+        "value": "&lt;p&gt;&lt;a href=\"http://www.kontent.ai\" title=\"#1 CMS\"&gt;Kentico Kontent&lt;/a&gt;&lt;/p&gt;"
       }
       ```
       <!--CodeSample-end-->
@@ -400,7 +400,7 @@
         "images": {},
         "links": {},
         "modular_content": [],
-        "value": "&lt;p&gt;&lt;a href=\"http://www.kenticocloud.com\" title=\"#1 CMS\"&gt;Kentico Cloud&lt;/a&gt;&lt;/p&gt;"
+        "value": "&lt;p&gt;&lt;a href=\"http://www.kontent.ai\" title=\"#1 CMS\"&gt;Kentico Kontent&lt;/a&gt;&lt;/p&gt;"
       }
 
       # Content Management API v2
@@ -408,6 +408,6 @@
         "element": {
           "id": "0ddd5a94-0360-5126-92e6-264dfbb61849"
         },
-        "value": "&lt;p&gt;&lt;a href=\"http://www.kenticocloud.com\" title=\"#1 CMS\"&gt;Kentico Cloud&lt;/a&gt;&lt;/p&gt;"
+        "value": "&lt;p&gt;&lt;a href=\"http://www.kontent.ai\" title=\"#1 CMS\"&gt;Kentico Kontent&lt;/a&gt;&lt;/p&gt;"
       }
       </div></pre>

@@ -1,11 +1,11 @@
 - var isNotHome = req.originalUrl.replace(/\?.*$/, '') !== '/'
 .print-only
-    img.logo(src='/img/kc-logo.png', alt='Kentico Cloud logo')
+    img.logo(src='/img/logo-kontent.png', alt='Kentico Kontent logo')
 nav.navigation
     .navigation__wrapper
         .navigation__left
-            a.navigation__logo(href='https://kenticocloud.com/', rel='noreferrer')
-                img(src='/img/kc-logo.svg', alt='Kentico Cloud logo')
+            a.navigation__logo(href='https://kontent.ai/', rel='noreferrer')
+                img(src='/img/logo-kontent.svg', alt='Kentico Kontent logo')
             a.navigation__title(href='/') Docs
             ul(class= `navigation__list${isNotHome ? '' : ' navigation__list--full'}`)
                 each item in navigation
@@ -19,7 +19,7 @@ nav.navigation
                         label.sr-only(for='nav-search') !{UIMessages ? UIMessages.search___placeholder.value : ''}
                         input(type='search', id='nav-search', name='nav-search', autocomplete="off", placeholder= UIMessages ? UIMessages.search___placeholder.value : '')
                     #searchbox
-            a.navigation__app(href='https://app.kenticocloud.com', target='_blank', rel='noreferrer')
+            a.navigation__app(href='https://app.kontent.ai', target='_blank', rel='noreferrer')
                 i.icon-kentico
                 .navigation__app-tooltip !{UIMessages ? UIMessages.link_to_app_tooltip.value : ''}
         if isNotHome

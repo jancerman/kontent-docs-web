@@ -2,13 +2,13 @@
 |:---:|:---:|
 | [![Build Status](https://travis-ci.com/KenticoDocs/cloud-docs-web.svg?branch=master)](https://travis-ci.com/KenticoDocs/cloud-docs-web/branches) [![codebeat badge](https://codebeat.co/badges/cf04c056-c9bf-4794-be9a-4b0618d712c7)](https://codebeat.co/projects/github-com-kenticodocs-cloud-docs-web-master) | [![Build Status](https://travis-ci.com/KenticoDocs/cloud-docs-web.svg?branch=develop)](https://travis-ci.com/KenticoDocs/cloud-docs-web/branches) [![codebeat badge](https://codebeat.co/badges/0d16bcd3-fa47-45cc-abf5-c031a17c0144)](https://codebeat.co/projects/github-com-kenticodocs-cloud-docs-web-develop) |
 
-# Kentico Cloud Documentation - Website
+# Kentico Kontent Documentation - Website
 
-Kentico Cloud documentation portal, which utilizes [Kentico Cloud](https://app.kenticocloud.com/) as a source of its content.
+Kentico Kontent documentation portal, which utilizes [Kentico Kontent](https://app.kontent.ai/) as a source of its content.
 
 ## Overview
 1. The website is written in JavaScript.
-2. It uses [express.js](https://expressjs.com/) framework for server-side rendering and [Kentico Cloud Delivery SDK](https://github.com/Kentico/kentico-cloud-js/tree/master/packages/delivery) for content retrieval from Kentico Cloud project.
+2. It uses [express.js](https://expressjs.com/) framework for server-side rendering and [Kentico Kontent Delivery SDK](https://github.com/Kentico/kentico-cloud-js/tree/master/packages/delivery) for content retrieval from Kentico Kontent project.
 3. Additionally, [Autocomplete.js](https://github.com/algolia/autocomplete.js) package supports the search box that is connected to the indexed content on Algolia.
 
 ## Setup
@@ -16,7 +16,7 @@ Kentico Cloud documentation portal, which utilizes [Kentico Cloud](https://app.k
 ### Prerequisites
 1. Node (+npm) installed
 2. Any JavaScript IDE installed
-2. Subscription on Kentico Cloud
+2. Subscription on Kentico Kontent
 
 ### Instructions
 1. Clone the project repository.
@@ -25,8 +25,8 @@ Kentico Cloud documentation portal, which utilizes [Kentico Cloud](https://app.k
 4. The website can be opened in your browser at http://localhost:3000.
 
 #### Required environmental variables
-* `KC.ProjectId` - Kentico Cloud project ID
-* `KC.PreviewApiKey` - Kentico Cloud preview API key (set this key to retrieve preview content from Kentico Cloud)
+* `KC.ProjectId` - Kentico Kontent project ID
+* `KC.PreviewApiKey` - Kentico Kontent preview API key (set this key to retrieve preview content from Kentico Kontent)
 
 #### Optional environmental variables
 Without the following variables, related features will not work on the website.
@@ -42,9 +42,9 @@ Without the following variables, related features will not work on the website.
 * `Recaptcha-v2.secret` - Google Recaptcha v2 secret API key (used for forms robot protection)
 * `Recaptcha-v2.site` - Google Recaptcha v2 site API key (used for forms robot protection)
 * `Hotjar.id` - Hotjar account ID (used for analytics)
-* `Webhook.Cache.Invalidate.PlatformsConfig` - Kentico Cloud Webhook token (used for PlatformsConfig cache invalidation)
-* `Webhook.Cache.Invalidate.UrlMap` - Kentico Cloud Webhook token (used for UrlMap cache invalidation)
-* `Webhook.Cache.Invalidate.CommonContent` - Kentico Cloud Webhook token (used for common content cache invalidation)
+* `Webhook.Cache.Invalidate.PlatformsConfig` - Kentico Kontent Webhook token (used for PlatformsConfig cache invalidation)
+* `Webhook.Cache.Invalidate.UrlMap` - Kentico Kontent Webhook token (used for UrlMap cache invalidation)
+* `Webhook.Cache.Invalidate.CommonContent` - Kentico Kontent Webhook token (used for common content cache invalidation)
 * `Jira.User` - User email for a Jira account (used for feedback form)
 * `Jira.Token` - Jira API key (used for feedback form)
 * `Jira.TMSNTST` - Jira Project codename (used for feedback form)

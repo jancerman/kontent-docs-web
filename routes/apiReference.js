@@ -21,7 +21,7 @@ router.get('/', asyncHandler(async (req, res) => {
         slug: 'api-reference',
         isPreview: isPreview(res.locals.previewapikey),
         title: 'Api reference',
-        titleSuffix: 'Kentico Cloud Docs',
+        titleSuffix: 'Kentico Kontent Docs',
         navigation: home[0].navigation,
         footer: footer[0] ? footer[0] : null,
         UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,

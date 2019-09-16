@@ -22,7 +22,7 @@ const error = (req, res) => {
         slug: '404',
         navigation: home && home.length ? home[0].navigation : [],
         title: content && content.length ? content[0].title.value : '',
-        titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Cloud Docs'}`,
+        titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Kontent Docs'}`,
         content: content && content.length ? content[0].content.value : '',
         footer: footer && footer.length ? footer[0] : null,
         UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,

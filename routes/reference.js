@@ -141,7 +141,7 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
             slug: slug,
             isPreview: isPreview(res.locals.previewapikey),
             title: content && content.length ? content[0].title.value : '',
-            titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Cloud Docs'}`,
+            titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Kontent Docs'}`,
             navigation: home && home.length ? home[0].navigation : null,
             footer: footer && footer.length ? footer[0] : null,
             UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,

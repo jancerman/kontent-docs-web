@@ -151,7 +151,7 @@ const getContent = async (req, res) => {
         isPreview: isPreview(res.locals.previewapikey),
         projectId: res.locals.projectid,
         title: content && content.length ? content[0].title.value : '',
-        titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Cloud Docs'}`,
+        titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Kontent Docs'}`,
         description: content && content.length && content[0].introduction ? helper.stripTags(content[0].introduction.value).substring(0, 300) : '',
         platform: content && content.length && content[0].platform && content[0].platform.value.length ? await commonContent.normalizePlatforms(content[0].platform.value, res) : null,
         availablePlatforms: await commonContent.normalizePlatforms(availablePlatforms, res),
