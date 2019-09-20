@@ -69,7 +69,7 @@ const splitPayloadByContentType = (items) => {
             itemsByTypes.footer.push(item);
         } else if (item.type === 'ui_messages') {
             itemsByTypes.UIMessages.push(item);
-        } else if (item.type === 'article') {
+        } else if (item.type === 'article' || item.type === 'multiplatform_article') {
             itemsByTypes.articles.push(item);
         } else if (item.type === 'scenario' || item.type === 'certification') {
             itemsByTypes.scenarios.push(item);
