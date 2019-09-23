@@ -4,7 +4,6 @@ const router = express.Router();
 const cache = require('memory-cache');
 const moment = require('moment');
 const axios = require('axios');
-// const cmd = require('node-cmd');
 
 const getUrlMap = require('../helpers/urlMap');
 const commonContent = require('../helpers/commonContent');
@@ -14,7 +13,6 @@ const helper = require('../helpers/helperFunctions');
 const isPreview = require('../helpers/isPreview');
 const minify = require('../helpers/minify');
 const platforms = require('../helpers/platforms');
-// const prerenderOptions = require('../helpers/redoc-cli/prerender-options.js');
 
 const handleArticle = async (settings, req, res) => {
     settings.renderSettings.view = 'apiReference/pages/reference';
@@ -69,20 +67,16 @@ const handleArticle = async (settings, req, res) => {
     return settings.renderSettings;
 };
 
-const getRedocReference = async (res) => {
+const getRedocReference = async (apiCodename, res) => {
     return await handleCache.evaluateSingle(res, `reDocReference_`, async () => {
-        let baseURL = process.env['baseURL'];
-        let axiosInstance;
-        let data;
+        let baseURL = process.env['referenceRenderUrl'];
+        let data = '';
 
         if (baseURL) {
-            axiosInstance = axios.create({ baseURL: 'http://localhost:3000' });
-            data = await axiosInstance.get('/serve-reference');
-        } else {
-            data = await axios.get('https://kcd-web-preview-dev.azurewebsites.net/serve-reference');
+            data = await axios.get(`${baseURL}/api/ProviderStarter?api=${apiCodename}&isPreview=${isPreview(res.locals.previewapikey)}`);
         }
 
-        return data.data;
+        return data;
     });
 };
 
@@ -151,7 +145,7 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
     };
 
     if (content.length && content[0].system.type === 'zapi_specification') {
-        renderSettings.data.content = await getRedocReference(res);
+        renderSettings.data.content = await getRedocReference(content[0].system.codename, res);
     } else {
         const settings = {
             renderSettings: renderSettings,

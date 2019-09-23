@@ -11,10 +11,8 @@ const cache = require('memory-cache');
 const cacheControl = require('express-cache-controller');
 const serveStatic = require('serve-static');
 const consola = require('consola');
-const fs = require('fs');
 
 const handleCache = require('./helpers/handleCache');
-const renderReference = require('./helpers/renderReference');
 const getUrlMap = require('./helpers/urlMap');
 
 const home = require('./routes/home');
@@ -48,9 +46,7 @@ const urlWhitelist = [
   '/cache-invalidate',
   '/robots.txt',
   '/link-to',
-  '/sitemap.xml',
-  '/render-reference',
-  '/serve-reference'
+  '/sitemap.xml'
 ];
 
 // Azure Application Insights monitors
@@ -192,28 +188,6 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
   };
   return res.json(cache.get(`urlMap_${res.locals.projectid}`));
 }));
-
-// Reference
-app.use('/render-reference', (req, res) => {
-  renderReference('https://gist.githubusercontent.com/jancerman/3ca7767279c8713fdfa7c45e94d655f2/raw/f5f480909a450831438ab744b8b4cb5e7fd005b0/kcd%20proto%20all%20oas3.yml');
-  return res.end();
-});
-
-app.get('/serve-reference', (req, res) => {
-  fs.readFile('./redoc-static.html', (err, data) => {
-    if (err) {
-        throw err;
-    }
-    let result;
-
-    if (Buffer.isBuffer(data)) {
-      result = data.toString('utf8');
-    }
-
-    res.type('text/html; charset=utf8');
-    return res.send(result);
-  });
-});
 
 // Dynamic routing setup
 app.use('/', (req, res, next) => {
