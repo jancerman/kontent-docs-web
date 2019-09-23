@@ -120,10 +120,11 @@
 
         // Add an anchor to the url if available
         const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g, '-')}` : '';
-        const tech = suggestion.platforms.length === 1 ? `?tech=${getTech(suggestion.platforms[0])}` : '';
-        suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}${suggestionUrl[0].url.indexOf('?tech') === -1 ? tech : ''}${anchor}` : '';
+        const tech = suggestion.platforms && suggestion.platforms.length === 1 ? `?tech=${getTech(suggestion.platforms[0])}` : '';
+        suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}${suggestionUrl[0].url.indexOf('?tech') === -1 ? tech : ''}${suggestion.section !== 'API' ? anchor : ''}` : '';
 
         // Template for a single search result suggestion
+        console.log(suggestion);
         return `<a href="${suggestion.resolvedUrl}" class="suggestion">
                     <div class="suggestion__left">
                         <span class="suggestion__heading">${removeInlineElements(suggestion._highlightResult.title.value)}</span>
@@ -131,7 +132,7 @@
                         <p class="suggestion__text">${htmlEntities(suggestion._highlightResult.content.value)}</p>
                     </div>
                     <div class="suggestion__right">
-                        <span class="suggestion__category">Tutorials</span>
+                        <span class="suggestion__category suggestion__category--${suggestion.section.toLowerCase()}">${suggestion.section.toUpperCase()}</span>
                     </div>
                 </a>`;
     };
