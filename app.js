@@ -136,7 +136,6 @@ const pageExists = async (req, res) => {
 // Routes
 app.use(async (req, res, next) => {
   handleKCKeys(req, res);
-
   return next();
 });
 
@@ -161,6 +160,7 @@ app.use('/kentico-icons.min.css', kenticoIcons);
 app.use('/', asyncHandler(async (req, res, next) => {
   if (!req.originalUrl.startsWith('/cache-invalidate') && !req.originalUrl.startsWith('/kentico-icons.min.css') && !req.originalUrl.startsWith('/form')) {
     await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home', 'navigationItems']);
+    await handleCache.cacheAllAPIReferences(res);
   }
 
   const exists = await pageExists(req, res, next);

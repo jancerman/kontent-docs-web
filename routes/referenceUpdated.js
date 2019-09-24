@@ -1,6 +1,7 @@
 const axios = require('axios');
 const express = require('express');
 const router = express.Router();
+const handleCache = require('../helpers/handleCache');
 
 router.post('/', async (req, res) => {
     const event = req.body;
@@ -15,10 +16,8 @@ router.post('/', async (req, res) => {
         const baseURL = process.env['referenceRenderUrl'];
         const apiCodename = event.data.apiReference;
 
-        const data = // eslint-disable-line no-unused-vars
-            await axios.get(`${baseURL}/api/ProviderStarter?api=${apiCodename}&isPreview=false&isTest=false`);
-
-        // TODO Cache the updated API Reference page
+        const data = await axios.get(`${baseURL}/api/ProviderStarter?api=${apiCodename}&isPreview=false&isTest=false`);
+        handleCache.putCache(`reDocReference_${apiCodename}`, data);
     }
 });
 

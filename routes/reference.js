@@ -68,7 +68,7 @@ const handleArticle = async (settings, req, res) => {
 };
 
 const getRedocReference = async (apiCodename, res) => {
-    return await handleCache.evaluateSingle(res, `reDocReference_`, async () => {
+    return await handleCache.evaluateSingle(res, `reDocReference_${apiCodename}`, async () => {
         let baseURL = process.env['referenceRenderUrl'];
         let data = '';
 
