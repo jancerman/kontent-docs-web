@@ -23,6 +23,7 @@ const robots = require('./routes/robots');
 const kenticoIcons = require('./routes/kenticoIcons');
 const urlAliases = require('./routes/urlAliases');
 const redirectUrls = require('./routes/redirectUrls');
+const referenceUpdated = require('./routes/referenceUpdated');
 const linkUrls = require('./routes/linkUrls');
 const previewUrls = require('./routes/previewUrls');
 const cacheInvalidate = require('./routes/cacheInvalidate');
@@ -140,6 +141,10 @@ app.use(async (req, res, next) => {
 });
 
 app.use('/link-to', linkUrls);
+
+app.use('/reference-updated', bodyParser.json({
+  type: '*/*'
+}), referenceUpdated);
 
 app.use('/cache-invalidate', bodyParser.text({
   type: '*/*'
