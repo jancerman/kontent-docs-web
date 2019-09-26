@@ -4,7 +4,7 @@ const router = express.Router();
 const handleCache = require('../helpers/handleCache');
 
 router.post('/', async (req, res) => {
-    const event = req.body;
+    const event = req.body[0];
 
     if (isValidationEvent(event)) {
         return await res.send({
