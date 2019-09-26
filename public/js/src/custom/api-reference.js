@@ -157,7 +157,7 @@
     }, 100);
 
     body.addEventListener('click', function (e) {
-      if (e.target && e.target.className.indexOf('tab-click_') > -1 && !clicked) {
+      if (e.target && e.target.className && e.target.className.indexOf('tab-click_') > -1 && !clicked) {
         var platform = getPlatformFromClassName(e.target.className);
         var className = 'tab-click_' + platform;
 
@@ -215,7 +215,8 @@
     for (var i = 0; i < headings.length; i++) {
       var headingId = headings[i].getAttribute('id');
       var headingHTML = headings[i].innerHTML;
-      var section = window.helper.findAncestor(headings[i], '[data-section-id]').getAttribute('data-section-id');
+      var ancestor = window.helper.findAncestor(headings[i], '[data-section-id]')
+      var section = ancestor ? ancestor.getAttribute('data-section-id') : '';
       var newId = section + '/' + headingId;
 
       headings[i].setAttribute('id', newId);
