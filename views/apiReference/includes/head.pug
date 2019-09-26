@@ -16,7 +16,7 @@ link(rel='stylesheet', href='/kentico-icons.min.css?v=' + deployVersion)
 if helper
     script var searchAPI={appid:"#{process.env['Search.AppId']}",apikey:"#{process.env['Search.ApiKey']}",indexname:"#{process.env['Search.IndexName']}"};
 if UIMessages
-    script var UIMessages={copyUrl:"#{UIMessages.heading___copy_url_hover.value}",copyUrlActive:"#{UIMessages.heading___copy_url_active.value}",searchNoResults:"#{UIMessages.search___no_results.value}",dntLabel:"#{helper.removeNewLines(UIMessages.embedded_content_dnt_notice.value)}",copyCode:"#{UIMessages.code_block___copy_code_button.value}",copyCodeActive:"#{UIMessages.code_block___copy_code_button_active.value}"};
+    script var UIMessages={copyUrl:"#{UIMessages.heading___copy_url_hover.value}",copyUrlActive:"#{UIMessages.heading___copy_url_active.value}",searchNoResults:"#{UIMessages.search___no_results.value}",dntLabel:"#{helper.removeNewLines(UIMessages.embedded_content_dnt_notice.value)}",copyCode:"#{UIMessages.code_block___copy_code_button.value}",copyCodeActive:"#{UIMessages.code_block___copy_code_button_active.value}",cookieBar:"#{UIMessages.cookie_policy_bar.value}",technologyLabel:"#{UIMessages.technology_selector_label.value}",emptyCodeBlock:"#{UIMessages.code_block___empty_state_text.value}"};
 if platformsConfig
     script var platformsConfig=[
         each item, index in platformsConfig
@@ -31,8 +31,6 @@ else
 script(src='https://cdn.jsdelivr.net/npm/algoliasearch@3.32.0/dist/algoliasearchLite.min.js', defer='')
 script(src='https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js', defer='')
 script(src='/js/apireference.min.js?v=' + deployVersion, defer='', onload='initGTM()')
-if (process.env['Hotjar.id'])
-    script (function(h,o,t,j,a,r){h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};h._hjSettings={hjid:#{process.env['Hotjar.id']},hjsv:6};a=o.getElementsByTagName('head')[0];r=o.createElement('script');r.async=1;r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;a.appendChild(r);})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
 title !{title}!{titleSuffix}
 if canonicalUrl && canonicalUrl !== req.originalUrl
     link(rel='canonical', href=`${canonicalUrl}`)

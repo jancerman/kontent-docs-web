@@ -41,7 +41,6 @@ Without the following variables, related features will not work on the website.
 * `Recaptcha-v3.site` - Google Recaptcha v3 site API key (used for forms robot protection)
 * `Recaptcha-v2.secret` - Google Recaptcha v2 secret API key (used for forms robot protection)
 * `Recaptcha-v2.site` - Google Recaptcha v2 site API key (used for forms robot protection)
-* `Hotjar.id` - Hotjar account ID (used for analytics)
 * `Webhook.Cache.Invalidate.PlatformsConfig` - Kentico Kontent Webhook token (used for PlatformsConfig cache invalidation)
 * `Webhook.Cache.Invalidate.UrlMap` - Kentico Kontent Webhook token (used for UrlMap cache invalidation)
 * `Webhook.Cache.Invalidate.CommonContent` - Kentico Kontent Webhook token (used for common content cache invalidation)
@@ -49,6 +48,7 @@ Without the following variables, related features will not work on the website.
 * `Jira.Token` - Jira API key (used for feedback form)
 * `Jira.TMSNTST` - Jira Project codename (used for feedback form)
 * `Jira.IssueType` - Jira Issue index (used for feedback form)
+* `referenceRenderUrl` - URL of the Open API Processor that provides HTML of API references
 
 ## How To Contribute
 Feel free to open a new issue where you describe your proposed changes, or even create a new pull request from your branch with proposed changes.
