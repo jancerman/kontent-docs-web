@@ -4,6 +4,8 @@ const router = express.Router();
 const cache = require('memory-cache');
 const moment = require('moment');
 const axios = require('axios');
+const htmlparser2 = require('htmlparser2');
+const cheerio = require('cheerio');
 
 const getUrlMap = require('../helpers/urlMap');
 const commonContent = require('../helpers/commonContent');
@@ -65,6 +67,36 @@ const handleArticle = async (settings, req, res) => {
     settings.renderSettings.data.canonicalUrl = canonicalUrl
 
     return settings.renderSettings;
+};
+
+const resolveLinks = (data, urlMap) => {
+    const parserOptions = {
+        decodeEntities: true,
+        lowerCaseAttributeNames: false,
+        lowerCaseTags: false,
+        recognizeSelfClosing: false,
+    };
+
+    const dom = htmlparser2.parseDOM(data.data, parserOptions);
+    const $ = cheerio.load(dom);
+    const links = $('a[href]');
+
+    for (let i = 0; i < links.length; i++) {
+        const link = $(links[i]);
+        if (link.attr('href').indexOf('/link-to/') > -1) {
+            const urlParts = link.attr('href').split('/');
+            const codename = urlParts[urlParts.length - 1];
+
+            for (let i = 0; i < urlMap.length; i++) {
+                if (urlMap[i].codename === codename) {
+                    link.attr('href', urlMap[i].url);
+                }
+            }
+        }
+    }
+
+    data.data = $.root().html().trim();
+    return data;
 };
 
 const getRedocReference = async (apiCodename, res) => {
@@ -145,7 +177,8 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
     };
 
     if (content.length && content[0].system.type === 'zapi_specification') {
-        renderSettings.data.content = await getRedocReference(content[0].system.codename, res);
+        renderSettings.data.content = await getRedocReference(content[0].system.codename, res, urlMap);
+        renderSettings.data.content = resolveLinks(renderSettings.data.content, urlMap);
     } else {
         const settings = {
             renderSettings: renderSettings,
