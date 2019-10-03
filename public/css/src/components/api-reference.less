@@ -96,7 +96,8 @@ body {
     }
   }
 
-  .react-tabs__tab-panel {
+  .react-tabs__tab-panel,
+  [class*="JsonViewer"][class*="PrismDiv"] {
     position: relative;
     text-shadow: none;
     //max-height: 50vh;
@@ -704,4 +705,19 @@ h3[class*="RightPanelHeader"] {
   [class*="StyledDropdown"] {
     padding: 0 !important;
   }
+}
+
+[class*="ResponseDetailsWrap"] {
+  .oneOf {
+    margin-left: 0;
+    width: 100%;
+
+    [class*="OneOfButton"] {
+      margin-bottom: .5em;
+    }
+  }
+}
+
+[class*="JsonViewer"][class*="PrismDiv"] {
+  max-height: 50vh;
 }
