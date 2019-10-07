@@ -7,7 +7,6 @@ const axios = require('axios');
 const htmlparser2 = require('htmlparser2');
 const cheerio = require('cheerio');
 
-const getUrlMap = require('../helpers/urlMap');
 const commonContent = require('../helpers/commonContent');
 const handleCache = require('../helpers/handleCache');
 const requestDelivery = require('../helpers/requestDelivery');
@@ -137,14 +136,14 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
     }
 
     const KCDetails = commonContent.getKCDetails(res);
-    const urlMap = await getUrlMap(res, true);
+    const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
     const slug = req.params.slug;
     const home = cache.get(`home_${KCDetails.projectid}`);
     const footer = cache.get(`footer_${KCDetails.projectid}`);
     const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
-    const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
+    const platformsConfigPairings = commonContent.getPlatformsConfigPairings(res);
 
-    let content = await handleCache.evaluateSingle(res, `reference_${slug}_${KCDetails.projectid}`, async () => {
+    let content = await handleCache.evaluateSingle(res, `reference_${slug}`, async () => {
         return await requestDelivery({
             slug: slug,
             depth: 2,
@@ -177,7 +176,7 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
     };
 
     if (content.length && content[0].system.type === 'zapi_specification') {
-        renderSettings.data.content = await getRedocReference(content[0].system.codename, res, urlMap);
+        renderSettings.data.content = await getRedocReference(content[0].system.codename, res);
         renderSettings.data.content = resolveLinks(renderSettings.data.content, urlMap);
     } else {
         const settings = {

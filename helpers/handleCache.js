@@ -93,6 +93,11 @@ const cacheAllAPIReferences = async (res) => {
         });
     };
 
+    const provideReferences = async (baseURL, apiCodename, isPreviewRequest, KCDetails) => {
+        const data = await axios.get(`${baseURL}/api/ProviderStarter?api=${apiCodename}&isPreview=${isPreviewRequest}`);
+        cache.put(`reDocReference_${apiCodename}_${KCDetails.projectid}`, data);
+    };
+
     const isPreviewRequest = isPreview(res.locals.previewapikey);
     const keys = cache.keys();
     let references;
@@ -102,9 +107,8 @@ const cacheAllAPIReferences = async (res) => {
 
         let baseURL = process.env['referenceRenderUrl'];
 
-        for await (const value of references) {
-            const data = await axios.get(`${baseURL}/api/ProviderStarter?api=${value.system.codename}&isPreview=${isPreviewRequest}`);
-            cache.put(`reDocReference_${value.system.codename}`, data);
+        for (const value of references) {
+            await provideReferences(baseURL, value.system.codename, isPreviewRequest, KCDetails)
         }
     }
 };
@@ -112,5 +116,6 @@ const cacheAllAPIReferences = async (res) => {
 module.exports = {
     evaluateCommon,
     evaluateSingle,
-    cacheAllAPIReferences
+    cacheAllAPIReferences,
+    putCache
 }

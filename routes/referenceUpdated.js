@@ -2,6 +2,7 @@ const axios = require('axios');
 const express = require('express');
 const router = express.Router();
 const handleCache = require('../helpers/handleCache');
+const commonContent = require('../helpers/commonContent');
 
 router.post('/', async (req, res) => {
     const event = req.body[0];
@@ -15,10 +16,12 @@ router.post('/', async (req, res) => {
     if (isReferenceUpdatedEvent(event)) {
         const baseURL = process.env['referenceRenderUrl'];
         const apiCodename = event.data.apiReference;
-
+        const KCDetails = commonContent.getKCDetails(res);
         const data = await axios.get(`${baseURL}/api/ProviderStarter?api=${apiCodename}&isPreview=false&isTest=false`);
-        handleCache.putCache(`reDocReference_${apiCodename}`, data);
+        handleCache.putCache(`reDocReference_${apiCodename}`, data, KCDetails);
     }
+
+    res.end();
 });
 
 const isValidationEvent = (event) =>

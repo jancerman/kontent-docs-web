@@ -15,7 +15,7 @@ router.get('/:codenames', asyncHandler(async (req, res, next) => {
         await handleCache.evaluateCommon(res, ['urlMap']);
 
         const KCDetails = commonContent.getKCDetails(res);
-        const urlMap = await cache.get(`urlMap_${KCDetails.projectid}`);
+        const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
 
         const urlsWithCodename = urlMap && urlMap.filter(elem => elem.codename === codenames[0]);
         const resolvedUrl = urlsWithCodename && urlsWithCodename.length && urlsWithCodename[0].url;
