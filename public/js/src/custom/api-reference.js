@@ -2,7 +2,9 @@
   /* Helper methods */
   var triggerClick = function (item) {
     setTimeout(function () {
-      item.click();
+      if (item) {
+        item.click();
+      }
     }, 0);
   };
 
@@ -157,7 +159,7 @@
     }, 100);
 
     body.addEventListener('click', function (e) {
-      if (e.target && e.target.className && e.target.className.indexOf('tab-click_') > -1 && !clicked) {
+      if (e.target && e.target.className && e.target.className.indexOf && e.target.className.indexOf('tab-click_') > -1 && !clicked) {
         var platform = getPlatformFromClassName(e.target.className);
         var className = 'tab-click_' + platform;
 

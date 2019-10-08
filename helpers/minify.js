@@ -4,7 +4,11 @@ const minifierOptions = {
 };
 
 const minify = (text) => {
-    return minifier(text, minifierOptions);
+    if (text) {
+        return minifier(text, minifierOptions);
+    } else {
+        return '';
+    }
 };
 
 module.exports = minify;

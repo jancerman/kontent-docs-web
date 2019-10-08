@@ -124,7 +124,6 @@
         suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}${suggestionUrl[0].url.indexOf('?tech') === -1 ? tech : ''}${suggestion.section !== 'API' ? anchor : ''}` : '';
 
         // Template for a single search result suggestion
-        console.log(suggestion);
         return `<a href="${suggestion.resolvedUrl}" class="suggestion">
                     <div class="suggestion__left">
                         <span class="suggestion__heading">${removeInlineElements(suggestion._highlightResult.title.value)}</span>
