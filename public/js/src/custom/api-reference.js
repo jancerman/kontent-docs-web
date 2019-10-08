@@ -120,14 +120,19 @@
 
     if (cookie && !clicked) {
       var tabs = document.querySelectorAll('[class="tab-click_' + cookie + '"], [data-platform="' + cookie + '"]');
-      for (var i = 0; i < tabs.length; i++) {
-        clicked = true;
-        triggerClick(tabs[i]);
-      }
 
-      setTimeout(function () {
-        clicked = false;
-      }, 0);
+      if (tabs && tabs.length) {
+        for (var i = 0; i < tabs.length; i++) {
+          clicked = true;
+          triggerClick(tabs[i]);
+        }
+
+        setTimeout(function () {
+          clicked = false;
+        }, 0);
+      } else {
+        triggerClick(document.querySelector('[data-platform]'));
+      }
     } else {
       triggerClick(document.querySelector('[data-platform]'));
     }

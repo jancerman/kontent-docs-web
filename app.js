@@ -47,7 +47,8 @@ const urlWhitelist = [
   '/cache-invalidate',
   '/robots.txt',
   '/link-to',
-  '/sitemap.xml'
+  '/sitemap.xml',
+  '/redoc/*'
 ];
 
 // Azure Application Insights monitors
@@ -193,6 +194,8 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
   };
   return res.json(cache.get(`urlMap_${res.locals.projectid}`));
 }));
+
+app.get('/redoc/:slug', reference);
 
 // Dynamic routing setup
 app.use('/', (req, res, next) => {
