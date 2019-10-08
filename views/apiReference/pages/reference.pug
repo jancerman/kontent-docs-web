@@ -29,11 +29,12 @@ block content
                                 each item, index in availablePlatforms
                                     li.language-selector__item
                                         a(href=`${req.path}?tech=${item.slug}`, class=`language-selector__link${index === highlighIndex ? ' language-selector__link--active' : ''}`) #{item.title}
-                    if (introduction !== '<p><br></p>')
+                    if (introduction && introduction !== '<p><br></p>')
                         | !{minify(introduction)}
                     include ../../tutorials/includes/table-of-contents.pug
-                    | !{minify(content.content.value)}
-                    if (nextSteps.value !== '<p><br></p>')
+                    if (content && content.content && content.content.value)
+                        | !{minify(content.content.value)}
+                    if (nextSteps && nextSteps.value !== '<p><br></p>')
                         h2.table-of-contents__whatsnext !{UIMessages.article___next_steps.value}
                         | !{minify(nextSteps.value)}
                     include ../../tutorials/includes/feedback.pug

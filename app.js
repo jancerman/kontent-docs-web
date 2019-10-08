@@ -202,7 +202,7 @@ app.use('/', (req, res, next) => {
     res.locals.router = navigationItems.filter(item => topLevel === item.elements.url.value);
   }
 
-  if (res.locals.router.length && res.locals.router[0].elements.type.value.length) {
+  if (res.locals.router && res.locals.router.length && res.locals.router[0].elements.type.value.length) {
     res.locals.router = res.locals.router[0].elements.type.value[0].codename;
   } else /* if (topLevel === 'other' || topLevel === 'article') */ {
     res.locals.router = 'tutorials';

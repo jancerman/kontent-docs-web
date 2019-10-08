@@ -40,7 +40,7 @@ const handleArticle = async (settings, req, res) => {
 
     canonicalUrl = platforms.getCanonicalUrl(settings.urlMap, settings.content[0], preselectedPlatform);
 
-    if (settings.content[0].system.type === 'multiplatform_article') {
+    if (settings.content && settings.content.length && settings.content[0].system.type === 'multiplatform_article') {
         const multiplatformArticleContent = await platforms.getMultiplatformArticleContent(settings.content, preselectedPlatform, settings.urlMap, settings.KCDetails, res);
 
         if (!multiplatformArticleContent) {
@@ -55,12 +55,12 @@ const handleArticle = async (settings, req, res) => {
 
     settings.renderSettings.data.parentSlug = parentSlug;
     settings.renderSettings.data.selectedPlatform = platforms.getSelectedPlatform(platformsConfig, cookiesPlatform);
-    settings.renderSettings.data.platform = settings.content[0].platform && settings.content[0].platform.value.length ? await commonContent.normalizePlatforms(settings.content[0].platform.value, res) : null;
+    settings.renderSettings.data.platform = settings.content && settings.content.length && settings.content[0].platform && settings.content[0].platform.value.length ? await commonContent.normalizePlatforms(settings.content[0].platform.value, res) : null;
     settings.renderSettings.data.availablePlatforms = await commonContent.normalizePlatforms(availablePlatforms, res);
     settings.renderSettings.data.preselectedPlatform = preselectedPlatform;
-    settings.renderSettings.data.introduction = settings.content[0].introduction ? settings.content[0].introduction.value : null;
-    settings.renderSettings.data.nextSteps = settings.content[0].next_steps ? settings.content[0].next_steps : '';
-    settings.renderSettings.data.content = settings.content[0];
+    settings.renderSettings.data.introduction = settings.content && settings.content.length && settings.content[0].introduction ? settings.content[0].introduction.value : null;
+    settings.renderSettings.data.nextSteps = settings.content && settings.content.length && settings.content[0].next_steps ? settings.content[0].next_steps : '';
+    settings.renderSettings.data.content = settings.content && settings.content.length ? settings.content[0] : null;
     settings.renderSettings.data.subNavigation = subNavigation[0] ? subNavigation[0].children : [];
     settings.renderSettings.data.moment = moment;
     settings.renderSettings.data.canonicalUrl = canonicalUrl
@@ -104,7 +104,9 @@ const getRedocReference = async (apiCodename, res) => {
         let data = '';
 
         if (baseURL) {
+            console.log('Start ' + apiCodename);
             data = await axios.get(`${baseURL}/api/ProviderStarter?api=${apiCodename}&isPreview=${isPreview(res.locals.previewapikey)}`);
+            console.log('End ' + apiCodename);
         }
 
         return data;
@@ -147,7 +149,7 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
         return await requestDelivery({
             slug: slug,
             depth: 2,
-            types: ['article', 'zapi_specification', 'multiplatform_article'],
+            types: ['scenario', 'article', 'zapi_specification', 'multiplatform_article'],
             resolveRichText: true,
             urlMap: urlMap,
             ...KCDetails

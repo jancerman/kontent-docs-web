@@ -56,9 +56,9 @@ const platforms = {
     getDefaultPlatform: (req, content, preselectedPlatform) => {
         preselectedPlatform = req.cookies['KCDOCS.preselectedLanguage'];
 
-        if (content.children && content.children.length) {
+        if (content && content.children && content.children.length) {
             preselectedPlatform = content.children[0].elements.platform.value[0].codename;
-        } else if (content.platform && content.platform.value.length) {
+        } else if (content && content.platform && content.platform.value.length) {
             preselectedPlatform = content.platform.value[0].codename;
         }
 
@@ -66,7 +66,7 @@ const platforms = {
     },
     getAvailablePlatform: (content, preselectedPlatform) => {
         let platformItems;
-        if (content.children) {
+        if (content && content.children) {
             platformItems = content.children.filter(item => {
                 if (item.platform.value.length) {
                     return item.platform.value[0].codename === preselectedPlatform;
@@ -131,7 +131,7 @@ const platforms = {
     },
     getCanonicalUrl: (urlMap, content, preselectedPlatform) => {
         let canonicalUrl;
-        if ((content.system.type === 'article' && content.platform.value.length > 1) || (content.system.type === 'multiplatform_article' && content.children.length && preselectedPlatform === content.children[0].platform.value[0].codename)) {
+        if (content && ((content.system.type === 'article' && content.platform.value.length > 1) || (content.system.type === 'multiplatform_article' && content.children.length && preselectedPlatform === content.children[0].platform.value[0].codename))) {
             canonicalUrl = urlMap.filter(item => item.codename === content.system.codename);
             canonicalUrl = canonicalUrl.length ? canonicalUrl[0].url : null;
         }

@@ -100,14 +100,16 @@ const commonContent = {
         let cachedPlatforms = cache.get(`platformsConfig_${KCDetails.projectid}`);
         let pairings = [];
 
-        cachedPlatforms[0].options.forEach((item) => {
-            if (item.url.value !== item.platform.value[0].codename) {
-                pairings.push({
-                    url: item.url.value,
-                    platform: item.platform.value[0].codename
-                });
-            }
-        });
+        if (cachedPlatforms && cachedPlatforms.length) {
+            cachedPlatforms[0].options.forEach((item) => {
+                if (item.url.value !== item.platform.value[0].codename) {
+                    pairings.push({
+                        url: item.url.value,
+                        platform: item.platform.value[0].codename
+                    });
+                }
+            });
+        }
 
         return pairings;
     },
