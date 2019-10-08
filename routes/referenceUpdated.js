@@ -1,4 +1,5 @@
 const axios = require('axios');
+const axiosRetry = require('axios-retry');
 const express = require('express');
 const router = express.Router();
 const handleCache = require('../helpers/handleCache');
@@ -14,6 +15,7 @@ router.post('/', async (req, res) => {
     }
 
     if (isReferenceUpdatedEvent(event)) {
+        axiosRetry(axios, { retries: 3 });
         const baseURL = process.env['referenceRenderUrl'];
         const apiCodename = event.data.apiReference;
         const KCDetails = commonContent.getKCDetails(res);
