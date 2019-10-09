@@ -4,6 +4,7 @@ const commonContent = require('./commonContent');
 const isPreview = require('./isPreview');
 const requestDelivery = require('./requestDelivery');
 const axios = require('axios');
+const axiosRetry = require('axios-retry');
 
 const deleteCache = (keyName, KCDetails, isPreviewRequest) => {
     if (isPreviewRequest && cache.get(`${keyName}_${KCDetails.projectid}`)) {
@@ -94,6 +95,7 @@ const cacheAllAPIReferences = async (res) => {
     };
 
     const provideReferences = async (baseURL, apiCodename, isPreviewRequest, KCDetails) => {
+        axiosRetry(axios, { retries: 3 });
         const data = await axios.get(`${baseURL}/api/ProviderStarter?api=${apiCodename}&isPreview=${isPreviewRequest}`);
         cache.put(`reDocReference_${apiCodename}_${KCDetails.projectid}`, data);
     };

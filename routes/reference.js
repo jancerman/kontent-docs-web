@@ -104,9 +104,7 @@ const getRedocReference = async (apiCodename, res) => {
         let data = '';
 
         if (baseURL) {
-            console.log('Start ' + apiCodename);
             data = await axios.get(`${baseURL}/api/ProviderStarter?api=${apiCodename}&isPreview=${isPreview(res.locals.previewapikey)}`);
-            console.log('End ' + apiCodename);
         }
 
         return data;
@@ -130,6 +128,60 @@ router.get('/:main', asyncHandler(async (req, res, next) => {
     }
 
     return res.redirect(301, `/${slug}/${redirectSlug}`);
+}));
+
+/* Temporary  endpoint for release purpose */
+router.get('/redoc/:slug', asyncHandler(async (req, res, next) => {
+    const KCDetails = commonContent.getKCDetails(res);
+    const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
+    const slug = req.params.slug;
+    const home = cache.get(`home_${KCDetails.projectid}`);
+    const footer = cache.get(`footer_${KCDetails.projectid}`);
+    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+    const platformsConfigPairings = commonContent.getPlatformsConfigPairings(res);
+
+    let content = await handleCache.evaluateSingle(res, `reference_${slug}`, async () => {
+        return await requestDelivery({
+            slug: slug,
+            depth: 2,
+            types: ['zapi_specification'],
+            resolveRichText: true,
+            urlMap: urlMap,
+            ...KCDetails
+        });
+    });
+
+    if (!urlMap[0]) {
+        return next();
+    }
+
+    let renderSettings = {
+        view: 'apiReference/pages/redoc',
+        data: {
+            req: req,
+            minify: minify,
+            slug: slug,
+            isPreview: isPreview(res.locals.previewapikey),
+            title: content && content.length ? content[0].title.value : '',
+            titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Kontent Docs'}`,
+            navigation: home && home.length ? home[0].navigation : null,
+            footer: footer && footer.length ? footer[0] : null,
+            UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
+            platformsConfig: platformsConfigPairings && platformsConfigPairings.length ? platformsConfigPairings : null,
+            helper: helper
+        }
+    };
+
+    if (content && content.length && content[0].system.type === 'zapi_specification') {
+        renderSettings.data.content = await getRedocReference(content[0].system.codename, res);
+        renderSettings.data.content = resolveLinks(renderSettings.data.content, urlMap);
+    }
+
+    if (!renderSettings) {
+        return next();
+    }
+
+    return res.render(renderSettings.view, renderSettings.data);
 }));
 
 router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
@@ -177,7 +229,7 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
         }
     };
 
-    if (content.length && content[0].system.type === 'zapi_specification') {
+    if (content && content.length && content[0].system.type === 'zapi_specification') {
         renderSettings.data.content = await getRedocReference(content[0].system.codename, res);
         renderSettings.data.content = resolveLinks(renderSettings.data.content, urlMap);
     } else {
