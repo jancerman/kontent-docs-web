@@ -10,6 +10,7 @@ const asyncHandler = require('express-async-handler');
 const cache = require('memory-cache');
 const cacheControl = require('express-cache-controller');
 const serveStatic = require('serve-static');
+const slashes = require('connect-slashes');
 const consola = require('consola');
 
 const handleCache = require('./helpers/handleCache');
@@ -73,6 +74,7 @@ app.use(cookieParser());
 app.use(serveStatic(path.join(__dirname, 'public'), {
   maxAge: 2592000
 }));
+app.use(slashes(false));
 app.use(cacheControl({
   noCache: true
 }));
