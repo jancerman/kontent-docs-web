@@ -1,7 +1,6 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
-const cache = require('memory-cache');
 const moment = require('moment');
 const axios = require('axios');
 const htmlparser2 = require('htmlparser2');
@@ -14,6 +13,7 @@ const helper = require('../helpers/helperFunctions');
 const isPreview = require('../helpers/isPreview');
 const minify = require('../helpers/minify');
 const platforms = require('../helpers/platforms');
+const getUrlMap = require('../helpers/urlMap');
 
 const handleArticle = async (settings, req, res) => {
     settings.renderSettings.view = 'apiReference/pages/reference';
@@ -21,11 +21,11 @@ const handleArticle = async (settings, req, res) => {
     const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${req.params.slug}`, async () => {
         return await commonContent.getSubNavigation(res, parentSlug);
     });
-    const platformsConfig = platforms.getPlatformsConfig(settings.KCDetails.projectid);
+    const platformsConfig = await platforms.getPlatformsConfig(res);
     let cookiesPlatform = req.cookies['KCDOCS.preselectedLanguage'];
     let availablePlatforms, preselectedPlatform, canonicalUrl;
 
-    let preselectedPlatformSettings = platforms.getPreselectedPlatform(settings.content[0], cookiesPlatform, req, res);
+    let preselectedPlatformSettings = await platforms.getPreselectedPlatform(settings.content[0], cookiesPlatform, req, res);
 
     if (!preselectedPlatformSettings) {
         return null;
@@ -130,15 +130,28 @@ router.get('/:main', asyncHandler(async (req, res, next) => {
     return res.redirect(301, `/${slug}/${redirectSlug}`);
 }));
 
-/* Temporary  endpoint for release purpose */
-router.get('/redoc/:slug', asyncHandler(async (req, res, next) => {
+router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
+    if (res.locals.router !== 'reference') {
+        return next();
+    }
+
     const KCDetails = commonContent.getKCDetails(res);
-    const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
     const slug = req.params.slug;
-    const home = cache.get(`home_${KCDetails.projectid}`);
-    const footer = cache.get(`footer_${KCDetails.projectid}`);
-    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
-    const platformsConfigPairings = commonContent.getPlatformsConfigPairings(res);
+
+    const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
+        return await getUrlMap(res);
+    });
+    const home = await handleCache.ensureSingle(res, `home`, async () => {
+        return await commonContent.getHome(res);
+    });
+    const footer = await handleCache.ensureSingle(res, `footer`, async () => {
+        return await commonContent.getFooter(res);
+    });
+    const UIMessages = await handleCache.ensureSingle(res, `UIMessages`, async () => {
+        return await commonContent.getUIMessages(res);
+    });
+
+    const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
 
     let content = await handleCache.evaluateSingle(res, `reference_${slug}`, async () => {
         return await requestDelivery({
@@ -151,62 +164,31 @@ router.get('/redoc/:slug', asyncHandler(async (req, res, next) => {
         });
     });
 
-    if (!urlMap[0]) {
-        return next();
-    }
-
-    let renderSettings = {
-        view: 'apiReference/pages/redoc',
-        data: {
-            req: req,
-            minify: minify,
-            slug: slug,
-            isPreview: isPreview(res.locals.previewapikey),
-            title: content && content.length ? content[0].title.value : '',
-            titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Kontent Docs'}`,
-            navigation: home && home.length ? home[0].navigation : null,
-            footer: footer && footer.length ? footer[0] : null,
-            UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
-            platformsConfig: platformsConfigPairings && platformsConfigPairings.length ? platformsConfigPairings : null,
-            helper: helper
-        }
-    };
-
-    if (content && content.length && content[0].system.type === 'zapi_specification') {
-        renderSettings.data.content = await getRedocReference(content[0].system.codename, res);
-        renderSettings.data.content = resolveLinks(renderSettings.data.content, urlMap);
-    }
-
-    if (!renderSettings) {
-        return next();
-    }
-
-    return res.render(renderSettings.view, renderSettings.data);
-}));
-
-router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
-    if (res.locals.router !== 'reference') {
-        return next();
-    }
-
-    const KCDetails = commonContent.getKCDetails(res);
-    const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
-    const slug = req.params.slug;
-    const home = cache.get(`home_${KCDetails.projectid}`);
-    const footer = cache.get(`footer_${KCDetails.projectid}`);
-    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
-    const platformsConfigPairings = commonContent.getPlatformsConfigPairings(res);
-
-    let content = await handleCache.evaluateSingle(res, `reference_${slug}`, async () => {
-        return await requestDelivery({
-            slug: slug,
-            depth: 2,
-            types: ['scenario', 'article', 'zapi_specification', 'multiplatform_article'],
-            resolveRichText: true,
-            urlMap: urlMap,
-            ...KCDetails
+    if (!(content && content.length)) {
+        content = await handleCache.evaluateSingle(res, `article_${slug}`, async () => {
+            return await requestDelivery({
+                slug: slug,
+                depth: 2,
+                types: ['article'],
+                resolveRichText: true,
+                urlMap: urlMap,
+                ...KCDetails
+            });
         });
-    });
+    }
+
+    if (!(content && content.length)) {
+        content = await handleCache.evaluateSingle(res, `scenario_${slug}`, async () => {
+            return await requestDelivery({
+                slug: slug,
+                depth: 2,
+                types: ['scenario'],
+                resolveRichText: true,
+                urlMap: urlMap,
+                ...KCDetails
+            });
+        });
+    }
 
     if (!urlMap[0]) {
         return next();

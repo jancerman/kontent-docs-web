@@ -1,10 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const cache = require('memory-cache');
+const getUrlMap = require('../helpers/urlMap');
 const asyncHandler = require('express-async-handler');
-
 const handleCache = require('../helpers/handleCache');
-const commonContent = require('../helpers/commonContent');
 
 router.get('/:codenames', asyncHandler(async (req, res, next) => {
     const codenames = req.params.codenames.split('/');
@@ -14,8 +12,9 @@ router.get('/:codenames', asyncHandler(async (req, res, next) => {
     } else {
         await handleCache.evaluateCommon(res, ['urlMap']);
 
-        const KCDetails = commonContent.getKCDetails(res);
-        const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
+        const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
+            return await getUrlMap(res);
+        });
 
         const urlsWithCodename = urlMap && urlMap.filter(elem => elem.codename === codenames[0]);
         const resolvedUrl = urlsWithCodename && urlsWithCodename.length && urlsWithCodename[0].url;

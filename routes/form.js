@@ -4,7 +4,7 @@ const commonContent = require('../helpers/commonContent');
 const recaptcha = require('../helpers/recaptcha');
 const jira = require('../helpers/jira');
 const lms = require('../helpers/lms');
-const cache = require('memory-cache');
+const handleCache = require('../helpers/handleCache');
 
 const setFalseValidation = (validation, property, UIMessages) => {
     validation.isValid = false;
@@ -36,8 +36,9 @@ const substituteDetailsInMessage = (message, data) => {
 };
 
 const validateDataFeedback = async (data, req, res) => {
-    const KCDetails = commonContent.getKCDetails(res);
-    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+    const UIMessages = await handleCache.ensureSingle(res, `UIMessages`, async () => {
+        return commonContent.getUIMessages(res);
+    });
 
     let validation = {
         isValid: true
@@ -78,8 +79,9 @@ const validateFieldsCertification = (data, validation, UIMessages) => {
 };
 
 const validateDataCertification = async (data, req, res) => {
-    const KCDetails = commonContent.getKCDetails(res);
-    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+    const UIMessages = await handleCache.ensureSingle(res, `UIMessages`, async () => {
+        return commonContent.getUIMessages(res);
+    });
 
     let validation = {
         isValid: true

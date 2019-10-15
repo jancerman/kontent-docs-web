@@ -1,20 +1,28 @@
-const cache = require('memory-cache');
 const commonContent = require('../helpers/commonContent');
 const minify = require('../helpers/minify');
 const helper = require('../helpers/helperFunctions');
+const handleCache = require('../helpers/handleCache');
+const asyncHandler = require('express-async-handler');
 
-const error = (req, res) => {
-    const KCDetails = commonContent.getKCDetails(res);
-    const footer = cache.get(`footer_${KCDetails.projectid}`);
-    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
-    const platformsConfigPairings = commonContent.getPlatformsConfigPairings(res);
+const error = asyncHandler(async (req, res) => {
+    const footer = await handleCache.ensureSingle(res, `footer`, async (res) => {
+        return commonContent.getFooter(res);
+    });
+    const UIMessages = await handleCache.ensureSingle(res, `UIMessages`, async () => {
+        return commonContent.getUIMessages(res);
+    });
+    const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
 
     if (!footer) {
         return res.status(500).send('Unexpected error, please check site logs.');
     }
 
-    const content = cache.get(`not_found_${KCDetails.projectid}`);
-    const home = cache.get(`home_${KCDetails.projectid}`);
+    const content = await handleCache.ensureSingle(res, `not_found`, async () => {
+        return commonContent.getNotFound(res);
+    });
+    const home = await handleCache.ensureSingle(res, `home`, async () => {
+        return commonContent.getHome(res);
+    });
 
     return res.render('tutorials/pages/error', {
         req: req,
@@ -29,6 +37,6 @@ const error = (req, res) => {
         platformsConfig: platformsConfigPairings && platformsConfigPairings.length ? platformsConfigPairings : null,
         helper: helper
     });
-};
+});
 
 module.exports = error;

@@ -4,8 +4,9 @@ const {
 const {
     deliveryConfig
 } = require('../config');
-const cache = require('memory-cache');
+const requestDelivery = require('./requestDelivery');
 const helper = require('./helperFunctions');
+const ensureSingle = require('./ensureSingle');
 let fields = ['codename', 'url'];
 let createUrlMap, handleNode;
 
@@ -87,9 +88,21 @@ const redefineTypeLevelArticle = (response, urlLength) => {
     return level;
 };
 
-const handleLangForMultiplatformArticle = (queryString, item) => {
+const handleLangForMultiplatformArticle = async (queryString, item, res) => {
     queryString = '?tech=';
-    const cachedPlatforms = cache.get(`platformsConfig_${deliveryConfig.projectId}`);
+    const cachedPlatforms = await ensureSingle(res, `platformsConfig`, async () => {
+        const KCDetails = {
+            projectid: res.locals.projectid,
+            previewapikey: res.locals.previewapikey,
+            securedapikey: res.locals.securedapikey
+        };
+
+        return await requestDelivery({
+            type: 'platform_picker',
+            codename: 'platform_picker',
+            ...KCDetails
+        });
+    });
     if (cachedPlatforms && cachedPlatforms.length && item.elements.platform && item.elements.platform.value.length) {
         let tempPlatform = cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename);
         if (tempPlatform.length) {
@@ -129,7 +142,7 @@ const getTypeLevel = (typeLength, urlLength) => {
     return typeLevel;
 };
 
-createUrlMap = (response, isSitemap, url, urlMap = []) => {
+createUrlMap = (response, isSitemap, url, urlMap = [], res) => {
     let nodes = [];
     let queryString = '';
     let hash = '';
@@ -155,7 +168,8 @@ createUrlMap = (response, isSitemap, url, urlMap = []) => {
                     url,
                     queryString,
                     hash,
-                    isSitemap
+                    isSitemap,
+                    res
                 });
             });
         }
@@ -179,7 +193,7 @@ handleNode = (settings) => {
 
         if (settings.response.system && settings.item.system && settings.response.system.type === 'multiplatform_article' && settings.item.system.type === 'article') {
             // Handle "lang" query string in case articles are assigned to "multiplatform_article"
-            settings.queryString = handleLangForMultiplatformArticle(settings.queryString, settings.item);
+            settings.queryString = handleLangForMultiplatformArticle(settings.queryString, settings.item, settings.res);
             /* }  else if (settings.item.system && settings.item.system.type === 'article' && globalConfig.isSitemap) {
                 // Handle "lang" query string in case "article" has values selected in the "Platform" field
                 let tempProperties = handleLangForPlatformField({ item: settings.item, slug, url: settings.url, urlMap: settings.urlMap });
@@ -218,7 +232,7 @@ handleNode = (settings) => {
     settings.queryString = '';
     settings.hash = '';
 
-    return createUrlMap(settings.item, settings.isSitemap, settings.url, settings.urlMap);
+    return createUrlMap(settings.item, settings.isSitemap, settings.url, settings.urlMap, settings.res);
 };
 
 const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
@@ -282,7 +296,7 @@ const getUrlMap = async (res, isSitemap) => {
         fields = ['codename', 'url'];
     }
 
-    let urlMap = createUrlMap(response, isSitemap, []);
+    let urlMap = createUrlMap(response, isSitemap, [], [], res);
     urlMap = await addUnusedArtilesToUrlMap(deliveryClient, urlMap);
     return urlMap;
 };

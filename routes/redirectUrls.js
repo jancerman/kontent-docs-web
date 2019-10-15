@@ -1,17 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const cache = require('memory-cache');
 
 const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
+const getUrlMap = require('../helpers/urlMap');
+const handleCache = require('../helpers/handleCache');
 
-const getRedirectUrls = (res) => {
-  const KCDetails = commonContent.getKCDetails(res);
+const getRedirectUrls = async (res) => {
+  const articles = await handleCache.ensureSingle(res, `articles`, async () => {
+    return await commonContent.getArticles(res);
+  });
+  const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
+    return await getUrlMap(res);
+  });
 
-  const articles = cache.get(`articles_${KCDetails.projectid}`);
-  const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
   let redirectMap = [];
 
   articles.forEach(article => {
@@ -31,11 +35,16 @@ const getRedirectUrls = (res) => {
 };
 
 router.get('/', async (req, res) => {
-  const KCDetails = commonContent.getKCDetails(res);
-  const footer = cache.get(`footer_${KCDetails.projectid}`);
-  const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
-  const home = cache.get(`home_${KCDetails.projectid}`);
-  const redirectMap = getRedirectUrls(res);
+  const footer = await handleCache.ensureSingle(res, `footer`, async () => {
+    return commonContent.getFooter(res);
+  });
+  const UIMessages = await handleCache.ensureSingle(res, `UIMessages`, async () => {
+    return commonContent.getUIMessages(res);
+  });
+  const home = await handleCache.ensureSingle(res, `home`, async () => {
+    return commonContent.getHome(res);
+  });
+  const redirectMap = await getRedirectUrls(res);
   const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
 
   return res.render('tutorials/pages/redirectUrls', {

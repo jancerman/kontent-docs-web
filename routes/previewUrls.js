@@ -1,10 +1,10 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
-const cache = require('memory-cache');
 const commonContent = require('../helpers/commonContent');
 const requestDelivery = require('../helpers/requestDelivery');
 const handleCache = require('../helpers/handleCache');
+const getUrlMap = require('../helpers/urlMap');
 
 const getType = (params) => {
     let type = '';
@@ -18,7 +18,9 @@ const getType = (params) => {
 
 const getItem = async (res, type, slug) => {
     const KCDetails = commonContent.getKCDetails(res);
-    const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
+    const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
+        return await getUrlMap(res);
+    });
 
     return await handleCache.evaluateSingle(res, `${type}_${slug}`, async () => {
         return await requestDelivery({
@@ -33,8 +35,9 @@ const getItem = async (res, type, slug) => {
 };
 
 router.get(['/article/:article', '/scenario/:scenario'], asyncHandler(async (req, res, next) => {
-    const KCDetails = commonContent.getKCDetails(res);
-    const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
+    const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
+        return await getUrlMap(res);
+    });
     const type = getType(req.params);
     const urlSlug = req.params.article || req.params.scenario;
     let item = await getItem(res, type, urlSlug);

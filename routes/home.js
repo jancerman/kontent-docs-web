@@ -5,19 +5,25 @@ const minify = require('../helpers/minify');
 const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
-const cache = require('memory-cache');
+const handleCache = require('../helpers/handleCache');
+const asyncHandler = require('express-async-handler');
 
-router.get('/', (req, res, next) => {
-  const KCDetails = commonContent.getKCDetails(res);
-  const home = cache.get(`home_${KCDetails.projectid}`);
+router.get('/', asyncHandler(async (req, res, next) => {
+  const home = await handleCache.ensureSingle(res, `home`, async () => {
+    return commonContent.getHome(res);
+  });
 
   if (!home[0]) {
     return next();
   }
 
-  const footer = cache.get(`footer_${KCDetails.projectid}`);
-  const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
-  const platformsConfigPairings = commonContent.getPlatformsConfigPairings(res);
+  const footer = await handleCache.ensureSingle(res, `footer`, async () => {
+    return commonContent.getFooter(res);
+  });
+  const UIMessages = await handleCache.ensureSingle(res, `UIMessages`, async () => {
+    return commonContent.getUIMessages(res);
+  });
+  const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
 
   return res.render('tutorials/pages/home', {
     req: req,
@@ -36,6 +42,6 @@ router.get('/', (req, res, next) => {
     platformsConfig: platformsConfigPairings && platformsConfigPairings.length ? platformsConfigPairings : null,
     helper: helper
   });
-});
+}));
 
 module.exports = router;

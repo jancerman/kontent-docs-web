@@ -1,6 +1,7 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
+const moment = require('moment');
 
 const requestDelivery = require('../helpers/requestDelivery');
 const minify = require('../helpers/minify');
@@ -9,9 +10,8 @@ const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 const handleCache = require('../helpers/handleCache');
 const platforms = require('../helpers/platforms');
+const getUrlMap = require('../helpers/urlMap');
 
-const moment = require('moment');
-const cache = require('memory-cache');
 let cookiesPlatform;
 
 const getSubNavigationLevels = (req) => {
@@ -70,23 +70,31 @@ const getCurrentLevel = (levels) => {
 
 const getContent = async (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
-    const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
-    const home = cache.get(`home_${KCDetails.projectid}`);
+    const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
+        return await getUrlMap(res);
+    });
+    const home = await handleCache.ensureSingle(res, `home`, async () => {
+        return commonContent.getHome(res);
+    });
     const slug = req.originalUrl.split('/')[1];
     const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
         return await commonContent.getSubNavigation(res, slug);
     });
     const subNavigationLevels = getSubNavigationLevels(req);
     const currentLevel = getCurrentLevel(subNavigationLevels);
-    const footer = cache.get(`footer_${KCDetails.projectid}`);
-    const UIMessages = cache.get(`UIMessages_${KCDetails.projectid}`);
+    const footer = await handleCache.ensureSingle(res, `footer`, async () => {
+        return commonContent.getFooter(res);
+    });
+    const UIMessages = await handleCache.ensureSingle(res, `UIMessages`, async () => {
+        return commonContent.getUIMessages(res);
+    });
     const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
     let content = await getContentLevel(currentLevel, urlMap, req, res);
     let view = 'tutorials/pages/article';
     let availablePlatforms;
 
     let queryHash = req.url.split('?')[1];
-    const platformsConfig = platforms.getPlatformsConfig(KCDetails.projectid);
+    const platformsConfig = await platforms.getPlatformsConfig(res);
     let preselectedPlatform;
     let canonicalUrl;
     cookiesPlatform = req.cookies['KCDOCS.preselectedLanguage'];
@@ -103,7 +111,7 @@ const getContent = async (req, res) => {
         } else if (currentLevel === 1) {
             return `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else {
-            let preselectedPlatformSettings = platforms.getPreselectedPlatform(content[0], cookiesPlatform, req, res);
+            let preselectedPlatformSettings = await platforms.getPreselectedPlatform(content[0], cookiesPlatform, req, res);
 
             if (!preselectedPlatformSettings) {
                 return null;
