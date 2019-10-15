@@ -142,7 +142,7 @@ const getTypeLevel = (typeLength, urlLength) => {
     return typeLevel;
 };
 
-createUrlMap = (response, isSitemap, url, urlMap = [], res) => {
+createUrlMap = async (response, isSitemap, url, urlMap = [], res) => {
     let nodes = [];
     let queryString = '';
     let hash = '';
@@ -160,8 +160,8 @@ createUrlMap = (response, isSitemap, url, urlMap = [], res) => {
 
     for (let i = 0; i < nodes.length; i++) {
         if (response[nodes[i]]) {
-            response[nodes[i]].forEach(item => {
-                urlMap = handleNode({
+            for await (const item of response[nodes[i]]) {
+                urlMap = await handleNode({
                     response,
                     item,
                     urlMap,
@@ -171,14 +171,14 @@ createUrlMap = (response, isSitemap, url, urlMap = [], res) => {
                     isSitemap,
                     res
                 });
-            });
+            };
         }
     }
 
     return urlMap;
 };
 
-handleNode = (settings) => {
+handleNode = async (settings) => {
     if (settings.response.system && settings.item.system && settings.response.system.type === 'navigation_item' && settings.item.system.type === 'multiplatform_article') {
         settings.url.length = 2;
     }
@@ -193,7 +193,7 @@ handleNode = (settings) => {
 
         if (settings.response.system && settings.item.system && settings.response.system.type === 'multiplatform_article' && settings.item.system.type === 'article') {
             // Handle "lang" query string in case articles are assigned to "multiplatform_article"
-            settings.queryString = handleLangForMultiplatformArticle(settings.queryString, settings.item, settings.res);
+            settings.queryString = await handleLangForMultiplatformArticle(settings.queryString, settings.item, settings.res);
             /* }  else if (settings.item.system && settings.item.system.type === 'article' && globalConfig.isSitemap) {
                 // Handle "lang" query string in case "article" has values selected in the "Platform" field
                 let tempProperties = handleLangForPlatformField({ item: settings.item, slug, url: settings.url, urlMap: settings.urlMap });
@@ -232,7 +232,7 @@ handleNode = (settings) => {
     settings.queryString = '';
     settings.hash = '';
 
-    return createUrlMap(settings.item, settings.isSitemap, settings.url, settings.urlMap, settings.res);
+    return await createUrlMap(settings.item, settings.isSitemap, settings.url, settings.urlMap, settings.res);
 };
 
 const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
@@ -296,7 +296,7 @@ const getUrlMap = async (res, isSitemap) => {
         fields = ['codename', 'url'];
     }
 
-    let urlMap = createUrlMap(response, isSitemap, [], [], res);
+    let urlMap = await createUrlMap(response, isSitemap, [], [], res);
     urlMap = await addUnusedArtilesToUrlMap(deliveryClient, urlMap);
     return urlMap;
 };
