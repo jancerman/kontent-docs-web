@@ -69,6 +69,7 @@ const handleArticle = async (settings, req, res) => {
 };
 
 const resolveLinks = (data, urlMap) => {
+    // Resolve links in DOM
     const parserOptions = {
         decodeEntities: true,
         lowerCaseAttributeNames: false,
@@ -82,6 +83,7 @@ const resolveLinks = (data, urlMap) => {
 
     for (let i = 0; i < links.length; i++) {
         const link = $(links[i]);
+
         if (link.attr('href').indexOf('/link-to/') > -1) {
             const urlParts = link.attr('href').split('/');
             const codename = urlParts[urlParts.length - 1];
@@ -95,6 +97,27 @@ const resolveLinks = (data, urlMap) => {
     }
 
     data.data = $.root().html().trim();
+
+    // Resolve links in Markdown
+    // eslint-disable-next-line no-useless-escape
+    const regexLink = /(\]\()([a-zA-Z0-9-._~:\/?#\[\]@!\$&'\+,;=]*)(\))/g;
+    data.data = data.data.replace(regexLink, (match, $1, $2, $3) => {
+        let url = $2;
+
+        if ($2.indexOf('/link-to/') > -1) {
+            const urlParts = $2.split('/');
+            const codename = urlParts[urlParts.length - 1];
+
+            for (let i = 0; i < urlMap.length; i++) {
+                if (urlMap[i].codename === codename) {
+                    url = urlMap[i].url;
+                }
+            }
+        }
+
+        return $1 + url + $3;
+    });
+
     return data;
 };
 
