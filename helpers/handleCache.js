@@ -20,10 +20,10 @@ const putCache = (keyName, data, KCDetails) => {
     cache.put(`${keyName}_${KCDetails.projectid}`, data);
 };
 
-const manageCache = async (keyName, dataRetrieval, KCDetails, isPreviewRequest) => {
+const manageCache = async (keyName, dataRetrieval, KCDetails, isPreviewRequest, res) => {
     deleteCache(keyName, KCDetails, isPreviewRequest);
     if (!getCache(keyName, KCDetails)) {
-        const data = await dataRetrieval();
+        const data = await dataRetrieval(res);
         putCache(keyName, data, KCDetails);
     }
     return getCache(keyName, KCDetails);
@@ -66,9 +66,9 @@ const evaluateCommon = async (res, keysTohandle) => {
     const processCache = async (array) => {
         for await (const item of array) {
             if (keysTohandle.indexOf(item.name) > -1) {
-                await manageCache(item.name, async () => {
+                await manageCache(item.name, async (res) => {
                     return await item.method(res);
-                }, KCDetails, isPreviewRequest);
+                }, KCDetails, isPreviewRequest, res);
             }
         }
     }
@@ -80,9 +80,19 @@ const evaluateSingle = async (res, keyName, method) => {
     const KCDetails = commonContent.getKCDetails(res);
     const isPreviewRequest = isPreview(res.locals.previewapikey);
 
-    return await manageCache(keyName, async () => {
+    return await manageCache(keyName, async (res) => {
         return await method(res);
     }, KCDetails, isPreviewRequest);
+};
+
+const ensureSingle = async (res, keyName, method) => {
+    const KCDetails = commonContent.getKCDetails(res);
+
+    if (!getCache(keyName, KCDetails)) {
+        const data = await method(res);
+        putCache(keyName, data, KCDetails);
+    }
+    return getCache(keyName, KCDetails);
 };
 
 const cacheAllAPIReferences = async (res) => {
@@ -121,5 +131,6 @@ module.exports = {
     evaluateCommon,
     evaluateSingle,
     cacheAllAPIReferences,
-    putCache
-}
+    putCache,
+    ensureSingle
+};

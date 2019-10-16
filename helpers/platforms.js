@@ -2,8 +2,6 @@ const handleCache = require('./handleCache');
 const requestDelivery = require('./requestDelivery');
 const commonContent = require('./commonContent');
 
-const cache = require('memory-cache');
-
 const platforms = {
     getSelectedPlatform: (platformsConfig, cookiesPlatform) => {
         let platform = platformsConfig ? platformsConfig.filter(item => item.system.codename === cookiesPlatform) : null;
@@ -14,9 +12,12 @@ const platforms = {
         }
         return platform;
     },
-    getPlatformsConfig: (projectId) => {
-        return (cache.get(`platformsConfig_${projectId}`) && cache.get(`platformsConfig_${projectId}`).length
-        ? cache.get(`platformsConfig_${projectId}`)[0].options
+    getPlatformsConfig: async (res) => {
+        let platformsConfig = await handleCache.ensureSingle(res, `platformsConfig`, async () => {
+            return commonContent.getPlatformsConfig(res);
+        });
+        return (platformsConfig && platformsConfig.length
+        ? platformsConfig[0].options
         : null);
     },
     getMultiplatformArticleContent: async (content, preselectedPlatform, urlMap, KCDetails, res) => {
@@ -93,9 +94,8 @@ const platforms = {
 
         return preselectedPlatform;
     },
-    getPreselectedPlatform: (content, cookiesPlatform, req, res) => {
-        const KCDetails = commonContent.getKCDetails(res);
-        const platformsConfig = platforms.getPlatformsConfig(KCDetails.projectid);
+    getPreselectedPlatform: async (content, cookiesPlatform, req, res) => {
+        const platformsConfig = await platforms.getPlatformsConfig(res);
         let preselectedPlatform = req.query.tech;
 
         if (preselectedPlatform) {

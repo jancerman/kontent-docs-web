@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 const compression = require('compression');
 const logger = require('morgan');
 const asyncHandler = require('express-async-handler');
-const cache = require('memory-cache');
 const cacheControl = require('express-cache-controller');
 const serveStatic = require('serve-static');
 const slashes = require('connect-slashes');
@@ -15,6 +14,7 @@ const consola = require('consola');
 
 const handleCache = require('./helpers/handleCache');
 const getUrlMap = require('./helpers/urlMap');
+const commonContent = require('./helpers/commonContent');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -188,21 +188,28 @@ app.use('/rss', async (req, res, next) => {
   await handleCache.evaluateCommon(res, ['rss_articles']);
   return next();
 }, rss);
+
 app.use('/robots.txt', robots);
 
 app.get('/urlmap', asyncHandler(async (req, res) => {
   res.cacheControl = {
     maxAge: 0
   };
-  return res.json(cache.get(`urlMap_${res.locals.projectid}`));
+
+  const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
+    return await getUrlMap(res);
+  });
+
+  return res.json(urlMap);
 }));
 
-app.get('/redoc/:slug', reference);
-
 // Dynamic routing setup
-app.use('/', (req, res, next) => {
+app.use('/', async (req, res, next) => {
   let topLevel = req.originalUrl.split('/')[1];
-  let navigationItems = cache.get(`navigationItems_${res.locals.projectid}`);
+  let navigationItems = await handleCache.ensureSingle(res, `navigationItems`, async () => {
+    return commonContent.getNavigationItems(res);
+  });
+
   if (navigationItems) {
     res.locals.router = navigationItems.filter(item => topLevel === item.elements.url.value);
   }

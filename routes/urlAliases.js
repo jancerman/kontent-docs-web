@@ -1,14 +1,17 @@
-const cache = require('memory-cache');
 const commonContent = require('../helpers/commonContent');
+const getUrlMap = require('../helpers/urlMap');
+const handleCache = require('../helpers/handleCache');
 
-const urlAliases = (req, res, next) => {
-    const KCDetails = commonContent.getKCDetails(res);
-
+const urlAliases = async (req, res, next) => {
     const urlSplit = req.originalUrl.split('?');
     const queryParamater = urlSplit[1] ? urlSplit[1] : '';
     const originalUrl = urlSplit[0].trim().toLowerCase().replace(/\/\s*$/, '');
-    const articles = cache.get(`articles_${KCDetails.projectid}`);
-    const urlMap = cache.get(`urlMap_${KCDetails.projectid}`);
+    const articles = await handleCache.ensureSingle(res, `articles`, async () => {
+        return commonContent.getArticles(res);
+    });
+    const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
+        return await getUrlMap(res);
+    });
     let redirectUrl = [];
 
     articles.forEach(item => {

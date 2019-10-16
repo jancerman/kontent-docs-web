@@ -1,5 +1,6 @@
 const requestDelivery = require('./requestDelivery');
-const cache = require('memory-cache');
+const getUrlMap = require('./urlMap');
+const ensureSingle = require('./ensureSingle');
 
 const commonContent = {
     getKCDetails: (res) => {
@@ -11,11 +12,14 @@ const commonContent = {
     },
     getTree: async (contentType, depth, res) => {
         const KCDetails = commonContent.getKCDetails(res);
+        const urlMap = await ensureSingle(res, `urlMap`, async () => {
+            return await getUrlMap(res);
+        });
         return await requestDelivery({
             type: contentType,
             depth: depth,
             resolveRichText: true,
-            urlMap: cache.get(`urlMap_${KCDetails.projectid}`),
+            urlMap: urlMap,
             ...KCDetails
         });
     },
@@ -42,11 +46,14 @@ const commonContent = {
     },
     getHome: async (res) => {
         const KCDetails = commonContent.getKCDetails(res);
+        const urlMap = await ensureSingle(res, `urlMap`, async () => {
+            return await getUrlMap(res);
+        });
         return await requestDelivery({
             type: 'home',
             depth: 4,
             resolveRichText: true,
-            urlMap: cache.get(`urlMap_${KCDetails.projectid}`),
+            urlMap: urlMap,
             ...KCDetails
         });
     },
@@ -75,10 +82,13 @@ const commonContent = {
     },
     getNotFound: async (res) => {
         const KCDetails = commonContent.getKCDetails(res);
+        const urlMap = await ensureSingle(res, `urlMap`, async () => {
+            return await getUrlMap(res);
+        });
         return await requestDelivery({
             type: 'not_found',
             resolveRichText: true,
-            urlMap: cache.get(`urlMap_${KCDetails.projectid}`),
+            urlMap: urlMap,
             ...KCDetails
         });
     },
@@ -95,9 +105,10 @@ const commonContent = {
             ...commonContent.getKCDetails(res)
         });
     },
-    getPlatformsConfigPairings: (res) => {
-        const KCDetails = commonContent.getKCDetails(res);
-        let cachedPlatforms = cache.get(`platformsConfig_${KCDetails.projectid}`);
+    getPlatformsConfigPairings: async (res) => {
+        let cachedPlatforms = await ensureSingle(res, `platformsConfig`, async () => {
+            return await commonContent.getPlatformsConfig(res);
+        });
         let pairings = [];
 
         if (cachedPlatforms && cachedPlatforms.length) {
@@ -114,11 +125,11 @@ const commonContent = {
         return pairings;
     },
     normalizePlatforms: async (platforms, res) => {
-        const KCDetails = commonContent.getKCDetails(res);
-
         let result = [];
         let order = [];
-        let cachedPlatforms = cache.get(`platformsConfig_${KCDetails.projectid}`);
+        let cachedPlatforms = await ensureSingle(res, `platformsConfig`, async () => {
+            return await commonContent.getPlatformsConfig(res);
+        });
 
         if (!cachedPlatforms) {
             cachedPlatforms = await commonContent.getPlatformsConfig(res);

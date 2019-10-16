@@ -1,6 +1,6 @@
-| [master](https://github.com/Kentico/kentico-cloud-docs-web/tree/master) | [develop](https://github.com/Kentico/kentico-cloud-docs-web/tree/develop) |
+| [master](https://github.com/KenticoDocs/kontent-docs-web/tree/master) | [develop](https://github.com/KenticoDocs/kontent-docs-web/tree/develop) |
 |:---:|:---:|
-| [![Build Status](https://travis-ci.com/KenticoDocs/cloud-docs-web.svg?branch=master)](https://travis-ci.com/KenticoDocs/cloud-docs-web/branches) [![codebeat badge](https://codebeat.co/badges/cf04c056-c9bf-4794-be9a-4b0618d712c7)](https://codebeat.co/projects/github-com-kenticodocs-cloud-docs-web-master) | [![Build Status](https://travis-ci.com/KenticoDocs/cloud-docs-web.svg?branch=develop)](https://travis-ci.com/KenticoDocs/cloud-docs-web/branches) [![codebeat badge](https://codebeat.co/badges/0d16bcd3-fa47-45cc-abf5-c031a17c0144)](https://codebeat.co/projects/github-com-kenticodocs-cloud-docs-web-develop) |
+| [![Build Status](https://travis-ci.com/KenticoDocs/kontent-docs-web.svg?branch=master)](https://travis-ci.com/KenticoDocs/kontent-docs-web/branches) | [![Build Status](https://travis-ci.com/KenticoDocs/kontent-docs-web.svg?branch=develop)](https://travis-ci.com/KenticoDocs/kontent-docs-web/branches) |
 
 # Kentico Kontent Documentation - Website
 
@@ -8,7 +8,7 @@ Kentico Kontent documentation portal, which utilizes [Kentico Kontent](https://a
 
 ## Overview
 1. The website is written in JavaScript.
-2. It uses [express.js](https://expressjs.com/) framework for server-side rendering and [Kentico Kontent Delivery SDK](https://github.com/Kentico/kentico-cloud-js/tree/master/packages/delivery) for content retrieval from Kentico Kontent project.
+2. It uses [express.js](https://expressjs.com/) framework for server-side rendering and [Kentico Kontent Delivery SDK](https://github.com/Kentico/kontent-delivery-sdk-js) for content retrieval from Kentico Kontent project.
 3. Additionally, [Autocomplete.js](https://github.com/algolia/autocomplete.js) package supports the search box that is connected to the indexed content on Algolia.
 
 ## Setup
