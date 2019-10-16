@@ -720,15 +720,27 @@ h3[class*="RightPanelHeader"] {
   }
 }
 
+[class*="ArraySchema"] {
+  .oneOf {
+    [class*="OneOfButton"] {
+      margin-bottom: .5em;
+    }
+  }
+}
+
 [class*="JsonViewer"][class*="PrismDiv"] {
   max-height: 50vh;
 }
 
 [class*="StyledMarkdownBlock"] {
-  h3 {
+  h3, h4 {
     font-size: 1.125em;
     font-weight: 700;
     padding: 1em 0 .5em;
+  }
+
+  h4 {
+    font-size: 1em;
   }
 }
 
