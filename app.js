@@ -48,8 +48,7 @@ const urlWhitelist = [
   '/cache-invalidate',
   '/robots.txt',
   '/link-to',
-  '/sitemap.xml',
-  '/redoc/*'
+  '/sitemap.xml'
 ];
 
 // Azure Application Insights monitors

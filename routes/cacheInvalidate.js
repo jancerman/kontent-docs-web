@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const asyncHandler = require('express-async-handler');
 const commonContent = require('../helpers/commonContent');
 const requestDelivery = require('../helpers/requestDelivery');
+const handleCache = require('../helpers/handleCache');
 const app = require('../app');
 
 const isValidSignature = (req, secret) => {
@@ -13,14 +14,6 @@ const isValidSignature = (req, secret) => {
         .update(req.body)
         .digest();
     return crypto.timingSafeEqual(Buffer.from(givenSignature, 'base64'), computedSignature);
-};
-
-const deleteMultipleKeys = (keys, startsWithString) => {
-    for (let i = 0; i < keys.length; i++) {
-        if (keys[i].startsWith(startsWithString)) {
-            cache.del(keys[i]);
-        }
-    }
 };
 
 const requestItemAndDeleteCacheKey = async (keyNameToDelete, codename, KCDetails) => {
@@ -143,7 +136,7 @@ router.post('/', asyncHandler(async (req, res) => {
 
             cache.del(`home_${KCDetails.projectid}`);
 
-            deleteMultipleKeys(keys, 'subNavigation_');
+            handleCache.deleteMultipleKeys('subNavigation_', keys);
 
             cache.del(`urlMap_${KCDetails.projectid}`);
             if (app.appInsights) {

@@ -233,10 +233,10 @@
   };
 
   var addAchorsToHeadings = function () {
-    var headings = document.querySelectorAll('h2[id], h3[id]');
+    var headings = document.querySelectorAll('h2[id], h3[id], h4[id]');
 
     var interval = setInterval(function () {
-      headings = document.querySelectorAll('h2[id], h3[id]');
+      headings = document.querySelectorAll('h2[id], h3[id], h4[id]');
       if (headings.length) {
         createAchors(headings);
         clearInterval(interval);

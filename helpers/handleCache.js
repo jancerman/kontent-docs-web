@@ -6,9 +6,25 @@ const requestDelivery = require('./requestDelivery');
 const axios = require('axios');
 const axiosRetry = require('axios-retry');
 
-const deleteCache = (keyName, KCDetails, isPreviewRequest) => {
+const deleteCachePreviewCheck = (keyName, KCDetails, isPreviewRequest) => {
     if (isPreviewRequest && cache.get(`${keyName}_${KCDetails.projectid}`)) {
         cache.del(`${keyName}_${KCDetails.projectid}`);
+    }
+};
+
+const deleteCache = (keyName, KCDetails) => {
+    cache.del(`${keyName}_${KCDetails.projectid}`);
+};
+
+const deleteMultipleKeys = (startsWithString, keys) => {
+    if (!keys) {
+        keys = cache.keys();
+    }
+
+    for (let i = 0; i < keys.length; i++) {
+        if (keys[i].startsWith(startsWithString)) {
+            cache.del(keys[i]);
+        }
     }
 };
 
@@ -21,7 +37,7 @@ const putCache = (keyName, data, KCDetails) => {
 };
 
 const manageCache = async (keyName, dataRetrieval, KCDetails, isPreviewRequest, res) => {
-    deleteCache(keyName, KCDetails, isPreviewRequest);
+    deleteCachePreviewCheck(keyName, KCDetails, isPreviewRequest);
     if (!getCache(keyName, KCDetails)) {
         const data = await dataRetrieval(res);
         putCache(keyName, data, KCDetails);
@@ -106,10 +122,8 @@ const cacheAllAPIReferences = async (res) => {
 
     const provideReferences = async (baseURL, apiCodename, isPreviewRequest, KCDetails) => {
         axiosRetry(axios, { retries: 3 });
-        // console.log('start' + `${baseURL}/api/ProviderStarter?api=${apiCodename}&isPreview=${isPreviewRequest}`);
         const data = await axios.get(`${baseURL}/api/ProviderStarter?api=${apiCodename}&isPreview=${isPreviewRequest}`);
         cache.put(`reDocReference_${apiCodename}_${KCDetails.projectid}`, data);
-        // console.log('end' + apiCodename);
     };
 
     const isPreviewRequest = isPreview(res.locals.previewapikey);
@@ -132,5 +146,7 @@ module.exports = {
     evaluateSingle,
     cacheAllAPIReferences,
     putCache,
+    deleteCache,
+    deleteMultipleKeys,
     ensureSingle
 };

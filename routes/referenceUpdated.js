@@ -7,6 +7,9 @@ const commonContent = require('../helpers/commonContent');
 
 router.post('/', async (req, res) => {
     const event = req.body[0];
+    const baseURL = process.env['referenceRenderUrl'];
+    const KCDetails = commonContent.getKCDetails(res);
+    let apiCodename;
 
     if (isValidationEvent(event)) {
         return await res.send({
@@ -14,13 +17,19 @@ router.post('/', async (req, res) => {
         })
     }
 
+    if (isValidEventGridEvent(event)) {
+        apiCodename = event.data.apiReference;
+    }
+
     if (isReferenceUpdatedEvent(event)) {
         axiosRetry(axios, { retries: 3 });
-        const baseURL = process.env['referenceRenderUrl'];
-        const apiCodename = event.data.apiReference;
-        const KCDetails = commonContent.getKCDetails(res);
         const data = await axios.get(`${baseURL}/api/ProviderStarter?api=${apiCodename}&isPreview=false&isTest=false`);
         handleCache.putCache(`reDocReference_${apiCodename}`, data, KCDetails);
+    }
+
+    if (isReferenceDeletedEvent(event)) {
+        handleCache.deleteCache(`reDocReference_${apiCodename}`, KCDetails);
+        handleCache.deleteMultipleKeys('reference_');
     }
 
     res.end();
@@ -35,6 +44,11 @@ const isReferenceUpdatedEvent = (event) =>
     isValidEventGridEvent(event) &&
     event.data.apiReference &&
     event.eventType.includes('UPDATE');
+
+const isReferenceDeletedEvent = (event) =>
+    isValidEventGridEvent(event) &&
+    event.data.apiReference &&
+    event.eventType.includes('DELETE');
 
 const isValidEventGridEvent = (event) =>
     event &&
