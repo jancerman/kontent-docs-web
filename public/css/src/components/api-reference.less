@@ -669,7 +669,8 @@ ol {
   list-style-type: decimal;
 }
 
-h3, h4 {
+h3,
+h4 {
   display: inline-block;
   position: relative;
 }
@@ -738,7 +739,9 @@ h3[class*="RightPanelHeader"] {
 }
 
 [class*="StyledMarkdownBlock"] {
-  h3, h4 {
+
+  h3,
+  h4 {
     font-size: 1.125em;
     font-weight: 700;
     padding: 1em 0 .5em;
@@ -754,16 +757,21 @@ h3[class*="RightPanelHeader"] {
 }
 
 [class*="StyledMarkdownBlock"] {
-  [class*="UnderlinedHeader"] + & > p {
+  [class*="UnderlinedHeader"]+&>p {
     &:last-child {
       margin-bottom: .5em;
     }
   }
 
-  & > p {
-    & + .callout,
-    & + pre[class*='language-'] {
+  &>p {
+
+    &+.callout,
+    &+pre[class*='language-'] {
       margin-top: .75em;
     }
   }
+}
+
+[class*="fields-layout__PropertyDetailsCell"]>div>div>div>.callout {
+  margin-top: 6px;
 }
