@@ -52,7 +52,7 @@
         return content;
     };
 
-    const formatSuggestionContent = (suggestion) => { 
+    const formatSuggestionContent = (suggestion) => {
         const ellipsisText = '...';
         suggestion._snippetResult.content.value = `${ellipsisText}${suggestion._snippetResult.content.value}${ellipsisText}`
 
