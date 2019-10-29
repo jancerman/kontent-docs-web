@@ -52,49 +52,11 @@
         return content;
     };
 
-    const formatSuggestionContent = (suggestion) => {
-        // Get content with highlighted markup
-        let content = suggestion._highlightResult.content.value;
-
-        // Remove inline icon, code macros and newlines
-        content = removeInlineElements(content);
-
-        // Get start and end indexes of the first highlighted match
-        let indexStart = content.indexOf('<em>');
-        let indexEnd = content.lastIndexOf('</em>') + 5;
-
-        // Get highlighted string
-        let highlighted = content.substring(indexStart, indexEnd);
-
-        // Number of chars before and after the highlighted string to be rendered
-        let numCharsBefore = 20;
-        let numCharsAfter = 150;
-
-        // Get desired number of chars before and after
-        let contentBefore = content.substring(indexStart - numCharsBefore, indexStart);
-        let contentAfter = content.substring(indexEnd, indexEnd + numCharsAfter);
-
-        // Add hellip before the text in case the highlighed string is somewhere in the the middle of the search result content
-        if (contentBefore.length === numCharsBefore) {
-            contentBefore = `&hellip;${contentBefore}`;
-        }
-
-        // Strip tags and unfinished tags at the end of the sting in after text
-        contentAfter = contentAfter.replace(/(<([^>]+)>)/ig, '');
-        contentAfter = contentAfter.replace(/(<([^>]+)$)/ig, '');
-
-        // Add hellip after the text in case the highlighed string is somewhere in the the middle of the search result content
-        if (contentAfter.length === numCharsAfter) {
-            contentAfter = `${contentAfter}&hellip;`;
-        }
-
-        suggestion._highlightResult.content.value = `${contentBefore}${highlighted}${contentAfter}`;
+    const formatSuggestionContent = (suggestion) => { 
+        const ellipsisText = '...';
+        suggestion._snippetResult.content.value = `${ellipsisText}${suggestion._snippetResult.content.value}${ellipsisText}`
 
         return suggestion;
-    };
-
-    const htmlEntities = (str) => {
-        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/&lt;em&gt;/g, '<em>').replace(/&lt;\/em&gt;/g, '</em>');
     };
 
     const getTech = (platform) => {
@@ -128,7 +90,7 @@
                     <div class="suggestion__left">
                         <span class="suggestion__heading">${removeInlineElements(suggestion._highlightResult.title.value)}</span>
                         ${suggestion._highlightResult.heading.value ? '<span class="suggestion__sub-heading">'+ removeInlineElements(suggestion._highlightResult.heading.value) +'</span>' : ''}
-                        <p class="suggestion__text">${htmlEntities(suggestion._highlightResult.content.value)}</p>
+                        <p class="suggestion__text">${removeInlineElements(suggestion._snippetResult.content.value)}</p>
                     </div>
                     <div class="suggestion__right">
                         <span class="suggestion__category suggestion__category--${suggestion.section.toLowerCase()}">${suggestion.section.toUpperCase()}</span>
