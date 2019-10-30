@@ -12,7 +12,7 @@ router.get('/:codenames', asyncHandler(async (req, res, next) => {
     } else {
         await handleCache.evaluateCommon(res, ['urlMap']);
 
-        const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
+        const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
             return await getUrlMap(res);
         });
 

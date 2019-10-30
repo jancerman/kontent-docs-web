@@ -4,16 +4,16 @@ const commonContent = require('./commonContent');
 
 const platforms = {
     getSelectedPlatform: (platformsConfig, cookiesPlatform) => {
-        let platform = platformsConfig ? platformsConfig.filter(item => item.system.codename === cookiesPlatform) : null;
+        let platform = platformsConfig ? platformsConfig.value.filter(item => item.system.codename === cookiesPlatform) : null;
         if (platform && platform.length) {
-            platform = platform[0].elements.url.value
+            platform = platform[0].url.value
         } else {
             platform = null;
         }
         return platform;
     },
     getPlatformsConfig: async (res) => {
-        let platformsConfig = await handleCache.ensureSingle(res, `platformsConfig`, async () => {
+        const platformsConfig = await handleCache.ensureSingle(res, 'platformsConfig', async () => {
             return commonContent.getPlatformsConfig(res);
         });
         return (platformsConfig && platformsConfig.length
@@ -21,21 +21,21 @@ const platforms = {
         : null);
     },
     getMultiplatformArticleContent: async (content, preselectedPlatform, urlMap, KCDetails, res) => {
-        let platformItem = content[0].children.filter(item => {
+        const platformItem = content[0].children.value.filter(item => {
             if (item.platform.value.length) {
                 return item.platform.value[0].codename === preselectedPlatform;
             }
             return false;
         });
 
-        let availablePlatforms = content[0].children;
+        const availablePlatforms = content[0].children;
 
         if (!platformItem.length && availablePlatforms.length) {
             platformItem.push(availablePlatforms[0]);
         }
 
         if (platformItem.length) {
-            content = await handleCache.evaluateSingle(res, `article_${platformItem[0].elements.url.value}`, async () => {
+            content = await handleCache.evaluateSingle(res, `article_${platformItem[0].url.value}`, async () => {
                 return await requestDelivery({
                     codename: platformItem[0].system.codename,
                     type: 'article',
@@ -57,8 +57,8 @@ const platforms = {
     getDefaultPlatform: (req, content, preselectedPlatform) => {
         preselectedPlatform = req.cookies['KCDOCS.preselectedLanguage'];
 
-        if (content && content.children && content.children.length) {
-            preselectedPlatform = content.children[0].elements.platform.value[0].codename;
+        if (content && content.children && content.children.value.length) {
+            preselectedPlatform = content.children.value[0].platform.value[0].codename;
         } else if (content && content.platform && content.platform.value.length) {
             preselectedPlatform = content.platform.value[0].codename;
         }
@@ -68,7 +68,7 @@ const platforms = {
     getAvailablePlatform: (content, preselectedPlatform) => {
         let platformItems;
         if (content && content.children) {
-            platformItems = content.children.filter(item => {
+            platformItems = content.children.value.filter(item => {
                 if (item.platform.value.length) {
                     return item.platform.value[0].codename === preselectedPlatform;
                 }
@@ -78,7 +78,7 @@ const platforms = {
             if (platformItems.length) {
                 preselectedPlatform = platformItems[0].platform.value[0].codename;
             } else {
-                preselectedPlatform = content.children[0].platform.value[0].codename;
+                preselectedPlatform = content.children.value[0].platform.value[0].codename;
             }
         } else {
             platformItems = content.platform.value.filter(item => item.codename === preselectedPlatform);
@@ -99,7 +99,7 @@ const platforms = {
         let preselectedPlatform = req.query.tech;
 
         if (preselectedPlatform) {
-            let tempPlatforms = platformsConfig ? platformsConfig.filter(item => item.elements.url.value === preselectedPlatform) : null;
+            const tempPlatforms = platformsConfig ? platformsConfig.value.filter(item => item.url.value === preselectedPlatform) : null;
             if (tempPlatforms && tempPlatforms.length) {
                 preselectedPlatform = tempPlatforms[0].system.codename;
                 cookiesPlatform = preselectedPlatform;
@@ -120,9 +120,9 @@ const platforms = {
         };
     },
     getPreselectedPlatformByConfig: (preselectedPlatform, platformsConfig) => {
-        preselectedPlatform = platformsConfig ? platformsConfig.filter(item => item.system.codename === preselectedPlatform) : null;
+        preselectedPlatform = platformsConfig ? platformsConfig.value.filter(item => item.system.codename === preselectedPlatform) : null;
         if (preselectedPlatform && preselectedPlatform.length) {
-            preselectedPlatform = preselectedPlatform[0].elements.url.value;
+            preselectedPlatform = preselectedPlatform[0].url.value;
         } else {
             preselectedPlatform = null;
         }

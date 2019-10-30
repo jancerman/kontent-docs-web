@@ -18,7 +18,7 @@ const isValidSignature = (req, secret) => {
 };
 
 const requestItemAndDeleteCacheKey = async (keyNameToDelete, codename, KCDetails) => {
-    let item = await requestDelivery({
+    const item = await requestDelivery({
         codename: codename,
         ...KCDetails
     });
@@ -27,17 +27,17 @@ const requestItemAndDeleteCacheKey = async (keyNameToDelete, codename, KCDetails
         if (!keyNameToDelete) {
             keyNameToDelete = item[0].system.type;
         }
-        cache.del(`${keyNameToDelete}_${item[0].elements.url.value}_${KCDetails.projectid}`);
+        cache.del(`${keyNameToDelete}_${item[0].url.value}_${KCDetails.projectid}`);
     }
 };
 
 const deleteSpecificKeys = async (KCDetails, items, keyNameToCheck, keyNameToDelete) => {
-    let cacheItems = cache.get(`${keyNameToCheck}_${KCDetails.projectid}`);
+    const cacheItems = cache.get(`${keyNameToCheck}_${KCDetails.projectid}`);
     if (items && cacheItems) {
         for (let i = 0; i < items.length; i++) {
             for (let j = 0; j < cacheItems.length; j++) {
                 if (items[i].codename === cacheItems[j].system.codename) {
-                    cache.del(`${keyNameToDelete}_${cacheItems[j].elements.url.value}_${KCDetails.projectid}`);
+                    cache.del(`${keyNameToDelete}_${cacheItems[j].url.value}_${KCDetails.projectid}`);
                 }
             }
         }
@@ -49,7 +49,7 @@ const deleteSpecificKeys = async (KCDetails, items, keyNameToCheck, keyNameToDel
 };
 
 const splitPayloadByContentType = (items) => {
-    let itemsByTypes = {
+    const itemsByTypes = {
         footer: [],
         UIMessages: [],
         articles: [],
@@ -104,7 +104,7 @@ const getRootItems = async (items, KCDetails) => {
 const invalidateRootItems = async (items, KCDetails) => {
     const rootItems = Array.from(await getRootItems(items, KCDetails));
 
-    for await (let rootItem of rootItems) {
+    for await (const rootItem of rootItems) {
         await requestItemAndDeleteCacheKey(null, rootItem, KCDetails);
     }
 };
@@ -152,7 +152,7 @@ router.post('/', asyncHandler(async (req, res) => {
             const KCDetails = commonContent.getKCDetails(res);
             const items = JSON.parse(req.body).data.items;
             const keys = cache.keys();
-            let itemsByTypes = splitPayloadByContentType(items);
+            const itemsByTypes = splitPayloadByContentType(items);
 
             await invalidateRootItems(items, KCDetails);
             invalidateGeneral(itemsByTypes, KCDetails, 'footer');

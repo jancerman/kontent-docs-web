@@ -1,9 +1,10 @@
 const cheerio = require('cheerio');
+const helpers = require('./helperFunctions');
 
 const updateLinkAttribute = (element, resolvedUrl, link) => {
     const $ = cheerio.load(element.value);
     $(`a[data-item-id="${link.itemId}"]`).each((index, item) => {
-        let $item = $(item);
+        const $item = $(item);
         $item.removeAttr('data-item-id');
         $item.attr('href', resolvedUrl);
     });
@@ -49,12 +50,14 @@ const linksResolverTemplates = {
         }
     },
     resolveInnerRichTextLinks: (item, urlMap) => {
-        Object.keys(item)
+        const keys = helpers.removeUnderscoreElems(Object.keys(item));
+
+        keys
             .filter((key) =>
-                item.hasOwnProperty(key) &&
-                item[key].hasOwnProperty('type') &&
-                item[key].hasOwnProperty('links') &&
-                item[key].type === `rich_text`)
+                Object.prototype.hasOwnProperty.call(item, key) &&
+                Object.prototype.hasOwnProperty.call(item[key], 'type') &&
+                Object.prototype.hasOwnProperty.call(item[key], 'links') &&
+                item[key].type === 'rich_text')
             .forEach((key) => resolveLinkUrlsInElement(item[key], item, urlMap));
 
         return item;

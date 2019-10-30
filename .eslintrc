@@ -7,7 +7,8 @@
         "operator-linebreak": "off",
         "space-before-function-paren": "off",
         "space-infix-ops": "off",
-        "no-return-await": "off"
+        "no-return-await": "off",
+        "quotes": [2, "single", { "avoidEscape": true }]
     },
     "env": {
         "browser": true,

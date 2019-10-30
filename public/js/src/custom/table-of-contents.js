@@ -11,10 +11,10 @@
 
     // For all sub-headings set their id and create the copy to clipboard icon
     const createAnchors = () => {
-        let headings = articleContent.querySelectorAll('h2:not(.table-of-contents__heading):not(.feedback__heading), h3, h4');
+        const headings = articleContent.querySelectorAll('h2:not(.table-of-contents__heading):not(.feedback__heading), h3, h4');
 
         headings.forEach((item) => {
-            let anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/\W/g, '-');
+            const anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/\W/g, '-');
             item.setAttribute('id', `a-${anchorName}`);
             item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip"></span></span>`;
         });
@@ -22,15 +22,15 @@
 
     // Make all icons copy the headings URL to clipboard and show appropriate message in tooltip
     const copyAnchorClipboard = () => {
-        let anchors = document.querySelectorAll('.anchor-copy');
+        const anchors = document.querySelectorAll('.anchor-copy');
 
         anchors.forEach((item) => {
             item.addEventListener('click', () => {
-                let hash = item.parentElement.getAttribute('id');
-                let url = window.location.href.split('#')[0];
+                const hash = item.parentElement.getAttribute('id');
+                const url = window.location.href.split('#')[0];
                 window.helper.copyToClipboard(`${url}#${hash}`);
 
-                let tooltip = item.querySelector('.anchor-copy__tooltip');
+                const tooltip = item.querySelector('.anchor-copy__tooltip');
                 tooltip.classList.add('anchor-copy__tooltip--active');
                 setTimeout(() => {
                     tooltip.classList.remove('anchor-copy__tooltip--active');
@@ -41,11 +41,11 @@
 
     // Scroll to anchor on page load. Init all lazy loading elements to be able to scroll to the correct position
     const anchorOnLoad = () => {
-        let hash = window.location.href.split('#')[1];
+        const hash = window.location.href.split('#')[1];
 
         if (hash) {
             // Load all lazy elements
-            let lazyloadElems = document.querySelectorAll('.lazy');
+            const lazyloadElems = document.querySelectorAll('.lazy');
             lazyloadElems.forEach((elem) => {
                 elem.src = elem.dataset.src;
                 elem.classList.remove('lazy');
@@ -63,11 +63,11 @@
 
     // For all sub-headings create a list cascade representing table of contents and append it to the appropriate element
     const createTableOfContents = () => {
-        let headings = articleContent.querySelectorAll('h2:not(.table-of-contents__heading):not(.table-of-contents__whatsnext):not(.feedback__heading)');
+        const headings = articleContent.querySelectorAll('h2:not(.table-of-contents__heading):not(.table-of-contents__whatsnext):not(.feedback__heading)');
         let tableOfContents = '';
         let prevHeadingLevel = 2;
         headings.forEach(item => {
-            let headingLevel = parseInt(item.tagName.replace('H', ''));
+            const headingLevel = parseInt(item.tagName.replace('H', ''));
 
             if (prevHeadingLevel > headingLevel) {
                 tableOfContents += '</ul>';
@@ -116,16 +116,16 @@
                 return chunk.classList.contains('hidden');
             });
 
-            let ids = [];
+            const ids = [];
 
             chunks.forEach((chunk) => {
-                let headings = chunk.querySelectorAll('h2[id]');
+                const headings = chunk.querySelectorAll('h2[id]');
                 headings.forEach((heading) => {
                     ids.push(heading.getAttribute('id'));
                 });
             });
 
-            let tocItems = document.querySelectorAll('.table-of-contents__list li a');
+            const tocItems = document.querySelectorAll('.table-of-contents__list li a');
             tocItems.forEach((item) => {
                 if (ids.indexOf(item.getAttribute('href').replace('#', '')) > -1) {
                     item.classList.add('hidden');
@@ -149,7 +149,7 @@
 
         if (toc) {
             toc = toc.cloneNode(true);
-            let content = document.querySelector('.article__content');
+            const content = document.querySelector('.article__content');
 
             toc.classList.add('table-of-contents--fixed');
             content.appendChild(toc);
@@ -158,13 +158,13 @@
     };
 
     const handleFixed = () => {
-        let selector = document.querySelector('.table-of-contents--fixed');
-        let viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        const selector = document.querySelector('.table-of-contents--fixed');
+        const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 
         if (viewportWidth >= 1150 && selector) {
-            let topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
-            let main = document.querySelector('.table-of-contents');
-            let isTop = topOffset <= main.getBoundingClientRect().top + main.offsetHeight + window.scrollY;
+            const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
+            const main = document.querySelector('.table-of-contents');
+            const isTop = topOffset <= main.getBoundingClientRect().top + main.offsetHeight + window.scrollY;
 
             if (isTop) {
                 selector.classList.remove('table-of-contents--visible');
@@ -190,7 +190,7 @@
     };
 
     const filterNonHiddenHeadings = (headings) => {
-        let nonHidden = [];
+        const nonHidden = [];
 
         for (let i = 0; i < headings.length; i++) {
             if (!headings[i].parentElement.classList.contains('hidden')) {
@@ -207,8 +207,8 @@
         if (nextHeading) {
             position = Math.floor(nextHeading.getBoundingClientRect().top);
         } else {
-            let body = document.body;
-                let html = document.documentElement;
+            const body = document.body;
+                const html = document.documentElement;
             position = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
         }
 
@@ -218,22 +218,22 @@
     const affix = () => {
         let headingsPosition = [];
         if (affixHeadings && tableOfContentsElemFixed) {
-            let affixHeadingsLocal = filterNonHiddenHeadings(affixHeadings);
+            const affixHeadingsLocal = filterNonHiddenHeadings(affixHeadings);
 
             for (let i = 0; i < affixHeadingsLocal.length; i++) {
-                let nextHeading = affixHeadingsLocal[i + 1];
-                let position = getNextHeadingPosition(nextHeading);
+                const nextHeading = affixHeadingsLocal[i + 1];
+                const position = getNextHeadingPosition(nextHeading);
 
                 headingsPosition.push([position, affixHeadingsLocal[i].id]);
             }
 
-            let contentOffset = 128; // how many pixels before the heading is right on the top of viewport should the affix nav item get active
+            const contentOffset = 128; // how many pixels before the heading is right on the top of viewport should the affix nav item get active
             headingsPosition = headingsPosition.filter((item) => item[0] >= contentOffset);
-            let topHeading = arrayMin(headingsPosition);
+            const topHeading = arrayMin(headingsPosition);
 
             if (topHeading) {
-                let active = tableOfContentsElemFixed.querySelector(`.active`);
-                let futureActive = tableOfContentsElemFixed.querySelector(`[href="#${topHeading[1]}"]`);
+                const active = tableOfContentsElemFixed.querySelector('.active');
+                const futureActive = tableOfContentsElemFixed.querySelector(`[href="#${topHeading[1]}"]`);
 
                 if (active) {
                     active.classList.remove('active');

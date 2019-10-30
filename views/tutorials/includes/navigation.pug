@@ -8,6 +8,7 @@ nav.navigation
                 img(src='/img/logo-kontent.svg', alt='Kentico Kontent logo')
             a.navigation__title(href='/') Docs
             ul(class= `navigation__list${isNotHome ? '' : ' navigation__list--full'}`)
+                //- console.log(navigation);
                 each item in navigation
                     li.navigation__item
                         a(href=`${item.system.type === 'navigation_link' ? '' : '/'}${item.url.value}`, class=`navigation__link${req.originalUrl.startsWith(`/${item.url.value}`) ? ' navigation__link--active' : ''}`) !{item.title.value}

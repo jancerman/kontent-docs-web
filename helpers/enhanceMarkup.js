@@ -23,7 +23,7 @@ const removeEmptyParagraph = ($) => {
 };
 
 const processLinks = ($) => {
-    $(`a[data-item-id][href=""]`).each(() => {
+    $('a[data-item-id][href=""]').each(() => {
         var $that = $(this);
         $that.removeAttr('data-item-id');
         $that.attr('href', '/page-not-found');
@@ -39,7 +39,7 @@ const enhanceMarkup = (text) => {
     processLinks($);
     removeEmptyParagraph($);
 
-    let output = $.html();
+    const output = $.html();
     return output.replace('<html><head></head><body>', '').replace('</body></html>', '');
 };
 

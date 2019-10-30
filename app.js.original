@@ -136,6 +136,7 @@ const pageExists = async (req, res) => {
 };
 
 // Routes
+
 app.use(async (req, res, next) => {
   handleKCKeys(req, res);
   return next();
@@ -183,7 +184,6 @@ app.use('/redirect-urls', async (req, res, next) => {
 }, redirectUrls);
 
 app.use('/sitemap.xml', sitemap);
-
 app.use('/rss', async (req, res, next) => {
   await handleCache.evaluateCommon(res, ['rss_articles']);
   return next();
@@ -196,7 +196,7 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
     maxAge: 0
   };
 
-  const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
+  const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
     return await getUrlMap(res);
   });
 
@@ -205,17 +205,17 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
 
 // Dynamic routing setup
 app.use('/', async (req, res, next) => {
-  const topLevel = req.originalUrl.split('/')[1];
-  const navigationItems = await handleCache.ensureSingle(res, 'navigationItems', async () => {
+  let topLevel = req.originalUrl.split('/')[1];
+  let navigationItems = await handleCache.ensureSingle(res, `navigationItems`, async () => {
     return commonContent.getNavigationItems(res);
   });
 
   if (navigationItems) {
-    res.locals.router = navigationItems.filter(item => topLevel === item.url.value);
+    res.locals.router = navigationItems.filter(item => topLevel === item.elements.url.value);
   }
 
-  if (res.locals.router && res.locals.router.length && res.locals.router[0].type.value.length) {
-    res.locals.router = res.locals.router[0].type.value[0].codename;
+  if (res.locals.router && res.locals.router.length && res.locals.router[0].elements.type.value.length) {
+    res.locals.router = res.locals.router[0].elements.type.value[0].codename;
   } else /* if (topLevel === 'other' || topLevel === 'article') */ {
     res.locals.router = 'tutorials';
   }

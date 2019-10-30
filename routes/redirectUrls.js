@@ -9,18 +9,18 @@ const getUrlMap = require('../helpers/urlMap');
 const handleCache = require('../helpers/handleCache');
 
 const getRedirectUrls = async (res) => {
-  const articles = await handleCache.ensureSingle(res, `articles`, async () => {
+  const articles = await handleCache.ensureSingle(res, 'articles', async () => {
     return await commonContent.getArticles(res);
   });
-  const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
+  const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
     return await getUrlMap(res);
   });
 
-  let redirectMap = [];
+  const redirectMap = [];
 
   articles.forEach(article => {
     if (article.redirect_urls.value) {
-      let originalUrl = urlMap.filter(url => url.codename === article.system.codename);
+      const originalUrl = urlMap.filter(url => url.codename === article.system.codename);
 
       if (originalUrl.length) {
         redirectMap.push({
@@ -35,13 +35,13 @@ const getRedirectUrls = async (res) => {
 };
 
 router.get('/', async (req, res) => {
-  const footer = await handleCache.ensureSingle(res, `footer`, async () => {
+  const footer = await handleCache.ensureSingle(res, 'footer', async () => {
     return commonContent.getFooter(res);
   });
-  const UIMessages = await handleCache.ensureSingle(res, `UIMessages`, async () => {
+  const UIMessages = await handleCache.ensureSingle(res, 'UIMessages', async () => {
     return commonContent.getUIMessages(res);
   });
-  const home = await handleCache.ensureSingle(res, `home`, async () => {
+  const home = await handleCache.ensureSingle(res, 'home', async () => {
     return commonContent.getHome(res);
   });
   const redirectMap = await getRedirectUrls(res);
@@ -52,7 +52,7 @@ router.get('/', async (req, res) => {
     minify: minify,
     isPreview: isPreview(res.locals.previewapikey),
     title: 'Redirect URLs',
-    navigation: home[0] ? home[0].navigation : [],
+    navigation: home[0] ? home[0].navigation.value : [],
     redirectMap: redirectMap,
     footer: footer[0] ? footer[0] : null,
     UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,

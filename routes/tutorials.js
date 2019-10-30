@@ -26,7 +26,7 @@ const getSubNavigationLevels = (req) => {
 const getContentLevel = async (currentLevel, urlMap, req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
 
-    let settings = {
+    const settings = {
         slug: getSubNavigationLevels(req)[currentLevel],
         depth: 2,
         ...KCDetails
@@ -70,10 +70,10 @@ const getCurrentLevel = (levels) => {
 
 const getContent = async (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
-    const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
+    const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
         return await getUrlMap(res);
     });
-    const home = await handleCache.ensureSingle(res, `home`, async () => {
+    const home = await handleCache.ensureSingle(res, 'home', async () => {
         return commonContent.getHome(res);
     });
     const slug = req.originalUrl.split('/')[1];
@@ -82,10 +82,10 @@ const getContent = async (req, res) => {
     });
     const subNavigationLevels = getSubNavigationLevels(req);
     const currentLevel = getCurrentLevel(subNavigationLevels);
-    const footer = await handleCache.ensureSingle(res, `footer`, async () => {
+    const footer = await handleCache.ensureSingle(res, 'footer', async () => {
         return commonContent.getFooter(res);
     });
-    const UIMessages = await handleCache.ensureSingle(res, `UIMessages`, async () => {
+    const UIMessages = await handleCache.ensureSingle(res, 'UIMessages', async () => {
         return commonContent.getUIMessages(res);
     });
     const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
@@ -93,7 +93,7 @@ const getContent = async (req, res) => {
     let view = 'tutorials/pages/article';
     let availablePlatforms;
 
-    let queryHash = req.url.split('?')[1];
+    const queryHash = req.url.split('?')[1];
     const platformsConfig = await platforms.getPlatformsConfig(res);
     let preselectedPlatform;
     let canonicalUrl;
@@ -101,7 +101,7 @@ const getContent = async (req, res) => {
 
     if (content[0]) {
         if (currentLevel === -1) {
-            return `/${slug}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
+            return `/${slug}/${content[0].children.value[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else if (currentLevel === 0 && content[0].system.type !== 'multiplatform_article') {
             if (content[0].system.type === 'certification') {
                 view = 'tutorials/pages/certification';
@@ -111,7 +111,7 @@ const getContent = async (req, res) => {
         } else if (currentLevel === 1) {
             return `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else {
-            let preselectedPlatformSettings = await platforms.getPreselectedPlatform(content[0], cookiesPlatform, req, res);
+            const preselectedPlatformSettings = await platforms.getPreselectedPlatform(content[0], cookiesPlatform, req, res);
 
             if (!preselectedPlatformSettings) {
                 return null;
@@ -144,7 +144,7 @@ const getContent = async (req, res) => {
     }
 
     // If only article url slug in passed and item is present in the navigation, do not render the article
-    let isExcludedNavigation = urlMap.filter(item => (item.codename === content[0].system.codename) && (item.url.startsWith('/other/'))).length > 0;
+    const isExcludedNavigation = urlMap.filter(item => (item.codename === content[0].system.codename) && (item.url.startsWith('/other/'))).length > 0;
     if (!req.params.scenario && !req.params.topic && req.params.article && !isExcludedNavigation) {
         return null;
     }
@@ -167,8 +167,8 @@ const getContent = async (req, res) => {
         canonicalUrl: canonicalUrl,
         introduction: content && content.length && content[0].introduction ? content[0].introduction.value : '',
         nextSteps: content && content.length && content[0].next_steps ? content[0].next_steps : '',
-        navigation: home && home.length ? home[0].navigation : [],
-        subNavigation: subNavigation && subNavigation.length ? subNavigation[0].children : [],
+        navigation: home && home.length ? home[0].navigation.value : [],
+        subNavigation: subNavigation && subNavigation.length ? subNavigation[0].children.value : [],
         subNavigationLevels: subNavigationLevels,
         content: content && content.length ? content[0] : null,
         footer: footer && footer.length ? footer[0] : null,
@@ -185,7 +185,7 @@ router.get(['/other/:article', '/:main', '/:main/:scenario', '/:main/:scenario/:
         return next();
     }
 
-    let data = await getContent(req, res, next);
+    const data = await getContent(req, res, next);
     if (data && !data.view) return res.redirect(301, data);
     if (!data) return next();
 
