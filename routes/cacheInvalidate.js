@@ -66,7 +66,7 @@ const splitPayloadByContentType = (items) => {
             itemsByTypes.footer.push(item);
         } else if (item.type === 'ui_messages') {
             itemsByTypes.UIMessages.push(item);
-        } else if (item.type === 'article' || item.type === 'multiplatform_article') {
+        } else if (item.type === 'article') {
             itemsByTypes.articles.push(item);
         } else if (item.type === 'scenario' || item.type === 'certification') {
             itemsByTypes.scenarios.push(item);
@@ -78,6 +78,9 @@ const splitPayloadByContentType = (items) => {
             itemsByTypes.picker.push(item);
         } else if (item.type === 'navigation_item') {
             itemsByTypes.navigationItems.push(item);
+        } else if (item.type === 'multiplatform_article') {
+            itemsByTypes.articles.push(item);
+            itemsByTypes.scenarios.push(item);
         }
     }
 
@@ -153,7 +156,6 @@ router.post('/', asyncHandler(async (req, res) => {
             const items = JSON.parse(req.body).data.items;
             const keys = cache.keys();
             const itemsByTypes = splitPayloadByContentType(items);
-
             await invalidateRootItems(items, KCDetails);
             invalidateGeneral(itemsByTypes, KCDetails, 'footer');
             invalidateGeneral(itemsByTypes, KCDetails, 'UIMessages');

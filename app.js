@@ -161,7 +161,7 @@ app.use('/kentico-icons.min.css', kenticoIcons);
 
 app.use('/', asyncHandler(async (req, res, next) => {
   if (!req.originalUrl.startsWith('/cache-invalidate') && !req.originalUrl.startsWith('/kentico-icons.min.css') && !req.originalUrl.startsWith('/form')) {
-    await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home', 'navigationItems']);
+    await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home', 'navigationItems', 'articles']);
     await handleCache.cacheAllAPIReferences(res);
   }
 

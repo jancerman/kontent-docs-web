@@ -3,7 +3,7 @@ const helpers = require('./helperFunctions');
 
 const updateLinkAttribute = (element, resolvedUrl, link) => {
     const $ = cheerio.load(element.value);
-    $(`a[data-item-id="${link.itemId}"]`).each((index, item) => {
+    $(`a[data-item-id="${link.linkId}"]`).each((index, item) => {
         const $item = $(item);
         $item.removeAttr('data-item-id');
         $item.attr('href', resolvedUrl);
@@ -51,7 +51,6 @@ const linksResolverTemplates = {
     },
     resolveInnerRichTextLinks: (item, urlMap) => {
         const keys = helpers.removeUnderscoreElems(Object.keys(item));
-
         keys
             .filter((key) =>
                 Object.prototype.hasOwnProperty.call(item, key) &&

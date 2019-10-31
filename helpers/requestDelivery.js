@@ -11,17 +11,17 @@ const linksResolverTemplates = require('./linksResolverTemplates');
 
 const defineDeliveryConfig = (config) => {
     deliveryConfig.projectId = config.projectid;
+    deliveryConfig.globalQueryConfig = {};
     const previewApiKey = config.previewapikey;
     const securedApiKey = config.securedapikey;
 
     if (previewApiKey) {
         deliveryConfig.previewApiKey = previewApiKey;
-        deliveryConfig.enablePreviewMode = true;
+        deliveryConfig.globalQueryConfig.usePreviewMode = true;
     }
 
     if (securedApiKey) {
         deliveryConfig.secureApiKey = securedApiKey;
-        deliveryConfig.globalQueryConfig = {};
         deliveryConfig.globalQueryConfig.useSecuredMode = true;
     }
 };
@@ -163,8 +163,9 @@ const requestDelivery = async (config) => {
         queryConfigObject.richTextResolver = (item) => {
             return resolveRichText(item, config);
         };
-        queryConfigObject.linkResolver = (link) => {
-            return resolveLink(link, config);
+        queryConfigObject.urlSlugResolver = (link) => {
+            const links = resolveLink(link, config);
+            return { url: links };
         };
     }
 

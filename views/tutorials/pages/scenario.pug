@@ -10,8 +10,8 @@ block content
                     .article__notes
                         time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
                         .article__author
-                            if (content.author && content.author.length)
-                                | !{content.author[0].name.value}
+                            if (content.author && content.author.value.length)
+                                | !{content.author.value[0].name.value}
                             else
                                 | !{UIMessages.article___no_author.value}
                         if isPreview

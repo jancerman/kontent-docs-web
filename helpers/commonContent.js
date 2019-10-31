@@ -59,7 +59,7 @@ const commonContent = {
     },
     getArticles: async (res) => {
         return await requestDelivery({
-            type: 'article',
+            type: ['article', 'multiplatform_article'],
             ...commonContent.getKCDetails(res)
         });
     },
