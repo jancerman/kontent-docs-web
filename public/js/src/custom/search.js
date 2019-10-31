@@ -53,7 +53,7 @@
     };
 
     const formatSuggestionContent = (suggestion) => {
-        const ellipsisText = '...';
+        const ellipsisText = '&hellip;';
         suggestion._snippetResult.content.value = `${ellipsisText}${suggestion._snippetResult.content.value}${ellipsisText}`
 
         return suggestion;
