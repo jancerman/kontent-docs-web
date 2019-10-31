@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Kentico/kentico-cloud-docs-web.git"
+    "url": "git+https://github.com/KenticoDocs/kontent-docs-web.git"
   },
   "engines": {
     "node": ">=10.14.1"
@@ -23,7 +23,7 @@
     "headless",
     "cms"
   ],
-  "author": "Milan Lund <hello@milanlund.com> (kentico-cloud-docs-web)",
+  "author": "Milan Lund <hello@milanlund.com> (kontent-docs-web)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/KenticoDocs/kontent-docs-web/issues"
