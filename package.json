@@ -2,7 +2,7 @@
   "name": "kontent-docs-web",
   "version": "1.0.0",
   "scripts": {
-    "start": "pm2-runtime start ecosystem.config.js --env production",
+    "start": "node server.js",
     "debug": "nodemon server.js",
     "eslint": "npx eslint ."
   },
