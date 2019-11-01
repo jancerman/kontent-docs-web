@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const asyncHandler = require('express-async-handler');
 const commonContent = require('../helpers/commonContent');
 const requestDelivery = require('../helpers/requestDelivery');
+const getRootCodenamesOfSingleItem = require('../helpers/rootItemsGetter');
 const handleCache = require('../helpers/handleCache');
 const app = require('../app');
 
@@ -17,23 +18,26 @@ const isValidSignature = (req, secret) => {
 };
 
 const requestItemAndDeleteCacheKey = async (keyNameToDelete, codename, KCDetails) => {
-    let item = await requestDelivery({
+    const item = await requestDelivery({
         codename: codename,
         ...KCDetails
     });
 
     if (item.length) {
-        cache.del(`${keyNameToDelete}_${item[0].elements.url.value}_${KCDetails.projectid}`);
+        if (!keyNameToDelete) {
+            keyNameToDelete = item[0].system.type;
+        }
+        cache.del(`${keyNameToDelete}_${item[0].url.value}_${KCDetails.projectid}`);
     }
 };
 
 const deleteSpecificKeys = async (KCDetails, items, keyNameToCheck, keyNameToDelete) => {
-    let cacheItems = cache.get(`${keyNameToCheck}_${KCDetails.projectid}`);
+    const cacheItems = cache.get(`${keyNameToCheck}_${KCDetails.projectid}`);
     if (items && cacheItems) {
         for (let i = 0; i < items.length; i++) {
             for (let j = 0; j < cacheItems.length; j++) {
                 if (items[i].codename === cacheItems[j].system.codename) {
-                    cache.del(`${keyNameToDelete}_${cacheItems[j].elements.url.value}_${KCDetails.projectid}`);
+                    cache.del(`${keyNameToDelete}_${cacheItems[j].url.value}_${KCDetails.projectid}`);
                 }
             }
         }
@@ -45,7 +49,7 @@ const deleteSpecificKeys = async (KCDetails, items, keyNameToCheck, keyNameToDel
 };
 
 const splitPayloadByContentType = (items) => {
-    let itemsByTypes = {
+    const itemsByTypes = {
         footer: [],
         UIMessages: [],
         articles: [],
@@ -62,7 +66,7 @@ const splitPayloadByContentType = (items) => {
             itemsByTypes.footer.push(item);
         } else if (item.type === 'ui_messages') {
             itemsByTypes.UIMessages.push(item);
-        } else if (item.type === 'article' || item.type === 'multiplatform_article') {
+        } else if (item.type === 'article') {
             itemsByTypes.articles.push(item);
         } else if (item.type === 'scenario' || item.type === 'certification') {
             itemsByTypes.scenarios.push(item);
@@ -74,10 +78,38 @@ const splitPayloadByContentType = (items) => {
             itemsByTypes.picker.push(item);
         } else if (item.type === 'navigation_item') {
             itemsByTypes.navigationItems.push(item);
+        } else if (item.type === 'multiplatform_article') {
+            itemsByTypes.articles.push(item);
+            itemsByTypes.scenarios.push(item);
         }
     }
 
     return itemsByTypes;
+};
+
+const getRootItems = async (items, KCDetails) => {
+    const typesToSearch = ['article', 'scenario', 'callout', 'content_chunk', 'code_sample', 'code_samples'];
+    const allItems = await requestDelivery({
+        types: typesToSearch,
+        depth: 0,
+        ...KCDetails
+    });
+
+    const rootCodenames = new Set();
+    items.forEach((item) => {
+        const roots = getRootCodenamesOfSingleItem(item, allItems);
+        roots.forEach(codename => rootCodenames.add(codename));
+    });
+
+    return rootCodenames;
+};
+
+const invalidateRootItems = async (items, KCDetails) => {
+    const rootItems = Array.from(await getRootItems(items, KCDetails));
+
+    for await (const rootItem of rootItems) {
+        await requestItemAndDeleteCacheKey(null, rootItem, KCDetails);
+    }
 };
 
 const invalidateGeneral = (itemsByTypes, KCDetails, type, keyName) => {
@@ -119,12 +151,12 @@ const invalidateArticles = async (itemsByTypes, KCDetails) => {
 
 router.post('/', asyncHandler(async (req, res) => {
     if (process.env['Webhook.Cache.Invalidate.CommonContent']) {
-       if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
+        if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
             const KCDetails = commonContent.getKCDetails(res);
             const items = JSON.parse(req.body).data.items;
             const keys = cache.keys();
-            let itemsByTypes = splitPayloadByContentType(items);
-
+            const itemsByTypes = splitPayloadByContentType(items);
+            await invalidateRootItems(items, KCDetails);
             invalidateGeneral(itemsByTypes, KCDetails, 'footer');
             invalidateGeneral(itemsByTypes, KCDetails, 'UIMessages');
             invalidateGeneral(itemsByTypes, KCDetails, 'notFound');

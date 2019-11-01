@@ -7,13 +7,13 @@ const commonContent = require('../helpers/commonContent');
 
 router.post('/', async (req, res) => {
     const event = req.body[0];
-    const baseURL = process.env['referenceRenderUrl'];
+    const baseURL = process.env.referenceRenderUrl;
     const KCDetails = commonContent.getKCDetails(res);
     let apiCodename;
 
     if (isValidationEvent(event)) {
         return await res.send({
-            'validationResponse': event.data.validationCode
+            validationResponse: event.data.validationCode
         })
     }
 

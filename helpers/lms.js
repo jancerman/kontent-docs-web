@@ -30,7 +30,7 @@ const add = async (data) => {
     let addedToCourse;
 
     try {
-        let inCourse = await axios({
+        const inCourse = await axios({
             method: 'post',
             url: settings.addToCourseUrl,
             data: {
@@ -61,7 +61,7 @@ const lms = {
         await register(data);
 
         // Add the user to a course by email
-        let addedToCourse = await add(data);
+        const addedToCourse = await add(data);
 
         // If user already enrolled to the course
         if (addedToCourse.error) {

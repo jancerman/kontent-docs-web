@@ -8,7 +8,7 @@ const recaptcha = {
                 response: data['g-recaptcha-response']
             };
 
-            let response = await axios({
+            const response = await axios({
                 method: 'post',
                 url: 'https://www.google.com/recaptcha/api/siteverify?secret=' + settings.secret + '&response=' + settings.response
             });
@@ -29,7 +29,7 @@ const recaptcha = {
                 response: data['g-recaptcha-response']
             };
 
-            let response = await axios({
+            const response = await axios({
                 method: 'post',
                 url: 'https://www.google.com/recaptcha/api/siteverify?secret=' + settings.secret + '&response=' + settings.response
             });

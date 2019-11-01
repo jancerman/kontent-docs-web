@@ -9,12 +9,12 @@
     const wrapTables = () => {
         if (tables.length > 0) {
             tables.forEach(item => {
-                let wrapper = document.createElement('div');
+                const wrapper = document.createElement('div');
                 wrapper.classList.add('table__wrapper');
                 item.parentNode.insertBefore(wrapper, item);
                 wrapper.appendChild(item);
 
-                let container = document.createElement('div');
+                const container = document.createElement('div');
                 container.classList.add('table');
                 wrapper.parentNode.insertBefore(container, wrapper);
                 container.appendChild(wrapper);
@@ -25,13 +25,13 @@
     // Force size of table to the very right of the viewport if number of cells if more than 5
     const setWrapperSize = window.helper.debounce(() => {
         if (tables.length > 0) {
-            let viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-            let websiteWidth = document.querySelector('main').offsetWidth;
-            let contentWidth = articleContent.offsetWidth;
-            let tableWidth = contentWidth + (viewportWidth - websiteWidth) / 2;
+            const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+            const websiteWidth = document.querySelector('main').offsetWidth;
+            const contentWidth = articleContent.offsetWidth;
+            const tableWidth = contentWidth + (viewportWidth - websiteWidth) / 2;
 
             tables.forEach(item => {
-                let cellCount = item.querySelector('tr').childElementCount;
+                const cellCount = item.querySelector('tr').childElementCount;
 
                 if (cellCount >= 6) {
                     item.style.width = `${tableWidth}px`;
@@ -42,14 +42,14 @@
 
     // If cell count is lower than 6, set a max-size to them to prevent overflowing the table from the website container
     const setCellMaxWidth = () => {
-        let contentWidth = articleContent.offsetWidth;
+        const contentWidth = articleContent.offsetWidth;
 
         if (tables.length > 0 && contentWidth > 768) {
             tables.forEach((item, index) => {
-                let cellCount = item.querySelector('tr').childElementCount;
+                const cellCount = item.querySelector('tr').childElementCount;
 
                 if (cellCount < 6) {
-                    let maxWidth = Math.floor(contentWidth / cellCount);
+                    const maxWidth = Math.floor(contentWidth / cellCount);
                     item.setAttribute('id', `table-${index}`);
                     item.insertAdjacentHTML('beforebegin', `<style>#table-${index} td{max-width:${maxWidth}px}</style>`);
                 }

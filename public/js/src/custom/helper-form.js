@@ -1,8 +1,8 @@
 window.helperForm = (() => {
     const displayValidationMessages = (data, form) => {
         for (var item in data) {
-            if (data.hasOwnProperty(item)) {
-                let errorElem = form.querySelector(`[data-form-error="${item}"]`);
+            if (Object.prototype.hasOwnProperty.call(data, item)) {
+                const errorElem = form.querySelector(`[data-form-error="${item}"]`);
                 if (errorElem) {
                     errorElem.innerHTML = data[item];
                 }

@@ -8,15 +8,15 @@ const handleCache = require('../helpers/handleCache');
 
 const setFalseValidation = (validation, property, UIMessages) => {
     validation.isValid = false;
-    validation[property] = UIMessages[0].elements['form_field_validation___empty_field'].value;
+    validation[property] = UIMessages[0].form_field_validation___empty_field.value;
     return validation;
 };
 
 const validateReCaptcha = async (validation, data, UIMessages) => {
-    let isRealUser = await recaptcha.checkv2(data);
+    const isRealUser = await recaptcha.checkv2(data);
     if (!isRealUser) {
         validation.isValid = false;
-        validation['g-recaptcha-response'] = UIMessages[0].elements['form_field_validation___recaptcha_message'].value;
+        validation['g-recaptcha-response'] = UIMessages[0].form_field_validation___recaptcha_message.value;
     }
     return validation;
 };
@@ -36,7 +36,7 @@ const substituteDetailsInMessage = (message, data) => {
 };
 
 const validateDataFeedback = async (data, req, res) => {
-    const UIMessages = await handleCache.ensureSingle(res, `UIMessages`, async () => {
+    const UIMessages = await handleCache.ensureSingle(res, 'UIMessages', async () => {
         return commonContent.getUIMessages(res);
     });
 
@@ -51,7 +51,7 @@ const validateDataFeedback = async (data, req, res) => {
     validation = await validateReCaptcha(validation, data, UIMessages);
 
     if (validation.isValid) {
-        validation.success = UIMessages[0].elements['feedback_form___yes_message'].value;
+        validation.success = UIMessages[0].feedback_form___yes_message.value;
         await jira.createIssue(data);
     }
 
@@ -79,7 +79,7 @@ const validateFieldsCertification = (data, validation, UIMessages) => {
 };
 
 const validateDataCertification = async (data, req, res) => {
-    const UIMessages = await handleCache.ensureSingle(res, `UIMessages`, async () => {
+    const UIMessages = await handleCache.ensureSingle(res, 'UIMessages', async () => {
         return commonContent.getUIMessages(res);
     });
 
@@ -91,12 +91,12 @@ const validateDataCertification = async (data, req, res) => {
     validation = await validateReCaptcha(validation, data, UIMessages);
 
     if (validation.isValid) {
-        let signedInPast = await lms.registerAddtoCourse(data);
+        const signedInPast = await lms.registerAddtoCourse(data);
 
         if (signedInPast) {
-            validation.warning = UIMessages[0].elements['certification_form___repeated_attempt_message'].value;
+            validation.warning = UIMessages[0].certification_form___repeated_attempt_message.value;
         } else {
-            validation.success = substituteDetailsInMessage(UIMessages[0].elements['certification_form___success_message'].value, data);
+            validation.success = substituteDetailsInMessage(UIMessages[0].certification_form___success_message.value, data);
         }
     }
 
@@ -104,9 +104,9 @@ const validateDataCertification = async (data, req, res) => {
 };
 
 const manageRequest = async (req, res, validate) => {
-    let data = JSON.parse(req.body);
+    const data = JSON.parse(req.body);
 
-    let validation = await validate(data, req, res);
+    const validation = await validate(data, req, res);
     return res.json(validation);
 };
 

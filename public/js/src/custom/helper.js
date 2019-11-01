@@ -181,13 +181,13 @@ window.helper = (() => {
 
     // Get page url and remove query string parameters specified in the params array
     const removeParametersByNames = (params) => {
-        let url = window.location.href.split('#');
-        let hash = url[1] || '';
-        let path = url[0].split('?');
+        const url = window.location.href.split('#');
+        const hash = url[1] || '';
+        const path = url[0].split('?');
         let qString = path.length > 1 ? path[1].split('&') : [];
 
         for (let i = 0; i < qString.length; i++) {
-            let name = qString[i].split('=')[0];
+            const name = qString[i].split('=')[0];
 
             for (let j = 0; j < params.length; j++) {
                 if (name === params[j]) {
@@ -281,7 +281,7 @@ window.helper = (() => {
     };
 
     const loadRecaptcha = () => {
-        let recaptchaElem = document.querySelector('#recaptcha-script');
+        const recaptchaElem = document.querySelector('#recaptcha-script');
         recaptchaKey = recaptchaElem.getAttribute('data-site');
 
         if (recaptchaElem && recaptchaKey) {
@@ -318,7 +318,7 @@ window.helper = (() => {
 
 const renderReCaptcha = function () { // eslint-disable-line no-unused-vars
     window.grecaptcha.render('g-recaptcha-placeholder', {
-        'sitekey': recaptchaKey,
-        'theme': 'light'
+        sitekey: recaptchaKey,
+        theme: 'light'
     });
 };

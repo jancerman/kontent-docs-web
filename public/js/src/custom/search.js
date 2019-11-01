@@ -18,8 +18,8 @@
     let searchTerm = '';
     let searchResultSelected = false;
     let searchResultsNumber = 0;
-    let searchInput = document.querySelector('#nav-search');
-    let isClampSupported = (typeof CSS !== 'undefined' && CSS.supports('-webkit-line-clamp', '2'));
+    const searchInput = document.querySelector('#nav-search');
+    const isClampSupported = (typeof CSS !== 'undefined' && CSS.supports('-webkit-line-clamp', '2'));
     let clampDelay = 0;
 
     // Get injected KC API details
@@ -109,28 +109,28 @@
 
     const logSearchTermNumber = (term) => {
         window.dataLayer.push({
-            'event': 'event',
-            'eventCategory': 'search--searched-result',
-            'eventAction': window.filterXSS(decodeURIComponent(term)),
-            'eventLabel': searchResultsNumber
+            event: 'event',
+            eventCategory: 'search--searched-result',
+            eventAction: window.filterXSS(decodeURIComponent(term)),
+            eventLabel: searchResultsNumber
         });
     };
 
     const logSearchTermErased = () => {
         window.dataLayer.push({
-            'event': 'event',
-            'eventCategory': 'search--used',
-            'eventAction': window.filterXSS(decodeURIComponent(searchTerm)),
-            'eventLabel': 'Not clicked'
+            event: 'event',
+            eventCategory: 'search--used',
+            eventAction: window.filterXSS(decodeURIComponent(searchTerm)),
+            eventLabel: 'Not clicked'
         });
     };
 
     const logSearchTermSelected = (term, url) => {
         window.dataLayer.push({
-            'event': 'event',
-            'eventCategory': 'search--used',
-            'eventAction': decodeURIComponent(term),
-            'eventLabel': url
+            event: 'event',
+            eventCategory: 'search--used',
+            eventAction: decodeURIComponent(term),
+            eventLabel: url
         });
     };
 
@@ -164,8 +164,8 @@
     const onAutocompleteUpdated = () => {
         setTimeout(() => {
             document.querySelector('.aa-dropdown-menu').scrollTop = 0; // Set scroll position to top
-            let searchSummaries = document.querySelectorAll('.suggestion__text');
-            let length = searchSummaries.length <= 4 ? searchSummaries.length : 4;
+            const searchSummaries = document.querySelectorAll('.suggestion__text');
+            const length = searchSummaries.length <= 4 ? searchSummaries.length : 4;
             prevSearchTerm = searchTerm;
             searchScrolled = false;
 
@@ -181,8 +181,8 @@
             setTimeout(() => {
                 if (prevSearchTerm === searchTerm && !searchScrolled) {
                     searchScrolled = true;
-                    let searchSummaries = document.querySelectorAll('.suggestion__text');
-                    let length = searchSummaries.length <= 4 ? searchSummaries.length : 4;
+                    const searchSummaries = document.querySelectorAll('.suggestion__text');
+                    const length = searchSummaries.length <= 4 ? searchSummaries.length : 4;
 
                     for (var i = length; i < searchSummaries.length; i++) {
                         clampItem(searchSummaries[i]);
@@ -229,7 +229,7 @@
     const getSuggestionsSource = (hitsSource, query, callback) => {
         hitsSource(query, (suggestions) => {
             searchResultsNumber = suggestions.length;
-            let formattedSuggestions = [];
+            const formattedSuggestions = [];
 
             for (let i = 0; i < suggestions.length; i++) {
                 formattedSuggestions.push(formatSuggestionContent(suggestions[i]))
@@ -301,9 +301,9 @@
     };
 
     const setFocusOnMagnifier = (prefix) => {
-        let search = document.querySelector(`.${prefix}__search`);
+        const search = document.querySelector(`.${prefix}__search`);
         if (search) {
-            let icon = search.querySelector(`.${prefix}__search-icon`);
+            const icon = search.querySelector(`.${prefix}__search-icon`);
             icon.addEventListener('click', () => {
                 searchInput.focus();
             });

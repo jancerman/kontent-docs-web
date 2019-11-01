@@ -14,15 +14,15 @@
         };
 
         const clearFeedbackMessages = () => {
-            document.querySelector(`.feedback__message`).classList.add('feedback__message--hidden');
+            document.querySelector('.feedback__message').classList.add('feedback__message--hidden');
             formFeedback.querySelectorAll('[data-form-error]').forEach((item) => {
                 item.innerHTML = '';
             });
         };
 
         const displaySuccessMessage = () => {
-            document.querySelector(`.feedback__message--yes`).classList.remove('feedback__message--hidden');
-            document.querySelector(`.feedback__message--no`).classList.add('feedback__message--hidden');
+            document.querySelector('.feedback__message--yes').classList.remove('feedback__message--hidden');
+            document.querySelector('.feedback__message--no').classList.add('feedback__message--hidden');
         };
 
         const processFeedbackData = (data) => {

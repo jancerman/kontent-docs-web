@@ -6,10 +6,10 @@ const urlAliases = async (req, res, next) => {
     const urlSplit = req.originalUrl.split('?');
     const queryParamater = urlSplit[1] ? urlSplit[1] : '';
     const originalUrl = urlSplit[0].trim().toLowerCase().replace(/\/\s*$/, '');
-    const articles = await handleCache.ensureSingle(res, `articles`, async () => {
+    const articles = await handleCache.ensureSingle(res, 'articles', async () => {
         return commonContent.getArticles(res);
     });
-    const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
+    const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
         return await getUrlMap(res);
     });
     let redirectUrl = [];

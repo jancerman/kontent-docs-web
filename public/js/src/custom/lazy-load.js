@@ -31,7 +31,7 @@
     const handleLazyFallback = (lazyloadElems, lazyload) => {
         var scrollTop = window.pageYOffset;
         lazyloadElems.forEach((el) => {
-            let offsetTop = el.offsetTop === 0 ? el.offsetParent.offsetTop : el.offsetTop;
+            const offsetTop = el.offsetTop === 0 ? el.offsetParent.offsetTop : el.offsetTop;
 
             if (offsetTop < (window.innerHeight + scrollTop)) {
                 if (el.classList.contains('lazy') && el.hasAttribute('data-src')) {
@@ -93,7 +93,7 @@
             })[0];
         }
 
-        let el = target.nextElementSibling;
+        const el = target.nextElementSibling;
         if (el.classList.contains('lazy') && el.hasAttribute('data-src')) {
             el.src = el.dataset.src;
             el.classList.remove('lazy');
@@ -103,11 +103,11 @@
     };
 
     const loadOnClick = () => {
-        let lazy = document.querySelectorAll('.lazy:not(.lazy--exclude-dnt)');
-        let label = window.UIMessages ? window.UIMessages.dntLabel : '';
+        const lazy = document.querySelectorAll('.lazy:not(.lazy--exclude-dnt)');
+        const label = window.UIMessages ? window.UIMessages.dntLabel : '';
 
         lazy.forEach(item => {
-            let wrapper = window.helper.getParents(item);
+            const wrapper = window.helper.getParents(item);
             wrapper[0].insertBefore(window.helper.createElementFromHTML(`<div class="embed__dnt-enable">${window.helper.decodeHTMLEntities(label)}</div>`), wrapper[0].firstChild);
         });
 

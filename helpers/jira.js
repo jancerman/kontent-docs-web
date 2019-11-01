@@ -7,7 +7,7 @@ const settings = {
         password: process.env['Jira.Token'] || ''
     },
     headers: {
-        'Accept': 'application/json'
+        Accept: 'application/json'
     },
     issueUrl: 'https://kentico.atlassian.net/rest/api/2/issue'
 };
@@ -15,15 +15,15 @@ const settings = {
 const jira = {
     createIssue: async (data) => {
         const issue = {
-            'fields': {
-               'project':
+            fields: {
+               project:
                {
-                  'key': process.env['Jira.Project'] || ''
+                  key: process.env['Jira.Project'] || ''
                },
-               'summary': 'KCD Feedback submission',
-               'description': `h2. Feedback\n\n${data.feedback}\n\nh2. Context\n\nUser: ${data.email}\nDocs: ${data.url}\n`,
-               'issuetype': {
-                  'id': parseInt(process.env['Jira.IssueType']) || 11600
+               summary: 'KCD Feedback submission',
+               description: `h2. Feedback\n\n${data.feedback}\n\nh2. Context\n\nUser: ${data.email}\nDocs: ${data.url}\n`,
+               issuetype: {
+                  id: parseInt(process.env['Jira.IssueType']) || 11600
                }
            }
         };

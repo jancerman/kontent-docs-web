@@ -1,26 +1,28 @@
-const KenticoCloud = require('kentico-cloud-delivery');
+const { DeliveryClient } = require('@kentico/kontent-delivery');
 const {
     deliveryConfig
 } = require('../config');
 const enhanceMarkup = require('./enhanceMarkup');
 const consola = require('consola');
+const helpers = require('./helperFunctions');
 
 const richTextResolverTemplates = require('./richTextResolverTemplates');
 const linksResolverTemplates = require('./linksResolverTemplates');
 
 const defineDeliveryConfig = (config) => {
     deliveryConfig.projectId = config.projectid;
+    deliveryConfig.globalQueryConfig = {};
     const previewApiKey = config.previewapikey;
     const securedApiKey = config.securedapikey;
 
     if (previewApiKey) {
         deliveryConfig.previewApiKey = previewApiKey;
-        deliveryConfig.enablePreviewMode = true;
+        deliveryConfig.globalQueryConfig.usePreviewMode = true;
     }
 
     if (securedApiKey) {
-        deliveryConfig.securedApiKey = securedApiKey;
-        deliveryConfig.enableSecuredMode = true;
+        deliveryConfig.secureApiKey = securedApiKey;
+        deliveryConfig.globalQueryConfig.useSecuredMode = true;
     }
 };
 
@@ -39,7 +41,7 @@ const addQueryToOrder = (query, config) => {
 };
 
 const defineQuery = (deliveryConfig, config) => {
-    const deliveryClient = new KenticoCloud.DeliveryClient(deliveryConfig);
+    const deliveryClient = new DeliveryClient(deliveryConfig);
 
     let query = deliveryClient.items()
 
@@ -119,28 +121,28 @@ const resolveLink = (link, config) => {
     if (config.urlMap && config.urlMap.length) {
         return linksResolverTemplates.resolve(link, config.urlMap);
     } else {
-        return `/`;
+        return '/';
     }
 };
 
 const getResponse = async (query, config) => {
     const response = await query
-        .getPromise()
+        .toPromise()
         .catch(err => {
             consola.error(err);
         });
 
     if (config.resolveRichText && response && response.items) {
         response.items.forEach((elem) => {
-            const keys = Object.keys(elem);
+            const keys = helpers.removeUnderscoreElems(Object.keys(elem));
 
-            if (keys) {
+            if (keys.length) {
                 keys
-                    .filter((key) => elem.hasOwnProperty(key) && elem[key].hasOwnProperty('type') && elem[key].type === `rich_text`)
+                    .filter((key) => Object.prototype.hasOwnProperty.call(elem, key) && Object.prototype.hasOwnProperty.call(elem[key], 'type') && elem[key].type === 'rich_text')
                     .forEach((key) => {
                         if (elem[key]) {
-                            elem[key].getHtml();
-                            elem[key].value = enhanceMarkup(elem[key].resolvedHtml);
+                            elem[key].resolveHtml();
+                            elem[key].value = enhanceMarkup(elem[key].resolvedData.html);
                         }
                     });
             }
@@ -153,7 +155,7 @@ const getResponse = async (query, config) => {
 const requestDelivery = async (config) => {
     defineDeliveryConfig(config);
     const query = defineQuery(deliveryConfig, config);
-    let queryConfigObject = {
+    const queryConfigObject = {
         waitForLoadingNewContent: true
     };
 
@@ -161,8 +163,9 @@ const requestDelivery = async (config) => {
         queryConfigObject.richTextResolver = (item) => {
             return resolveRichText(item, config);
         };
-        queryConfigObject.linkResolver = (link) => {
-            return resolveLink(link, config);
+        queryConfigObject.urlSlugResolver = (link) => {
+            const links = resolveLink(link, config);
+            return { url: links };
         };
     }
 

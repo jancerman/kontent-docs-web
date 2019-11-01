@@ -36,21 +36,21 @@ const helper = {
     getPrismClassName: (item) => {
         let lang;
         const pairings = {
-            'rest': 'shell',
-            'shell': 'shell',
-            'curl': 'shell',
-            '_net': 'dotnet',
-            'c_': 'dotnet',
-            'javascript': 'js',
-            'json': 'js',
-            'typescript': 'ts',
-            'java': 'java',
-            'android': 'java',
-            'javarx': 'java',
-            'php': 'php',
-            'swift': 'swift',
-            'python': 'python',
-            'ruby': 'ruby'
+            rest: 'shell',
+            shell: 'shell',
+            curl: 'shell',
+            _net: 'dotnet',
+            c_: 'dotnet',
+            javascript: 'js',
+            json: 'js',
+            typescript: 'ts',
+            java: 'java',
+            android: 'java',
+            javarx: 'java',
+            php: 'php',
+            swift: 'swift',
+            python: 'python',
+            ruby: 'ruby'
         }
 
         if (item && item.codename) {
@@ -81,6 +81,18 @@ const helper = {
     },
     capitalizeFirstLetter: (text) => {
         return text.charAt(0).toUpperCase() + text.slice(1)
+    },
+    removeUnderscoreElems: (elems) => {
+        for (let i = 0; i < elems.length; i++) {
+            if (elems[i].startsWith('_')) {
+                const index = elems.indexOf(elems[i]);
+                if (index > -1) {
+                    elems.splice(index, 1);
+                }
+            }
+        }
+
+        return elems;
     }
 };
 
