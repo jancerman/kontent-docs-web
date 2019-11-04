@@ -19,8 +19,6 @@
     let searchResultSelected = false;
     let searchResultsNumber = 0;
     const searchInput = document.querySelector('#nav-search');
-    const isClampSupported = (typeof CSS !== 'undefined' && CSS.supports('-webkit-line-clamp', '2'));
-    let clampDelay = 0;
 
     // Get injected KC API details
     const projectIdUrl = window.helper.getParameterByName('projectid');
@@ -150,48 +148,10 @@
         window.location.assign(`${suggestion.resolvedUrl}`);
     };
 
-    const clampItem = (item) => {
-        setTimeout(() => {
-            window.$clamp(item, {
-                clamp: 2
-            });
-        }, clampDelay);
-    };
-
-    let prevSearchTerm = searchTerm;
-    let searchScrolled = false;
-
     const onAutocompleteUpdated = () => {
         setTimeout(() => {
             document.querySelector('.aa-dropdown-menu').scrollTop = 0; // Set scroll position to top
-            const searchSummaries = document.querySelectorAll('.suggestion__text');
-            const length = searchSummaries.length <= 4 ? searchSummaries.length : 4;
-            prevSearchTerm = searchTerm;
-            searchScrolled = false;
-
-            // Clamp only items that are visible without scrolling for performance reasons.
-            for (var i = 0; i < length; i++) {
-                clampItem(searchSummaries[i]);
-            }
         }, 0);
-    };
-
-    const optimizeClamping = () => {
-        document.querySelector('.aa-dropdown-menu').addEventListener('scroll', () => {
-            setTimeout(() => {
-                if (prevSearchTerm === searchTerm && !searchScrolled) {
-                    searchScrolled = true;
-                    const searchSummaries = document.querySelectorAll('.suggestion__text');
-                    const length = searchSummaries.length <= 4 ? searchSummaries.length : 4;
-
-                    for (var i = length; i < searchSummaries.length; i++) {
-                        clampItem(searchSummaries[i]);
-                    }
-                }
-            }, 0);
-        }, window.supportsPassive ? {
-            passive: true
-        } : false);
     };
 
     const onAutocompleteClosed = () => {
@@ -214,16 +174,6 @@
             searchOverlay.classList.add('search-overlay--visible');
         }
         searchInput.focus();
-
-        if (searchTerm !== '' && !isClampSupported && searchWrapper) {
-            clampDelay = 250;
-
-            setTimeout(() => {
-                clampDelay = 0;
-            }, 250);
-        } else {
-            clampDelay = 0;
-        }
     };
 
     const getSuggestionsSource = (hitsSource, query, callback) => {
@@ -296,7 +246,6 @@
         // Get urlMap and init the autocomplete
         window.helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
             initAutocomplete(urlMap);
-            optimizeClamping();
         }, 'json');
     };
 
