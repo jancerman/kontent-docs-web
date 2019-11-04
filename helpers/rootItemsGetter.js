@@ -48,7 +48,7 @@ function getDirectParents(codename, allItems) {
 function checkIfItemIsParent(item, codename) {
     switch (item.system.type) {
         case 'code_samples':
-            return item.code_samples.value.includes(codename);
+            return item.code_samples.itemCodenames.includes(codename);
         case 'article':
         case 'scenario':
             return item.content.linkedItemCodenames.includes(codename) ||
