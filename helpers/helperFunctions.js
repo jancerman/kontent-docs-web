@@ -82,6 +82,9 @@ const helper = {
     capitalizeFirstLetter: (text) => {
         return text.charAt(0).toUpperCase() + text.slice(1)
     },
+    replaceWhitespaceWithDash: (text) => {
+        return text.replace(/\s/g, '-');
+    },
     removeUnderscoreElems: (elems) => {
         for (let i = 0; i < elems.length; i++) {
             if (elems[i].startsWith('_')) {

@@ -202,7 +202,7 @@ const handleNode = async (settings) => {
                 slug = tempProperties.slug;
                 settings.url = tempProperties.url; */
         } else if (settings.item.system.type === 'zapi__category') {
-            settings.hash = `#tag/${helper.capitalizeFirstLetter(settings.item.url.value)}`;
+            settings.hash = `#tag/${helper.replaceWhitespaceWithDash(settings.item.name.value)}`;
         } else if (settings.item.system.type === 'zapi_path_operation') {
             settings.hash = `#operation/${settings.item.url.value}`;
         } else if (settings.item.system.type === 'zapi_security_scheme') {
