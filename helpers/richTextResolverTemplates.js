@@ -162,8 +162,8 @@ const richTextResolverTemplates = {
     homeLinkToContentItem: (item, urlMap) => {
         let resolvedUrl = '';
 
-        if (item.linked_item[0] && urlMap) {
-            resolvedUrl = urlMap.filter(elem => elem.codename === item.linked_item[0].system.codename)[0].url;
+        if (item.linked_item.value[0] && urlMap) {
+            resolvedUrl = urlMap.filter(elem => elem.codename === item.linked_item.value[0].system.codename)[0].url;
         }
 
         return `
