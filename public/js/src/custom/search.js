@@ -79,7 +79,7 @@
         const suggestionUrl = urlMap.filter(item => item.codename === suggestion.codename);
 
         // Add an anchor to the url if available
-        const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g, '-')}` : '';
+        const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g, '-').replace(/[-]+/g, '-')}` : '';
         const tech = suggestion.platforms && suggestion.platforms.length === 1 ? `?tech=${getTech(suggestion.platforms[0])}` : '';
         suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}${suggestionUrl[0].url.indexOf('?tech') === -1 ? tech : ''}${suggestion.section !== 'API' ? anchor : ''}` : '';
 

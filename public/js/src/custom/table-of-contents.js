@@ -14,7 +14,7 @@
         const headings = articleContent.querySelectorAll('h2:not(.table-of-contents__heading):not(.feedback__heading), h3, h4');
 
         headings.forEach((item) => {
-            const anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/\W/g, '-');
+            const anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/&[^\s]*;/g, '').replace(/\W/g, '-').replace(/[-]+/g, '-');
             item.setAttribute('id', `a-${anchorName}`);
             item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip"></span></span>`;
         });
