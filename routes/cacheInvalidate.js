@@ -18,8 +18,12 @@ const isValidSignature = (req, secret) => {
 };
 
 const requestItemAndDeleteCacheKey = async (keyNameToDelete, codename, KCDetails) => {
+    const urlMap = handleCache.getCache('urlMap', KCDetails);
     const item = await requestDelivery({
         codename: codename,
+        depth: 2,
+        resolveRichText: true,
+        urlMap: urlMap,
         ...KCDetails
     });
 
@@ -27,24 +31,19 @@ const requestItemAndDeleteCacheKey = async (keyNameToDelete, codename, KCDetails
         if (!keyNameToDelete) {
             keyNameToDelete = item[0].system.type;
         }
-        cache.del(`${keyNameToDelete}_${item[0].url.value}_${KCDetails.projectid}`);
+
+        const key = `${keyNameToDelete}_${item[0].url.value}`;
+
+        if (handleCache.getCache(key, KCDetails)) {
+            handleCache.deleteCache(key, KCDetails);
+            handleCache.putCache(key, item, KCDetails);
+        }
     }
 };
 
-const deleteSpecificKeys = async (KCDetails, items, keyNameToCheck, keyNameToDelete) => {
-    const cacheItems = cache.get(`${keyNameToCheck}_${KCDetails.projectid}`);
-    if (items && cacheItems) {
-        for (let i = 0; i < items.length; i++) {
-            for (let j = 0; j < cacheItems.length; j++) {
-                if (items[i].codename === cacheItems[j].system.codename) {
-                    cache.del(`${keyNameToDelete}_${cacheItems[j].url.value}_${KCDetails.projectid}`);
-                }
-            }
-        }
-    } else if (items) {
-        items.forEach(async (item) => {
-            await requestItemAndDeleteCacheKey(keyNameToDelete, item.codename, KCDetails);
-        });
+const deleteSpecificKeys = async (KCDetails, items, keyNameToDelete) => {
+    for await (const item of items) {
+        await requestItemAndDeleteCacheKey(keyNameToDelete, item.codename, KCDetails);
     }
 };
 
@@ -112,13 +111,14 @@ const invalidateRootItems = async (items, KCDetails) => {
     }
 };
 
-const invalidateGeneral = (itemsByTypes, KCDetails, type, keyName) => {
+const invalidateGeneral = async (itemsByTypes, KCDetails, res, type, keyName) => {
     if (!keyName) {
         keyName = type;
     }
 
     if (itemsByTypes[type].length) {
-        cache.del(`${keyName}_${KCDetails.projectid}`);
+        handleCache.deleteCache(keyName, KCDetails);
+        await handleCache.evaluateCommon(res, [keyName]);
     }
 
     return false;
@@ -138,15 +138,38 @@ const invalidateMultiple = async (itemsByTypes, KCDetails, type, keyName) => {
     return false;
 };
 
-const invalidateArticles = async (itemsByTypes, KCDetails) => {
+const invalidateArticles = async (itemsByTypes, KCDetails, res) => {
     if (itemsByTypes.articles.length) {
-        await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'articles', 'article');
-        await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'articles', 'reference');
-        cache.del(`articles_${KCDetails.projectid}`);
-        cache.del(`rss_articles_${KCDetails.projectid}`);
+        await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'article');
+        await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'reference');
+        handleCache.deleteCache('articles', KCDetails);
+        handleCache.deleteCache('rss_articles', KCDetails);
+        await handleCache.evaluateCommon(res, ['articles', 'rss_articles']);
     }
 
     return false;
+};
+
+const invalidateHome = async (res, KCDetails) => {
+    handleCache.deleteCache('home', KCDetails);
+    await handleCache.evaluateCommon(res, ['home']);
+};
+
+const invalidateUrlMap = async (res, KCDetails) => {
+    handleCache.deleteCache('urlMap', KCDetails);
+    await handleCache.evaluateCommon(res, ['urlMap']);
+};
+
+const invalidateSubNavigation = async (res, keys) => {
+    let subNavigationKeys = keys.filter(key => key.startsWith('subNavigation_'));
+    subNavigationKeys = subNavigationKeys.map(key => key.split('_')[1]);
+    handleCache.deleteMultipleKeys('subNavigation_', keys);
+
+    for await (const slug of subNavigationKeys) {
+        await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
+            return await commonContent.getSubNavigation(res, slug);
+        });
+    }
 };
 
 router.post('/', asyncHandler(async (req, res) => {
@@ -156,21 +179,19 @@ router.post('/', asyncHandler(async (req, res) => {
             const items = JSON.parse(req.body).data.items;
             const keys = cache.keys();
             const itemsByTypes = splitPayloadByContentType(items);
+            await invalidateHome(res, KCDetails);
+            await invalidateSubNavigation(res, keys);
+            await invalidateUrlMap(res, KCDetails);
             await invalidateRootItems(items, KCDetails);
-            invalidateGeneral(itemsByTypes, KCDetails, 'footer');
-            invalidateGeneral(itemsByTypes, KCDetails, 'UIMessages');
-            invalidateGeneral(itemsByTypes, KCDetails, 'notFound');
-            invalidateGeneral(itemsByTypes, KCDetails, 'picker', 'platformsConfig');
-            invalidateGeneral(itemsByTypes, KCDetails, 'navigationItems');
-            await invalidateArticles(itemsByTypes, KCDetails);
+            await invalidateGeneral(itemsByTypes, KCDetails, res, 'footer');
+            await invalidateGeneral(itemsByTypes, KCDetails, res, 'UIMessages');
+            await invalidateGeneral(itemsByTypes, KCDetails, res, 'notFound');
+            await invalidateGeneral(itemsByTypes, KCDetails, res, 'picker', 'platformsConfig');
+            await invalidateGeneral(itemsByTypes, KCDetails, res, 'navigationItems');
+            await invalidateArticles(itemsByTypes, KCDetails, res);
             await invalidateMultiple(itemsByTypes, KCDetails, 'scenarios', 'scenario');
             await invalidateMultiple(itemsByTypes, KCDetails, 'topics', 'topic');
 
-            cache.del(`home_${KCDetails.projectid}`);
-
-            handleCache.deleteMultipleKeys('subNavigation_', keys);
-
-            cache.del(`urlMap_${KCDetails.projectid}`);
             if (app.appInsights) {
                 app.appInsights.defaultClient.trackTrace({ message: 'URL_MAP_INVALIDATE: ' + req.body });
             }

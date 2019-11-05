@@ -145,6 +145,7 @@ module.exports = {
     evaluateCommon,
     evaluateSingle,
     cacheAllAPIReferences,
+    getCache,
     putCache,
     deleteCache,
     deleteMultipleKeys,
