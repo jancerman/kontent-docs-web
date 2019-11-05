@@ -9,13 +9,23 @@
     let affixHeadings;
     let tableOfContentsElemFixed;
 
-    // For all sub-headings set their id and create the copy to clipboard icon
+    // For all sub-headings set unique id and create the copy to clipboard icon
     const createAnchors = () => {
         const headings = articleContent.querySelectorAll('h2:not(.table-of-contents__heading):not(.feedback__heading), h3, h4');
+        const anchorNameList = [];
 
         headings.forEach((item) => {
             const anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/&[^\s]*;/g, '').replace(/\W/g, '-').replace(/[-]+/g, '-');
-            item.setAttribute('id', `a-${anchorName}`);
+            anchorNameList.push(anchorName);
+
+            let anchorNameCount = 0;
+            anchorNameList.forEach((name) => {
+                if (name === anchorName) {
+                    anchorNameCount += 1;
+                }
+            });
+
+            item.setAttribute('id', `a-${anchorName}${anchorNameCount > 1 ? `-${anchorNameCount}` : ''}`);
             item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip"></span></span>`;
         });
     };
