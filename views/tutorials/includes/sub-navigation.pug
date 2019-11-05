@@ -2,19 +2,20 @@
 ul.sub-navigation.sub-navigation--level-1.sub-navigation--top(data-toggle-target='sub-navigation')
     if subNavigation.length > 1
         each scenario in subNavigation
-            li.sub-navigation__item
-                a(href=`/${req.params.main}/${scenario.url.value}${selectedPlatform && scenario.system.type === 'multiplatform_article' ? '?tech=' + selectedPlatform : ''}`, class=`sub-navigation__link${subNavigationLevels[0] === scenario.url.value ? ' sub-navigation__link--active' : ''}`) !{scenario.short_title && scenario.short_title.value ? scenario.short_title.value : scenario.title.value}
-                if ((subNavigationLevels[0] === scenario.url.value) && scenario.children)
-                    ul.sub-navigation.sub-navigation--level-2
-                        - let level2 = scenario.topics ? scenario.topics.value : scenario.children.value
-                        each topic in level2
-                            li.sub-navigation__item
-                                a(href=`#`, class=`sub-navigation__link${subNavigationLevels[1] === topic.url.value ? ' sub-navigation__link--active sub-navigation__link--on-path' : ''}`) !{topic.title.value}
-                                ul.sub-navigation.sub-navigation--level-3
-                                    each article in topic.children.value
-                                        if (article.visibility && !article.visibility.value.filter(item => item.codename === 'excluded_from_navigation').length)
-                                            li.sub-navigation__item
-                                                a(href=`/${req.params.main}/${scenario.url.value}/${topic.url.value}/${article.url.value}${selectedPlatform && article.platform.value.length ? '?tech=' + selectedPlatform : ''}`, class=`sub-navigation__link${subNavigationLevels[2] === article.url.value ? ' sub-navigation__link--active' : ''}`)&attributes(article.platform.value.length ? {'data-lang': ''} : {}) !{article.short_title.value ? article.short_title.value : article.title.value}
-                                        if (article.system.type === 'multiplatform_article')
-                                            li.sub-navigation__item
-                                                a(href=`/${req.params.main}/${scenario.url.value}/${topic.url.value}/${article.url.value}${selectedPlatform ? '?tech=' + selectedPlatform : ''}`, class=`sub-navigation__link${subNavigationLevels[2] === article.url.value ? ' sub-navigation__link--active' : ''}`, data-lang='') !{article.title.value}
+            if ((scenario.visibility && !scenario.visibility.value.filter(item => item.codename === 'excluded_from_navigation').length) || !scenario.visibility)
+                li.sub-navigation__item
+                    a(href=`/${req.params.main}/${scenario.url.value}${selectedPlatform && scenario.system.type === 'multiplatform_article' ? '?tech=' + selectedPlatform : ''}`, class=`sub-navigation__link${subNavigationLevels[0] === scenario.url.value ? ' sub-navigation__link--active' : ''}`) !{scenario.short_title && scenario.short_title.value ? scenario.short_title.value : scenario.title.value}
+                    if ((subNavigationLevels[0] === scenario.url.value) && scenario.children)
+                        ul.sub-navigation.sub-navigation--level-2
+                            - let level2 = scenario.topics ? scenario.topics.value : scenario.children.value
+                            each topic in level2
+                                li.sub-navigation__item
+                                    a(href=`#`, class=`sub-navigation__link${subNavigationLevels[1] === topic.url.value ? ' sub-navigation__link--active sub-navigation__link--on-path' : ''}`) !{topic.title.value}
+                                    ul.sub-navigation.sub-navigation--level-3
+                                        each article in topic.children.value
+                                            if ((article.visibility && !article.visibility.value.filter(item => item.codename === 'excluded_from_navigation').length) || !article.visibility)
+                                                li.sub-navigation__item
+                                                    a(href=`/${req.params.main}/${scenario.url.value}/${topic.url.value}/${article.url.value}${selectedPlatform && article.platform.value.length ? '?tech=' + selectedPlatform : ''}`, class=`sub-navigation__link${subNavigationLevels[2] === article.url.value ? ' sub-navigation__link--active' : ''}`)&attributes(article.platform.value.length ? {'data-lang': ''} : {}) !{article.short_title.value ? article.short_title.value : article.title.value}
+                                            if (article.system.type === 'multiplatform_article')
+                                                li.sub-navigation__item
+                                                    a(href=`/${req.params.main}/${scenario.url.value}/${topic.url.value}/${article.url.value}${selectedPlatform ? '?tech=' + selectedPlatform : ''}`, class=`sub-navigation__link${subNavigationLevels[2] === article.url.value ? ' sub-navigation__link--active' : ''}`, data-lang='') !{article.title.value}
