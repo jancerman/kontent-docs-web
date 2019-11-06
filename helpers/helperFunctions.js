@@ -68,11 +68,15 @@ const helper = {
     },
     resolveMacros: (text) => {
         // If macro in format {@ sometext @}, replace it by icon
-        let replaced = text.replace(/{@[a-z,0-9,-]+@}/g, (match) => {
-            return `<i aria-hidden="true" class="icon ${match.replace('{@', '').replace('@}', '')}"></i>`;
+        let replaced = text.replace(/{@[^@]+@}/g, (match) => {
+            const text = match.replace('{@', '').replace('@}', '').split('|');
+            const icon = text.length ? text[0] : '';
+            const tooltip = text.length > 1 ? text[1] : '';
+
+            return `<i aria-hidden="true" class="icon ${icon}">${tooltip ? `<span class="icon__tooltip">${tooltip}</span>` : ''}</i>`;
         });
 
-        // If macro in format {~ sometext ~}, replace it by inlone code
+        // If macro in format {~ sometext ~}, replace it by inline code
         replaced = replaced.replace(/{~[^~]+~}/g, (match) => {
             return `<code>${match.replace('{~', '').replace('~}', '')}</code>`;
         });
