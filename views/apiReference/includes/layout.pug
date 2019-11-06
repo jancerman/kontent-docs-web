@@ -6,7 +6,7 @@ html(lang='en')
         if (process.env['GTM.id'])
             noscript
                 iframe(src=`https://www.googletagmanager.com/ns.html?id=${process.env['GTM.id']}`, height='0', width='0', style='display:none;visibility:hidden')
-        a(href='#main')
+        a(href='#main') Skip navigation
         include ../../tutorials/includes/preview-warning.pug
         include ./navigation.pug
         .search-overlay
