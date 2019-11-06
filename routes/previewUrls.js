@@ -12,6 +12,8 @@ const getType = (params) => {
         type = 'article';
     } else if (params.scenario) {
         type = 'scenario';
+    } else if (params.mta) {
+        type = 'multiplatform_article';
     }
     return type;
 };
@@ -34,12 +36,12 @@ const getItem = async (res, type, slug) => {
     });
 };
 
-router.get(['/article/:article', '/scenario/:scenario'], asyncHandler(async (req, res, next) => {
+router.get(['/article/:article', '/scenario/:scenario', '/mta/:mta'], asyncHandler(async (req, res, next) => {
     const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
         return await getUrlMap(res);
     });
     const type = getType(req.params);
-    const urlSlug = req.params.article || req.params.scenario;
+    const urlSlug = req.params.article || req.params.scenario || req.params.mta;
     const item = await getItem(res, type, urlSlug);
 
     if (item.length) {

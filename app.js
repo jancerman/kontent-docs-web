@@ -38,6 +38,7 @@ const urlWhitelist = [
   '/other/*',
   '/scenario/*',
   '/article/*',
+  '/mta/*',
   '/form/*',
   '/urlmap',
   '/kentico-icons.min.css',
