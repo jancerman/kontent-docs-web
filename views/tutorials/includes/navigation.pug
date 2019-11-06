@@ -12,7 +12,7 @@ nav.navigation
                 each item in navigation
                     li.navigation__item
                         a(href=`${item.system.type === 'navigation_link' ? '' : '/'}${item.url.value}`, class=`navigation__link${req.originalUrl.startsWith(`/${item.url.value}`) ? ' navigation__link--active' : ''}`) !{item.title.value}
-        .navigation__right(data-toggle-target='search')
+        .navigation__right(data-search-target='')
             if isNotHome
                 .navigation__search-wrapper
                     form.navigation__search
@@ -24,4 +24,4 @@ nav.navigation
                 i.icon-kentico
                 .navigation__app-tooltip !{UIMessages ? UIMessages.link_to_app_tooltip.value : ''}
         if isNotHome
-            .navigation__trigger(data-toggle-trigger='search', aria-hidden='true')
+            .navigation__trigger(data-search-trigger='', aria-hidden='true')

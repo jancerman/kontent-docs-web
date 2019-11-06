@@ -14,6 +14,8 @@
     const url = window.location;
     const searchWrapper = document.querySelector('.navigation__search-wrapper');
     const searchOverlay = document.querySelector('.search-overlay');
+    const searchTrigger = document.querySelector('[data-search-trigger]');
+    const searchTarget = document.querySelector('[data-search-target]');
     const navigation = document.querySelector('.navigation');
     let searchTerm = '';
     let searchResultSelected = false;
@@ -154,6 +156,22 @@
         }, 0);
     };
 
+    const triggerSearchPanel = () => {
+        searchTrigger.addEventListener('click', () => {
+            if (!searchTrigger.classList.contains('trigger-active')) {
+                searchTrigger.classList.add('trigger-active');
+                searchTarget.classList.add('toggle-active');
+                const input = searchTarget.querySelector('#nav-search');
+
+                if (input) {
+                    setTimeout(() => {
+                        input.focus();
+                    }, 100);
+                }
+            }
+        });
+    };
+
     const onAutocompleteClosed = () => {
         if (searchTerm !== '' && !searchResultSelected) {
             logSearchTermNumber(searchTerm);
@@ -164,6 +182,11 @@
             navigation.classList.remove('navigation--search-active');
             searchWrapper.classList.remove('navigation__search-wrapper--wide');
             searchOverlay.classList.remove('search-overlay--visible');
+
+            setTimeout(() => {
+                searchTrigger.classList.remove('trigger-active');
+                searchTarget.classList.remove('toggle-active');
+            }, 100);
         }
     };
 
@@ -263,5 +286,6 @@
         initAlgoliaSearch();
         setFocusOnMagnifier('navigation');
         setFocusOnMagnifier('hero');
+        triggerSearchPanel();
     }
 })();
