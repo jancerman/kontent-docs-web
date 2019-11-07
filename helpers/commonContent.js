@@ -12,7 +12,7 @@ const commonContent = {
     },
     getTree: async (contentType, depth, res) => {
         const KCDetails = commonContent.getKCDetails(res);
-        const urlMap = await ensureSingle(res, `urlMap`, async () => {
+        const urlMap = await ensureSingle(res, 'urlMap', async () => {
             return await getUrlMap(res);
         });
         return await requestDelivery({
@@ -46,7 +46,7 @@ const commonContent = {
     },
     getHome: async (res) => {
         const KCDetails = commonContent.getKCDetails(res);
-        const urlMap = await ensureSingle(res, `urlMap`, async () => {
+        const urlMap = await ensureSingle(res, 'urlMap', async () => {
             return await getUrlMap(res);
         });
         return await requestDelivery({
@@ -59,7 +59,7 @@ const commonContent = {
     },
     getArticles: async (res) => {
         return await requestDelivery({
-            type: 'article',
+            type: ['article', 'multiplatform_article'],
             ...commonContent.getKCDetails(res)
         });
     },
@@ -82,7 +82,7 @@ const commonContent = {
     },
     getNotFound: async (res) => {
         const KCDetails = commonContent.getKCDetails(res);
-        const urlMap = await ensureSingle(res, `urlMap`, async () => {
+        const urlMap = await ensureSingle(res, 'urlMap', async () => {
             return await getUrlMap(res);
         });
         return await requestDelivery({
@@ -106,13 +106,13 @@ const commonContent = {
         });
     },
     getPlatformsConfigPairings: async (res) => {
-        let cachedPlatforms = await ensureSingle(res, `platformsConfig`, async () => {
+        const cachedPlatforms = await ensureSingle(res, 'platformsConfig', async () => {
             return await commonContent.getPlatformsConfig(res);
         });
-        let pairings = [];
+        const pairings = [];
 
         if (cachedPlatforms && cachedPlatforms.length) {
-            cachedPlatforms[0].options.forEach((item) => {
+            cachedPlatforms[0].options.value.forEach((item) => {
                 if (item.url.value !== item.platform.value[0].codename) {
                     pairings.push({
                         url: item.url.value,
@@ -125,9 +125,9 @@ const commonContent = {
         return pairings;
     },
     normalizePlatforms: async (platforms, res) => {
-        let result = [];
-        let order = [];
-        let cachedPlatforms = await ensureSingle(res, `platformsConfig`, async () => {
+        const result = [];
+        const order = [];
+        let cachedPlatforms = await ensureSingle(res, 'platformsConfig', async () => {
             return await commonContent.getPlatformsConfig(res);
         });
 
@@ -136,8 +136,8 @@ const commonContent = {
         }
 
         if (platforms && cachedPlatforms && cachedPlatforms.length) {
-            cachedPlatforms[0].options.forEach((item) => {
-                let platform = {
+            cachedPlatforms[0].options.value.forEach((item) => {
+                const platform = {
                     title: item.title.value,
                     slug: item.url.value,
                     codename: item.platform.value[0].codename
@@ -145,10 +145,14 @@ const commonContent = {
                 order.push(platform);
             });
 
+            if (platforms.value) {
+                platforms = platforms.value;
+            }
+
             order.forEach(orderItem => {
                 platforms.forEach(platformItem => {
-                    let codenameTemp = platformItem.platform && platformItem.platform.value.length ? platformItem.platform.value[0].codename : null;
-                    let codename = platformItem.codename || codenameTemp;
+                    const codenameTemp = platformItem.platform && platformItem.platform.value.length ? platformItem.platform.value[0].codename : null;
+                    const codename = platformItem.codename || codenameTemp;
                     if (orderItem.codename === codename) {
                         result.push(orderItem);
                     }

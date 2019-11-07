@@ -1,24 +1,23 @@
 (() => {
-    let yesBtn = document.querySelector('.feedback__button--yes');
-    let noBtn = document.querySelector('.feedback__button--no');
-    let yesMsg = document.querySelector('.feedback__message--yes');
-    let noMsg = document.querySelector('.feedback__message--no');
-    let btnArea = document.querySelector('.feedback__answer');
-    let form = document.querySelector('.feedback__form');
-    let posted = document.querySelector('.feedback--posted');
-    let onBtnClick, handleFeedback;
+    const yesBtn = document.querySelector('.feedback__button--yes');
+    const noBtn = document.querySelector('.feedback__button--no');
+    const yesMsg = document.querySelector('.feedback__message--yes');
+    const noMsg = document.querySelector('.feedback__message--no');
+    const btnArea = document.querySelector('.feedback__answer');
+    const form = document.querySelector('.feedback__form');
+    const posted = document.querySelector('.feedback--posted');
 
     const sendFeedback = (value) => {
         window.dataLayer.push({
-            'event': 'event',
-            'eventCategory': 'feedback--submitted',
-            'eventAction': 'Click',
-            'eventLabel': window.location.pathname,
-            'eventValue': value
+            event: 'event',
+            eventCategory: 'feedback--submitted',
+            eventAction: 'Click',
+            eventLabel: window.location.pathname,
+            eventValue: value
         });
     };
 
-    handleFeedback = (e) => {
+    const handleFeedback = (e) => {
         e.preventDefault();
         if (e.target) {
             if (e.target.matches('.feedback__button--yes')) {
@@ -29,7 +28,7 @@
         }
     };
 
-    onBtnClick = (btn, msg, value) => {
+    const onBtnClick = (btn, msg, value) => {
         btnArea.removeEventListener('click', handleFeedback);
         btnArea.classList.add('feedback__answer--answered');
         btn.classList.add('feedback__button--active');

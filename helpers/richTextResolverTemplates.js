@@ -162,8 +162,8 @@ const richTextResolverTemplates = {
     homeLinkToContentItem: (item, urlMap) => {
         let resolvedUrl = '';
 
-        if (item.linked_item[0] && urlMap) {
-            resolvedUrl = urlMap.filter(elem => elem.codename === item.linked_item[0].system.codename)[0].url;
+        if (item.linked_item.value[0] && urlMap) {
+            resolvedUrl = urlMap.filter(elem => elem.codename === item.linked_item.value[0].system.codename)[0].url;
         }
 
         return `
@@ -185,13 +185,13 @@ const richTextResolverTemplates = {
     },
     image: (item) => {
         if (item.image.value.length) {
-            let alt = item.image.value[0].description ? item.image.value[0].description : '';
-            let url = encodeURI(item.url.value.trim());
-            let transformationQueryString = '?fm=jpg&auto=format&w=';
+            const alt = item.image.value[0].description ? item.image.value[0].description : '';
+            const url = encodeURI(item.url.value.trim());
+            const transformationQueryString = '?fm=jpg&auto=format&w=';
             let cssClass = item.border.value.length && item.border.value[0].codename === 'show' ? ' article__image-border' : '';
             cssClass += item.zoomable.value.length && item.zoomable.value[0].codename === 'true' && !url ? ' article__add-lightbox' : '';
-            let openLinkTag = url ? '<a href="'+ url +'" target="_blank" class="no-icon">' : '';
-            let closeLinkTag = url ? '</a>' : '';
+            const openLinkTag = url ? '<a href="'+ url +'" target="_blank" class="no-icon">' : '';
+            const closeLinkTag = url ? '</a>' : '';
 
             const attributes = getImageAttributes(item, cssClass, transformationQueryString);
 
@@ -209,13 +209,13 @@ const richTextResolverTemplates = {
                 </figure>`;
         }
 
-        return ``;
+        return '';
     },
     callToAction: (item) => {
         return `<div class="call-to-action" data-click="support">${item.text.value}</div>`;
     },
     contentChunk: (item) => {
-        let platforms = [];
+        const platforms = [];
         let value = item.content.value;
         item.platform.value.forEach(item => platforms.push(item.codename));
         if (platforms.length) {
@@ -241,7 +241,7 @@ const richTextResolverTemplates = {
         item.programming_language.value.forEach(item => {
             infoBar += `<li class="infobar__lang">${item.name}</li>`;
         });
-        infoBar += `</ul><div class="infobar__copy"></div></div>`;
+        infoBar += '</ul><div class="infobar__copy"></div></div>';
 
     return `<pre class="line-numbers" data-platform-code="${item.platform.value.length ? item.platform.value[0].codename : ''}">${infoBar}<div class="clean-code">${helper.escapeHtml(item.code.value)}</div><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>`;
     },
@@ -257,7 +257,7 @@ const richTextResolverTemplates = {
     },
     codeSamples: (item) => {
         let codeExamples = '<div class="code-samples">';
-        item.code_samples.forEach(item => {
+        item.code_samples.value.forEach(item => {
             codeExamples += richTextResolverTemplates.codeSample(item);
         });
         codeExamples += '</div>';

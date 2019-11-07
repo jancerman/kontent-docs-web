@@ -133,7 +133,7 @@ const cacheAllAPIReferences = async (res) => {
     if (!(keys.filter(item => item.indexOf('reDocReference_') > -1).length) && !isPreviewRequest) {
         references = await getReferences();
 
-        let baseURL = process.env['referenceRenderUrl'];
+        const baseURL = process.env.referenceRenderUrl;
 
         for (const value of references) {
             provideReferences(baseURL, value.system.codename, isPreviewRequest, KCDetails)
@@ -145,6 +145,7 @@ module.exports = {
     evaluateCommon,
     evaluateSingle,
     cacheAllAPIReferences,
+    getCache,
     putCache,
     deleteCache,
     deleteMultipleKeys,

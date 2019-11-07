@@ -2,7 +2,7 @@
     const warning = document.querySelector('.preview-warning');
 
     if (warning) {
-        let links = warning.querySelectorAll('a');
+        const links = warning.querySelectorAll('a');
 
         for (let i = 0; i < links.length; i++) {
             if (links[i].innerHTML === 'live version') {

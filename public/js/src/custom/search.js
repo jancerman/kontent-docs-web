@@ -14,13 +14,13 @@
     const url = window.location;
     const searchWrapper = document.querySelector('.navigation__search-wrapper');
     const searchOverlay = document.querySelector('.search-overlay');
+    const searchTrigger = document.querySelector('[data-search-trigger]');
+    const searchTarget = document.querySelector('[data-search-target]');
     const navigation = document.querySelector('.navigation');
     let searchTerm = '';
     let searchResultSelected = false;
     let searchResultsNumber = 0;
-    let searchInput = document.querySelector('#nav-search');
-    let isClampSupported = (typeof CSS !== 'undefined' && CSS.supports('-webkit-line-clamp', '2'));
-    let clampDelay = 0;
+    const searchInput = document.querySelector('#nav-search');
 
     // Get injected KC API details
     const projectIdUrl = window.helper.getParameterByName('projectid');
@@ -53,48 +53,10 @@
     };
 
     const formatSuggestionContent = (suggestion) => {
-        // Get content with highlighted markup
-        let content = suggestion._highlightResult.content.value;
-
-        // Remove inline icon, code macros and newlines
-        content = removeInlineElements(content);
-
-        // Get start and end indexes of the first highlighted match
-        let indexStart = content.indexOf('<em>');
-        let indexEnd = content.lastIndexOf('</em>') + 5;
-
-        // Get highlighted string
-        let highlighted = content.substring(indexStart, indexEnd);
-
-        // Number of chars before and after the highlighted string to be rendered
-        let numCharsBefore = 20;
-        let numCharsAfter = 150;
-
-        // Get desired number of chars before and after
-        let contentBefore = content.substring(indexStart - numCharsBefore, indexStart);
-        let contentAfter = content.substring(indexEnd, indexEnd + numCharsAfter);
-
-        // Add hellip before the text in case the highlighed string is somewhere in the the middle of the search result content
-        if (contentBefore.length === numCharsBefore) {
-            contentBefore = `&hellip;${contentBefore}`;
-        }
-
-        // Strip tags and unfinished tags at the end of the sting in after text
-        contentAfter = contentAfter.replace(/(<([^>]+)>)/ig, '');
-        contentAfter = contentAfter.replace(/(<([^>]+)$)/ig, '');
-
-        // Add hellip after the text in case the highlighed string is somewhere in the the middle of the search result content
-        if (contentAfter.length === numCharsAfter) {
-            contentAfter = `${contentAfter}&hellip;`;
-        }
-
-        suggestion._highlightResult.content.value = `${contentBefore}${highlighted}${contentAfter}`;
+        const ellipsisText = '&hellip;';
+        suggestion._snippetResult.content.value = `${ellipsisText}${suggestion._snippetResult.content.value}${ellipsisText}`
 
         return suggestion;
-    };
-
-    const htmlEntities = (str) => {
-        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/&lt;em&gt;/g, '<em>').replace(/&lt;\/em&gt;/g, '</em>');
     };
 
     const getTech = (platform) => {
@@ -119,7 +81,7 @@
         const suggestionUrl = urlMap.filter(item => item.codename === suggestion.codename);
 
         // Add an anchor to the url if available
-        const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g, '-')}` : '';
+        const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g, '-').replace(/[-]+/g, '-')}` : '';
         const tech = suggestion.platforms && suggestion.platforms.length === 1 ? `?tech=${getTech(suggestion.platforms[0])}` : '';
         suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}${suggestionUrl[0].url.indexOf('?tech') === -1 ? tech : ''}${suggestion.section !== 'API' ? anchor : ''}` : '';
 
@@ -128,7 +90,7 @@
                     <div class="suggestion__left">
                         <span class="suggestion__heading">${removeInlineElements(suggestion._highlightResult.title.value)}</span>
                         ${suggestion._highlightResult.heading.value ? '<span class="suggestion__sub-heading">'+ removeInlineElements(suggestion._highlightResult.heading.value) +'</span>' : ''}
-                        <p class="suggestion__text">${htmlEntities(suggestion._highlightResult.content.value)}</p>
+                        <p class="suggestion__text">${removeInlineElements(suggestion._snippetResult.content.value)}</p>
                     </div>
                     <div class="suggestion__right">
                         <span class="suggestion__category suggestion__category--${suggestion.section.toLowerCase()}">${suggestion.section.toUpperCase()}</span>
@@ -147,28 +109,28 @@
 
     const logSearchTermNumber = (term) => {
         window.dataLayer.push({
-            'event': 'event',
-            'eventCategory': 'search--searched-result',
-            'eventAction': window.filterXSS(decodeURIComponent(term)),
-            'eventLabel': searchResultsNumber
+            event: 'event',
+            eventCategory: 'search--searched-result',
+            eventAction: window.filterXSS(decodeURIComponent(term)),
+            eventLabel: searchResultsNumber
         });
     };
 
     const logSearchTermErased = () => {
         window.dataLayer.push({
-            'event': 'event',
-            'eventCategory': 'search--used',
-            'eventAction': window.filterXSS(decodeURIComponent(searchTerm)),
-            'eventLabel': 'Not clicked'
+            event: 'event',
+            eventCategory: 'search--used',
+            eventAction: window.filterXSS(decodeURIComponent(searchTerm)),
+            eventLabel: 'Not clicked'
         });
     };
 
     const logSearchTermSelected = (term, url) => {
         window.dataLayer.push({
-            'event': 'event',
-            'eventCategory': 'search--used',
-            'eventAction': decodeURIComponent(term),
-            'eventLabel': url
+            event: 'event',
+            eventCategory: 'search--used',
+            eventAction: decodeURIComponent(term),
+            eventLabel: url
         });
     };
 
@@ -188,48 +150,26 @@
         window.location.assign(`${suggestion.resolvedUrl}`);
     };
 
-    const clampItem = (item) => {
-        setTimeout(() => {
-            window.$clamp(item, {
-                clamp: 2
-            });
-        }, clampDelay);
-    };
-
-    let prevSearchTerm = searchTerm;
-    let searchScrolled = false;
-
     const onAutocompleteUpdated = () => {
         setTimeout(() => {
             document.querySelector('.aa-dropdown-menu').scrollTop = 0; // Set scroll position to top
-            let searchSummaries = document.querySelectorAll('.suggestion__text');
-            let length = searchSummaries.length <= 4 ? searchSummaries.length : 4;
-            prevSearchTerm = searchTerm;
-            searchScrolled = false;
-
-            // Clamp only items that are visible without scrolling for performance reasons.
-            for (var i = 0; i < length; i++) {
-                clampItem(searchSummaries[i]);
-            }
         }, 0);
     };
 
-    const optimizeClamping = () => {
-        document.querySelector('.aa-dropdown-menu').addEventListener('scroll', () => {
-            setTimeout(() => {
-                if (prevSearchTerm === searchTerm && !searchScrolled) {
-                    searchScrolled = true;
-                    let searchSummaries = document.querySelectorAll('.suggestion__text');
-                    let length = searchSummaries.length <= 4 ? searchSummaries.length : 4;
+    const triggerSearchPanel = () => {
+        searchTrigger.addEventListener('click', () => {
+            if (!searchTrigger.classList.contains('trigger-active')) {
+                searchTrigger.classList.add('trigger-active');
+                searchTarget.classList.add('toggle-active');
+                const input = searchTarget.querySelector('#nav-search');
 
-                    for (var i = length; i < searchSummaries.length; i++) {
-                        clampItem(searchSummaries[i]);
-                    }
+                if (input) {
+                    setTimeout(() => {
+                        input.focus();
+                    }, 100);
                 }
-            }, 0);
-        }, window.supportsPassive ? {
-            passive: true
-        } : false);
+            }
+        });
     };
 
     const onAutocompleteClosed = () => {
@@ -242,6 +182,11 @@
             navigation.classList.remove('navigation--search-active');
             searchWrapper.classList.remove('navigation__search-wrapper--wide');
             searchOverlay.classList.remove('search-overlay--visible');
+
+            setTimeout(() => {
+                searchTrigger.classList.remove('trigger-active');
+                searchTarget.classList.remove('toggle-active');
+            }, 100);
         }
     };
 
@@ -252,22 +197,12 @@
             searchOverlay.classList.add('search-overlay--visible');
         }
         searchInput.focus();
-
-        if (searchTerm !== '' && !isClampSupported && searchWrapper) {
-            clampDelay = 250;
-
-            setTimeout(() => {
-                clampDelay = 0;
-            }, 250);
-        } else {
-            clampDelay = 0;
-        }
     };
 
     const getSuggestionsSource = (hitsSource, query, callback) => {
         hitsSource(query, (suggestions) => {
             searchResultsNumber = suggestions.length;
-            let formattedSuggestions = [];
+            const formattedSuggestions = [];
 
             for (let i = 0; i < suggestions.length; i++) {
                 formattedSuggestions.push(formatSuggestionContent(suggestions[i]))
@@ -334,14 +269,13 @@
         // Get urlMap and init the autocomplete
         window.helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
             initAutocomplete(urlMap);
-            optimizeClamping();
         }, 'json');
     };
 
     const setFocusOnMagnifier = (prefix) => {
-        let search = document.querySelector(`.${prefix}__search`);
+        const search = document.querySelector(`.${prefix}__search`);
         if (search) {
-            let icon = search.querySelector(`.${prefix}__search-icon`);
+            const icon = search.querySelector(`.${prefix}__search-icon`);
             icon.addEventListener('click', () => {
                 searchInput.focus();
             });
@@ -352,5 +286,6 @@
         initAlgoliaSearch();
         setFocusOnMagnifier('navigation');
         setFocusOnMagnifier('hero');
+        triggerSearchPanel();
     }
 })();

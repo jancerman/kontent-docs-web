@@ -1,6 +1,6 @@
 const {
     DeliveryClient
-} = require('kentico-cloud-delivery');
+} = require('@kentico/kontent-delivery');
 const {
     deliveryConfig
 } = require('../config');
@@ -8,7 +8,6 @@ const requestDelivery = require('./requestDelivery');
 const helper = require('./helperFunctions');
 const ensureSingle = require('./ensureSingle');
 let fields = ['codename', 'url'];
-let createUrlMap, handleNode;
 
 // Define length of url for specific content types (number of path elements)
 const typeLevels = {
@@ -48,7 +47,7 @@ const typeLevels = {
 };
 
 const getMapItem = (data) => {
-    let item = {};
+    const item = {};
     fields.forEach(field => {
         switch (field) {
             case 'codename':
@@ -90,7 +89,7 @@ const redefineTypeLevelArticle = (response, urlLength) => {
 
 const handleLangForMultiplatformArticle = async (queryString, item, res) => {
     queryString = '?tech=';
-    const cachedPlatforms = await ensureSingle(res, `platformsConfig`, async () => {
+    const cachedPlatforms = await ensureSingle(res, 'platformsConfig', async () => {
         const KCDetails = {
             projectid: res.locals.projectid,
             previewapikey: res.locals.previewapikey,
@@ -103,8 +102,8 @@ const handleLangForMultiplatformArticle = async (queryString, item, res) => {
             ...KCDetails
         });
     });
-    if (cachedPlatforms && cachedPlatforms.length && item.elements.platform && item.elements.platform.value.length) {
-        let tempPlatform = cachedPlatforms[0].options.filter(elem => item.elements.platform.value[0].codename === elem.platform.value[0].codename);
+    if (cachedPlatforms && cachedPlatforms.length && item.platform && item.platform.value.length) {
+        const tempPlatform = cachedPlatforms[0].options.value.filter(elem => item.platform.value[0].codename === elem.platform.value[0].codename);
         if (tempPlatform.length) {
             queryString += tempPlatform[0].url.value;
         }
@@ -142,10 +141,10 @@ const getTypeLevel = (typeLength, urlLength) => {
     return typeLevel;
 };
 
-createUrlMap = async (response, isSitemap, url, urlMap = [], res) => {
-    let nodes = [];
-    let queryString = '';
-    let hash = '';
+const createUrlMap = async (response, isSitemap, url, urlMap = [], res) => {
+    const nodes = [];
+    const queryString = '';
+    const hash = '';
 
     if (response.items) nodes.push('items');
     if (response.navigation) nodes.push('navigation');
@@ -160,7 +159,9 @@ createUrlMap = async (response, isSitemap, url, urlMap = [], res) => {
 
     for (let i = 0; i < nodes.length; i++) {
         if (response[nodes[i]]) {
-            for await (const item of response[nodes[i]]) {
+            const items = response[nodes[i]].value || response[nodes[i]];
+
+            for await (const item of items) {
                 urlMap = await handleNode({
                     response,
                     item,
@@ -178,14 +179,14 @@ createUrlMap = async (response, isSitemap, url, urlMap = [], res) => {
     return urlMap;
 };
 
-handleNode = async (settings) => {
+const handleNode = async (settings) => {
     if (settings.response.system && settings.item.system && settings.response.system.type === 'navigation_item' && settings.item.system.type === 'multiplatform_article') {
         settings.url.length = 2;
     }
 
     typeLevels.article.urlLength = redefineTypeLevelArticle(settings.response, settings.url.length);
 
-    if ((settings.item.elements.url || settings.item.system.type === 'zapi_security_scheme') && typeLevels[settings.item.system.type]) {
+    if ((settings.item.url || settings.item.system.type === 'zapi_security_scheme') && typeLevels[settings.item.system.type]) {
         const typeLevel = getTypeLevel(typeLevels[settings.item.system.type].urlLength, settings.url.length);
 
         settings.url.length = typeLevel;
@@ -201,13 +202,13 @@ handleNode = async (settings) => {
                 slug = tempProperties.slug;
                 settings.url = tempProperties.url; */
         } else if (settings.item.system.type === 'zapi__category') {
-            settings.hash = `#tag/${helper.capitalizeFirstLetter(settings.item.elements.url.value)}`;
+            settings.hash = `#tag/${helper.replaceWhitespaceWithDash(settings.item.name.value)}`;
         } else if (settings.item.system.type === 'zapi_path_operation') {
-            settings.hash = `#operation/${settings.item.elements.url.value}`;
+            settings.hash = `#operation/${settings.item.url.value}`;
         } else if (settings.item.system.type === 'zapi_security_scheme') {
-            settings.hash = `#section/Authentication`;
+            settings.hash = '#section/Authentication';
         } else {
-            slug = settings.item.elements.url.value;
+            slug = settings.item.url.value;
         }
 
         if (slug) {
@@ -240,7 +241,7 @@ const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
         .type('article');
 
     const articles = await query
-        .getPromise();
+        .toPromise();
 
     articles.items.forEach((articleItem) => {
         let isInUrlMap = false;
@@ -253,7 +254,7 @@ const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
         if (!isInUrlMap) {
             urlMap.push(getMapItem({
                 codename: articleItem.system.codename,
-                url: `/other/${articleItem.elements.url.value}`,
+                url: `/other/${articleItem.url.value}`,
                 date: articleItem.system.lastModified,
                 visibility: articleItem.visibility && articleItem.visibility.value.length ? articleItem.visibility.value : null,
                 type: 'article'
@@ -274,8 +275,9 @@ const getUrlMap = async (res, isSitemap) => {
     }
 
     if (res.locals.securedapikey) {
-        deliveryConfig.securedApiKey = res.locals.securedapikey;
-        deliveryConfig.enableSecuredMode = true;
+        deliveryConfig.secureApiKey = res.locals.securedapikey;
+        deliveryConfig.globalQueryConfig = {};
+        deliveryConfig.globalQueryConfig.useSecuredMode = true;
     }
 
     const deliveryClient = new DeliveryClient(deliveryConfig);
@@ -288,7 +290,7 @@ const getUrlMap = async (res, isSitemap) => {
         .depthParameter(5);
 
     const response = await query
-        .getPromise();
+        .toPromise();
 
     if (isSitemap) {
         fields = ['codename', 'url', 'date', 'visibility', 'type'];

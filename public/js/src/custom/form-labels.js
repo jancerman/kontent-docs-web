@@ -8,7 +8,7 @@
     };
 
     const handleLabels = () => {
-        let inputs = document.querySelectorAll('.form__input');
+        const inputs = document.querySelectorAll('.form__input');
 
         if (inputs.length) {
             inputs.forEach((item) => {

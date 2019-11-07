@@ -11,13 +11,13 @@ const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 
 router.get('/articles', asyncHandler(async (req, res) => {
-    const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
+    const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
         return await getUrlMap(res);
     });
-    const home = await handleCache.ensureSingle(res, `home`, async () => {
+    const home = await handleCache.ensureSingle(res, 'home', async () => {
         return commonContent.getHome(res);
     });
-    const articles = await handleCache.ensureSingle(res, `rss_articles`, async () => {
+    const articles = await handleCache.ensureSingle(res, 'rss_articles', async () => {
         return commonContent.geRSSArticles(res);
     });
 

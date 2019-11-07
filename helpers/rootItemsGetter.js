@@ -48,14 +48,14 @@ function getDirectParents(codename, allItems) {
 function checkIfItemIsParent(item, codename) {
     switch (item.system.type) {
         case 'code_samples':
-            return item.elements.code_samples.value.includes(codename);
+            return item.code_samples.itemCodenames.includes(codename);
         case 'article':
         case 'scenario':
-            return item.elements.content.modular_content.includes(codename) ||
-                   item.elements.introduction.modular_content.includes(codename);
+            return item.content.linkedItemCodenames.includes(codename) ||
+                   item.introduction.linkedItemCodenames.includes(codename);
         case 'callout':
         case 'content_chunk':
-            return item.elements.content.modular_content.includes(codename);
+            return item.content.linkedItemCodenames.includes(codename);
         default:
             return false;
     }

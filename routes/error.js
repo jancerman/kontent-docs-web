@@ -5,10 +5,10 @@ const handleCache = require('../helpers/handleCache');
 const asyncHandler = require('express-async-handler');
 
 const error = asyncHandler(async (req, res) => {
-    const footer = await handleCache.ensureSingle(res, `footer`, async (res) => {
+    const footer = await handleCache.ensureSingle(res, 'footer', async (res) => {
         return commonContent.getFooter(res);
     });
-    const UIMessages = await handleCache.ensureSingle(res, `UIMessages`, async () => {
+    const UIMessages = await handleCache.ensureSingle(res, 'UIMessages', async () => {
         return commonContent.getUIMessages(res);
     });
     const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
@@ -17,10 +17,10 @@ const error = asyncHandler(async (req, res) => {
         return res.status(500).send('Unexpected error, please check site logs.');
     }
 
-    const content = await handleCache.ensureSingle(res, `not_found`, async () => {
+    const content = await handleCache.ensureSingle(res, 'not_found', async () => {
         return commonContent.getNotFound(res);
     });
-    const home = await handleCache.ensureSingle(res, `home`, async () => {
+    const home = await handleCache.ensureSingle(res, 'home', async () => {
         return commonContent.getHome(res);
     });
 
@@ -28,7 +28,7 @@ const error = asyncHandler(async (req, res) => {
         req: req,
         minify: minify,
         slug: '404',
-        navigation: home && home.length ? home[0].navigation : [],
+        navigation: home && home.length ? home[0].navigation.value : [],
         title: content && content.length ? content[0].title.value : '',
         titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Kontent Docs'}`,
         content: content && content.length ? content[0].content.value : '',

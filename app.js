@@ -38,6 +38,7 @@ const urlWhitelist = [
   '/other/*',
   '/scenario/*',
   '/article/*',
+  '/mta/*',
   '/form/*',
   '/urlmap',
   '/kentico-icons.min.css',
@@ -100,7 +101,7 @@ const handleKCKeys = (req, res) => {
 };
 
 const pageExists = async (req, res) => {
-  const urlMap = await handleCache.evaluateSingle(res, `urlMap`, async () => {
+  const urlMap = await handleCache.evaluateSingle(res, 'urlMap', async () => {
     return await getUrlMap(res);
   });
 
@@ -161,7 +162,7 @@ app.use('/kentico-icons.min.css', kenticoIcons);
 
 app.use('/', asyncHandler(async (req, res, next) => {
   if (!req.originalUrl.startsWith('/cache-invalidate') && !req.originalUrl.startsWith('/kentico-icons.min.css') && !req.originalUrl.startsWith('/form')) {
-    await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home', 'navigationItems']);
+    await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home', 'navigationItems', 'articles']);
     await handleCache.cacheAllAPIReferences(res);
   }
 
@@ -183,6 +184,7 @@ app.use('/redirect-urls', async (req, res, next) => {
 }, redirectUrls);
 
 app.use('/sitemap.xml', sitemap);
+
 app.use('/rss', async (req, res, next) => {
   await handleCache.evaluateCommon(res, ['rss_articles']);
   return next();
@@ -195,7 +197,7 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
     maxAge: 0
   };
 
-  const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
+  const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
     return await getUrlMap(res);
   });
 
@@ -204,17 +206,17 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
 
 // Dynamic routing setup
 app.use('/', async (req, res, next) => {
-  let topLevel = req.originalUrl.split('/')[1];
-  let navigationItems = await handleCache.ensureSingle(res, `navigationItems`, async () => {
+  const topLevel = req.originalUrl.split('/')[1];
+  const navigationItems = await handleCache.ensureSingle(res, 'navigationItems', async () => {
     return commonContent.getNavigationItems(res);
   });
 
   if (navigationItems) {
-    res.locals.router = navigationItems.filter(item => topLevel === item.elements.url.value);
+    res.locals.router = navigationItems.filter(item => topLevel === item.url.value);
   }
 
-  if (res.locals.router && res.locals.router.length && res.locals.router[0].elements.type.value.length) {
-    res.locals.router = res.locals.router[0].elements.type.value[0].codename;
+  if (res.locals.router && res.locals.router.length && res.locals.router[0].type.value.length) {
+    res.locals.router = res.locals.router[0].type.value[0].codename;
   } else /* if (topLevel === 'other' || topLevel === 'article') */ {
     res.locals.router = 'tutorials';
   }

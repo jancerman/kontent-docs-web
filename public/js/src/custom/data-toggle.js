@@ -9,8 +9,8 @@
             event.preventDefault();
 
             // Find target element according to the trigger name
-            let toToggle = item.getAttribute('data-toggle-trigger');
-            let elemToToggle = document.querySelector(`[data-toggle-target="${toToggle}"]`);
+            const toToggle = item.getAttribute('data-toggle-trigger');
+            const elemToToggle = document.querySelector(`[data-toggle-target="${toToggle}"]`);
 
             // Add/remove class names that show/hide target elements
             if (elemToToggle.classList.contains('toggle-active')) {
@@ -21,7 +21,7 @@
                 elemToToggle.classList.add('toggle-active');
 
                 // In case target contains input, set focus on it
-                let input = elemToToggle.querySelector('#nav-search');
+                const input = elemToToggle.querySelector('#nav-search');
 
                 if (input) {
                     setTimeout(() => {

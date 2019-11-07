@@ -1,27 +1,35 @@
 [class^="icon-"],
 [class*=" icon-"] {
     display: inline-block;
-    font-family: "kentico-icons"; // Better Font Rendering in Chrome
+    font-family: "kentico-icons";
+    // Better Font Rendering in Chrome
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-style: normal !important;
-    font-weight: normal !important;
-    font-variant: normal !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
     line-height: 1;
-    text-transform: none !important;
+    text-transform: none;
     speak: none;
+}
+
+.icon {
+    &--xs {
+        font-size: @icon-size-200;
+    }
 }
 
 [class^="icon-"]:before {
     content: @icon-square;
 }
 
-// Icon aliases
+.icon-only:before {
+    content: none;
+}
 
 /*----------------------------------------------------------------------------*\
     #navigation
 \*----------------------------------------------------------------------------*/
-
 .icon-app-menu:before {
     content: @icon-kentico;
 }
@@ -34,10 +42,13 @@
     content: @icon-times;
 }
 
+.icon-home:before {
+    content: @icon-home;
+}
+
 /*----------------------------------------------------------------------------*\
     #Main menu
 \*----------------------------------------------------------------------------*/
-
 .icon-content-models:before {
     content: @icon-layout;
 }
@@ -62,10 +73,33 @@
     content: @icon-question-circle;
 }
 
-/*----------------------------------------------------------------------------*\
-    #Dropdown
-\*----------------------------------------------------------------------------*/
+.icon-product-update:before {
+    content: @icon-gift;
+}
 
+.icon-night-mode:before {
+    content: @icon-light-bulb;
+}
+
+.icon-support:before {
+    content: @icon-bubble;
+}
+
+.icon-close-support:before {
+    content: @icon-bubble-times;
+}
+
+.icon-intercom {
+    transform: translate(0, 1px);
+
+    &:before {
+        content: @icon-intercom;
+    }
+}
+
+/*----------------------------------------------------------------------------*\
+	#Dropdown
+\*----------------------------------------------------------------------------*/
 .icon-forward:before {
     content: @icon-chevron-right;
 }
@@ -79,9 +113,8 @@
 }
 
 /*----------------------------------------------------------------------------*\
-    #compose
+	#compose
 \*----------------------------------------------------------------------------*/
-
 .icon-controls:before {
     content: @icon-square-dashed-line;
 }
@@ -99,9 +132,8 @@
 }
 
 /*----------------------------------------------------------------------------*\
-    #statuses
+	#statuses
 \*----------------------------------------------------------------------------*/
-
 .icon-error:before {
     content: @icon-times-circle;
 }
@@ -127,9 +159,8 @@
 }
 
 /*----------------------------------------------------------------------------*\
-    #crud
+	#crud
 \*----------------------------------------------------------------------------*/
-
 .icon-add:before {
     content: @icon-plus;
 }
@@ -175,9 +206,8 @@
 }
 
 /*----------------------------------------------------------------------------*\
-    #rte
+	#rte
 \*----------------------------------------------------------------------------*/
-
 .icon-autogenerate:before {
     content: @icon-rotate-double-right;
 }
@@ -230,10 +260,33 @@
     content: @icon-bubble-o;
 }
 
-/*----------------------------------------------------------------------------*\
-    #projects
-\*----------------------------------------------------------------------------*/
+.icon-bold:before {
+    content: @icon-b;
+}
 
+.icon-italic:before {
+    content: @icon-i;
+}
+
+.icon-clear-formatting:before {
+    content: @icon-brush-slashed;
+}
+
+.icon-superscript:before {
+    content: @icon-superscript;
+}
+
+.icon-subscript:before {
+    content: @icon-subscript;
+}
+
+.icon-code:before {
+    content: @icon-xml-tag;
+}
+
+/*----------------------------------------------------------------------------*\
+	#projects
+\*----------------------------------------------------------------------------*/
 .icon-archive:before {
     content: @icon-arrow-down-line;
 }
@@ -243,9 +296,8 @@
 }
 
 /*----------------------------------------------------------------------------*\
-    #asset-uploader
+	#asset-uploader
 \*----------------------------------------------------------------------------*/
-
 .icon-download:before {
     content: @icon-arrow-down-line;
 }
@@ -263,9 +315,8 @@
 }
 
 /*----------------------------------------------------------------------------*\
-    #bar-item
+	#bar-item
 \*----------------------------------------------------------------------------*/
-
 .icon-collapse:before {
     content: @icon-chevron-down;
 }
@@ -282,10 +333,13 @@
     content: @icon-chevron-down;
 }
 
-/*----------------------------------------------------------------------------*\
-    #content-item-toolbar__workflow-status
-\*----------------------------------------------------------------------------*/
+.icon-duplicate:before {
+    content: @icon-doc-copy;
+}
 
+/*----------------------------------------------------------------------------*\
+	#content-item-toolbar__workflow-status
+\*----------------------------------------------------------------------------*/
 .icon-configure:before {
     content: @icon-edit;
 }
@@ -295,17 +349,15 @@
 }
 
 /*----------------------------------------------------------------------------*\
-    #codename
+	#codename
 \*----------------------------------------------------------------------------*/
-
 .icon-copy:before {
     content: @icon-doc-copy;
 }
 
 /*----------------------------------------------------------------------------*\
-    #comments
+	#comments
 \*----------------------------------------------------------------------------*/
-
 .icon-comments:before {
     content: @icon-bubbles;
 }
@@ -319,25 +371,22 @@
 }
 
 /*----------------------------------------------------------------------------*\
-    #tree
+	#tree
 \*----------------------------------------------------------------------------*/
-
 .icon-expand-tree:before {
     content: @icon-chevron-down;
 }
 
 /*----------------------------------------------------------------------------*\
-    #filter
+	#filter
 \*----------------------------------------------------------------------------*/
-
 .icon-clear-filter:before {
     content: @icon-times-circle;
 }
 
 /*----------------------------------------------------------------------------*\
-    #password-field
+	#password-field
 \*----------------------------------------------------------------------------*/
-
 .icon-mask-password:before {
     content: @icon-eye-slash;
 }
@@ -347,25 +396,22 @@
 }
 
 /*----------------------------------------------------------------------------*\
-    #codenames
+	#codenames
 \*----------------------------------------------------------------------------*/
-
 .icon-codename:before {
     content: @icon-braces-octothorpe;
 }
 
 /*----------------------------------------------------------------------------*\
-    #preview
+	#preview
 \*----------------------------------------------------------------------------*/
-
 .icon-preview:before {
     content: @icon-eye;
 }
 
 /*----------------------------------------------------------------------------*\
-    #content-elements
+	#content-elements
 \*----------------------------------------------------------------------------*/
-
 .icon-configure-type-element:before {
     content: @icon-cogwheel;
 }
@@ -376,6 +422,10 @@
 
 .icon-content-element-date-time:before {
     content: @icon-calendar;
+}
+
+.icon-content-element-group:before {
+    content: @icon-tab;
 }
 
 .icon-content-element-guidelines:before {
@@ -403,7 +453,7 @@
 }
 
 .icon-content-element-custom:before {
-    content: @icon-dialog-window-cogwheel;
+    content: @icon-custom-element;
 }
 
 .icon-content-element-snippet:before {
@@ -427,9 +477,8 @@
 }
 
 /*----------------------------------------------------------------------------*\
-    #Language switcher
+	#Language switcher
 \*----------------------------------------------------------------------------*/
-
 .icon-select:before {
     content: @icon-cb-uncheck;
 }
@@ -443,15 +492,18 @@
 }
 
 /*----------------------------------------------------------------------------*\
-    #Miscellaneous
+	#Miscellaneous
 \*----------------------------------------------------------------------------*/
-
 .icon-arrow-right-top-square:before {
     content: @icon-arrow-right-top-square;
 }
 
 .icon-arrow-right:before {
     content: @icon-arrow-right;
+}
+
+.icon-bug:before {
+    content: @icon-bug;
 }
 
 .icon-calendar:before {
@@ -494,6 +546,10 @@
     content: @icon-i-circle;
 }
 
+.icon-circle:before {
+    content: @icon-circle;
+}
+
 .icon-menu:before {
     content: @icon-menu;
 }
@@ -514,8 +570,12 @@
     content: @icon-question-circle;
 }
 
+.icon-user:before {
+    content: @icon-user;
+}
+
 /*----------------------------------------------------------------------------*\
-    #quickstart
+	#quickstart
 \*----------------------------------------------------------------------------*/
 
 .icon-talk:before {
@@ -534,16 +594,20 @@
     content: @icon-watch;
 }
 
-.icon-code:before {
-    content: @icon-xml-tag;
-}
-
 .icon-documentation:before {
     content: @icon-book-opened;
 }
 
+.icon-set-workflows:before {
+    content: @icon-cogwheel;
+}
+
+.icon-assign-contributors:before {
+    content: @icon-users;
+}
+
 /*----------------------------------------------------------------------------*\
-    #welcome
+	#welcome
 \*----------------------------------------------------------------------------*/
 
 .icon-sample-content:before {
@@ -559,7 +623,7 @@
 }
 
 /*----------------------------------------------------------------------------*\
-    #onboarding
+	#onboarding
 \*----------------------------------------------------------------------------*/
 
 .icon-layout-header-cols2-footer:before {
@@ -574,15 +638,70 @@
     content: @icon-arrows-h;
 }
 
-.article__content [target="_blank"]:not(.no-icon) {
-    &:after {
-        content: @icon-arrow-right-top-square;
-        font-family: 'kentico-icons';
-        font-style: normal;
-        display: inline-block;
-        padding: 0 .375em 0 .125em;
-        font-size: .675em;
-        position: relative;
-        top: -.325em;
-    }
+/*----------------------------------------------------------------------------*\
+	#files
+\*----------------------------------------------------------------------------*/
+
+.icon-folder:before {
+    content: @icon-folder;
+}
+
+.icon-folder-opened:before {
+    content: @icon-folder-opened;
+}
+
+/*----------------------------------------------------------------------------*\
+	#content item menu
+\*----------------------------------------------------------------------------*/
+
+.icon-ellipsis:before {
+    content: @icon-ellipsis;
+}
+
+.icon-change-due-date:before {
+    content: @icon-calendar;
+}
+
+.icon-change-workflow:before {
+    content: @icon-arrow-double-right;
+}
+
+.icon-publish:before {
+    content: @icon-paper-plane;
+}
+
+.icon-show-resolved-comments:before {
+    content: @icon-bubble;
+}
+
+.icon-show-comments:before {
+    content: @icon-bubble-show;
+}
+
+.icon-hide-comments:before {
+    content: @icon-bubble-hide;
+}
+
+.icon-share:before {
+    content: @icon-scheme-connected-circles;
+}
+
+.icon-expand-components:before {
+    content: @icon-expand;
+}
+
+.icon-collapse-components:before {
+    content: @icon-collapse;
+}
+
+.icon-copy-from-language:before {
+    content: @icon-translate;
+}
+
+.icon-create-new-item:before {
+    content: @icon-doc-plus;
+}
+
+.icon-compare-versions:before {
+    content: @icon-clock;
 }

@@ -9,7 +9,7 @@ const handleCache = require('../helpers/handleCache');
 const asyncHandler = require('express-async-handler');
 
 router.get('/', asyncHandler(async (req, res, next) => {
-  const home = await handleCache.ensureSingle(res, `home`, async () => {
+  const home = await handleCache.ensureSingle(res, 'home', async () => {
     return commonContent.getHome(res);
   });
 
@@ -17,10 +17,10 @@ router.get('/', asyncHandler(async (req, res, next) => {
     return next();
   }
 
-  const footer = await handleCache.ensureSingle(res, `footer`, async () => {
+  const footer = await handleCache.ensureSingle(res, 'footer', async () => {
     return commonContent.getFooter(res);
   });
-  const UIMessages = await handleCache.ensureSingle(res, `UIMessages`, async () => {
+  const UIMessages = await handleCache.ensureSingle(res, 'UIMessages', async () => {
     return commonContent.getUIMessages(res);
   });
   const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
@@ -33,7 +33,7 @@ router.get('/', asyncHandler(async (req, res, next) => {
     title: home[0].title.value,
     titleSuffix: '',
     description: helper.stripTags(home[0].description.value).substring(0, 300),
-    navigation: home[0].navigation,
+    navigation: home[0].navigation.value,
     introNote: home[0].intro_note.value,
     signposts: home[0].signposts.value,
     support: home[0].support.value,

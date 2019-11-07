@@ -24,7 +24,7 @@
     };
 
     const toggleLevel2 = () => {
-        let level2 = document.querySelector('.sub-navigation--level-2');
+        const level2 = document.querySelector('.sub-navigation--level-2');
 
         if (level2) {
             level2.addEventListener('click', event => {
@@ -37,14 +37,14 @@
 
     // Make the sub-navigation fixed to top/bottom of the sreen, or to header/footer
     const fixSubNav = () => {
-        let subNavigation = document.querySelector('.sub-navigation.sub-navigation--level-1');
-        let viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        const subNavigation = document.querySelector('.sub-navigation.sub-navigation--level-1');
+        const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 
         if (viewportWidth >= 768 && subNavigation) {
-            let topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
-            let isTop = topOffset <= document.querySelector('.navigation').offsetHeight;
+            const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
+            const isTop = topOffset <= document.querySelector('.navigation').offsetHeight;
 
-            let isBottom = (window.innerHeight + window.pageYOffset + window.helper.outerHeight(document.querySelector('.footer'))) >= document.body.offsetHeight;
+            const isBottom = (window.innerHeight + window.pageYOffset + window.helper.outerHeight(document.querySelector('.footer'))) >= document.body.offsetHeight;
 
             if (isTop) {
                 subNavigation.classList.add('sub-navigation--top');

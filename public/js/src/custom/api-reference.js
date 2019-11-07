@@ -12,21 +12,21 @@
   var getPrismClassName = function (item) {
     var lang;
     var pairings = {
-      'rest': 'shell',
-      'shell': 'shell',
-      'curl': 'shell',
-      '_net': 'dotnet',
-      'c_': 'dotnet',
-      'javascript': 'js',
-      'json': 'js',
-      'typescript': 'ts',
-      'java': 'java',
-      'android': 'java',
-      'javarx': 'java',
-      'php': 'php',
-      'swift': 'swift',
-      'python': 'python',
-      'ruby': 'ruby'
+      rest: 'shell',
+      shell: 'shell',
+      curl: 'shell',
+      _net: 'dotnet',
+      c_: 'dotnet',
+      javascript: 'js',
+      json: 'js',
+      typescript: 'ts',
+      java: 'java',
+      android: 'java',
+      javarx: 'java',
+      php: 'php',
+      swift: 'swift',
+      python: 'python',
+      ruby: 'ruby'
     };
 
     if (item) {

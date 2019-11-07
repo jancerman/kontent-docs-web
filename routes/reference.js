@@ -23,9 +23,10 @@ const handleArticle = async (settings, req, res) => {
     });
     const platformsConfig = await platforms.getPlatformsConfig(res);
     let cookiesPlatform = req.cookies['KCDOCS.preselectedLanguage'];
-    let availablePlatforms, preselectedPlatform, canonicalUrl;
+    let availablePlatforms;
+    let preselectedPlatform;
 
-    let preselectedPlatformSettings = await platforms.getPreselectedPlatform(settings.content[0], cookiesPlatform, req, res);
+    const preselectedPlatformSettings = await platforms.getPreselectedPlatform(settings.content[0], cookiesPlatform, req, res);
 
     if (!preselectedPlatformSettings) {
         return null;
@@ -38,7 +39,7 @@ const handleArticle = async (settings, req, res) => {
         res.cookie('KCDOCS.preselectedLanguage', cookiesPlatform);
     }
 
-    canonicalUrl = platforms.getCanonicalUrl(settings.urlMap, settings.content[0], preselectedPlatform);
+    const canonicalUrl = platforms.getCanonicalUrl(settings.urlMap, settings.content[0], preselectedPlatform);
 
     if (settings.content && settings.content.length && settings.content[0].system.type === 'multiplatform_article') {
         const multiplatformArticleContent = await platforms.getMultiplatformArticleContent(settings.content, preselectedPlatform, settings.urlMap, settings.KCDetails, res);
@@ -61,7 +62,7 @@ const handleArticle = async (settings, req, res) => {
     settings.renderSettings.data.introduction = settings.content && settings.content.length && settings.content[0].introduction ? settings.content[0].introduction.value : null;
     settings.renderSettings.data.nextSteps = settings.content && settings.content.length && settings.content[0].next_steps ? settings.content[0].next_steps : '';
     settings.renderSettings.data.content = settings.content && settings.content.length ? settings.content[0] : null;
-    settings.renderSettings.data.subNavigation = subNavigation[0] ? subNavigation[0].children : [];
+    settings.renderSettings.data.subNavigation = subNavigation[0] ? subNavigation[0].children.value : [];
     settings.renderSettings.data.moment = moment;
     settings.renderSettings.data.canonicalUrl = canonicalUrl
 
@@ -123,7 +124,7 @@ const resolveLinks = (data, urlMap) => {
 
 const getRedocReference = async (apiCodename, res) => {
     return await handleCache.evaluateSingle(res, `reDocReference_${apiCodename}`, async () => {
-        let baseURL = process.env['referenceRenderUrl'];
+        const baseURL = process.env.referenceRenderUrl;
         let data = '';
 
         if (baseURL) {
@@ -146,8 +147,8 @@ router.get('/:main', asyncHandler(async (req, res, next) => {
 
     let redirectSlug = '';
 
-    if (subNavigation[0] && subNavigation[0].children[0] && subNavigation[0].children[0].url) {
-        redirectSlug = subNavigation[0].children[0].url.value;
+    if (subNavigation[0] && subNavigation[0].children && subNavigation[0].children.value[0].url) {
+        redirectSlug = subNavigation[0].children.value[0].url.value;
     }
 
     return res.redirect(301, `/${slug}/${redirectSlug}`);
@@ -161,16 +162,16 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
     const KCDetails = commonContent.getKCDetails(res);
     const slug = req.params.slug;
 
-    const urlMap = await handleCache.ensureSingle(res, `urlMap`, async () => {
+    const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
         return await getUrlMap(res);
     });
-    const home = await handleCache.ensureSingle(res, `home`, async () => {
+    const home = await handleCache.ensureSingle(res, 'home', async () => {
         return await commonContent.getHome(res);
     });
-    const footer = await handleCache.ensureSingle(res, `footer`, async () => {
+    const footer = await handleCache.ensureSingle(res, 'footer', async () => {
         return await commonContent.getFooter(res);
     });
-    const UIMessages = await handleCache.ensureSingle(res, `UIMessages`, async () => {
+    const UIMessages = await handleCache.ensureSingle(res, 'UIMessages', async () => {
         return await commonContent.getUIMessages(res);
     });
 
@@ -226,7 +227,7 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
             isPreview: isPreview(res.locals.previewapikey),
             title: content && content.length ? content[0].title.value : '',
             titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Kontent Docs'}`,
-            navigation: home && home.length ? home[0].navigation : null,
+            navigation: home && home.length ? home[0].navigation.value : null,
             footer: footer && footer.length ? footer[0] : null,
             UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
             platformsConfig: platformsConfigPairings && platformsConfigPairings.length ? platformsConfigPairings : null,

@@ -36,21 +36,21 @@ const helper = {
     getPrismClassName: (item) => {
         let lang;
         const pairings = {
-            'rest': 'shell',
-            'shell': 'shell',
-            'curl': 'shell',
-            '_net': 'dotnet',
-            'c_': 'dotnet',
-            'javascript': 'js',
-            'json': 'js',
-            'typescript': 'ts',
-            'java': 'java',
-            'android': 'java',
-            'javarx': 'java',
-            'php': 'php',
-            'swift': 'swift',
-            'python': 'python',
-            'ruby': 'ruby'
+            rest: 'shell',
+            shell: 'shell',
+            curl: 'shell',
+            _net: 'dotnet',
+            c_: 'dotnet',
+            javascript: 'js',
+            json: 'js',
+            typescript: 'ts',
+            java: 'java',
+            android: 'java',
+            javarx: 'java',
+            php: 'php',
+            swift: 'swift',
+            python: 'python',
+            ruby: 'ruby'
         }
 
         if (item && item.codename) {
@@ -68,11 +68,15 @@ const helper = {
     },
     resolveMacros: (text) => {
         // If macro in format {@ sometext @}, replace it by icon
-        let replaced = text.replace(/{@[a-z,0-9,-]+@}/g, (match) => {
-            return `<i aria-hidden="true" class="icon ${match.replace('{@', '').replace('@}', '')}"></i>`;
+        let replaced = text.replace(/{@[^@]+@}/g, (match) => {
+            const text = match.replace('{@', '').replace('@}', '').split('|');
+            const icon = text.length ? text[0] : '';
+            const tooltip = text.length > 1 ? text[1] : '';
+
+            return `<i aria-hidden="true" class="icon ${icon}">${tooltip ? `<span class="icon__tooltip">${tooltip}</span>` : ''}</i>`;
         });
 
-        // If macro in format {~ sometext ~}, replace it by inlone code
+        // If macro in format {~ sometext ~}, replace it by inline code
         replaced = replaced.replace(/{~[^~]+~}/g, (match) => {
             return `<code>${match.replace('{~', '').replace('~}', '')}</code>`;
         });
@@ -81,6 +85,21 @@ const helper = {
     },
     capitalizeFirstLetter: (text) => {
         return text.charAt(0).toUpperCase() + text.slice(1)
+    },
+    replaceWhitespaceWithDash: (text) => {
+        return text.replace(/\s/g, '-');
+    },
+    removeUnderscoreElems: (elems) => {
+        for (let i = 0; i < elems.length; i++) {
+            if (elems[i].startsWith('_')) {
+                const index = elems.indexOf(elems[i]);
+                if (index > -1) {
+                    elems.splice(index, 1);
+                }
+            }
+        }
+
+        return elems;
     }
 };
 
