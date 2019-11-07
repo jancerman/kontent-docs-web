@@ -62,7 +62,7 @@ const handleArticle = async (settings, req, res) => {
     settings.renderSettings.data.introduction = settings.content && settings.content.length && settings.content[0].introduction ? settings.content[0].introduction.value : null;
     settings.renderSettings.data.nextSteps = settings.content && settings.content.length && settings.content[0].next_steps ? settings.content[0].next_steps : '';
     settings.renderSettings.data.content = settings.content && settings.content.length ? settings.content[0] : null;
-    settings.renderSettings.data.subNavigation = subNavigation[0] ? subNavigation[0].children.value : [];
+    settings.renderSettings.data.subNavigation = subNavigation && subNavigation.length ? subNavigation[0].children.value : [];
     settings.renderSettings.data.moment = moment;
     settings.renderSettings.data.canonicalUrl = canonicalUrl
 
