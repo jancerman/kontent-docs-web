@@ -109,7 +109,7 @@ const getContent = async (req, res) => {
                 view = 'tutorials/pages/scenario';
             }
         } else if (currentLevel === 1) {
-            return `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children[0].url.value}${queryHash ? '?' + queryHash : ''}`;
+            return `/${slug}/${subNavigationLevels[currentLevel - 1]}/${subNavigationLevels[currentLevel]}/${content[0].children.value[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else {
             const preselectedPlatformSettings = await platforms.getPreselectedPlatform(content[0], cookiesPlatform, req, res);
 
