@@ -19,7 +19,7 @@ const getRedirectUrls = async (res) => {
   const redirectMap = [];
 
   articles.forEach(article => {
-    if (article.redirect_urls.value) {
+    if (article.redirect_urls && article.redirect_urls.value) {
       const originalUrl = urlMap.filter(url => url.codename === article.system.codename);
 
       if (originalUrl.length) {
