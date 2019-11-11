@@ -157,19 +157,21 @@
     };
 
     const triggerSearchPanel = () => {
-        searchTrigger.addEventListener('click', () => {
-            if (!searchTrigger.classList.contains('trigger-active')) {
-                searchTrigger.classList.add('trigger-active');
-                searchTarget.classList.add('toggle-active');
-                const input = searchTarget.querySelector('#nav-search');
+        if (searchTrigger) {
+            searchTrigger.addEventListener('click', () => {
+                if (!searchTrigger.classList.contains('trigger-active')) {
+                    searchTrigger.classList.add('trigger-active');
+                    searchTarget.classList.add('toggle-active');
+                    const input = searchTarget.querySelector('#nav-search');
 
-                if (input) {
-                    setTimeout(() => {
-                        input.focus();
-                    }, 100);
+                    if (input) {
+                        setTimeout(() => {
+                            input.focus();
+                        }, 100);
+                    }
                 }
-            }
-        });
+            });
+        }
     };
 
     const onAutocompleteClosed = () => {
@@ -184,8 +186,10 @@
             searchOverlay.classList.remove('search-overlay--visible');
 
             setTimeout(() => {
-                searchTrigger.classList.remove('trigger-active');
-                searchTarget.classList.remove('toggle-active');
+                if (searchTrigger) {
+                    searchTrigger.classList.remove('trigger-active');
+                    searchTarget.classList.remove('toggle-active');
+                }
             }, 100);
         }
     };
