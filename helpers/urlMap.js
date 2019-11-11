@@ -240,8 +240,18 @@ const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
     const query = deliveryClient.items()
         .type('article');
 
-    const articles = await query
+    let articles = await query
         .toPromise();
+
+    // Retry in case of stale content
+    const temps = [0];
+    for await (const temp of temps) {
+        if (articles.hasStaleContent) {
+            articles = await query
+                .toPromise();
+            temps.push(temp);
+        }
+    }
 
     articles.items.forEach((articleItem) => {
         let isInUrlMap = false;
@@ -285,12 +295,22 @@ const getUrlMap = async (res, isSitemap) => {
     const query = deliveryClient.items()
         .type('home')
         .queryConfig({
-            waitForLoadingNewContent: true
+            waitForLoadingNewContent: false
         })
         .depthParameter(5);
 
-    const response = await query
+    let response = await query
         .toPromise();
+
+    // Retry in case of stale content
+    const temps = [0];
+    for await (const temp of temps) {
+        if (response.hasStaleContent) {
+            response = await query
+                .toPromise();
+            temps.push(temp);
+        }
+    }
 
     if (isSitemap) {
         fields = ['codename', 'url', 'date', 'visibility', 'type'];
