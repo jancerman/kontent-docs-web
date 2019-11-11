@@ -8,13 +8,19 @@
     const posted = document.querySelector('.feedback--posted');
 
     const sendFeedback = (value) => {
-        window.dataLayer.push({
-            event: 'event',
-            eventCategory: 'feedback--submitted',
-            eventAction: 'Click',
-            eventLabel: window.location.pathname,
-            eventValue: value
-        });
+        if (!window.dataLayer) {
+            window.dataLayer = [];
+        }
+
+        if (window.dataLayer) {
+            window.dataLayer.push({
+                event: 'event',
+                eventCategory: 'feedback--submitted',
+                eventAction: 'Click',
+                eventLabel: window.location.pathname,
+                eventValue: value
+            });
+        }
     };
 
     const handleFeedback = (e) => {
