@@ -18,7 +18,7 @@ const getUrlMap = require('../helpers/urlMap');
 const handleArticle = async (settings, req, res) => {
     settings.renderSettings.view = 'apiReference/pages/reference';
     const parentSlug = req.originalUrl.split('/')[1];
-    const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${req.params.slug}`, async () => {
+    const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${parentSlug}`, async () => {
         return await commonContent.getSubNavigation(res, parentSlug);
     });
     const platformsConfig = await platforms.getPlatformsConfig(res);
@@ -64,7 +64,8 @@ const handleArticle = async (settings, req, res) => {
     settings.renderSettings.data.content = settings.content && settings.content.length ? settings.content[0] : null;
     settings.renderSettings.data.subNavigation = subNavigation && subNavigation.length ? subNavigation[0].children.value : [];
     settings.renderSettings.data.moment = moment;
-    settings.renderSettings.data.canonicalUrl = canonicalUrl
+    settings.renderSettings.data.canonicalUrl = canonicalUrl;
+    settings.renderSettings.data.projectId = res.locals.projectid;
 
     return settings.renderSettings;
 };

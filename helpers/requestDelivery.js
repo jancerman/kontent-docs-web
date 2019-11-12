@@ -126,11 +126,24 @@ const resolveLink = (link, config) => {
 };
 
 const getResponse = async (query, config) => {
-    const response = await query
+    let response = await query
         .toPromise()
         .catch(err => {
             consola.error(err);
         });
+
+    // Retry in case of stale content
+    const temps = [0];
+    for await (const temp of temps) {
+        if (response.hasStaleContent) {
+            response = await query
+                .toPromise()
+                .catch(err => {
+                    consola.error(err);
+                });
+            temps.push(temp);
+        }
+    }
 
     if (config.resolveRichText && response && response.items) {
         response.items.forEach((elem) => {
@@ -156,7 +169,7 @@ const requestDelivery = async (config) => {
     defineDeliveryConfig(config);
     const query = defineQuery(deliveryConfig, config);
     const queryConfigObject = {
-        waitForLoadingNewContent: true
+        waitForLoadingNewContent: false
     };
 
     if (config.resolveRichText) {
