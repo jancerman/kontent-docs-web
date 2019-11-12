@@ -64,7 +64,8 @@ const handleArticle = async (settings, req, res) => {
     settings.renderSettings.data.content = settings.content && settings.content.length ? settings.content[0] : null;
     settings.renderSettings.data.subNavigation = subNavigation && subNavigation.length ? subNavigation[0].children.value : [];
     settings.renderSettings.data.moment = moment;
-    settings.renderSettings.data.canonicalUrl = canonicalUrl
+    settings.renderSettings.data.canonicalUrl = canonicalUrl;
+    settings.renderSettings.data.projectId = res.locals.projectid;
 
     return settings.renderSettings;
 };
