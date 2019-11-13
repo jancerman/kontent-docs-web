@@ -1,11 +1,33 @@
 .feedback {
 
-	&__heading {
+	@media (min-width: 1150px) {
+		position: fixed;
+		top: 3.75em;
+		width: 920px;
+	}
 
+	&__wrapper {
+		@media (min-width: 1150px) {
+			width: 165px;
+			position: absolute;
+			right: 0;
+		}
+	}
+
+	&__heading, 
+	.article__content & h2,
+	.article__content & h2&__heading {
+		@media (min-width: 1150px) {
+			font-size: 1em;
+		}
 	}
 
 	&__answer {
 		padding: 1.25em 0 0;
+
+		@media (min-width: 1150px) {
+			padding: .25em 0 0;
+		}
 
 		&--answered {
 			.feedback__button:not(.feedback__button--active) {
@@ -32,6 +54,12 @@
 		border-bottom: .25em solid;
 		text-decoration: none;
 		margin: 0 .675em 0 0;
+
+		@media (min-width: 1150px) {
+			font-size: .875em;
+			padding: .25em 1.25em .125em;
+			margin: 0 .5em 0 0;
+		}
 
 		&:hover {
 			color: #fff !important;
@@ -76,16 +104,27 @@
 
 	&__response {
 		padding: .75em 0 0;
+
+		@media (min-width: 1150px) {
+			padding: .25em 0 0;
+		}
 	}
 
 	&__message {
+
+		@media (min-width: 1150px) {
+			font-size: .875em;
+			line-height: 1.25em;
+		}
 
 		&--yes {
 
 		}
 
 		&--no {
-
+			@media (min-width: 1150px) {
+				padding: .75em 0 0;
+			}
 		}
 
 		&--hidden {
