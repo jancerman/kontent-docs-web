@@ -19,17 +19,19 @@ if UIMessages
             .feedback__answer
                 a.feedback__button.feedback__button--yes(href='#yesMsg') !{UIMessages.feedback_form___yes_button.value}
                 a.feedback__button.feedback__button--no(href='#noMsg') !{UIMessages.feedback_form___no_button.value}
-            .feedback__response
-                .feedback__message#yesMsg.feedback__message--yes !{UIMessages.feedback_form___yes_message.value}
-                .feedback__message#noMsg.feedback__message--no !{UIMessages.feedback_form___no_message.value}
-            form.feedback__form.form
-                +textarea('feedback', UIMessages.feedback_form___feedback_label.value)
-                +input('email', 'email', UIMessages.feedback_form___email_label.value)
-                .form__row
-                    .form__recaptcha-disabled
-                    #g-recaptcha-placeholder
-                    +error('g-recaptcha-response')
-                .form__row.form__row--btn
-                    button.form__button !{UIMessages.feedback_form___submit_button.value}
+            .feedback__response-wrapper.feedback__response-wrapper--hidden
+                .feedback__close
+                .feedback__response
+                    .feedback__message#yesMsg.feedback__message--yes !{UIMessages.feedback_form___yes_message.value}
+                    .feedback__message#noMsg.feedback__message--no !{UIMessages.feedback_form___no_message.value}
+                form.feedback__form.form
+                    +textarea('feedback', UIMessages.feedback_form___feedback_label.value)
+                    +input('email', 'email', UIMessages.feedback_form___email_label.value)
+                    .form__row
+                        .form__recaptcha-disabled
+                        #g-recaptcha-placeholder
+                        +error('g-recaptcha-response')
+                    .form__row.form__row--btn
+                        button.form__button !{UIMessages.feedback_form___submit_button.value}
     if process.env['Recaptcha-v2.site']
         #recaptcha-script(data-site=process.env['Recaptcha-v2.site'])

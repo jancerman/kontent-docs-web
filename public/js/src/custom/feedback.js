@@ -5,7 +5,26 @@
     const noMsg = document.querySelector('.feedback__message--no');
     const btnArea = document.querySelector('.feedback__answer');
     const form = document.querySelector('.feedback__form');
+    const wrapper = document.querySelector('.feedback__response-wrapper');
+    const close = document.querySelector('.feedback__close');
     const posted = document.querySelector('.feedback--posted');
+
+    const handleFixed = () => {
+        const selector = document.querySelector('.feedback');
+        const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+
+        if (viewportWidth >= 1150 && selector) {
+            const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
+            const main = document.querySelector('.navigation');
+            const isTop = topOffset <= main.getBoundingClientRect().top + main.offsetHeight + window.scrollY;
+
+            if (isTop) {
+                selector.classList.remove('feedback--visible');
+            } else {
+                selector.classList.add('feedback--visible');
+            }
+        }
+    };
 
     const sendFeedback = (value) => {
         if (!window.dataLayer) {
@@ -38,6 +57,7 @@
         btnArea.removeEventListener('click', handleFeedback);
         btnArea.classList.add('feedback__answer--answered');
         btn.classList.add('feedback__button--active');
+        wrapper.classList.remove('feedback__response-wrapper--hidden');
 
         if (msg) {
             msg.classList.remove('feedback__message--hidden');
@@ -52,6 +72,22 @@
             window.helper.loadRecaptcha();
         }
     };
+
+    const closeFeedback = () => {
+        if (close) {
+            close.addEventListener('click', () => {
+                wrapper.classList.add('feedback__response-wrapper--hidden');
+                noBtn.classList.add('feedback__button--closed');
+                yesBtn.classList.add('feedback__button--closed');
+            });
+        }
+    };
+
+    if (form) {
+        window.addEventListener('scroll', handleFixed, window.supportsPassive ? {
+            passive: true
+        } : false);
+    }
 
     if (yesMsg && noMsg && !posted) {
         btnArea.addEventListener('click', handleFeedback)
@@ -73,4 +109,6 @@
             form.classList.remove('feedback__form--hidden');
         }
     }
+
+    closeFeedback();
 })();
