@@ -16,10 +16,14 @@
         if (viewportWidth >= 1150 && selector) {
             const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
             const main = document.querySelector('.navigation');
+            const relativePositionTo = document.querySelector('.article__content h1');
             const isTop = topOffset <= main.getBoundingClientRect().top + main.offsetHeight + window.scrollY;
+
+            selector.classList.add('feedback--loaded');
 
             if (isTop) {
                 selector.classList.remove('feedback--visible');
+                selector.style.top = relativePositionTo.getBoundingClientRect().top + 'px';
             } else {
                 selector.classList.add('feedback--visible');
             }
@@ -84,6 +88,9 @@
     };
 
     if (form) {
+        window.addEventListener('load', () => {
+            handleFixed();
+        });
         window.addEventListener('scroll', handleFixed, window.supportsPassive ? {
             passive: true
         } : false);
