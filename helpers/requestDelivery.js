@@ -136,7 +136,7 @@ const getResponse = async (query, config) => {
     const temps = [0];
     for await (const temp of temps) {
         if (response.hasStaleContent) {
-            await helper.sleep(5000);
+            await helpers.sleep(5000);
             response = await query
                 .toPromise()
                 .catch(err => {

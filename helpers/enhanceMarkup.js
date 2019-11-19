@@ -1,15 +1,17 @@
 const cheerio = require('cheerio');
 const helper = require('./helperFunctions');
 
+// !!!!! Keep using the "function" keyword in the ".each" callback instead of arrow function
+
 const replaceNodeWithItsContent = ($, selector) => {
-    $(selector).each(() => {
+    $(selector).each(function() {
         var contents = $(this).contents();
         $(this).replaceWith(contents);
     });
 };
 
 const setWidthToImages = ($) => {
-    $('img[data-asset-id]').each(() => {
+    $('img[data-asset-id]').each(function() {
         var $that = $(this);
         var src = $that.attr('src');
         if (src && !src.endsWith('.gif')) {
@@ -23,7 +25,7 @@ const removeEmptyParagraph = ($) => {
 };
 
 const processLinks = ($) => {
-    $('a[data-item-id][href=""]').each(() => {
+    $('a[data-item-id][href=""]').each(function () {
         var $that = $(this);
         $that.removeAttr('data-item-id');
         $that.attr('href', '/page-not-found');
