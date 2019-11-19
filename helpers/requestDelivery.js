@@ -103,6 +103,9 @@ const components = [{
 }, {
     type: 'content_switcher',
     resolver: richTextResolverTemplates.contentSwitcher
+}, {
+    type: 'release_note',
+    resolver: richTextResolverTemplates.releaseNote
 }];
 
 const resolveRichText = (item, config) => {
