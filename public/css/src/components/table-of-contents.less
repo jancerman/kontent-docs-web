@@ -27,7 +27,8 @@
     }
 
     h2&__heading {
-        color: #2D373B;
+        text-transform: uppercase;
+        color: #7C909B;
         font-size: 1em;
         background-color: #fff;
         cursor: pointer;
@@ -147,6 +148,12 @@
 
             h2.table-of-contents__heading {
                 padding: 0;
+                color: #2D373B;
+                text-transform: none;
+
+                &:before {
+                    display: none;
+                }
             }
 
             & > * {
