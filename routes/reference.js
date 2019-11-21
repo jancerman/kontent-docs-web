@@ -26,6 +26,7 @@ const handleArticle = async (settings, req, res) => {
     let availablePlatforms;
     let preselectedPlatform;
 
+    const containsReleaseNote = helper.hasLinkedItemOfType(settings.content[0].content, 'release_note');
     const preselectedPlatformSettings = await platforms.getPreselectedPlatform(settings.content[0], cookiesPlatform, req, res);
 
     if (!preselectedPlatformSettings) {
@@ -66,6 +67,7 @@ const handleArticle = async (settings, req, res) => {
     settings.renderSettings.data.moment = moment;
     settings.renderSettings.data.canonicalUrl = canonicalUrl;
     settings.renderSettings.data.projectId = res.locals.projectid;
+    settings.renderSettings.data.containsReleaseNote = containsReleaseNote;
 
     return settings.renderSettings;
 };

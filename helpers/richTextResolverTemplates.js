@@ -1,3 +1,4 @@
+const moment = require('moment');
 const helper = require('./helperFunctions');
 
 const getImageAttributes = (item, cssClass, transformationQueryString) => {
@@ -263,6 +264,32 @@ const richTextResolverTemplates = {
         codeExamples += '</div>';
 
         return codeExamples;
+    },
+    releaseNote: (item) => {
+        const isPlanned = (new Date(item.release_date.value)).getTime() > (new Date()).getTime();
+        const displaySeverity = item.severity.value[0].codename === 'breaking_change';
+
+        let services = '';
+        const servicesCodenames = [];
+        item.affected_services.value.forEach((service) => {
+            servicesCodenames.push(service.codename);
+            services += `<li class="article__tags-item article__tags-item--green" data-filter-target="affected-services" data-filter-value="${service.codename}" data-filter-label="${service.name}">${service.name}</li>`;
+        });
+
+        return `
+            <div data-filter-item="__all ${servicesCodenames.join(' ')}">
+                <h2>${item.title.value}</h2>
+                <div class="article__info-bar">
+                    <time class="article__date article__date--body" datetime="${moment(item.release_date.value).format('YYYY-MM-DD')}">${isPlanned ? 'Planned for ': ''}${moment(item.release_date.value).format('MMMM D, YYYY')}</time>
+                    ${displaySeverity || services ? `
+                        <ul class="article__tags">
+                            ${displaySeverity ? `<li class="article__tags-item article__tags-item--red">${item.severity.value[0].name}</li>` : ''}
+                            ${services}
+                        </ul>` : ''}
+                </div>
+                ${item.content.value}
+            </div>
+        `;
     },
 };
 

@@ -103,6 +103,14 @@ const helper = {
     },
     sleep: (ms) => {
         return new Promise(resolve => setTimeout(resolve, ms));
+    },
+    hasLinkedItemOfType: (field, type) => {
+        for (const item of field.linkedItems_custom) {
+            if (item.type === type) {
+                return true;
+            }
+        }
+        return false;
     }
 };
 
