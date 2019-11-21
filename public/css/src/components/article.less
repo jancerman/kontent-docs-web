@@ -322,4 +322,52 @@
     &__add-lightbox {
         cursor: pointer;
     }
+
+    &__date {
+        &--body {
+            font-size: .875em;
+            display: inline-block;
+            padding: .125em 1em .125em 0; 
+            margin: 0 0 .5em; 
+            color: #7C909B;
+        }
+    }
+
+    &__tags {
+        ul& {
+            display: inline-block;
+            padding: 0;
+        }
+
+
+        &-item {
+            ul.article__tags li& {
+                font-size: .875em;
+                padding: 0;
+                display:  inline-block;
+                padding: .125em .5em;
+                color: #fff;
+                border-radius: .125em;
+                margin: 0 .5em .5em 0;
+
+                &:before {
+                    display: none;
+                }
+    
+                &--red {
+                    background-color: #f02222;
+                }
+    
+                &--green {
+                    background-color: #00A54B;
+                }
+            }
+
+        }
+    }
+
+    &__info-bar {
+        position: relative;
+        top: -.5em;
+    }
 }

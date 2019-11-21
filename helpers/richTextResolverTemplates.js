@@ -266,23 +266,24 @@ const richTextResolverTemplates = {
         return codeExamples;
     },
     releaseNote: (item) => {
-        console.log(item.severity);
         const isPlanned = (new Date(item.release_date.value)).getTime() > (new Date()).getTime();
         const displaySeverity = item.severity.value[0].codename === 'breaking_change';
 
         let services = '';
         item.affected_services.value.forEach((service) => {
-            services += `<li class="article__severity-item">${service.name}</li>`;
+            services += `<li class="article__tags-item article__tags-item--green">${service.name}</li>`;
         });
 
         return `
             <h2>${item.title.value}</h2>
-            ${displaySeverity || services ? `
-                <ul class="article__severity">
-                    ${displaySeverity ? `<li class="article__severity-item article__severity-item--change">${item.severity.value[0].name}</li>` : ''}
-                    ${services}
-                </ul>` : ''}
-            <time class="article__date" datetime="${moment(item.release_date.value).format('YYYY-MM-DD')}">${isPlanned ? 'Planned for ': ''}${moment(item.release_date.value).format('MMMM D, YYYY')}</time>
+            <div class="article__info-bar">
+                <time class="article__date article__date--body" datetime="${moment(item.release_date.value).format('YYYY-MM-DD')}">${isPlanned ? 'Planned for ': ''}${moment(item.release_date.value).format('MMMM D, YYYY')}</time>
+                ${displaySeverity || services ? `
+                    <ul class="article__tags">
+                        ${displaySeverity ? `<li class="article__tags-item article__tags-item--red">${item.severity.value[0].name}</li>` : ''}
+                        ${services}
+                    </ul>` : ''}
+            </div>
             ${item.content.value}
         `;
     },
