@@ -100,6 +100,9 @@ const helper = {
         }
 
         return elems;
+    },
+    sleep: (ms) => {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 };
 

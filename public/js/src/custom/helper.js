@@ -287,6 +287,7 @@ window.helper = (() => {
         if (recaptchaElem && recaptchaKey) {
             var script = document.createElement('script');
             script.src = 'https://www.google.com/recaptcha/api.js?onload=renderReCaptcha';
+            script.setAttribute('data-size', 'compact');
             recaptchaElem.appendChild(script);
         }
 
