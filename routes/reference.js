@@ -2,7 +2,6 @@ const express = require('express');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
 const moment = require('moment');
-const axios = require('axios');
 const htmlparser2 = require('htmlparser2');
 const cheerio = require('cheerio');
 
@@ -26,6 +25,7 @@ const handleArticle = async (settings, req, res) => {
     let availablePlatforms;
     let preselectedPlatform;
 
+    const containsReleaseNote = helper.hasLinkedItemOfType(settings.content[0].content, 'release_note');
     const preselectedPlatformSettings = await platforms.getPreselectedPlatform(settings.content[0], cookiesPlatform, req, res);
 
     if (!preselectedPlatformSettings) {
@@ -66,6 +66,7 @@ const handleArticle = async (settings, req, res) => {
     settings.renderSettings.data.moment = moment;
     settings.renderSettings.data.canonicalUrl = canonicalUrl;
     settings.renderSettings.data.projectId = res.locals.projectid;
+    settings.renderSettings.data.containsReleaseNote = containsReleaseNote;
 
     return settings.renderSettings;
 };
@@ -125,14 +126,7 @@ const resolveLinks = (data, urlMap) => {
 
 const getRedocReference = async (apiCodename, res) => {
     return await handleCache.evaluateSingle(res, `reDocReference_${apiCodename}`, async () => {
-        const baseURL = process.env.referenceRenderUrl;
-        let data = '';
-
-        if (baseURL) {
-            data = await axios.get(`${baseURL}/api/ProviderStarter?api=${apiCodename}&isPreview=${isPreview(res.locals.previewapikey)}`);
-        }
-
-        return data;
+        return await helper.getReferenceFiles(apiCodename);
     });
 };
 

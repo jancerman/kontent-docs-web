@@ -1,0 +1,87 @@
+.filter {
+    position: relative;
+    display: inline-block;
+
+	&__label {
+        width: 260px;
+        height: 2.125em;
+        border: .125em solid #e4e9ec;
+        box-sizing: border-box;
+        padding: 0.125em .875em;
+        cursor: pointer;
+        color: #7C909B;
+        position: relative;
+
+        &:before {
+            font-family: 'kentico-icons';
+            content: "\e66f";
+            font-size: 0.75em;
+            position: absolute;
+            top: 0;
+            right: .875em;
+            color: #008AE1;
+            line-height: 2.5em;
+        }
+	}
+
+	&__list {
+        &,
+        ul& {
+            width: 260px;
+            position: absolute;
+            left: 0;
+            top: 2.125em;
+            background-color: #f3f6f7;
+            visibility: hidden;
+            opacity: 0;
+            transition: .25s;
+            padding: 0;
+        }
+	}
+
+	&__item {
+        &,
+        ul.filter__list > li& {
+            border: none;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0.375em .875em;
+            text-align: left;
+            cursor: pointer;
+
+            &:before {
+                display: none;
+            }
+    
+            &:hover,
+            &--active {
+                margin: 0;
+                border: none;
+                font-weight: 400;
+                background-color: #e36a57;
+                color: #fff;
+            }
+    
+            &--active {
+                background-color: #378de1;
+            }
+        }
+    }
+    
+    &--opened {
+        .filter__list {
+            opacity: 1;
+            visibility: visible;
+            z-index: 5555;
+        }
+    }
+}
+
+.filter-hidden {
+    display: none;
+}
+
+.filter-label {
+    display: inline-block;
+    padding: 0 .5em 0 0;
+}

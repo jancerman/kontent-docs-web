@@ -1,3 +1,6 @@
+const axios = require('axios');
+const cache = require('memory-cache');
+
 const helper = {
     escapeHtml: (unsafe) => {
         return unsafe
@@ -100,6 +103,40 @@ const helper = {
         }
 
         return elems;
+    },
+    sleep: (ms) => {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    },
+    hasLinkedItemOfType: (field, type) => {
+        for (const item of field.linkedItems_custom) {
+            if (item.type === type) {
+                return true;
+            }
+        }
+        return false;
+    },
+    getReferenceFiles: async (codename, saveToCache, KCDetails) => {
+        let data;
+        const baseURL = process.env.referenceRenderUrl;
+
+        try {
+            data = await axios.get(`https://kcdmaster.blob.core.windows.net/api-reference-pages/${codename}.html`);
+        } catch (err) {
+            try {
+                if (baseURL) {
+                    data = await axios.get(`${baseURL}/api/ProviderStarter?api=${codename}`);
+                }
+            } catch (err) {
+                data = {};
+                data.data = '';
+            }
+        }
+
+        if (saveToCache) {
+            cache.put(`reDocReference_${codename}_${KCDetails.projectid}`, data);
+        }
+
+        return data;
     }
 };
 

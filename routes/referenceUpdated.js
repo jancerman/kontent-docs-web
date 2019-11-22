@@ -1,13 +1,11 @@
-const axios = require('axios');
-const axiosRetry = require('axios-retry');
 const express = require('express');
 const router = express.Router();
 const handleCache = require('../helpers/handleCache');
 const commonContent = require('../helpers/commonContent');
+const helper = require('../helpers/helperFunctions');
 
 router.post('/', async (req, res) => {
     const event = req.body[0];
-    const baseURL = process.env.referenceRenderUrl;
     const KCDetails = commonContent.getKCDetails(res);
     let apiCodename;
 
@@ -22,9 +20,7 @@ router.post('/', async (req, res) => {
     }
 
     if (isReferenceUpdatedEvent(event)) {
-        axiosRetry(axios, { retries: 3 });
-        const data = await axios.get(`${baseURL}/api/ProviderStarter?api=${apiCodename}&isPreview=false&isTest=false`);
-        handleCache.putCache(`reDocReference_${apiCodename}`, data, KCDetails);
+        await helper.getReferenceFiles(apiCodename, true, KCDetails);
     }
 
     if (isReferenceDeletedEvent(event)) {

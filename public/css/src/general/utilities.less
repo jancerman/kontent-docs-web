@@ -240,3 +240,28 @@ input[type="search"] {
 .hidden {
     display: none !important;
 }
+
+.a-blank {
+    span {
+        display: inline-block;
+        overflow: hidden;
+        text-indent: -9999px;
+        width: 0;
+    }
+
+    &:after {
+        content: @icon-arrow-right-top-square;
+        font-family: 'kentico-icons';
+        font-style: normal;
+        display: inline-block;
+        padding: 0 .375em 0 .125em;
+        font-size: .675em;
+        position: relative;
+        top: -.325em;
+        text-indent: 0;
+    }
+
+    .no-icon & {
+        display: none;
+    }
+}

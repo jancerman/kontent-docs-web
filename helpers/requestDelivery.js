@@ -8,6 +8,7 @@ const helpers = require('./helperFunctions');
 
 const richTextResolverTemplates = require('./richTextResolverTemplates');
 const linksResolverTemplates = require('./linksResolverTemplates');
+const compomentsInRichText = [];
 
 const defineDeliveryConfig = (config) => {
     deliveryConfig.projectId = config.projectid;
@@ -103,6 +104,9 @@ const components = [{
 }, {
     type: 'content_switcher',
     resolver: richTextResolverTemplates.contentSwitcher
+}, {
+    type: 'release_note',
+    resolver: richTextResolverTemplates.releaseNote
 }];
 
 const resolveRichText = (item, config) => {
@@ -110,6 +114,10 @@ const resolveRichText = (item, config) => {
 
     for (var i = 0; i < components.length; i++) {
         if (item.system.type === components[i].type) {
+            compomentsInRichText.push({
+                codename: item.system.codename,
+                type: components[i].type
+            });
             return components[i].resolver(item, config.urlMap);
         }
     }
@@ -123,6 +131,29 @@ const resolveLink = (link, config) => {
     } else {
         return '/';
     }
+};
+
+const extendLinkedItems = (response) => {
+    if (response.items) {
+        for (const item of response.items) {
+            for (const prop in item) {
+                if (Object.prototype.hasOwnProperty.call(item, prop)) {
+                    if (item[prop] && item[prop].type === 'rich_text') {
+                        item[prop].linkedItems_custom = [];
+                        for (const component of compomentsInRichText) {
+                            for (const linkedItem of item[prop].linkedItemCodenames) {
+                                if (component.codename === linkedItem) {
+                                    item[prop].linkedItems_custom.push(component);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return response;
 };
 
 const getResponse = async (query, config) => {
@@ -184,7 +215,8 @@ const requestDelivery = async (config) => {
 
     query.queryConfig(queryConfigObject);
 
-    const response = await getResponse(query, config);
+    let response = await getResponse(query, config);
+    response = extendLinkedItems(response);
     return response ? response.items : response;
 };
 
