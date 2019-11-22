@@ -167,6 +167,7 @@ const getResponse = async (query, config) => {
     const temps = [0];
     for await (const temp of temps) {
         if (response.hasStaleContent) {
+            await helpers.sleep(5000);
             response = await query
                 .toPromise()
                 .catch(err => {
@@ -199,9 +200,7 @@ const getResponse = async (query, config) => {
 const requestDelivery = async (config) => {
     defineDeliveryConfig(config);
     const query = defineQuery(deliveryConfig, config);
-    const queryConfigObject = {
-        waitForLoadingNewContent: false
-    };
+    const queryConfigObject = {};
 
     if (config.resolveRichText) {
         queryConfigObject.richTextResolver = (item) => {
