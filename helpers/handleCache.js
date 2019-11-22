@@ -3,8 +3,7 @@ const getUrlMap = require('./urlMap');
 const commonContent = require('./commonContent');
 const isPreview = require('./isPreview');
 const requestDelivery = require('./requestDelivery');
-const axios = require('axios');
-const axiosRetry = require('axios-retry');
+const helper = require('../helpers/helperFunctions');
 
 const deleteCachePreviewCheck = (keyName, KCDetails, isPreviewRequest) => {
     if (isPreviewRequest && cache.get(`${keyName}_${KCDetails.projectid}`)) {
@@ -120,10 +119,8 @@ const cacheAllAPIReferences = async (res) => {
         });
     };
 
-    const provideReferences = async (baseURL, apiCodename, isPreviewRequest, KCDetails) => {
-        axiosRetry(axios, { retries: 3 });
-        const data = await axios.get(`${baseURL}/api/ProviderStarter?api=${apiCodename}&isPreview=${isPreviewRequest}`);
-        cache.put(`reDocReference_${apiCodename}_${KCDetails.projectid}`, data);
+    const provideReferences = async (apiCodename, KCDetails) => {
+        await helper.getReferenceFiles(apiCodename, true, KCDetails);
     };
 
     const isPreviewRequest = isPreview(res.locals.previewapikey);
@@ -133,10 +130,8 @@ const cacheAllAPIReferences = async (res) => {
     if (!(keys.filter(item => item.indexOf('reDocReference_') > -1).length) && !isPreviewRequest) {
         references = await getReferences();
 
-        const baseURL = process.env.referenceRenderUrl;
-
         for (const value of references) {
-            provideReferences(baseURL, value.system.codename, isPreviewRequest, KCDetails)
+            provideReferences(value.system.codename, KCDetails)
         }
     }
 };
