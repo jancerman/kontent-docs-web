@@ -27,7 +27,6 @@ const resolveLinkUrlsInElement = (element, item, urlMap) => {
         } else {
             resolvedUrl = '/page-not-found';
         }
-
         if (element.value && resolvedUrl) {
             updateLinkAttribute(element, resolvedUrl, link)
         }

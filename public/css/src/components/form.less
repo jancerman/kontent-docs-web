@@ -40,15 +40,6 @@
         left: .875em;
         transition: all .25s;
         color: #a3a2a2;
-        cursor: text;
-
-        .feedback__form & {
-            @media (min-width: 1150px) {
-                top: 1.875em;
-                left: .75em;
-                font-size: .875em;
-			}
-        }
 	}
 
 	&__input {
@@ -69,19 +60,6 @@
         margin: 0 0 .125em;
         box-sizing: border-box;
         transition: all .25s;
-
-        .feedback__form & {
-            @media (min-width: 1150px) {
-                font-size: .875em;
-                padding: .5em .75em;
-
-                &--textarea {
-                    height: 100px;
-                    resize: vertical;
-                    min-height: 100px;
-                }
-			}
-        }
 
         &:focus {
             box-shadow: inset .25em 0 0 0 #008AE1;
