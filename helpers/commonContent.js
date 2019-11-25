@@ -7,7 +7,8 @@ const commonContent = {
         return {
             projectid: res.locals.projectid,
             previewapikey: res.locals.previewapikey,
-            securedapikey: res.locals.securedapikey
+            securedapikey: res.locals.securedapikey,
+            host: res.locals.host
         };
     },
     getTree: async (contentType, depth, res) => {

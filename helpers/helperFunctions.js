@@ -115,16 +115,17 @@ const helper = {
         }
         return false;
     },
-    getReferenceFiles: async (codename, saveToCache, KCDetails) => {
+    getReferenceFiles: async (codename, saveToCache, KCDetails, methodName) => {
         let data;
         const baseURL = process.env.referenceRenderUrl;
+        const time = (new Date()).toISOString();
 
         try {
             data = await axios.get(`https://kcdmaster.blob.core.windows.net/api-reference-pages/${codename}.html`);
         } catch (err) {
             try {
                 if (baseURL) {
-                    data = await axios.get(`${baseURL}/api/ProviderStarter?api=${codename}`);
+                    data = await axios.get(`${baseURL}/api/ProviderStarter?source=${KCDetails.host}&api=${codename}&method=${methodName}&t=${time}`);
                 }
             } catch (err) {
                 data = {};
