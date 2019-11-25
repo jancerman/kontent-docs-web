@@ -247,6 +247,7 @@ const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
     const temps = [0];
     for await (const temp of temps) {
         if (articles.hasStaleContent) {
+            await helper.sleep(5000);
             articles = await query
                 .toPromise();
             temps.push(temp);
@@ -294,9 +295,6 @@ const getUrlMap = async (res, isSitemap) => {
 
     const query = deliveryClient.items()
         .type('home')
-        .queryConfig({
-            waitForLoadingNewContent: false
-        })
         .depthParameter(5);
 
     let response = await query
@@ -306,6 +304,7 @@ const getUrlMap = async (res, isSitemap) => {
     const temps = [0];
     for await (const temp of temps) {
         if (response.hasStaleContent) {
+            await helper.sleep(5000);
             response = await query
                 .toPromise();
             temps.push(temp);
