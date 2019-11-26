@@ -9,12 +9,17 @@ const urlAliases = async (req, res, next) => {
     const articles = await handleCache.ensureSingle(res, 'articles', async () => {
         return commonContent.getArticles(res);
     });
+    const references = await handleCache.ensureSingle(res, 'apiSpecifications', async () => {
+        return commonContent.getReferences(res);
+    });
+
+    const items = [...articles, ...references];
     const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
         return await getUrlMap(res);
     });
     let redirectUrl = [];
 
-    articles.forEach(item => {
+    items.forEach((item) => {
         const aliases = item.redirect_urls && item.redirect_urls.value ? item.redirect_urls.value.trim().replace(/\n/g, '').split(';') : [];
 
         aliases.forEach(alias => {

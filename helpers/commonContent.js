@@ -99,6 +99,12 @@ const commonContent = {
             ...commonContent.getKCDetails(res)
         });
     },
+    getReferences: async (res) => {
+        return await requestDelivery({
+            type: 'zapi_specification',
+            ...commonContent.getKCDetails(res)
+        });
+    },
     getPlatformsConfig: async (res) => {
         return await requestDelivery({
             type: 'platform_picker',

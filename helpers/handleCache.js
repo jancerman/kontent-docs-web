@@ -2,7 +2,6 @@ const cache = require('memory-cache');
 const getUrlMap = require('./urlMap');
 const commonContent = require('./commonContent');
 const isPreview = require('./isPreview');
-const requestDelivery = require('./requestDelivery');
 const helper = require('../helpers/helperFunctions');
 
 const deleteCachePreviewCheck = (keyName, KCDetails, isPreviewRequest) => {
@@ -71,6 +70,9 @@ const cacheKeys = [{
     }, {
         name: 'navigationItems',
         method: commonContent.getNavigationItems
+    }, {
+        name: 'apiSpecifications',
+        method: commonContent.getReferences
     }
 ];
 
@@ -112,12 +114,6 @@ const ensureSingle = async (res, keyName, method) => {
 
 const cacheAllAPIReferences = async (res) => {
     const KCDetails = commonContent.getKCDetails(res);
-    const getReferences = async () => {
-        return await requestDelivery({
-            type: 'zapi_specification',
-            ...KCDetails
-        });
-    };
 
     const provideReferences = async (apiCodename, KCDetails) => {
         await helper.getReferenceFiles(apiCodename, true, KCDetails, 'cacheAllAPIReferences');
@@ -128,7 +124,9 @@ const cacheAllAPIReferences = async (res) => {
     let references;
 
     if (!(keys.filter(item => item.indexOf('reDocReference_') > -1).length) && !isPreviewRequest) {
-        references = await getReferences();
+        references = await ensureSingle(res, 'apiSpecifications', async () => {
+            return commonContent.getReferences(res);
+        });
 
         for (const value of references) {
             provideReferences(value.system.codename, KCDetails)
