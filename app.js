@@ -138,6 +138,7 @@ const pageExists = async (req, res) => {
 
 // Routes
 app.use(async (req, res, next) => {
+  res.locals.host = req.headers.host;
   handleKCKeys(req, res);
   return next();
 });

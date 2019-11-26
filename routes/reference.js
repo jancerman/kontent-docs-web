@@ -124,9 +124,9 @@ const resolveLinks = (data, urlMap) => {
     return data;
 };
 
-const getRedocReference = async (apiCodename, res) => {
+const getRedocReference = async (apiCodename, res, KCDetails) => {
     return await handleCache.evaluateSingle(res, `reDocReference_${apiCodename}`, async () => {
-        return await helper.getReferenceFiles(apiCodename);
+        return await helper.getReferenceFiles(apiCodename, false, KCDetails, 'getRedocReference');
     });
 };
 
@@ -231,7 +231,7 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
     };
 
     if (content && content.length && content[0].system.type === 'zapi_specification') {
-        renderSettings.data.content = await getRedocReference(content[0].system.codename, res);
+        renderSettings.data.content = await getRedocReference(content[0].system.codename, res, KCDetails);
         renderSettings.data.content = resolveLinks(renderSettings.data.content, urlMap);
     } else {
         const settings = {

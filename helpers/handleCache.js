@@ -120,7 +120,7 @@ const cacheAllAPIReferences = async (res) => {
     };
 
     const provideReferences = async (apiCodename, KCDetails) => {
-        await helper.getReferenceFiles(apiCodename, true, KCDetails);
+        await helper.getReferenceFiles(apiCodename, true, KCDetails, 'cacheAllAPIReferences');
     };
 
     const isPreviewRequest = isPreview(res.locals.previewapikey);

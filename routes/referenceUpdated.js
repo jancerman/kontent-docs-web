@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
     }
 
     if (isReferenceUpdatedEvent(event)) {
-        await helper.getReferenceFiles(apiCodename, true, KCDetails);
+        await helper.getReferenceFiles(apiCodename, true, KCDetails, 'referenceUpdated');
     }
 
     if (isReferenceDeletedEvent(event)) {
