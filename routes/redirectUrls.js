@@ -12,20 +12,24 @@ const getRedirectUrls = async (res) => {
   const articles = await handleCache.ensureSingle(res, 'articles', async () => {
     return await commonContent.getArticles(res);
   });
+  const references = await handleCache.ensureSingle(res, 'apiSpecifications', async () => {
+    return commonContent.getReferences(res);
+  });
   const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
     return await getUrlMap(res);
   });
 
+  const items = [...articles, ...references];
   const redirectMap = [];
 
-  articles.forEach(article => {
-    if (article.redirect_urls && article.redirect_urls.value) {
-      const originalUrl = urlMap.filter(url => url.codename === article.system.codename);
+  items.forEach(item => {
+    if (item.redirect_urls && item.redirect_urls.value) {
+      const originalUrl = urlMap.filter(url => url.codename === item.system.codename);
 
       if (originalUrl.length) {
         redirectMap.push({
           originalUrl: originalUrl[0].url,
-          redirectUrls: article.redirect_urls.value.split(';')
+          redirectUrls: item.redirect_urls.value.split(';')
         });
       }
     }
