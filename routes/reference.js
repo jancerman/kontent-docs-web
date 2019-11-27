@@ -9,7 +9,6 @@ const commonContent = require('../helpers/commonContent');
 const handleCache = require('../helpers/handleCache');
 const requestDelivery = require('../helpers/requestDelivery');
 const helper = require('../helpers/helperFunctions');
-const isPreview = require('../helpers/isPreview');
 const minify = require('../helpers/minify');
 const platforms = require('../helpers/platforms');
 const getUrlMap = require('../helpers/urlMap');
@@ -219,7 +218,7 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
             req: req,
             minify: minify,
             slug: slug,
-            isPreview: isPreview(res.locals.previewapikey),
+            isPreview: KCDetails.isPreview,
             title: content && content.length ? content[0].title.value : '',
             titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Kontent Docs'}`,
             navigation: home && home.length ? home[0].navigation.value : null,
