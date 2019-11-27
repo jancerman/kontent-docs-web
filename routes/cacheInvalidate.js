@@ -56,7 +56,8 @@ const splitPayloadByContentType = (items) => {
         topics: [],
         notFound: [],
         picker: [],
-        navigationItems: []
+        navigationItems: [],
+        apiSpecifications: []
     };
 
     for (let i = 0; i < items.length; i++) {
@@ -80,6 +81,8 @@ const splitPayloadByContentType = (items) => {
         } else if (item.type === 'multiplatform_article') {
             itemsByTypes.articles.push(item);
             itemsByTypes.scenarios.push(item);
+        } else if (item.type === 'zapi_specification') {
+            itemsByTypes.apiSpecifications.push(item);
         }
     }
 
@@ -183,6 +186,7 @@ router.post('/', asyncHandler(async (req, res) => {
             await invalidateSubNavigation(res, keys);
             await invalidateUrlMap(res, KCDetails);
             await invalidateRootItems(items, KCDetails);
+            await invalidateGeneral(itemsByTypes, KCDetails, res, 'apiSpecifications');
             await invalidateGeneral(itemsByTypes, KCDetails, res, 'footer');
             await invalidateGeneral(itemsByTypes, KCDetails, res, 'UIMessages');
             await invalidateGeneral(itemsByTypes, KCDetails, res, 'notFound');
