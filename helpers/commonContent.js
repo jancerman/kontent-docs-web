@@ -1,6 +1,7 @@
 const requestDelivery = require('./requestDelivery');
 const getUrlMap = require('./urlMap');
 const ensureSingle = require('./ensureSingle');
+const isPreview = require('../helpers/isPreview');
 
 const commonContent = {
     getKCDetails: (res) => {
@@ -8,7 +9,8 @@ const commonContent = {
             projectid: res.locals.projectid,
             previewapikey: res.locals.previewapikey,
             securedapikey: res.locals.securedapikey,
-            host: res.locals.host
+            host: res.locals.host,
+            isPreview: isPreview(res.locals.previewapikey)
         };
     },
     getTree: async (contentType, depth, res) => {

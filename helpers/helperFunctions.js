@@ -121,11 +121,11 @@ const helper = {
         const time = (new Date()).toISOString();
 
         try {
-            data = await axios.get(`https://kcdmaster.blob.core.windows.net/api-reference-pages/${codename}.html`);
+            data = await axios.get(`https://kcdmaster.blob.core.windows.net/api-reference-pages/${codename}${KCDetails.isPreview ? '-preview' : ''}.html`);
         } catch (err) {
             try {
                 if (baseURL) {
-                    data = await axios.get(`${baseURL}/api/ProviderStarter?source=${KCDetails.host}&api=${codename}&method=${methodName}&t=${time}`);
+                    data = await axios.get(`${baseURL}/api/ProviderStarter?api=${codename}&isPreview=${KCDetails.isPreview ? 'true' : 'false'}&source=${KCDetails.host}&method=${methodName}&t=${time}`);
                 }
             } catch (err) {
                 data = {};

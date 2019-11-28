@@ -1,7 +1,6 @@
 const cache = require('memory-cache');
 const getUrlMap = require('./urlMap');
 const commonContent = require('./commonContent');
-const isPreview = require('./isPreview');
 const helper = require('../helpers/helperFunctions');
 
 const deleteCachePreviewCheck = (keyName, KCDetails, isPreviewRequest) => {
@@ -78,14 +77,13 @@ const cacheKeys = [{
 
 const evaluateCommon = async (res, keysTohandle) => {
     const KCDetails = commonContent.getKCDetails(res);
-    const isPreviewRequest = isPreview(res.locals.previewapikey);
 
     const processCache = async (array) => {
         for await (const item of array) {
             if (keysTohandle.indexOf(item.name) > -1) {
                 await manageCache(item.name, async (res) => {
                     return await item.method(res);
-                }, KCDetails, isPreviewRequest, res);
+                }, KCDetails, KCDetails.isPreview, res);
             }
         }
     }
@@ -95,11 +93,10 @@ const evaluateCommon = async (res, keysTohandle) => {
 
 const evaluateSingle = async (res, keyName, method) => {
     const KCDetails = commonContent.getKCDetails(res);
-    const isPreviewRequest = isPreview(res.locals.previewapikey);
 
     return await manageCache(keyName, async (res) => {
         return await method(res);
-    }, KCDetails, isPreviewRequest);
+    }, KCDetails, KCDetails.isPreview);
 };
 
 const ensureSingle = async (res, keyName, method) => {
@@ -119,11 +116,10 @@ const cacheAllAPIReferences = async (res) => {
         await helper.getReferenceFiles(apiCodename, true, KCDetails, 'cacheAllAPIReferences');
     };
 
-    const isPreviewRequest = isPreview(res.locals.previewapikey);
     const keys = cache.keys();
     let references;
 
-    if (!(keys.filter(item => item.indexOf('reDocReference_') > -1).length) && !isPreviewRequest) {
+    if (!(keys.filter(item => item.indexOf('reDocReference_') > -1).length) && !KCDetails.isPreview) {
         references = await ensureSingle(res, 'apiSpecifications', async () => {
             return commonContent.getReferences(res);
         });

@@ -5,7 +5,6 @@ const moment = require('moment');
 
 const requestDelivery = require('../helpers/requestDelivery');
 const minify = require('../helpers/minify');
-const isPreview = require('../helpers/isPreview');
 const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
 const handleCache = require('../helpers/handleCache');
@@ -156,7 +155,7 @@ const getContent = async (req, res) => {
         moment: moment,
         minify: minify,
         slug: content && content.length ? content[0].url.value : '',
-        isPreview: isPreview(res.locals.previewapikey),
+        isPreview: KCDetails.isPreview,
         projectId: res.locals.projectid,
         title: content && content.length ? content[0].title.value : '',
         titleSuffix: ` | ${home && home.length ? home[0].title.value : 'Kentico Kontent Docs'}`,
