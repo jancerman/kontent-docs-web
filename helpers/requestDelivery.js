@@ -134,7 +134,7 @@ const resolveLink = (link, config) => {
 };
 
 const extendLinkedItems = (response) => {
-    if (response.items) {
+    if (response && response.items) {
         for (const item of response.items) {
             for (const prop in item) {
                 if (Object.prototype.hasOwnProperty.call(item, prop)) {
@@ -165,15 +165,18 @@ const getResponse = async (query, config) => {
 
     // Retry in case of stale content
     const temps = [0];
-    for await (const temp of temps) {
-        if (response.hasStaleContent) {
+    for await (let temp of temps) {
+        if ((response && response.hasStaleContent) || !response) {
             await helpers.sleep(5000);
             response = await query
                 .toPromise()
                 .catch(err => {
                     consola.error(err);
                 });
-            temps.push(temp);
+
+            if (temp < 5) {
+                temps.push(++temp);
+            }
         }
     }
 
@@ -216,6 +219,7 @@ const requestDelivery = async (config) => {
 
     let response = await getResponse(query, config);
     response = extendLinkedItems(response);
+
     return response ? response.items : response;
 };
 
