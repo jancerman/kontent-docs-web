@@ -4,6 +4,7 @@ const {
 const {
     deliveryConfig
 } = require('../config');
+const consola = require('consola');
 const requestDelivery = require('./requestDelivery');
 const helper = require('./helperFunctions');
 const ensureSingle = require('./ensureSingle');
@@ -241,16 +242,25 @@ const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
         .type('article');
 
     let articles = await query
-        .toPromise();
+        .toPromise()
+        .catch(err => {
+            consola.error(err);
+        });
 
     // Retry in case of stale content
     const temps = [0];
-    for await (const temp of temps) {
-        if (articles.hasStaleContent) {
+    for await (let temp of temps) {
+        if ((articles && articles.hasStaleContent) || !articles) {
             await helper.sleep(5000);
             articles = await query
-                .toPromise();
-            temps.push(temp);
+                .toPromise()
+                .catch(err => {
+                    consola.error(err);
+                });
+
+            if (temp < 5) {
+                temps.push(++temp);
+            }
         }
     }
 
@@ -298,16 +308,25 @@ const getUrlMap = async (res, isSitemap) => {
         .depthParameter(5);
 
     let response = await query
-        .toPromise();
+        .toPromise()
+        .catch(err => {
+            consola.error(err);
+        });
 
     // Retry in case of stale content
     const temps = [0];
-    for await (const temp of temps) {
-        if (response.hasStaleContent) {
+    for await (let temp of temps) {
+        if ((response && response.hasStaleContent) || !response) {
             await helper.sleep(5000);
             response = await query
-                .toPromise();
-            temps.push(temp);
+                .toPromise()
+                .catch(err => {
+                    consola.error(err);
+                });
+
+            if (temp < 5) {
+                temps.push(++temp);
+            }
         }
     }
 

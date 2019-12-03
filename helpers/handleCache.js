@@ -77,18 +77,18 @@ const cacheKeys = [{
 
 const evaluateCommon = async (res, keysTohandle) => {
     const KCDetails = commonContent.getKCDetails(res);
-
     const processCache = async (array) => {
         for await (const item of array) {
             if (keysTohandle.indexOf(item.name) > -1) {
-                await manageCache(item.name, async (res) => {
+                return await manageCache(item.name, async (res) => {
                     return await item.method(res);
                 }, KCDetails, KCDetails.isPreview, res);
             }
         }
+        return null;
     }
 
-    await processCache(cacheKeys);
+    return await processCache(cacheKeys);
 };
 
 const evaluateSingle = async (res, keyName, method) => {
@@ -124,8 +124,10 @@ const cacheAllAPIReferences = async (res) => {
             return commonContent.getReferences(res);
         });
 
-        for (const value of references) {
-            provideReferences(value.system.codename, KCDetails)
+        if (references && references.length) {
+            for (const value of references) {
+                provideReferences(value.system.codename, KCDetails)
+            }
         }
     }
 };

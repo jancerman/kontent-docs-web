@@ -98,7 +98,7 @@ const getContent = async (req, res) => {
     let canonicalUrl;
     cookiesPlatform = req.cookies['KCDOCS.preselectedLanguage'];
 
-    if (content[0]) {
+    if (content && content.length) {
         if (currentLevel === -1) {
             return `/${slug}/${content[0].children.value[0].url.value}${queryHash ? '?' + queryHash : ''}`;
         } else if (currentLevel === 0 && content[0].system.type !== 'multiplatform_article') {

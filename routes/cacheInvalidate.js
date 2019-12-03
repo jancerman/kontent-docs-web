@@ -27,7 +27,7 @@ const requestItemAndDeleteCacheKey = async (keyNameToDelete, codename, KCDetails
         ...KCDetails
     });
 
-    if (item.length) {
+    if (item && item.length) {
         if (!keyNameToDelete) {
             keyNameToDelete = item[0].system.type;
         }
@@ -98,10 +98,12 @@ const getRootItems = async (items, KCDetails) => {
     });
 
     const rootCodenames = new Set();
-    items.forEach((item) => {
-        const roots = getRootCodenamesOfSingleItem(item, allItems);
-        roots.forEach(codename => rootCodenames.add(codename));
-    });
+    if (items && allItems) {
+        items.forEach((item) => {
+            const roots = getRootCodenamesOfSingleItem(item, allItems);
+            roots.forEach(codename => rootCodenames.add(codename));
+        });
+    }
 
     return rootCodenames;
 };
