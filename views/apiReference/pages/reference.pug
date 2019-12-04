@@ -40,7 +40,7 @@ block content
                     if (content && content.content && content.content.value)
                         | !{minify(content.content.value)}
                     if (nextSteps && nextSteps.value !== '<p><br></p>')
-                        h2.table-of-contents__whatsnext !{UIMessages.article___next_steps.value}
+                        h2.table-of-contents__whatsnext !{UIMessages && UIMessages.article___next_steps.value}
                         | !{minify(nextSteps.value)}
                     include ../../tutorials/includes/feedback.pug
                     include ../../tutorials/includes/copy-tooltip.pug
