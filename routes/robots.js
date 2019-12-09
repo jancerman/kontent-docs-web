@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const isPreview = require('../helpers/isPreview');
 
 router.get('/', (req, res) => {
+    const isLiveSite = req.get('X-ORIG-HOST');
     res.header('Content-Type', 'text/plain');
-    return res.render('tutorials/pages/robots', { isPreview: isPreview(res.locals.previewapikey) });
+    return res.render('tutorials/pages/robots', { isLiveSite: !!isLiveSite });
 });
 
 module.exports = router;
