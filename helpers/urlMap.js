@@ -147,33 +147,35 @@ const createUrlMap = async (response, isSitemap, url, urlMap = [], res) => {
     const queryString = '';
     const hash = '';
 
-    if (response.items) nodes.push('items');
-    if (response.navigation) nodes.push('navigation');
-    if (response.children) nodes.push('children');
-    if (response.topics) nodes.push('topics');
+    if (response) {
+        if (response.items) nodes.push('items');
+        if (response.navigation) nodes.push('navigation');
+        if (response.children) nodes.push('children');
+        if (response.topics) nodes.push('topics');
 
-    if (!isSitemap) {
-        if (response.categories) nodes.push('categories');
-        if (response.path_operations) nodes.push('path_operations');
-        if (response.security) nodes.push('security');
-    }
+        if (!isSitemap) {
+            if (response.categories) nodes.push('categories');
+            if (response.path_operations) nodes.push('path_operations');
+            if (response.security) nodes.push('security');
+        }
 
-    for (let i = 0; i < nodes.length; i++) {
-        if (response[nodes[i]]) {
-            const items = response[nodes[i]].value || response[nodes[i]];
+        for (let i = 0; i < nodes.length; i++) {
+            if (response[nodes[i]]) {
+                const items = response[nodes[i]].value || response[nodes[i]];
 
-            for await (const item of items) {
-                urlMap = await handleNode({
-                    response,
-                    item,
-                    urlMap,
-                    url,
-                    queryString,
-                    hash,
-                    isSitemap,
-                    res
-                });
-            };
+                for await (const item of items) {
+                    urlMap = await handleNode({
+                        response,
+                        item,
+                        urlMap,
+                        url,
+                        queryString,
+                        hash,
+                        isSitemap,
+                        res
+                    });
+                };
+            }
         }
     }
 
