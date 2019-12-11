@@ -248,6 +248,7 @@ app.use(async (err, req, res, _next) => { // eslint-disable-line no-unused-vars
       contextObjects: req,
     });
   }
+
   // render the error page
   res.status(err.status || 500);
   req.err = err;

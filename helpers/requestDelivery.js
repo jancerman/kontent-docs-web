@@ -3,8 +3,8 @@ const {
     deliveryConfig
 } = require('../config');
 const enhanceMarkup = require('./enhanceMarkup');
-const consola = require('consola');
 const helpers = require('./helperFunctions');
+const app = require('../app');
 
 const richTextResolverTemplates = require('./richTextResolverTemplates');
 const linksResolverTemplates = require('./linksResolverTemplates');
@@ -13,6 +13,7 @@ const compomentsInRichText = [];
 const defineDeliveryConfig = (config) => {
     deliveryConfig.projectId = config.projectid;
     deliveryConfig.globalQueryConfig = {};
+
     const previewApiKey = config.previewapikey;
     const securedApiKey = config.securedapikey;
 
@@ -157,21 +158,26 @@ const extendLinkedItems = (response) => {
 };
 
 const getResponse = async (query, config) => {
+    let error;
     let response = await query
         .toPromise()
         .catch(err => {
-            consola.error(err);
+            if (err.originalError.response.status >= 400) {
+                error = err;
+            }
         });
 
     // Retry in case of stale content
     const temps = [0];
     for await (let temp of temps) {
-        if ((response && response.hasStaleContent) || !response) {
+        if (!error && ((response && response.hasStaleContent) || !response)) {
             await helpers.sleep(5000);
             response = await query
                 .toPromise()
                 .catch(err => {
-                    consola.error(err);
+                    if (err.originalError.response.status >= 400) {
+                        error = err;
+                    }
                 });
 
             if (temp < 5) {
@@ -195,6 +201,10 @@ const getResponse = async (query, config) => {
                     });
             }
         });
+    }
+
+    if (error && app.appInsights) {
+        app.appInsights.defaultClient.trackTrace({ message: 'DELIVERY_API_ERROR: ' + error.message });
     }
 
     return response;
