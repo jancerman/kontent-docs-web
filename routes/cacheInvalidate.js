@@ -57,7 +57,8 @@ const splitPayloadByContentType = (items) => {
         notFound: [],
         picker: [],
         navigationItems: [],
-        apiSpecifications: []
+        apiSpecifications: [],
+        redirectRules: []
     };
 
     for (let i = 0; i < items.length; i++) {
@@ -83,6 +84,8 @@ const splitPayloadByContentType = (items) => {
             itemsByTypes.scenarios.push(item);
         } else if (item.type === 'zapi_specification') {
             itemsByTypes.apiSpecifications.push(item);
+        } else if (item.type === 'redirect_rule') {
+            itemsByTypes.redirectRules.push(item);
         }
     }
 
@@ -192,6 +195,7 @@ router.post('/', asyncHandler(async (req, res) => {
             await invalidateGeneral(itemsByTypes, KCDetails, res, 'footer');
             await invalidateGeneral(itemsByTypes, KCDetails, res, 'UIMessages');
             await invalidateGeneral(itemsByTypes, KCDetails, res, 'notFound');
+            await invalidateGeneral(itemsByTypes, KCDetails, res, 'redirectRules');
             await invalidateGeneral(itemsByTypes, KCDetails, res, 'picker', 'platformsConfig');
             await invalidateGeneral(itemsByTypes, KCDetails, res, 'navigationItems');
             await invalidateArticles(itemsByTypes, KCDetails, res);

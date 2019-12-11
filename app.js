@@ -31,6 +31,7 @@ const cacheInvalidate = require('./routes/cacheInvalidate');
 const reference = require('./routes/reference');
 const error = require('./routes/error');
 const form = require('./routes/form');
+const redirectRules = require('./routes/redirectRules');
 
 const app = express();
 
@@ -152,6 +153,8 @@ app.use('/reference-updated', bodyParser.json({
 app.use('/cache-invalidate', bodyParser.text({
   type: '*/*'
 }), cacheInvalidate);
+
+app.use('/', redirectRules);
 
 app.use('/', previewUrls);
 
