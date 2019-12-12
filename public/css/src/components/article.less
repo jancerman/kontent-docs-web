@@ -17,7 +17,7 @@
                 top: -3.75em;
                 bottom: -6em;
                 right: -.25em;
-                background-color: #E3E9EC;
+                background-color: #fff;
             }
         }
 
@@ -111,15 +111,16 @@
 
     &__content {
         width: 100%;
-        color: #2D373B;
+        color: #231F20;
         position: relative;
         
         a {
-            color: #008AE1;
+            color: #F05A22;
+            text-decoration: underline;
 
             &:hover,
             &:active {
-                color: #e46952;
+                text-decoration: none;
             }
         }
 
@@ -129,8 +130,9 @@
 
         h1 {
             font-size: 1.75em;
-            padding: 0 0 .125em;
+            padding: 0 0 .375em;
             line-height: 1.25em;
+            font-weight: 700;
 
             @media screen and (min-width: 480px) {
                 font-size: 2em;
@@ -149,13 +151,14 @@
             font-size: 1.5em;
             padding: .375em 0;
             line-height: 1.25em;
+            font-weight: 700;
 
             @media screen and (min-width: 480px) {
                 font-size: 1.675em;
             }
     
             @media screen and (min-width: 768px) {
-                font-size: 1.875em;
+                font-size: 2em;
             }
         }
 
@@ -175,22 +178,14 @@
         }
 
         h4 {
-            font-size: 1.125em;
+            font-size: 1em;
             padding: .375em 0;
-            font-style: italic;
             line-height: 1.25em;
-
-            @media screen and (min-width: 480px) {
-                font-size: 1.25em;
-            }
-    
-            @media screen and (min-width: 768px) {
-                font-size: 1.375em;
-            }
+            font-weight: 700;
         }
         
         p {
-            line-height: 1.5em;
+            line-height: 1.625em;
             padding: 0 0 1em;
         }
 
@@ -212,17 +207,18 @@
             list-style-type: none;
 
             & > li {
-                padding: 0 0 .25em 1.125em;
+                padding: 0 0 .25em 1.875em;
                 position: relative;
     
                 &:before {
                     content: '';
-                    width: .375em;
-                    height: .375em;
-                    background-color: #008AE1;
+                    width: .875em;
+                    height: .4375em;
+                    border-radius: .25em .25em .25em 0;
+                    background-color: #F05A22;
                     position: absolute;
                     left: 0;
-                    top: .6em;
+                    top: .4625em;
                 }
             }
         }
@@ -297,7 +293,7 @@
 
         & > * {
             font-size: 1em;
-            color: #7C909B;
+            color: #919091;
             line-height: 1.375em;
             display: inline-block;
 
@@ -305,10 +301,10 @@
                 content: @icon-circle;
                 font-family: 'kentico-icons';
                 display: inline-block;
-                padding: 0 1.5em;
-                font-size: .375em;
+                padding: 0 2em;
+                font-size: .25em;
                 position: relative;
-                top: -.5em;
+                top: -1em;
             }
 
             &:last-child {

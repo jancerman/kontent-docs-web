@@ -2,7 +2,7 @@
     background-color: #fff;
     position: relative;
     z-index: 6000;
-    box-shadow: 0px 4px 0px 0px #e9eaeb;
+    box-shadow: 0px 2px 0px 0px #E8E8E8;
 
 	&__wrapper {
         margin: 0 auto;
@@ -184,7 +184,7 @@
         }
 
         @media screen and (min-width: 1024px) {
-            margin: 0 0 0 2.1875em;
+            margin: 0 0 0 2em;
         }
 
         @media screen and (min-width: 768px) {
@@ -195,26 +195,22 @@
 	}
 
 	&__link {
-        font-size: 1em;
+        font-size: .875em;
         display: flex;
-        color: #2D373B;
+        color: #231F20;
         text-decoration: none;
         position: relative;
         align-items: center;
         height: 100%;
-
-        @media screen and (min-width: 480px) {
-            font-size: 1.125em;
-        }
+        text-transform: uppercase;
 
         @media screen and (min-width: 768px) {
-            font-size: 1.125em;
 
             &:after {
                 content: '';
-                height: 8px;
+                height: 1px;
                 position: absolute;
-                bottom: 0;
+                bottom: 1.675em;
                 left: 0;
                 right: 0;
                 transition: .2s;
@@ -225,22 +221,22 @@
         &:focus,
         &:active {
             &:after {
-                background-color: #ED6A56;
+                background-color: #F05A22;
             }
         }
 
         &--active {
-            color: #2D373B;
+            color: #231F20;
 
             &:after {
-                background-color: #008AE1;
+                background-color: #231F20;
             }
 
             &:hover,
             &:focus,
             &:active {
                 &:after {
-                    background-color: #008AE1;
+                    background-color: #231F20;
                 }
             }
         }
@@ -288,23 +284,20 @@
         width: 100%;
 
         input {
-            border-radius: 0;
+            font-size: .875em;
+            border-radius: .5714em 1.4285em 1.4285em 1.4285em;
             -webkit-appearance: none;
-            border: 2px solid #F3F6F7;
-            background-color: #F3F6F7 !important;
-            color: #2D373B;
-            font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-            padding: .25em .25em .25em 2.25em;
+            border: 1px solid rgba(35, 31, 32, .25);
+            background-color: #fff !important;
+            color: rgba(35, 31, 32, .5);
+            font-family: 'GT Walsheim Pro', Helvetica, Arial, sans-serif;
+            padding: .75em .75em .75em 3.4285em;
             line-height: 1.25em;
             width: 100%;
             margin: 0 1em 0 0;
             box-sizing: border-box;
             transition: all .25s;
             outline-color: #008AE1;
-
-            @media screen and (min-width: 480px) {
-                padding: .5em .5em .5em 2.5em;
-            }
 
             @media screen and (min-width: 1024px) {
                 margin: 0;
@@ -320,25 +313,23 @@
     &__search-icon {
         position: absolute;
         top: 0;
-        left: 0;
+        left: 1px;
         bottom: 0;
-        width: 2.25em;
+        width: 3em;
         display: flex;
         justify-content: center;
         align-items: center;
         font-size: 16px;
         z-index: 1000;
 
-        @media screen and (min-width: 480px) {
-            width: 2.5em;
-        }
-
         &:before {
-            content: "\e657";
-            font-family: 'kentico-icons';
-            font-size: 1em;
-            color: #7C909B;
-            margin-top: 1px;
+            content: '';
+            width: 22px;
+            height: 22px;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-image: url('../img/ui/magnifier-gray.svg');
         }
     }
 
@@ -361,14 +352,17 @@
 
         &.trigger-active,
         &:active {
-            background-color: rgba(45, 55, 59, 0.1);
+            background-color: #E8E8E8;
         }
 
         &:before {
-            content: "\e657";
-            font-family: 'kentico-icons';
-            font-size: 1.25em;
-            color: #6B7C85;
+            content: '';
+            width: 22px;
+            height: 22px;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-image: url('../img/ui/magnifier-gray.svg');
         }
     }
 
