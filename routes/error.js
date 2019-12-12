@@ -11,18 +11,20 @@ const error = asyncHandler(async (req, res) => {
     const UIMessages = await handleCache.ensureSingle(res, 'UIMessages', async () => {
         return commonContent.getUIMessages(res);
     });
-    const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
 
-    if (!footer) {
-        return res.status(500).send('Unexpected error, please check site logs.');
-    }
+    const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
 
     const content = await handleCache.ensureSingle(res, 'not_found', async () => {
         return commonContent.getNotFound(res);
     });
+
     const home = await handleCache.ensureSingle(res, 'home', async () => {
         return commonContent.getHome(res);
     });
+
+    if (!footer || !UIMessages || !content || !home) {
+        return res.status(500).send('Unexpected error, please check site logs.');
+    }
 
     return res.render('tutorials/pages/error', {
         req: req,

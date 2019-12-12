@@ -4,7 +4,7 @@ const {
 const {
     deliveryConfig
 } = require('../config');
-const consola = require('consola');
+const app = require('../app');
 const requestDelivery = require('./requestDelivery');
 const helper = require('./helperFunctions');
 const ensureSingle = require('./ensureSingle');
@@ -147,33 +147,35 @@ const createUrlMap = async (response, isSitemap, url, urlMap = [], res) => {
     const queryString = '';
     const hash = '';
 
-    if (response.items) nodes.push('items');
-    if (response.navigation) nodes.push('navigation');
-    if (response.children) nodes.push('children');
-    if (response.topics) nodes.push('topics');
+    if (response) {
+        if (response.items) nodes.push('items');
+        if (response.navigation) nodes.push('navigation');
+        if (response.children) nodes.push('children');
+        if (response.topics) nodes.push('topics');
 
-    if (!isSitemap) {
-        if (response.categories) nodes.push('categories');
-        if (response.path_operations) nodes.push('path_operations');
-        if (response.security) nodes.push('security');
-    }
+        if (!isSitemap) {
+            if (response.categories) nodes.push('categories');
+            if (response.path_operations) nodes.push('path_operations');
+            if (response.security) nodes.push('security');
+        }
 
-    for (let i = 0; i < nodes.length; i++) {
-        if (response[nodes[i]]) {
-            const items = response[nodes[i]].value || response[nodes[i]];
+        for (let i = 0; i < nodes.length; i++) {
+            if (response[nodes[i]]) {
+                const items = response[nodes[i]].value || response[nodes[i]];
 
-            for await (const item of items) {
-                urlMap = await handleNode({
-                    response,
-                    item,
-                    urlMap,
-                    url,
-                    queryString,
-                    hash,
-                    isSitemap,
-                    res
-                });
-            };
+                for await (const item of items) {
+                    urlMap = await handleNode({
+                        response,
+                        item,
+                        urlMap,
+                        url,
+                        queryString,
+                        hash,
+                        isSitemap,
+                        res
+                    });
+                };
+            }
         }
     }
 
@@ -238,24 +240,29 @@ const handleNode = async (settings) => {
 };
 
 const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
+    let error;
     const query = deliveryClient.items()
         .type('article');
 
     let articles = await query
         .toPromise()
         .catch(err => {
-            consola.error(err);
+            if (err.originalError.response.status >= 400) {
+                error = err;
+            }
         });
 
     // Retry in case of stale content
     const temps = [0];
     for await (let temp of temps) {
-        if ((articles && articles.hasStaleContent) || !articles) {
+        if (!error && ((articles && articles.hasStaleContent) || !articles)) {
             await helper.sleep(5000);
             articles = await query
                 .toPromise()
                 .catch(err => {
-                    consola.error(err);
+                    if (err.originalError.response.status >= 400) {
+                        error = err;
+                    }
                 });
 
             if (temp < 5) {
@@ -264,24 +271,30 @@ const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
         }
     }
 
-    articles.items.forEach((articleItem) => {
-        let isInUrlMap = false;
-        urlMap.forEach((mapItem) => {
-            if (articleItem.system.codename === mapItem.codename) {
-                isInUrlMap = true;
+    if (articles && articles.items) {
+        articles.items.forEach((articleItem) => {
+            let isInUrlMap = false;
+            urlMap.forEach((mapItem) => {
+                if (articleItem.system.codename === mapItem.codename) {
+                    isInUrlMap = true;
+                }
+            });
+
+            if (!isInUrlMap) {
+                urlMap.push(getMapItem({
+                    codename: articleItem.system.codename,
+                    url: `/other/${articleItem.url.value}`,
+                    date: articleItem.system.lastModified,
+                    visibility: articleItem.visibility && articleItem.visibility.value.length ? articleItem.visibility.value : null,
+                    type: 'article'
+                }, fields));
             }
         });
+    }
 
-        if (!isInUrlMap) {
-            urlMap.push(getMapItem({
-                codename: articleItem.system.codename,
-                url: `/other/${articleItem.url.value}`,
-                date: articleItem.system.lastModified,
-                visibility: articleItem.visibility && articleItem.visibility.value.length ? articleItem.visibility.value : null,
-                type: 'article'
-            }, fields));
-        }
-    });
+    if (error && app.appInsights) {
+        app.appInsights.defaultClient.trackTrace({ message: 'DELIVERY_API_ERROR: ' + error.message });
+    }
 
     return urlMap;
 };
@@ -289,6 +302,7 @@ const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
 const getUrlMap = async (res, isSitemap) => {
     // globalConfig = config;
     deliveryConfig.projectId = res.locals.projectid;
+    deliveryConfig.retryAttempts = 0;
 
     if (res.locals.previewapikey) {
         deliveryConfig.previewApiKey = res.locals.previewapikey;
@@ -303,6 +317,7 @@ const getUrlMap = async (res, isSitemap) => {
 
     const deliveryClient = new DeliveryClient(deliveryConfig);
 
+    let error;
     const query = deliveryClient.items()
         .type('home')
         .depthParameter(5);
@@ -310,18 +325,22 @@ const getUrlMap = async (res, isSitemap) => {
     let response = await query
         .toPromise()
         .catch(err => {
-            consola.error(err);
+            if (err.originalError.response.status >= 400) {
+                error = err;
+            }
         });
 
     // Retry in case of stale content
     const temps = [0];
     for await (let temp of temps) {
-        if ((response && response.hasStaleContent) || !response) {
+        if (!error && ((response && response.hasStaleContent) || !response)) {
             await helper.sleep(5000);
             response = await query
                 .toPromise()
                 .catch(err => {
-                    consola.error(err);
+                    if (err.originalError.response.status >= 400) {
+                        error = err;
+                    }
                 });
 
             if (temp < 5) {
@@ -334,6 +353,10 @@ const getUrlMap = async (res, isSitemap) => {
         fields = ['codename', 'url', 'date', 'visibility', 'type'];
     } else {
         fields = ['codename', 'url'];
+    }
+
+    if (error && app.appInsights) {
+        app.appInsights.defaultClient.trackTrace({ message: 'DELIVERY_API_ERROR: ' + error.message });
     }
 
     let urlMap = await createUrlMap(response, isSitemap, [], [], res);

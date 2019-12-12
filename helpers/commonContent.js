@@ -107,6 +107,12 @@ const commonContent = {
             ...commonContent.getKCDetails(res)
         });
     },
+    getRedirectRules: async (res) => {
+        return await requestDelivery({
+            type: 'redirect_rule',
+            ...commonContent.getKCDetails(res)
+        });
+    },
     getPlatformsConfig: async (res) => {
         return await requestDelivery({
             type: 'platform_picker',

@@ -31,6 +31,7 @@ const cacheInvalidate = require('./routes/cacheInvalidate');
 const reference = require('./routes/reference');
 const error = require('./routes/error');
 const form = require('./routes/form');
+const redirectRules = require('./routes/redirectRules');
 
 const app = express();
 
@@ -153,6 +154,8 @@ app.use('/cache-invalidate', bodyParser.text({
   type: '*/*'
 }), cacheInvalidate);
 
+app.use('/', redirectRules);
+
 app.use('/', previewUrls);
 
 app.use('/form', bodyParser.text({
@@ -245,6 +248,7 @@ app.use(async (err, req, res, _next) => { // eslint-disable-line no-unused-vars
       contextObjects: req,
     });
   }
+
   // render the error page
   res.status(err.status || 500);
   req.err = err;
