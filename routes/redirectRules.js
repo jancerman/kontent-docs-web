@@ -5,7 +5,7 @@ const handleCache = require('../helpers/handleCache');
 const commonContent = require('../helpers/commonContent');
 
 router.get('*', async (req, res, next) => {
-    const rules = await handleCache.ensureSingle(res, 'redirectRules', async () => {
+    const rules = await handleCache.evaluateSingle(res, 'redirectRules', async () => {
         return await commonContent.getRedirectRules(res);
     });
 
