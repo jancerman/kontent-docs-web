@@ -6,6 +6,7 @@
     const articleContent = document.querySelector('.article__content');
     const tableOfContentsWrapper = document.querySelector('.table-of-contents__list');
     const tableOfContentsElem = document.querySelector('.table-of-contents');
+    const anchorsOnly = document.querySelector('.article__content--anchors-only');
     let affixHeadings;
     let tableOfContentsElemFixed;
 
@@ -274,5 +275,9 @@
                 passive: true
             } : false);
         }, 0);
+    } else if (anchorsOnly) {
+        createAnchors();
+        anchorOnLoad();
+        copyAnchorClipboard();
     }
 })();
