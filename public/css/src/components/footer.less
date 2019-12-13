@@ -1,6 +1,6 @@
 .footer {
-    background-color: #231F20;
-    color: #7C909B;
+    background-color: #fff;
+    color: #231f20;
     padding: 1.25em 0;
     margin: 2em 0 0;
     position: relative;
@@ -24,26 +24,31 @@
 	&__wrapper {
         margin: 0 auto;
         max-width: 1200px;
-        padding: 0 1em; 
-       
+        padding: 0 .75em; 
+        position: relative;
 
         @media screen and (min-width: 768px) {
             display: flex;
             justify-content: space-between;
         }
-	}
+    }
+    
+    &__logo {
+        margin: 0 0 1em;
+    }
 
 	&__note {
 
 	}
 
 	&__link, a {
-        color: #7C909B;
+        color: #231f20;
+        text-decoration: none;
 
         &:hover,
         &:focus,
         &:active {
-            color: #F3F6F7;
+            color: #e75810;
         }
 	}
 
@@ -70,4 +75,35 @@
     .api-reference + & {
         margin-top: 0;
     }
+}
+
+[data-parallax='footer'],
+[data-parallax-target='footer'] {
+    background-image: url('../img/ui/people-480.jpg');
+    background-position: center center;
+    position: relative;
+    overflow: hidden;
+
+    @media screen and (min-width: 480px) {
+        background-image: url('../img/ui/people-768.jpg');
+    }
+
+    @media screen and (min-width: 768px) {
+        background-image: url('../img/ui/people-1024.jpg');
+    }
+
+    @media screen and (min-width: 1024px) {
+        background-image: url('../img/ui/people-1464.jpg');
+    }
+}
+
+[data-parallax-target='footer'] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: -100px;
+    background-size: cover;
+    transform: translate3d(0,0,0);
+    transition: transform .1s linear;
 }
