@@ -98,11 +98,11 @@
 
 	.selection__item {
         position: relative;
-        padding: 0 1em;
         display: inline-block;
+        padding: 0;
         width: 146px;
         box-sizing: border-box;
-        margin: 0 0 1em;
+        margin: 0 .5em 1em;
 
         &:before {
             display: none;
@@ -122,14 +122,15 @@
         color: #262524;
         text-decoration: none;
         display: block;
+        padding: 1em 1em 0.75em;
+        border: 1px solid #D3D2D2;
+        border-radius: 2.25em;
+        transition: .25s border;
 
         &:hover,
         &:active {
-            background-color: #F3F6F7;
-
-            .selection__img {
-                filter: grayscale(.2) brightness(1.1) hue-rotate(155deg);
-            }
+            border-color: #FF4C00;
+            background-color: transparent;
         }
     }
     

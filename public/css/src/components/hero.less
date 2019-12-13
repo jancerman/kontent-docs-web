@@ -1,20 +1,20 @@
 .hero {
-    background-color: #6B7C85;
-    background-image: url('/img/hero-bg.svg');
-    background-position: bottom left;
-    background-size: cover;
+    background-color: #231f20;
+    background-image: url('/img/ui/hero-shapes.svg');
+    background-position: center center;
+    background-repeat: no-repeat;
     padding: .5em 0 0;
 
     @media screen and (min-width: 768px) {
-        padding: 1em 0 0;
+        padding: 1.5em 0 0;
     }
 
     @media screen and (min-width: 992px) {
-        padding: 2em 0 0;
+        padding: 3em 0 0;
     }
 
     @media screen and (min-width: 1200px) {
-        padding: 5em 0 0;
+        padding: 6em 0 0;
     }
 
     &__wrapper {
@@ -26,14 +26,18 @@
 
     &__heading {
         font-size: 1.75em;
-        font-weight: 300;
         margin: .5em 0;
-        font-weight: 300;
-        color: #AEBCC5;
+        font-weight: 700;
+        color: #fff;
+
+        &:after {
+            content: '.';
+            color: #F05A22;
+        }
 
         @media screen and (min-width: 768px) {
             font-size: 2.25em;
-            margin: .75em 0;
+            margin: .75em 0 1.25em;
         }
 
         @media screen and (min-width: 1200px) {
@@ -53,55 +57,50 @@
 
         @media screen and (min-width: 768px) {
             margin: 0 auto 3em;
-            width: 720px;
+            width: 690px;
         }
 
         @media screen and (min-width: 992px) {
-            margin: 0 auto 5em;
-            width: 768px;
+            margin: 0 auto 6em;
         }
 
         @media screen and (min-width: 1200px) {
-            margin: 0 auto 6.5em;
+            margin: 0 auto 8em;
         }
 
         input {
             font-size: 1.25em;
-            border-radius: 0;
             -webkit-appearance: none;
             color: #231F20;
             font-family: 'GT Walsheim Pro', Helvetica, Arial, sans-serif;
-            padding: 1em 1em 1em 3em;
+            padding: 1em 1em 1em 3.5em;
             line-height: 1.25em;
             width: 100%;
-            margin: 0;
+            margin: 0 0 .75em;  
             box-sizing: border-box;
             font-size: 1.075em;
             background-color: #fff !important;
             box-sizing: border-box;
-            border: none;
-            outline-color: #008AE1;
-            transition: box-shadow .25s;
+            border: 1px solid transparent;
+            outline-color: transparent;
+            transition: box-shadow .25s, border .25s;
+            border-radius: 1em 2em 2em 2em;
 
             @media screen and (min-width: 480px) {
-                padding: 1.5em 1.5em 1.5em 4.3809em;
+                padding: 1.375em 1.5em 1.375em 5em;
             }
 
             @media screen and (min-width: 1200px) {
-                font-size: 1.3125em;
+                font-size: 1.25em;
             }
 
             &::placeholder {
                 line-height: 1.375em;
-                color: #95A6B1;
+                color: #908e8f;
             }
 
             &:focus {
-                box-shadow: inset 6px 0px 0px 0px rgba(237,106,86,1);
-
-                @media screen and (min-width: 480px) {
-                    box-shadow: inset 15px 0px 0px 0px rgba(237,106,86,1);
-                }
+                border-color: #F05A22;
             }
         }
     }
@@ -112,18 +111,14 @@
         }
 
         a {
-            color: #AEBCC5;
+            color: #908E8F;
             margin: 0 0 1.5em;
             display: inline-block;
-            font-size: 1.125em;
+            font-size: 1em;
     
             &:hover,
             &:active {
                 color: #F3F6F7;
-            }
-
-            @media screen and (min-width: 1200px) {
-                font-size: 1.25em;
             }
         }
     }
@@ -132,17 +127,12 @@
         position: absolute;
         top: 0;
         left: 0;
-        bottom: 0;
-        width: 3em;
+        bottom: .75em;
+        width: 3.75em;
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 1.075em;
         z-index: 1000;
-
-        @media screen and (min-width: 420px) {
-            width: 2.75em;
-        }
 
         @media screen and (min-width: 480px) {
             font-size: 1.25em;
@@ -154,10 +144,13 @@
         }
 
         &:before {
-            content: "\e657";
-            font-family: 'kentico-icons';
-            color: #008AE1;
-            margin-top: 1px;
+            content: '';
+            width: 1.5em;
+            height: 1.5em;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-image: url('../img/ui/magnifier-orange.svg');
         }
     }
 }
