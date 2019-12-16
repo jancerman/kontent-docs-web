@@ -49,9 +49,9 @@
     const handleFeedback = (e) => {
         e.preventDefault();
         if (e.target) {
-            if (e.target.matches('.feedback__button--yes')) {
+            if (e.target.matches('.feedback__button--yes') || e.target.matches('.feedback__button--yes span')) {
                 onBtnClick(yesBtn, yesMsg, 1);
-            } else if (e.target.matches('.feedback__button--no')) {
+            } else if (e.target.matches('.feedback__button--no') || e.target.matches('.feedback__button--no span')) {
                 onBtnClick(noBtn, noMsg, 0);
             }
         }
