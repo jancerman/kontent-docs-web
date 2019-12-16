@@ -274,19 +274,20 @@
         const articleContent = document.querySelector('.article__content');
 
         if (articleContent) {
-            const copyButtons = articleContent.querySelectorAll('.infobar__copy');
+            const copyTooltips = articleContent.querySelectorAll('.infobar__tooltip');
 
-            copyButtons.forEach(item => {
+            copyTooltips.forEach(item => {
                 item.innerHTML = (window.UIMessages ? window.UIMessages.copyCode : '');
             });
 
             articleContent.addEventListener('click', (e) => {
                 if (e.target && e.target.matches('.infobar__copy')) {
                     e.preventDefault();
-                    const text = e.target.innerHTML;
-                    e.target.innerHTML = (window.UIMessages ? window.UIMessages.copyCodeActive : '');
+                    const textElem = e.target.querySelector('.infobar__tooltip');
+                    const text = textElem.innerHTML;
+                    textElem.innerHTML = (window.UIMessages ? window.UIMessages.copyCodeActive : '');
                     setTimeout(() => {
-                        e.target.innerHTML = text;
+                        textElem.innerHTML = text;
                     }, 1500);
                     const code = window.helper.findAncestor(e.target, 'pre').querySelector('.clean-code').innerHTML;
                     window.helper.copyToClipboard(window.helper.htmlDecode(code));

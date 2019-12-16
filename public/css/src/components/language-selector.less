@@ -63,7 +63,7 @@
 
     &--code-block {
         margin: 0;
-        background-color: #efedeb;
+        background-color: #fff;
 
         &::-webkit-scrollbar-track {
             background-color: #f5f5f5;
@@ -98,20 +98,34 @@
             border: none;
             width: 100%;
             box-sizing: border-box;
-            color: #8b9ba6;
-            padding: 0.375em 1em;
+            color: #231f20;
+            padding: .375em 1em;
+            position: relative;
+            margin: 0 0 .5em;
+
+            &:after {
+                content: '';
+                left: 1em;
+                right: 1em;
+                height: 1px;
+                bottom: 0;
+                position: absolute;
+            }
 
             &:hover,
             &--active {
                 margin: 0;
                 border: none;
                 font-weight: 400;
-                background-color: #b7c3cb;
-                color: #fff;
+
+                &:after {
+                    background-color: #f1ac8e;
+                }
             }
 
-            &--active {
-                background-color: #8b9ba6;
+            &--active,
+            &--active:hover {
+                font-weight: 700;
             }
 
             &.language-selector__empty {
