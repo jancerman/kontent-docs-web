@@ -5,7 +5,7 @@ block content
             .article__left
                 include ../includes/sub-navigation.pug
             .article__right
-                .article__content
+                div(class=`article__content${containsReleaseNote ? ' article__content--anchors-only' : ''}`)
                     h1 !{content.title.value}
                     if (!containsReleaseNote || isPreview)
                         .article__notes
