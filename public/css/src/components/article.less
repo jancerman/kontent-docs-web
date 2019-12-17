@@ -122,6 +122,24 @@
             &:active {
                 text-decoration: none;
             }
+
+            &[href*='/reference/'] {
+                &:after {
+                    content: 'API';
+                    border-radius: .875em .875em .875em 0;
+                    border: 2px solid #F05A22;
+                    font-size: .625em;
+                    display: inline-block;
+                    margin: 0 0 0 .5em;
+                    line-height: 1em;
+                    padding: .375em .375em .25em;
+                    color: #231F20;
+                    font-weight: 700;
+                    letter-spacing: 1px;
+                    position: relative;
+                    top: -1px;
+                }
+            }
         }
 
         i {

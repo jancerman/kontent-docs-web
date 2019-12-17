@@ -4,9 +4,8 @@
 nav.navigation
     .navigation__wrapper
         .navigation__left
-            a.navigation__logo(href='https://kontent.ai/', rel='noreferrer')
-                img(src='/img/logo-kontent.svg', alt='Kentico Kontent logo')
-            a.navigation__title(href='/') Docs
+            a.navigation__logo(href='https://docs.kontent.ai/', rel='noreferrer')
+                img(src='/img/ui/logo.svg', alt='Kentico Kontent Docs logo')
             ul(class= `navigation__list${isNotHome ? '' : ' navigation__list--full'}`)
                 each item in navigation
                     li.navigation__item
@@ -20,7 +19,6 @@ nav.navigation
                         input(type='search', id='nav-search', name='nav-search', autocomplete="off", placeholder= UIMessages ? UIMessages.search___placeholder.value : '')
                     #searchbox
             a.navigation__app(href='https://app.kontent.ai', target='_blank', rel='noreferrer')
-                i.icon-kentico
                 .navigation__app-tooltip !{UIMessages ? UIMessages.link_to_app_tooltip.value : ''}
         if isNotHome
             .navigation__trigger(data-search-trigger='', aria-hidden='true')
