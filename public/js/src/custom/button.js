@@ -2,7 +2,7 @@
     var body = document.querySelector('body');
 
     var setHoverPosition = function (e) {
-        if (e.target && (e.target.matches('.feedback__button') || e.target.matches('.form__button'))) {
+        if (e.target && (e.target.matches('.feedback__button') || e.target.matches('.form__button') || e.target.matches('.button') || e.target.matches('.cta .call-to-action'))) {
             var rect = e.target.getBoundingClientRect();
             var top = e.clientY - rect.top;
             var left = e.clientX - rect.left;
