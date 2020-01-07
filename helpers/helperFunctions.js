@@ -1,5 +1,6 @@
 const axios = require('axios');
 const cache = require('memory-cache');
+var fs = require('fs');
 
 const helper = {
     escapeHtml: (unsafe) => {
@@ -119,7 +120,15 @@ const helper = {
         const time = (new Date()).toISOString();
 
         try {
-            data = await axios.get(`https://kcdmaster.blob.core.windows.net/api-reference-pages/${codename}${KCDetails.isPreview ? '-preview' : ''}.html`);
+            // data = await axios.get(`https://kcdmaster.blob.core.windows.net/api-reference-pages/${codename}${KCDetails.isPreview ? '-preview' : ''}.html`);
+            data = {};
+            fs.readFile('./helpers/delivery_api.html', (err, text) => { //management_api_v2-preview
+                if (err) {
+                    throw err;
+                }
+                data.data = text;
+            });
+            console.log(data.data);
         } catch (err) {
             try {
                 if (baseURL) {
