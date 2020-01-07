@@ -122,13 +122,12 @@ const helper = {
         try {
             // data = await axios.get(`https://kcdmaster.blob.core.windows.net/api-reference-pages/${codename}${KCDetails.isPreview ? '-preview' : ''}.html`);
             data = {};
-            fs.readFile('./helpers/delivery_api.html', (err, text) => { //management_api_v2-preview
+            fs.readFile('./helpers/management_api_v2-preview.html', (err, text) => { // delivery_api
                 if (err) {
                     throw err;
                 }
                 data.data = text;
             });
-            console.log(data.data);
         } catch (err) {
             try {
                 if (baseURL) {
