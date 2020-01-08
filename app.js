@@ -241,12 +241,18 @@ app.use(async (err, req, res, _next) => { // eslint-disable-line no-unused-vars
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   consola.error(err.stack);
-  if (appInsights && appInsights.defaultClient && err.status !== 404) {
-    appInsights.defaultClient.trackException({
-      message: 'ERR_STACK_TRACE: ' + err.stack,
-      exception: err,
-      contextObjects: req,
-    });
+  if (appInsights && appInsights.defaultClient) {
+    if (err.status !== 404) {
+      appInsights.defaultClient.trackException({
+        message: 'ERR_STACK_TRACE: ' + err.stack,
+        exception: err,
+        contextObjects: req,
+      });
+    }
+
+    if (req.headers.referer) {
+      appInsights.defaultClient.trackTrace({ message: 'REFERER_HEADER: ' + req.headers.referer });
+    }
   }
 
   // render the error page
