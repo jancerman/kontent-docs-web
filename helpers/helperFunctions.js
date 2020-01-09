@@ -120,14 +120,14 @@ const helper = {
         const time = (new Date()).toISOString();
 
         try {
-            // data = await axios.get(`https://kcdmaster.blob.core.windows.net/api-reference-pages/${codename}${KCDetails.isPreview ? '-preview' : ''}.html`);
-            data = {};
+            data = await axios.get(`https://${KCDetails.isPreview ? 'kcddev' : 'kcdmaster'}.blob.core.windows.net/api-reference-pages/${codename}${KCDetails.isPreview ? '-preview' : ''}.html`);
+            /* data = {};
             fs.readFile('./helpers/management_api_v2-preview.html', (err, text) => { // delivery_api
                 if (err) {
                     throw err;
                 }
                 data.data = text;
-            });
+            }); */
         } catch (err) {
             try {
                 if (baseURL) {
