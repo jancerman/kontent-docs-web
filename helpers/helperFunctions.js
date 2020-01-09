@@ -1,6 +1,6 @@
 const axios = require('axios');
 const cache = require('memory-cache');
-var fs = require('fs');
+// var fs = require('fs');
 
 const helper = {
     escapeHtml: (unsafe) => {
