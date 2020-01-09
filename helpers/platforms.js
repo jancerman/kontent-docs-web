@@ -109,7 +109,11 @@ const platforms = {
         }
 
         if (!preselectedPlatform) {
-            preselectedPlatform = platforms.getDefaultPlatform(req, content, preselectedPlatform);
+            if (cookiesPlatform) {
+                preselectedPlatform = cookiesPlatform;
+            } else {
+                preselectedPlatform = platforms.getDefaultPlatform(req, content, preselectedPlatform);
+            }
         } else {
             preselectedPlatform = platforms.getAvailablePlatform(content, preselectedPlatform);
         }
