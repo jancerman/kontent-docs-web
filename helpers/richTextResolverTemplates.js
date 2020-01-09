@@ -213,7 +213,7 @@ const richTextResolverTemplates = {
         return '';
     },
     callToAction: (item) => {
-        return `<div class="call-to-action" data-click="support">${item.text.value}</div>`;
+        return `<div class="call-to-action" data-click="support"><span>${item.text.value}</span><span></span></div>`;
     },
     contentChunk: (item) => {
         const platforms = [];
@@ -242,7 +242,7 @@ const richTextResolverTemplates = {
         item.programming_language.value.forEach(item => {
             infoBar += `<li class="infobar__lang">${item.name}</li>`;
         });
-        infoBar += '</ul><div class="infobar__copy"></div></div>';
+        infoBar += '</ul><div class="infobar__copy"><div class="infobar__tooltip"></div></div></div>';
 
     return `<pre class="line-numbers" data-platform-code="${item.platform.value.length ? item.platform.value[0].codename : ''}">${infoBar}<div class="clean-code">${helper.escapeHtml(item.code.value)}</div><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>`;
     },
