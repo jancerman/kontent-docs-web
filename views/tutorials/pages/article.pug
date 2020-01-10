@@ -1,7 +1,7 @@
 extends ../includes/layout.pug
 block content
     main(id='main')
-        .article
+        .article(data-display-mode=`${content.display_mode.value.length ? content.display_mode.value[0].name.toLowerCase() : 'one_page'}`)
             .article__left
                 include ../includes/sub-navigation.pug
             .article__right

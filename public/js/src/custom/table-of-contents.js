@@ -270,10 +270,12 @@
             anchorOnLoad();
             toggleItemsFromWithinContentChunks();
             copyAnchorClipboard();
-            affix();
-            window.addEventListener('scroll', affix, window.supportsPassive ? {
-                passive: true
-            } : false);
+            if (!document.querySelector('[data-display-mode="step-by-step"]')) {
+                affix();
+                window.addEventListener('scroll', affix, window.supportsPassive ? {
+                    passive: true
+                } : false);
+            }
         }, 0);
     } else if (anchorsOnly) {
         createAnchors();
