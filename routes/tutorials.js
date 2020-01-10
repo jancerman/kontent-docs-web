@@ -75,7 +75,8 @@ const getContent = async (req, res) => {
     const home = await handleCache.ensureSingle(res, 'home', async () => {
         return commonContent.getHome(res);
     });
-    const slug = req.originalUrl.split('/')[1];
+    let slug = req.originalUrl.split('/')[1];
+    slug = slug.split('?')[0];
     const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
         return await commonContent.getSubNavigation(res, slug);
     });

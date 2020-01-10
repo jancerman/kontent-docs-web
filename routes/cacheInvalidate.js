@@ -170,7 +170,10 @@ const invalidateUrlMap = async (res, KCDetails) => {
 
 const invalidateSubNavigation = async (res, keys) => {
     let subNavigationKeys = keys.filter(key => key.startsWith('subNavigation_'));
-    subNavigationKeys = subNavigationKeys.map(key => key.split('_')[1]);
+    subNavigationKeys = subNavigationKeys.map(key => {
+        key = key.split('_')[1];
+        return key.split('?')[0];
+    });
     handleCache.deleteMultipleKeys('subNavigation_', keys);
 
     for await (const slug of subNavigationKeys) {

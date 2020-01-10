@@ -15,7 +15,8 @@ const getUrlMap = require('../helpers/urlMap');
 
 const handleArticle = async (settings, req, res) => {
     settings.renderSettings.view = 'apiReference/pages/reference';
-    const parentSlug = req.originalUrl.split('/')[1];
+    let parentSlug = req.originalUrl.split('/')[1];
+    parentSlug = parentSlug.split('?')[0];
     const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${parentSlug}`, async () => {
         return await commonContent.getSubNavigation(res, parentSlug);
     });
@@ -134,7 +135,8 @@ router.get('/:main', asyncHandler(async (req, res, next) => {
         return next();
     }
 
-    const slug = req.originalUrl.split('/')[1];
+    let slug = req.originalUrl.split('/')[1];
+    slug = slug.split('?')[0];
     const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
         return await commonContent.getSubNavigation(res, slug);
     });
