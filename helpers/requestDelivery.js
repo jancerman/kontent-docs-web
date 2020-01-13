@@ -119,7 +119,7 @@ const resolveRichText = (item, config) => {
                 codename: item.system.codename,
                 type: components[i].type
             });
-            return components[i].resolver(item, config.urlMap);
+            return components[i].resolver(item, config);
         }
     }
 

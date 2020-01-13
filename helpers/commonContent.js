@@ -10,7 +10,8 @@ const commonContent = {
             previewapikey: res.locals.previewapikey,
             securedapikey: res.locals.securedapikey,
             host: res.locals.host,
-            isPreview: isPreview(res.locals.previewapikey)
+            isPreview: isPreview(res.locals.previewapikey),
+            dpr: res.locals.dpr
         };
     },
     getTree: async (contentType, depth, res) => {

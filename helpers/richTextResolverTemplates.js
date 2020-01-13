@@ -1,7 +1,7 @@
 const moment = require('moment');
 const helper = require('./helperFunctions');
 
-const getImageAttributes = (item, cssClass, transformationQueryString) => {
+const getImageAttributes = (item, cssClass, dpr, transformationQueryString) => {
     if (item.image_width.value.length) {
         switch (item.image_width.value[0].codename) {
             case 'n25_':
@@ -23,6 +23,10 @@ const getImageAttributes = (item, cssClass, transformationQueryString) => {
             default:
                 transformationQueryString += '896';
         }
+    }
+
+    if (dpr) {
+        transformationQueryString += `&dpr=${dpr}`;
     }
 
     if (item.image.value.length && item.image.value[0].url.endsWith('.gif')) {
@@ -160,7 +164,9 @@ const richTextResolverTemplates = {
             </section>
         `;
     },
-    homeLinkToContentItem: (item, urlMap) => {
+    homeLinkToContentItem: (item, config) => {
+        const urlMap = config.urlMap;
+        const dpr = config.dpr ? `&dpr=${config.dpr}` : '';
         let resolvedUrl = '';
 
         if (item.linked_item.value[0] && urlMap) {
@@ -171,7 +177,7 @@ const richTextResolverTemplates = {
             <li class="selection__item">
                 ${resolvedUrl ? '<a class="selection__link" href="'+ resolvedUrl + '">' : '<div class="selection__link">'}
                     <div class="selection__img-sizer">
-                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + '?w=290&fm=jpg&auto=format' : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
+                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + `?w=290&fm=jpg&auto=format${dpr}` : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
                     </div>
                     <div class="selection__title">${item.title.value}</div>
                 ${resolvedUrl ? '</a>' : '</div>'}
@@ -184,18 +190,18 @@ const richTextResolverTemplates = {
                 ${item.content.value}
             </div>`;
     },
-    image: (item) => {
+    image: (item, config) => {
         if (item.image.value.length) {
             const alt = item.image.value[0].description ? item.image.value[0].description : '';
             const url = encodeURI(item.url.value.trim());
+            const dpr = config.dpr;
             const transformationQueryString = '?fm=jpg&auto=format&w=';
             let cssClass = item.border.value.length && item.border.value[0].codename === 'show' ? ' article__image-border' : '';
             cssClass += item.zoomable.value.length && item.zoomable.value[0].codename === 'true' && !url ? ' article__add-lightbox' : '';
             const openLinkTag = url ? '<a href="'+ url +'" target="_blank" class="no-icon">' : '';
             const closeLinkTag = url ? '</a>' : '';
 
-            const attributes = getImageAttributes(item, cssClass, transformationQueryString);
-
+            const attributes = getImageAttributes(item, cssClass, dpr, transformationQueryString);
             return `
                 <figure>
                     ${openLinkTag}
@@ -224,12 +230,13 @@ const richTextResolverTemplates = {
         }
         return value;
     },
-    homeLinkToExternalUrl: (item) => {
+    homeLinkToExternalUrl: (item, config) => {
+        const dpr = config.dpr ? `&dpr=${config.dpr}` : '';
         return `
             <li class="selection__item">
                 <a class="selection__link" href="${item.url.value}">
                     <div class="selection__img-sizer">
-                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + '?w=290&fm=jpg&auto=format' : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
+                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + `?w=290&fm=jpg&auto=format${dpr}` : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
                     </div>
                     <div class="selection__title">${item.title.value}</div>
                 </a>
