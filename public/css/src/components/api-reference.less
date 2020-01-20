@@ -1,6 +1,7 @@
 html,
 body {
   overflow-x: visible;
+  font-weight: 300 !important;
 }
 
 .redoc-wrap {
@@ -37,7 +38,7 @@ body {
       padding: 0.375em 1em;
       transition: background-color .25s, color .25s;
       position: relative;
-      font-weight: 400 !important;
+      font-weight: 300 !important;
 
       &:after {
         content: '';
@@ -284,7 +285,7 @@ body {
 
   .token.important,
   .token.bold {
-    font-weight: 700;
+    font-weight: 400;
   }
 
   .token.italic {
@@ -299,7 +300,7 @@ body {
     [data-section-id] {
       /*h3 {
         font-size: 1.375em;
-        font-weight: 700;
+        font-weight: 400;
         padding: .75em 0;
       }*/
 
@@ -330,7 +331,7 @@ body {
 
   [class*="SecurityRequirementAndWrap"] {
     &>a {
-      font-weight: 700;
+      font-weight: 400;
       text-decoration: none;
     }
   }
@@ -425,7 +426,7 @@ body {
     padding: 2em 0 1em;
     font-size: 1.3125em;
     margin: 0;
-    font-weight: 400;
+    font-weight: 300;
   }
 
   [class*="StyledDropdown"] .Dropdown-control {
@@ -457,7 +458,7 @@ body {
         padding: 0;
         background: transparent;
         border-bottom: 1px dashed #343131;
-        font-weight: 400;
+        font-weight: 300;
         display: inline-block;
         margin: 0 1em .5em 0;
         padding: 0 0 2px;
@@ -517,13 +518,13 @@ body {
 
     [class*="OneOfLabel"] {
       font-family: GT Walsheim Pro, Helvetica, Arial, sans-serif;
-      font-weight: 400;
+      font-weight: 300;
     }
   }
 
   [class*="SecurityRequirementAndWrap"] {
     a {
-      font-weight: 400;
+      font-weight: 300;
       text-decoration: underline;
     }
   }
@@ -651,7 +652,7 @@ figure {
   }
 
   a&__link {
-    font-weight: 400;
+    font-weight: 300;
     font-size: .875em;
     display: block;
     text-align: center;
@@ -759,7 +760,7 @@ h4 {
 span.api-status {
   font-size: 12px;
   color: #ec8a60;
-  font-weight: 400;
+  font-weight: 300;
   text-transform: uppercase;
   padding-left: .5em;
   position: relative;
@@ -776,7 +777,7 @@ span.api-status {
 [class*="RightPanelHeader"],
 h3[class*="RightPanelHeader"] {
   font-size: 1.125em;
-  font-weight: 700;
+  font-weight: 400;
   margin: .75em 0;
 }
 
@@ -825,7 +826,7 @@ h3[class*="RightPanelHeader"] {
   h3,
   h4 {
     font-size: 1.125em;
-    font-weight: 700;
+    font-weight: 400;
     padding: 1em 0 .5em;
   }
 
@@ -904,6 +905,6 @@ h3[class*="RightPanelHeader"] {
   }
 }
 
-h1, h2, h3, h4 {
-  font-weight: 700 !important;
+h1, h2, h3, h4, strong {
+  font-weight: 400 !important;
 }
