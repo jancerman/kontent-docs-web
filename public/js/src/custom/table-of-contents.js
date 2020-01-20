@@ -175,7 +175,7 @@
         if (viewportWidth >= 1150 && selector) {
             const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
             const main = document.querySelector('.table-of-contents');
-            const isTop = topOffset <= main.getBoundingClientRect().top + main.offsetHeight + window.scrollY;
+            const isTop = topOffset <= main.getBoundingClientRect().top + main.offsetHeight + (window.scrollY || document.documentElement.scrollTop);
 
             if (isTop) {
                 selector.classList.remove('table-of-contents--visible');

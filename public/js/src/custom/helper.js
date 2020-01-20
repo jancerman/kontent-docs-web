@@ -357,7 +357,7 @@ window.helper = (() => {
     }
 })();
 
-const renderReCaptcha = function () { // eslint-disable-line no-unused-vars
+window.renderReCaptcha = function () { // eslint-disable-line no-unused-vars
     window.grecaptcha.render('g-recaptcha-placeholder', {
         sitekey: recaptchaKey,
         theme: 'light'

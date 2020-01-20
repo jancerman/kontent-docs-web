@@ -260,7 +260,7 @@
         if (viewportWidth >= 1150 && selector) {
             const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
             const mainSelector = document.querySelector('.language-selector');
-            const isTop = topOffset <= mainSelector.getBoundingClientRect().top + mainSelector.offsetHeight + window.scrollY;
+            const isTop = topOffset <= mainSelector.getBoundingClientRect().top + mainSelector.offsetHeight + (window.scrollY || document.documentElement.scrollTop);
 
             if (isTop) {
                 selector.classList.remove('language-selector--visible');

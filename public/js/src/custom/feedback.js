@@ -9,22 +9,32 @@
     const close = document.querySelector('.feedback__close');
     const posted = document.querySelector('.feedback--posted');
 
+    const setTopOffset = (elem) => {
+        const toc = document.querySelector('.table-of-contents--fixed');
+
+        if (toc) {
+            const tocHeading = toc.querySelector('.table-of-contents__heading');
+            const tocList = toc.querySelector('.table-of-contents__list');
+            const tocOffset = toc.getBoundingClientRect().top;
+
+            const offset = tocHeading.offsetHeight + tocList.offsetHeight + tocOffset + 32;
+            elem.style.top = `${offset}px`;
+        }
+    };
+
     const handleFixed = () => {
         const selector = document.querySelector('.feedback');
         const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 
         if (viewportWidth >= 1150 && selector) {
             const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
-            const main = document.querySelector('.navigation');
-            const relativePositionTo = document.querySelector('.article__content h1');
-            const isTop = topOffset <= main.getBoundingClientRect().top + main.offsetHeight + window.scrollY;
-
-            selector.classList.add('feedback--loaded');
+            const main = document.querySelector('.article__content .table-of-contents + *');
+            const isTop = topOffset <= main.getBoundingClientRect().top + main.offsetHeight + (window.scrollY || document.documentElement.scrollTop);
 
             if (isTop) {
                 selector.classList.remove('feedback--visible');
-                selector.style.top = relativePositionTo.getBoundingClientRect().top + 'px';
             } else {
+                setTopOffset(selector);
                 selector.classList.add('feedback--visible');
             }
         }
@@ -88,9 +98,6 @@
     };
 
     if (form) {
-        window.addEventListener('load', () => {
-            handleFixed();
-        });
         window.addEventListener('scroll', handleFixed, window.supportsPassive ? {
             passive: true
         } : false);
