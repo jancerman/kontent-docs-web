@@ -1,7 +1,8 @@
 footer.footer(data-parallax='footer')
     .footer__paralax(data-parallax-target='footer')
     .footer__wrapper
-        img.footer__logo(src='/img/ui/logo-kontent.svg')
+        a(href='https://www.kontent.ai', rel='noreferrer', target='_blank')
+            img.footer__logo(src='/img/ui/logo-kontent.svg')
     .footer__wrapper
         if footer
             .footer__note !{minify(footer.copyright.value)}
