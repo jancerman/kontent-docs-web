@@ -2568,7 +2568,7 @@ strong {
   transform: scale(1);
 }
 .callout {
-  border: 2px solid;
+  border: 1px solid;
   padding: 1.25em 1.5em;
   margin: 0 0 1em;
   box-sizing: border-box;
@@ -2612,6 +2612,9 @@ strong {
 .callout--tip li {
   color: #45a485 !important;
 }
+.callout--tip ul > li:before {
+  background-color: #45a485;
+}
 .callout--warning {
   background-color: #fdeee8;
   border-color: #e85a20;
@@ -2623,6 +2626,9 @@ strong {
 .callout--warning a,
 .callout--warning li {
   color: #e85a20 !important;
+}
+.callout--warning ul > li:before {
+  background-color: #e85a20;
 }
 .callout--note {
   background-color: #f3edf6;
@@ -2636,6 +2642,9 @@ strong {
 .callout--note li {
   color: #894da7 !important;
 }
+.callout--note ul > li:before {
+  background-color: #894da7;
+}
 .callout--info {
   background-color: #eceff8;
   border-color: #5160c0;
@@ -2647,6 +2656,9 @@ strong {
 .callout--info a,
 .callout--info li {
   color: #5160c0 !important;
+}
+.callout--info ul > li:before {
+  background-color: #5160c0;
 }
 .callout__title,
 .callout > p:first-child > strong {
@@ -2881,7 +2893,7 @@ pre[class*="language-"].line-numbers {
   counter-reset: linenumber;
   padding-top: 2.5em;
   margin-top: 0;
-  padding-bottom: 0;
+  padding-bottom: 1px;
 }
 pre[class*="language-"].line-numbers > code {
   position: relative;
