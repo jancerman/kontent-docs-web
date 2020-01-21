@@ -177,54 +177,6 @@
         });
     };
 
-    const hidePlaformInContentChunk = (item, languageSelector) => {
-        const chunkParent = window.helper.findAncestor(item, '[data-platform-chunk]');
-
-        if (chunkParent) {
-            const languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');
-            const chunkPlatforms = chunkParent.getAttribute('data-platform-chunk').split('|');
-            languageSelectorItems.forEach((elem) => {
-                const elemParent = window.helper.findAncestor(elem, '.language-selector__item');
-                elemParent.style.display = 'none';
-                if (chunkPlatforms.indexOf(elem.getAttribute('data-platform')) > -1) {
-                    elemParent.style.display = 'block';
-                }
-            });
-        }
-
-        return languageSelector;
-    };
-
-    const showAllPlatformsInContentChunk = (languageSelector) => {
-        const languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');
-        languageSelectorItems.forEach((elem) => {
-            const elemParent = window.helper.findAncestor(elem, '.language-selector__item');
-            elemParent.style.display = 'block';
-        });
-
-        return languageSelector;
-    };
-
-    const cloneLanguageSelectorToCodeBlocks = () => {
-        let languageSelector = document.querySelector('.language-selector');
-
-        if (languageSelector && languageSelector.querySelector('.language-selector__list:not(.language-selector__list--static)') && languageSelector.querySelector('.language-selector__list').childNodes.length > 1) {
-            languageSelector = languageSelector.cloneNode(true);
-            const codeBlocks = document.querySelectorAll('*:not([data-platform-code]) + [data-platform-code]:not([data-platform-code=""]), [data-platform-code]:first-child:not([data-platform-code=""])');
-
-            languageSelector.classList.add('language-selector--code-block');
-
-            codeBlocks.forEach(item => {
-                languageSelector = hidePlaformInContentChunk(item, languageSelector);
-
-                const clonedSelector = item.parentNode.insertBefore(languageSelector, item);
-                languageSelector = clonedSelector.cloneNode(true);
-
-                languageSelector = showAllPlatformsInContentChunk(languageSelector);
-            });
-        }
-    };
-
     const cloneLanguageSelectorToFixed = () => {
         let languageSelector = document.querySelector('.language-selector');
 
@@ -352,9 +304,10 @@
     const handleEmptyPlatforms = () => {
         const codeBlocks = document.querySelectorAll('.code-samples');
         const message = window.UIMessages && window.UIMessages.emptyCodeBlock ? window.UIMessages.emptyCodeBlock : 'We don\'t have a code sample for the selected technology.';
+        const langSelector = document.querySelector('.language-selector__list');
 
         codeBlocks.forEach((block) => {
-            let availablePlatforms = [...block.querySelectorAll('[data-platform]')].map((item) => {
+            let availablePlatforms = [...langSelector.querySelectorAll('[data-platform]')].map((item) => {
                 return item.getAttribute('data-platform');
             });
 
@@ -369,14 +322,12 @@
             let emptyBlocks = '';
             availablePlatforms.forEach((platform) => {
                 emptyBlocks += `<pre class="code-samples__empty" data-platform-code="${platform}"><div class="code-samples__text">${message}</div></pre>`;
-                block.querySelector(`[data-platform="${platform}"]`).classList.add('language-selector__empty');
             });
 
             block.innerHTML = block.innerHTML + emptyBlocks;
         });
     };
 
-    cloneLanguageSelectorToCodeBlocks();
     cloneLanguageSelectorToFixed();
     handleEmptyPlatforms();
     handleFixedSelector();
