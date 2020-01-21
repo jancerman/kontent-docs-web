@@ -21,14 +21,14 @@ block content
                             ul.language-selector__list
                                 each item in platform
                                     li.language-selector__item
-                                        a(href=`#`, data-platform=item.codename, data-slug=item.slug, class=`language-selector__link`) #{item.title}
+                                        a(href=`#`, data-platform=item.codename, data-slug=item.slug, data-icon=item.icon, class=`language-selector__link`) #{item.title}
                     if (availablePlatforms && availablePlatforms.length)
                         .language-selector
                             ul.language-selector__list.language-selector__list--static
                                 - var highlighIndex = 0; availablePlatforms.forEach((item, index) => { if (preselectedPlatform === item.slug) { highlighIndex = index } });
                                 each item, index in availablePlatforms
                                     li.language-selector__item
-                                        a(href=`${req.path}?tech=${item.slug}`, class=`language-selector__link${index === highlighIndex ? ' language-selector__link--active' : ''}`) #{item.title}
+                                        a(href=`${req.path}?tech=${item.slug}`, data-icon=item.icon, class=`language-selector__link${index === highlighIndex ? ' language-selector__link--active' : ''}`) #{item.title}
                     if (introduction !== '<p><br></p>')
                         | !{minify(introduction)}
                     include ../includes/table-of-contents.pug

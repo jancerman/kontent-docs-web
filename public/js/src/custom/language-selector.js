@@ -28,6 +28,7 @@
     const highlightSelector = (articleContent, e) => {
         const fixedLabel = document.querySelector('.language-selector__label');
         let textTofixedLabel;
+        let bgTofixedLabel;
 
         if (e) {
             window.helper.setCookie('KCDOCS.preselectedLanguage', e.target.getAttribute('data-platform'));
@@ -35,6 +36,7 @@
             articleContent.querySelectorAll(`[data-platform=${e.target.getAttribute('data-platform')}]`).forEach(item => item.classList.add('language-selector__link--active'));
             updatePlatformInUrls(e.target.getAttribute('data-slug'));
             textTofixedLabel = e.target.innerHTML;
+            bgTofixedLabel = e.target.getAttribute('data-icon');
         } else {
             const preselectedPlatform = window.helper.getCookie('KCDOCS.preselectedLanguage');
             const preselectedElem = document.querySelectorAll(`[data-platform="${preselectedPlatform}"]`);
@@ -45,6 +47,7 @@
                 });
 
                 textTofixedLabel = preselectedElem[0].innerHTML;
+                bgTofixedLabel = preselectedElem[0].getAttribute('data-icon');
             } else {
                 const firstPlatformElem = document.querySelectorAll('.language-selector__item:first-child .language-selector__link');
                 firstPlatformElem.forEach(item => {
@@ -53,12 +56,14 @@
 
                 if (firstPlatformElem.length) {
                     textTofixedLabel = firstPlatformElem[0].innerHTML;
+                    bgTofixedLabel = firstPlatformElem[0].getAttribute('data-icon');
                 }
             }
         }
 
         if (fixedLabel && textTofixedLabel) {
             fixedLabel.innerHTML = textTofixedLabel;
+            fixedLabel.style.backgroundImage = `url('${bgTofixedLabel}')`;
         }
     };
 
@@ -232,6 +237,11 @@
             label.classList.add('language-selector__label');
             languageSelector.insertBefore(label, languageSelector.firstChild);
 
+            const iconItems = languageSelector.querySelectorAll('[data-icon]');
+            for (let i = 0; i < iconItems.length; i++) {
+                iconItems[i].style.backgroundImage = `url('${iconItems[i].getAttribute('data-icon')}')`;
+            }
+
             var text = document.createElement('label');
             text.classList.add('language-selector__fixed-label');
             text.innerHTML = window.UIMessages && window.UIMessages.technologyLabel ? window.UIMessages.technologyLabel : 'Technology';
@@ -263,6 +273,12 @@
             const isTop = topOffset <= mainSelector.getBoundingClientRect().top + mainSelector.offsetHeight + (window.scrollY || document.documentElement.scrollTop);
 
             if (isTop) {
+                if (viewportWidth >= 1920) {
+                    const relativePositionTo = document.querySelector('.article__content h1');
+                    const topOffset = relativePositionTo ? relativePositionTo.getBoundingClientRect().top : 0;
+                    selector.style.top = `${topOffset > 60 ? topOffset : 60}px`;
+                }
+
                 selector.classList.remove('language-selector--visible');
             } else {
                 selector.classList.add('language-selector--visible');
@@ -310,6 +326,7 @@
             const activeSelector = document.querySelector('.language-selector__link--active');
             if (fixedLabel && activeSelector) {
                 fixedLabel.innerHTML = activeSelector.innerHTML;
+                fixedLabel.style.backgroundImage = `url('${activeSelector.getAttribute('data-icon')}')`;
             }
         }
     };

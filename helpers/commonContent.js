@@ -156,7 +156,8 @@ const commonContent = {
                 const platform = {
                     title: item.title.value,
                     slug: item.url.value,
-                    codename: item.platform.value[0].codename
+                    codename: item.platform.value[0].codename,
+                    icon: item.icon.value.length ? `${item.icon.value[0].url}?w=16&dpr=${res.locals.dpr}` : ''
                 }
                 order.push(platform);
             });

@@ -1,10 +1,4 @@
-!(function(e) {
-    if (typeof exports === 'object' && typeof module !== 'undefined') module.exports = e();
-    else if (typeof define === 'function' && define.amd) define([], e);
-    else {
-        (typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : this).basicLightbox = e()
-    }
-}(function() {
+window.basicLightbox = (function() {
     return (function i(u, c, a) {
         function s(n, e) {
             if (!c[n]) {
@@ -102,4 +96,4 @@
             }
         }, {}]
     }, {}, [1]))(1)
-}));
+})();
