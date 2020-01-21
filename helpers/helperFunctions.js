@@ -120,7 +120,7 @@ const helper = {
         const time = (new Date()).toISOString();
 
         try {
-            data = await axios.get(`https://${KCDetails.isPreview ? 'kcddev' : 'kcdmaster'}.blob.core.windows.net/api-reference-pages/${codename}${KCDetails.isPreview ? '-preview' : ''}.html`);
+            data = await axios.get(`${baseURL}/api/ProviderStarter?api=${codename}&isPreview=${KCDetails.isPreview ? 'true' : 'false'}&source=${KCDetails.host}&method=${methodName}&t=${time}`);
             /* data = {};
             fs.readFile('./helpers/management_api_v2-preview.html', (err, text) => { // delivery_api
                 if (err) {
@@ -131,7 +131,7 @@ const helper = {
         } catch (err) {
             try {
                 if (baseURL) {
-                    data = await axios.get(`${baseURL}/api/ProviderStarter?api=${codename}&isPreview=${KCDetails.isPreview ? 'true' : 'false'}&source=${KCDetails.host}&method=${methodName}&t=${time}`);
+                    data = await axios.get(`https://${KCDetails.isPreview ? 'kcddev' : 'kcdmaster'}.blob.core.windows.net/api-reference-pages/${codename}${KCDetails.isPreview ? '-preview' : ''}.html`);
                 }
             } catch (err) {
                 data = {};
