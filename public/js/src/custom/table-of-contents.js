@@ -26,27 +26,9 @@
                 }
             });
 
-            item.setAttribute('id', `a-${anchorName}${anchorNameCount > 1 ? `-${anchorNameCount}` : ''}`);
-            item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip"></span></span>`;
-        });
-    };
-
-    // Make all icons copy the headings URL to clipboard and show appropriate message in tooltip
-    const copyAnchorClipboard = () => {
-        const anchors = document.querySelectorAll('.anchor-copy');
-
-        anchors.forEach((item) => {
-            item.addEventListener('click', () => {
-                const hash = item.parentElement.getAttribute('id');
-                const url = window.location.href.split('#')[0];
-                window.helper.copyToClipboard(`${url}#${hash}`);
-
-                const tooltip = item.querySelector('.anchor-copy__tooltip');
-                tooltip.classList.add('anchor-copy__tooltip--active');
-                setTimeout(() => {
-                    tooltip.classList.remove('anchor-copy__tooltip--active');
-                }, 1500);
-            })
+            const id = `a-${anchorName}${anchorNameCount > 1 ? `-${anchorNameCount}` : ''}`;
+            item.setAttribute('id', id);
+            item.innerHTML = `${item.innerHTML}<a href="#${id}" class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip"></span></a>`;
         });
     };
 
@@ -88,7 +70,7 @@
                 tableOfContents += '<ul>';
             }
 
-            tableOfContents += `<li><a href="#${item.getAttribute('id')}">${item.innerHTML}</a></li>`;
+            tableOfContents += `<li><a href="#${item.getAttribute('id')}">${item.textContent}</a></li>`;
 
             prevHeadingLevel = headingLevel;
         });
@@ -269,7 +251,6 @@
             } : false);
             anchorOnLoad();
             toggleItemsFromWithinContentChunks();
-            copyAnchorClipboard();
             if (!document.querySelector('[data-display-mode="step-by-step"]')) {
                 affix();
                 window.addEventListener('scroll', affix, window.supportsPassive ? {
@@ -280,6 +261,5 @@
     } else if (anchorsOnly) {
         createAnchors();
         anchorOnLoad();
-        copyAnchorClipboard();
     }
 })();

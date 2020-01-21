@@ -340,7 +340,7 @@ code {
 }
 .aa-dropdown-menu::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color: #343131;
+  background-color: #ccc;
 }
 .algolia-autocomplete {
   width: 100%;
@@ -636,11 +636,11 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 4px;
-  background-color: #343131;
+  background-color: #ccc;
 }
 .redoc-wrap .code-style::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color: #343131;
+  background-color: #ccc;
 }
 .redoc-wrap .react-tabs__tab-panel,
 .redoc-wrap [class*="JsonViewer"][class*="PrismDiv"] {
@@ -662,7 +662,7 @@ body {
 .redoc-wrap .react-tabs__tab-panel::-webkit-scrollbar-thumb,
 .redoc-wrap [class*="JsonViewer"][class*="PrismDiv"]::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color: #343131;
+  background-color: #ccc;
 }
 .redoc-wrap .react-tabs__tab-panel > div,
 .redoc-wrap [class*="JsonViewer"][class*="PrismDiv"] > div,
@@ -710,14 +710,14 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 4px;
-  background-color: #343131;
+  background-color: #ccc;
 }
 .redoc-wrap .react-tabs__tab-panel > div::-webkit-scrollbar-thumb,
 .redoc-wrap [class*="JsonViewer"][class*="PrismDiv"] > div::-webkit-scrollbar-thumb,
 .redoc-wrap .react-tabs__tab-panel > pre::-webkit-scrollbar-thumb,
 .redoc-wrap [class*="JsonViewer"][class*="PrismDiv"] > pre::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color: #343131;
+  background-color: #ccc;
 }
 .redoc-wrap .react-tabs__tab-panel > div > pre,
 .redoc-wrap [class*="JsonViewer"][class*="PrismDiv"] > div > pre,
@@ -765,14 +765,14 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 4px;
-  background-color: #343131;
+  background-color: #ccc;
 }
 .redoc-wrap .react-tabs__tab-panel > div > pre::-webkit-scrollbar-thumb,
 .redoc-wrap [class*="JsonViewer"][class*="PrismDiv"] > div > pre::-webkit-scrollbar-thumb,
 .redoc-wrap .react-tabs__tab-panel > pre > pre::-webkit-scrollbar-thumb,
 .redoc-wrap [class*="JsonViewer"][class*="PrismDiv"] > pre > pre::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color: #343131;
+  background-color: #ccc;
 }
 .redoc-wrap .react-tabs__tab-panel > div > div[class*="MimeLabel"],
 .redoc-wrap [class*="JsonViewer"][class*="PrismDiv"] > div > div[class*="MimeLabel"],
@@ -882,14 +882,14 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 4px;
-  background-color: #343131;
+  background-color: #ccc;
 }
 .redoc-wrap .react-tabs__tab-panel > div > div[class*="SamplesWrapper"] > div > div:last-child::-webkit-scrollbar-thumb,
 .redoc-wrap [class*="JsonViewer"][class*="PrismDiv"] > div > div[class*="SamplesWrapper"] > div > div:last-child::-webkit-scrollbar-thumb,
 .redoc-wrap .react-tabs__tab-panel > pre > div[class*="SamplesWrapper"] > div > div:last-child::-webkit-scrollbar-thumb,
 .redoc-wrap [class*="JsonViewer"][class*="PrismDiv"] > pre > div[class*="SamplesWrapper"] > div > div:last-child::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color: #343131;
+  background-color: #ccc;
 }
 .redoc-wrap .token.comment,
 .redoc-wrap .token.prolog,
@@ -1535,7 +1535,7 @@ strong {
 }
 .navigation__list::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color: #343131;
+  background-color: #ccc;
 }
 .navigation__item {
   display: inline-block;
@@ -2814,7 +2814,7 @@ pre[class*="language-"]::-webkit-scrollbar,
 pre[class*="language-"]::-webkit-scrollbar-thumb,
 [class*="StyledPre"]::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color: #343131;
+  background-color: #ccc;
 }
 :not(pre) > code[class*="language-"],
 pre[class*="language-"] {
