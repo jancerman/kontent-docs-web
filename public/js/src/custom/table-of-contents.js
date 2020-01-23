@@ -160,6 +160,16 @@
             const isTop = topOffset <= main.getBoundingClientRect().top + main.offsetHeight + (window.scrollY || document.documentElement.scrollTop);
 
             if (isTop) {
+                const relativePositionTo = document.querySelector('.article__content h1');
+                const langSelector = document.querySelector('.language-selector--fixed');
+                const topOffset = relativePositionTo ? relativePositionTo.getBoundingClientRect().top : 0;
+                const langSelectorHeight = langSelector ? langSelector.querySelector('.language-selector__fixed-label').offsetHeight + langSelector.querySelector('.language-selector__label').offsetHeight + 31 : 0;
+                if (langSelector) {
+                    selector.style.top = `${topOffset + langSelectorHeight > 160 ? topOffset + langSelectorHeight : 160}px`;
+                } else {
+                    selector.style.top = `${topOffset > 60 ? topOffset : 60}px`;
+                }
+
                 selector.classList.remove('table-of-contents--visible');
             } else {
                 selector.classList.add('table-of-contents--visible');

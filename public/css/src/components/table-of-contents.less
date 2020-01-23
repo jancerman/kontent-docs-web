@@ -112,6 +112,14 @@
         display: none;
     }
 
+    &--force-visible {
+        @media (min-width: 1150px) {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+    }
+
     @media (min-width: 1150px) {
         &--fixed {
             max-width: 70.5% !important;
@@ -125,7 +133,7 @@
             padding: 0;
             visibility: hidden;
             opacity: 0;
-            transition: .25s;
+            transition: opacity .25s;
 
             .language-selector--fixed + & {
                 top: 10em;

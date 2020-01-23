@@ -28,7 +28,7 @@
 
         if (viewportWidth >= 1150 && selector) {
             const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
-            const main = document.querySelector('.article__content .table-of-contents + *') || document.querySelector('.article__filter');
+            const main = document.querySelector('.article__content .table-of-contents:not(.hidden):not(.table-of-contents--fixed)') || document.querySelector('.article__filter') || document.querySelector('.article__notes');
             const isTop = topOffset <= (main.getBoundingClientRect().top || 0) + main.offsetHeight + (window.scrollY || document.documentElement.scrollTop);
 
             if (isTop) {

@@ -2,6 +2,39 @@
 /* eslint-disable no-undef */
 
 (() => {
+    const createNavWrap = (section) => {
+        let wrap = section.querySelector('[data-display-mode-wrap]');
+
+        if (!wrap) {
+            wrap = document.createElement('div');
+            wrap.setAttribute('data-display-mode-wrap', '');
+            section.appendChild(wrap);
+        }
+    };
+
+    const createNavLink = (sections, i, direction) => {
+        const index = (direction === 'prev' ? (i - 1) : (i + 1));
+        const section = sections[index];
+        createNavWrap(sections[i]);
+
+        if (section) {
+            const link = document.createElement('a');
+            link.setAttribute('href', `#${section.getAttribute('data-display-mode-id')}`);
+            link.innerHTML = `<span>${window.UIMessages ? window.UIMessages[`${direction}PartText`] : `Go to ${direction} part`}</span><span></span>`;
+            link.setAttribute(`data-display-mode-${direction}`, '');
+            sections[i].querySelector('[data-display-mode-wrap]').appendChild(link);
+        }
+    };
+
+    const duplicateNavToTop = (section) => {
+        const wrap = section.querySelector('[data-display-mode-wrap]');
+
+        if (wrap) {
+            const wrapClone = wrap.cloneNode(true);
+            section.insertBefore(wrapClone, section.firstChild);
+        }
+    };
+
     const createSections = (content) => {
         if (!content) {
             return;
@@ -45,14 +78,9 @@
                 sections[i].appendChild(sectionElements[j]);
             }
 
-            const nextSection = sections[i + 1];
-            if (nextSection) {
-                const nextLink = document.createElement('a');
-                nextLink.setAttribute('href', `#${nextSection.getAttribute('data-display-mode-id')}`);
-                nextLink.innerHTML = window.UIMessages ? window.UIMessages.nextPartText : 'Go to next part';
-                nextLink.setAttribute('data-display-mode-next', '');
-                sections[i].appendChild(nextLink);
-            }
+            createNavLink(sections, i, 'prev');
+            createNavLink(sections, i, 'next');
+            duplicateNavToTop(sections[i]);
 
             if (sectionsWrapper) {
                 // Move section in the wrapper
@@ -63,6 +91,22 @@
         return sectionsWrapper;
     };
 
+    const toggleArticleIntroduction = (section) => {
+        const directPs = document.querySelectorAll('.article__content > p, .article__content > .callout');
+        let hidePs = true;
+        if (parseInt(section.getAttribute('data-display-mode-index')) === 0) {
+            hidePs = false;
+        }
+
+        for (let i = 0; i < directPs.length; i++) {
+            if (hidePs) {
+                directPs[i].classList.add('hidden');
+            } else {
+                directPs[i].classList.remove('hidden');
+            }
+        }
+    };
+
     const activateSection = (wrapper, id) => {
         if (id) {
             // Hide a visible section
@@ -71,6 +115,7 @@
             const section = wrapper.querySelector(`[data-display-mode-id="${id.replace('#', '')}"]`);
 
             if (section) {
+                toggleArticleIntroduction(section);
                 section.setAttribute('data-display-mode-visible', 'true');
 
                 // Scroll to the top of the section
@@ -93,6 +138,19 @@
             } else {
                 links[i].classList.remove('active');
             }
+        }
+    };
+
+    const handleVisibilityOfToc = () => {
+        const tocArticle = document.querySelector('.table-of-contents:not(.table-of-contents--fixed)');
+        const tocColumn = document.querySelector('.table-of-contents--fixed');
+
+        if (tocArticle) {
+            tocArticle.classList.add('hidden');
+        }
+
+        if (tocColumn) {
+            tocColumn.classList.add('table-of-contents--force-visible');
         }
     };
 
@@ -120,6 +178,8 @@
 
         // Display section by id
         const section = wrapper.querySelector(`[data-display-mode-index="${index}"]`);
+        toggleArticleIntroduction(section);
+        handleVisibilityOfToc();
         section.setAttribute('data-display-mode-visible', true);
         activateTOC(`#${section.getAttribute('data-display-mode-id')}`);
 
@@ -132,9 +192,13 @@
 
         articleContent.addEventListener('click', (e) => {
             // Activate section on table of contents link or next link click
-            if (e.target && (e.target.matches('.table-of-contents__list a') || e.target.matches('[data-display-mode-next]'))) {
+            if (e.target && (e.target.matches('.table-of-contents__list a') ||
+                e.target.matches('[data-display-mode-next]') ||
+                e.target.matches('[data-display-mode-next] span') ||
+                e.target.matches('[data-display-mode-prev]') ||
+                e.target.matches('[data-display-mode-prev] span'))) {
                 e.preventDefault();
-                const href = e.target.getAttribute('href');
+                const href = e.target.getAttribute('href') ? e.target.getAttribute('href') : e.target.parentNode.getAttribute('href');
                 activateSection(wrapper, href);
                 activateTOC(href);
             }
