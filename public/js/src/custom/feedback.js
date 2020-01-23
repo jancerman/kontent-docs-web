@@ -101,6 +101,9 @@
         window.addEventListener('scroll', handleFixed, window.supportsPassive ? {
             passive: true
         } : false);
+        window.addEventListener('resize', handleFixed, window.supportsPassive ? {
+            passive: true
+        } : false);
     }
 
     if (yesMsg && noMsg && !posted) {

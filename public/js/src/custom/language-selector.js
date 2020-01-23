@@ -225,12 +225,9 @@
             const isTop = topOffset <= mainSelector.getBoundingClientRect().top + mainSelector.offsetHeight + (window.scrollY || document.documentElement.scrollTop);
 
             if (isTop) {
-                if (viewportWidth >= 1920) {
-                    const relativePositionTo = document.querySelector('.article__content h1');
-                    const topOffset = relativePositionTo ? relativePositionTo.getBoundingClientRect().top : 0;
-                    selector.style.top = `${topOffset > 60 ? topOffset : 60}px`;
-                }
-
+                const relativePositionTo = document.querySelector('.article__content h1');
+                const topOffset = relativePositionTo ? relativePositionTo.getBoundingClientRect().top : 0;
+                selector.style.top = `${topOffset > 60 ? topOffset : 60}px`;
                 selector.classList.remove('language-selector--visible');
             } else {
                 selector.classList.add('language-selector--visible');
@@ -332,6 +329,7 @@
     handleEmptyPlatforms();
     handleFixedSelector();
     window.addEventListener('scroll', handleFixedSelector, window.supportsPassive ? { passive: true } : false);
+    window.addEventListener('resize', handleFixedSelector, window.supportsPassive ? { passive: true } : false);
     selectLanguage();
     copyCode();
     setTimeout(() => {
