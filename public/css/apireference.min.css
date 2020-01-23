@@ -2508,6 +2508,7 @@ strong {
   max-height: 85%;
   width: auto;
   height: auto;
+  background-color: #fff;
 }
 .basicLightbox__placeholder > img + .basicLightbox__description {
   width: 95%;
