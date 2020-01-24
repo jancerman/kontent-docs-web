@@ -2,6 +2,7 @@ const requestDelivery = require('./requestDelivery');
 const getUrlMap = require('./urlMap');
 const ensureSingle = require('./ensureSingle');
 const isPreview = require('../helpers/isPreview');
+const richTextResolverTemplates = require('./richTextResolverTemplates');
 
 const commonContent = {
     getKCDetails: (res) => {
@@ -10,6 +11,7 @@ const commonContent = {
             previewapikey: res.locals.previewapikey,
             securedapikey: res.locals.securedapikey,
             host: res.locals.host,
+            protocol: res.locals.protocol,
             isPreview: isPreview(res.locals.previewapikey),
             dpr: res.locals.dpr
         };
@@ -75,6 +77,25 @@ const commonContent = {
                 type: 'descending',
                 field: 'system.last_modified'
             },
+            ...commonContent.getKCDetails(res)
+        });
+    },
+    getRSSChangelog: async (res) => {
+        const urlMap = await ensureSingle(res, 'urlMap', async () => {
+            return await getUrlMap(res);
+        });
+
+        const baseUrl = urlMap.filter((item) => { return item.codename === 'api_changelog' });
+
+        return await requestDelivery({
+            codename: 'api_changelog',
+            urlMap: urlMap,
+            resolveRichText: true,
+            richTextResolvers: [{
+                type: 'release_note',
+                resolver: richTextResolverTemplates.releaseNoteRSS,
+                custom: baseUrl.length ? baseUrl[0] : null
+            }],
             ...commonContent.getKCDetails(res)
         });
     },

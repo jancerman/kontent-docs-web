@@ -72,7 +72,7 @@ const defineQuery = (deliveryConfig, config) => {
     return query;
 };
 
-const components = [{
+const componentsResolvers = [{
     type: 'embedded_content',
     resolver: richTextResolverTemplates.embeddedContent
 }, {
@@ -113,13 +113,23 @@ const components = [{
 const resolveRichText = (item, config) => {
     item = linksResolverTemplates.resolveInnerRichTextLinks(item, config.urlMap);
 
-    for (var i = 0; i < components.length; i++) {
-        if (item.system.type === components[i].type) {
+    for (var i = 0; i < config.componentsResolvers.length; i++) {
+        if (item.system.type === config.componentsResolvers[i].type) {
             compomentsInRichText.push({
                 codename: item.system.codename,
-                type: components[i].type
+                type: config.componentsResolvers[i].type
             });
-            return components[i].resolver(item, config);
+
+            if (config.richTextResolvers) {
+                for (let j = 0; j < config.richTextResolvers.length; j++) {
+                    if (config.richTextResolvers[j].type === config.componentsResolvers[i].type) {
+                        config.customField = config.richTextResolvers[j].custom;
+                        return config.richTextResolvers[j].resolver(item, config);
+                    }
+                }
+            }
+
+            return config.componentsResolvers[i].resolver(item, config);
         }
     }
 
@@ -212,6 +222,7 @@ const getResponse = async (query, config) => {
 
 const requestDelivery = async (config) => {
     defineDeliveryConfig(config);
+    config.componentsResolvers = componentsResolvers;
     const query = defineQuery(deliveryConfig, config);
     const queryConfigObject = {};
 

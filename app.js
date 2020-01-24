@@ -45,7 +45,7 @@ const urlWhitelist = [
   '/kentico-icons.min.css',
   '/favicon.ico',
   '/api-reference',
-  '/rss/articles',
+  '/rss/*',
   '/redirect-urls',
   '/cache-invalidate',
   '/robots.txt',
@@ -140,6 +140,7 @@ const pageExists = async (req, res) => {
 // Routes
 app.use(async (req, res, next) => {
   res.locals.host = req.headers.host;
+  res.locals.protocol = req.protocol;
   res.locals.dpr = Math.round((parseFloat(req.cookies['KCDOCS.dpr']) || 1) * 100) / 100; // Get device pixel ration from cookies and round it to 2 decimals
   handleKCKeys(req, res);
   return next();
@@ -191,7 +192,7 @@ app.use('/redirect-urls', async (req, res, next) => {
 app.use('/sitemap.xml', sitemap);
 
 app.use('/rss', async (req, res, next) => {
-  await handleCache.evaluateCommon(res, ['rss_articles']);
+  await handleCache.evaluateCommon(res, ['rss_articles', 'rss_changelog']);
   return next();
 }, rss);
 

@@ -1,5 +1,7 @@
 const moment = require('moment');
 const helper = require('./helperFunctions');
+const Entities = require('html-entities').AllHtmlEntities;
+const entities = new Entities();
 
 const getImageAttributes = (item, cssClass, dpr, transformationQueryString) => {
     if (item.image_width.value.length) {
@@ -298,6 +300,20 @@ const richTextResolverTemplates = {
             </div>
         `;
     },
+    releaseNoteRSS: (item, config) => {
+        const anchorName = item.title.value.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/&[^\s]*;/g, '').replace(/\W/g, '-').replace(/[-]+/g, '-');
+        const url = `${config.protocol}://${config.host}${config.customField.url}#${anchorName}`;
+        return `<item>
+            <title>${item.title.value}</title>
+            <pubDate>${moment(item.system.lastModified).format('ddd, DD MMM YY HH:mm:ss ZZ')}</pubDate>
+            <atom:updated>${item.system.lastModified}</atom:updated>
+            <description>
+                <![CDATA[${entities.decode(helper.stripTags(item.content.value).trim().replace(/(\r\n|\n|\r)/gm, ''))}]]>
+            </description>
+            <link>${url}</link>
+            <guid isPermaLink="false">${url}</guid>
+        </item>`;
+    }
 };
 
 module.exports = richTextResolverTemplates;

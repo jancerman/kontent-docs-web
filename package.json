@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/KenticoDocs/kontent-docs-web#readme",
   "dependencies": {
-    "@kentico/kontent-delivery": "8.0.0",
+    "@kentico/kontent-delivery": "^9.0.0",
     "acorn": "^7.1.0",
     "applicationinsights": "^1.5.0",
     "axios": "^0.19.0",

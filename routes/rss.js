@@ -34,4 +34,24 @@ router.get('/articles', asyncHandler(async (req, res) => {
     });
 }));
 
+router.get('/api-changelog', asyncHandler(async (req, res) => {
+    const home = await handleCache.ensureSingle(res, 'home', async () => {
+        return commonContent.getHome(res);
+    });
+    const changelog = await handleCache.ensureSingle(res, 'rss_changelog', async () => {
+        return commonContent.getRSSChangelog(res);
+    });
+
+    res.set('Content-Type', 'application/xml');
+
+    return res.render('tutorials/pages/rssApiChangelog', {
+        req: req,
+        helper: helper,
+        home: home[0],
+        entities: entities,
+        moment: moment,
+        changelog: changelog[0].content.value
+    });
+}));
+
 module.exports = router;
