@@ -117,6 +117,7 @@
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
+            z-index: 5555 !important;
         }
     }
 
@@ -124,7 +125,7 @@
         &--fixed {
             max-width: 70.5% !important;
             display: block;
-            z-index: 3000;
+            z-index: 5555;
             overflow: visible;
             top: 3.75em;
             width: 920px;
@@ -133,6 +134,7 @@
             padding: 0;
             visibility: hidden;
             opacity: 0;
+            z-index: -1;
             transition: opacity .25s;
 
             .language-selector--fixed + & {
@@ -174,6 +176,7 @@
         &--visible {
             opacity: 1;
             visibility: visible;
+            z-index: 5555;
         }
     }
 

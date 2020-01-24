@@ -168,10 +168,12 @@
             } else {
                 // If section with given hash ges not exist, find out if there is any other element with id equal to the hash and fond its parent section
                 hashElem = wrapper.querySelector(hash);
-                const parentWrapper = window.helper.findAncestor(hashElem, '[data-display-mode-index]');
-                if (parentWrapper) {
-                    index = parentWrapper.getAttribute('data-display-mode-index');
-                    scrollToAnchor = true;
+                if (hashElem) {
+                    const parentWrapper = window.helper.findAncestor(hashElem, '[data-display-mode-index]');
+                    if (parentWrapper) {
+                        index = parentWrapper.getAttribute('data-display-mode-index');
+                        scrollToAnchor = true;
+                    }
                 }
             }
         }
