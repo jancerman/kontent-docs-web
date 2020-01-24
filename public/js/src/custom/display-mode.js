@@ -91,22 +91,6 @@
         return sectionsWrapper;
     };
 
-    const toggleArticleIntroduction = (section) => {
-        const directPs = document.querySelectorAll('.article__content > p, .article__content > .callout');
-        let hidePs = true;
-        if (parseInt(section.getAttribute('data-display-mode-index')) === 0) {
-            hidePs = false;
-        }
-
-        for (let i = 0; i < directPs.length; i++) {
-            if (hidePs) {
-                directPs[i].classList.add('hidden');
-            } else {
-                directPs[i].classList.remove('hidden');
-            }
-        }
-    };
-
     const activateSection = (wrapper, id) => {
         if (id) {
             // Hide a visible section
@@ -115,7 +99,6 @@
             const section = wrapper.querySelector(`[data-display-mode-id="${id.replace('#', '')}"]`);
 
             if (section) {
-                toggleArticleIntroduction(section);
                 section.setAttribute('data-display-mode-visible', 'true');
 
                 // Scroll to the top of the section
@@ -180,7 +163,6 @@
 
         // Display section by id
         const section = wrapper.querySelector(`[data-display-mode-index="${index}"]`);
-        toggleArticleIntroduction(section);
         handleVisibilityOfToc();
         section.setAttribute('data-display-mode-visible', true);
         activateTOC(`#${section.getAttribute('data-display-mode-id')}`);

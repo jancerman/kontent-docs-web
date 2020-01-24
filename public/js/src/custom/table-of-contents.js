@@ -56,7 +56,13 @@
 
     // For all sub-headings create a list cascade representing table of contents and append it to the appropriate element
     const createTableOfContents = () => {
-        const headings = articleContent.querySelectorAll('h2:not(.table-of-contents__heading):not(.table-of-contents__whatsnext):not(.feedback__heading)');
+        let headingsSelector = 'h2:not(.table-of-contents__heading):not(.table-of-contents__whatsnext):not(.feedback__heading)';
+
+        if (document.querySelector('[data-display-mode="step-by-step"]')) {
+            headingsSelector = 'h2:not(.table-of-contents__heading):not(.feedback__heading)';
+        }
+
+        const headings = articleContent.querySelectorAll(headingsSelector);
         let tableOfContents = '';
         let prevHeadingLevel = 2;
         headings.forEach(item => {

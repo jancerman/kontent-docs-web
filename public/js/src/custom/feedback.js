@@ -27,9 +27,13 @@
         const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 
         if (viewportWidth >= 1150 && selector) {
-            const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
-            const main = document.querySelector('.article__content .table-of-contents:not(.hidden):not(.table-of-contents--fixed)') || document.querySelector('.article__filter') || document.querySelector('.article__notes');
-            const isTop = topOffset <= (main.getBoundingClientRect().top || 0) + main.offsetHeight + (window.scrollY || document.documentElement.scrollTop);
+            let isTop = false;
+
+            if (!document.querySelector('[data-display-mode-wrapper]')) {
+                const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
+                const main = document.querySelector('.article__content .table-of-contents:not(.hidden):not(.table-of-contents--fixed)') || document.querySelector('.article__filter') || document.querySelector('.article__notes');
+                isTop = topOffset <= (main.getBoundingClientRect().top || 0) + main.offsetHeight + (window.scrollY || document.documentElement.scrollTop);
+            }
 
             if (isTop) {
                 selector.classList.remove('feedback--visible');
