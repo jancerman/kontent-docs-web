@@ -188,7 +188,6 @@ router.get(['/other/:article', '/:main', '/:main/:scenario', '/:main/:scenario/:
     const data = await getContent(req, res, next);
     if (data && !data.view) return res.redirect(301, data);
     if (!data) return next();
-
     return res.render(data.view, data);
 }));
 

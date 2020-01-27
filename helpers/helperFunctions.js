@@ -122,7 +122,7 @@ const helper = {
         try {
             data = await axios.get(`${baseURL}/api/ProviderStarter?api=${codename}&isPreview=${KCDetails.isPreview ? 'true' : 'false'}&source=${KCDetails.host}&method=${methodName}&t=${time}`);
             /* data = {};
-            fs.readFile('./helpers/management_api_v2-preview.html', (err, text) => { // delivery_api
+            fs.readFile('./helpers/delivery_api.html', (err, text) => { // management_api_v2
                 if (err) {
                     throw err;
                 }

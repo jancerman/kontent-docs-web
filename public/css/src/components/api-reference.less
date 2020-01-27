@@ -554,7 +554,7 @@ body {
   }
 
   &__lang {
-    padding: .375em 1em !important;
+    padding: .25em .75em !important;
     color: #F05A22;
     border: 1px solid #F05A22;
     line-height: 1.375em;
@@ -623,31 +623,100 @@ figure {
   top: 0;
   left: 0;
   right: 0;
-  height: 4em;
+  height: 2em;
   justify-content: space-between;
-  padding: 1em;
+  padding: 0;
   box-sizing: border-box;
   font-family: 'GT Walsheim Pro', Helvetica, Arial, sans-serif;
   display: flex;
 }
 
 .language-selector {
-  ul&__list {
-    font-size: 1em;
-    list-style-type: none;
-    padding: 0 !important;
-    white-space: nowrap;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
+  position: relative;
+  padding: 0 !important;
+  z-index: 6666;
+
+  &__label {
+    width: 150px;
+    height: 2.75em;
+    line-height: 2.5em;
+    position: absolute;
+    font-size: 0.875em;
+    right: 1em;
+    border: 1px solid #d9d8d8;
+    box-sizing: border-box;
+    padding: 0.125em 3.125em .125em 1.75em;
+    cursor: pointer;
+    top: 0;
+    color: #918f8f;
+    border-radius: 1.4285em 1.4285em 1.4285em 0.5714em;
+    margin-top: 0;
+    background-repeat: no-repeat;
+    background-position: top 50% left 1.25em;
+    background-size: 16px auto;
+    background-color: #fff;
+    transition: .25s border-color;
+
+    &:before {
+      font-family: 'kentico-icons';
+      content: "\e66f";
+      font-size: 1em;
+      position: absolute;
+      top: 0;
+      right: 1.25em;
+      color: #231F20;
+      line-height: 2.675em;
+    }
+
+    .language-selector--opened & {
+      border: 1px solid #F05A22;
+
+      &:before {
+        content: '\e667';
+      }
+    }
+
+    [class*="tabs__Tabs"] & {
+      left: 0;
+      right: auto
+    }
+  }
+
+  ul&__list, .react-tabs__tab-list {
+    position: absolute;
+    right: 1em;
+    top: 2.75em;
+    visibility: hidden;
+    opacity: 0;
+    transition: .25s opacity;
+    background-color: #fff;
+    width: 150px;
+    box-shadow: 0 0 2em 0 rgba(35,31,32,0.25);
+    border-radius: 0.5em 1.25em 1.25em 1.25em;
+    padding: 0.675em 0 !important;
 
     &>li {
       padding: 0 !important;
-      display: inline-block;
+      display: block;
 
       &:before {
         display: none;
       }
+    }
+
+    .language-selector--opened & {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .language-selector--opened& {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    [class*="tabs__Tabs"] & {
+      left: 0;
+      right: auto
     }
   }
 
@@ -655,35 +724,40 @@ figure {
     font-weight: 300;
     font-size: .875em;
     display: block;
-    text-align: center;
-    padding: 0.375em 1em;
+    padding: 0.375em 1.75em;
     color: #231F20 !important;
     text-decoration: none !important;
     white-space: nowrap;
     line-height: 1.5em;
     position: relative;
-    text-transform: uppercase;
-
-    &:after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      height: 1px;
-      left: 1em;
-      right: 1em;
-    }
-
-    &:hover {
-      &:after {
-        background-color: #F05A22;
-      }
-    }
+    transition: .25s color;
 
     &--active,
-    &--active:hover {
-      &:after {
-        background-color: #231F20;
-      }
+    &--active:hover,
+    &:hover {
+      color: #F05A22 !important;
+    }
+  }
+
+  [class*="tab-click_"][role="tab"] {
+    font-weight: 300;
+    font-size: .875em;
+    display: block !important;
+    padding: 0.375em 1.75em !important;
+    color: #231F20 !important;
+    text-decoration: none !important;
+    white-space: nowrap;
+    line-height: 1.5em;
+    position: relative;
+    transition: .25s color;
+
+    &:after {
+      display: none;
+    }
+
+    &.react-tabs__tab--selected,
+    &:hover {
+      color: #F05A22 !important;
     }
   }
 }
@@ -897,14 +971,26 @@ h3[class*="RightPanelHeader"] {
 }
 
 .code-sample-standalone {
-  padding: 1.5em 1em 1em;
+  padding: 1em;
 
   .infobar {
-    height: 3em;
-    padding: 0 1em 1em;
+    height: 2em;
+    padding: 0;
   }
 }
 
 h1, h2, h3, h4, strong {
   font-weight: 400 !important;
+}
+
+[data-platform-code] {
+  display: none;
+
+  &.loaded {
+    display: block;
+  }
+}
+
+[class*="MenuItemLabel"] {
+  transition: .25s color;
 }
