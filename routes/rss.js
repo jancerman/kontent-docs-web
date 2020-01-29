@@ -38,9 +38,12 @@ router.get('/api-changelog', asyncHandler(async (req, res) => {
     const home = await handleCache.ensureSingle(res, 'home', async () => {
         return commonContent.getHome(res);
     });
-    const changelog = await handleCache.ensureSingle(res, 'rss_changelog', async () => {
+    let changelog = await handleCache.ensureSingle(res, 'rss_changelog', async () => {
         return commonContent.getRSSChangelog(res);
     });
+
+    // Regex hack to fix XML markup brokem by the Delivery SDK Rich text resolver
+    changelog = changelog[0].content.value.replace(/\s\s+/g, ' ').replace(/ <guid/g, '</link><guid').replace(/pubdate/g, 'pubDate').replace(/ispermalink/g, 'isPermaLink');
 
     res.set('Content-Type', 'application/xml');
 
@@ -50,7 +53,7 @@ router.get('/api-changelog', asyncHandler(async (req, res) => {
         home: home[0],
         entities: entities,
         moment: moment,
-        changelog: changelog[0].content.value
+        changelog: changelog
     });
 }));
 
