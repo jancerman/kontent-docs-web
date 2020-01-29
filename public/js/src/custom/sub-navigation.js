@@ -38,13 +38,15 @@
     // Make the sub-navigation fixed to top/bottom of the sreen, or to header/footer
     const fixSubNav = () => {
         const subNavigation = document.querySelector('.sub-navigation.sub-navigation--level-1');
+        const footer = document.querySelector('.footer');
         const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        const viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
         if (viewportWidth >= 768 && subNavigation) {
             const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
             const isTop = topOffset <= document.querySelector('.navigation').offsetHeight;
-
-            const isBottom = (window.innerHeight + window.pageYOffset + window.helper.outerHeight(document.querySelector('.footer'))) >= document.body.offsetHeight;
+            const bottom = (window.innerHeight + window.pageYOffset + window.helper.outerHeight(footer))
+            const isBottom = bottom >= document.body.offsetHeight;
 
             if (isTop) {
                 subNavigation.classList.add('sub-navigation--top');
@@ -53,6 +55,8 @@
             }
 
             if (isBottom) {
+                const bottomPosition = viewportHeight - footer.getBoundingClientRect().top;
+                subNavigation.style.bottom = `${bottomPosition < 0 ? 0 : bottomPosition}px`;
                 subNavigation.classList.add('sub-navigation--bottom');
             } else {
                 subNavigation.classList.remove('sub-navigation--bottom');

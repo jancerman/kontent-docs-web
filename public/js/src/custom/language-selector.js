@@ -304,11 +304,11 @@
         const langSelector = document.querySelector('.language-selector__list');
 
         codeBlocks.forEach((block) => {
-            let availablePlatforms = [...langSelector.querySelectorAll('[data-platform]')].map((item) => {
+            let availablePlatforms = Array.prototype.slice.call(langSelector.querySelectorAll('[data-platform]')).map((item) => {
                 return item.getAttribute('data-platform');
             });
 
-            const availableCodeBlocks = [...block.querySelectorAll('[data-platform-code]')].map((item) => {
+            const availableCodeBlocks = Array.prototype.slice.call(block.querySelectorAll('[data-platform-code]')).map((item) => {
                 return item.getAttribute('data-platform-code');
             });
 
