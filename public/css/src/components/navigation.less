@@ -178,41 +178,11 @@
         height: 100%;
         text-transform: uppercase;
 
-        @media screen and (min-width: 768px) {
-
-            &:after {
-                content: '';
-                height: 1px;
-                position: absolute;
-                bottom: 2.125em;
-                left: 0;
-                right: 0;
-                transition: .2s;
-            }
-        }
-
         &:hover,
         &:focus,
-        &:active {
-            &:after {
-                background-color: #F05A22;
-            }
-        }
-
+        &:active,
         &--active {
-            color: #231F20;
-
-            &:after {
-                background-color: #231F20;
-            }
-
-            &:hover,
-            &:focus,
-            &:active {
-                &:after {
-                    background-color: #231F20;
-                }
-            }
+            color: #F05A22;
         }
     }
 

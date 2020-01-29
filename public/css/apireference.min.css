@@ -1665,32 +1665,11 @@ strong {
   height: 100%;
   text-transform: uppercase;
 }
-@media screen and (min-width: 768px) {
-  .navigation__link:after {
-    content: '';
-    height: 1px;
-    position: absolute;
-    bottom: 2.125em;
-    left: 0;
-    right: 0;
-    transition: 0.2s;
-  }
-}
-.navigation__link:hover:after,
-.navigation__link:focus:after,
-.navigation__link:active:after {
-  background-color: #F05A22;
-}
+.navigation__link:hover,
+.navigation__link:focus,
+.navigation__link:active,
 .navigation__link--active {
-  color: #231F20;
-}
-.navigation__link--active:after {
-  background-color: #231F20;
-}
-.navigation__link--active:hover:after,
-.navigation__link--active:focus:after,
-.navigation__link--active:active:after {
-  background-color: #231F20;
+  color: #F05A22;
 }
 .navigation__search-wrapper {
   position: relative;
