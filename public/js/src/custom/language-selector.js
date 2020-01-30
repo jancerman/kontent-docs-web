@@ -28,6 +28,7 @@
     const highlightSelector = (articleContent, e) => {
         const fixedLabel = document.querySelector('.language-selector__label');
         let textTofixedLabel;
+        let bgTofixedLabel;
 
         if (e) {
             window.helper.setCookie('KCDOCS.preselectedLanguage', e.target.getAttribute('data-platform'));
@@ -35,6 +36,7 @@
             articleContent.querySelectorAll(`[data-platform=${e.target.getAttribute('data-platform')}]`).forEach(item => item.classList.add('language-selector__link--active'));
             updatePlatformInUrls(e.target.getAttribute('data-slug'));
             textTofixedLabel = e.target.innerHTML;
+            bgTofixedLabel = e.target.getAttribute('data-icon');
         } else {
             const preselectedPlatform = window.helper.getCookie('KCDOCS.preselectedLanguage');
             const preselectedElem = document.querySelectorAll(`[data-platform="${preselectedPlatform}"]`);
@@ -45,6 +47,7 @@
                 });
 
                 textTofixedLabel = preselectedElem[0].innerHTML;
+                bgTofixedLabel = preselectedElem[0].getAttribute('data-icon');
             } else {
                 const firstPlatformElem = document.querySelectorAll('.language-selector__item:first-child .language-selector__link');
                 firstPlatformElem.forEach(item => {
@@ -53,12 +56,14 @@
 
                 if (firstPlatformElem.length) {
                     textTofixedLabel = firstPlatformElem[0].innerHTML;
+                    bgTofixedLabel = firstPlatformElem[0].getAttribute('data-icon');
                 }
             }
         }
 
         if (fixedLabel && textTofixedLabel) {
             fixedLabel.innerHTML = textTofixedLabel;
+            fixedLabel.style.backgroundImage = `url('${bgTofixedLabel}')`;
         }
     };
 
@@ -172,54 +177,6 @@
         });
     };
 
-    const hidePlaformInContentChunk = (item, languageSelector) => {
-        const chunkParent = window.helper.findAncestor(item, '[data-platform-chunk]');
-
-        if (chunkParent) {
-            const languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');
-            const chunkPlatforms = chunkParent.getAttribute('data-platform-chunk').split('|');
-            languageSelectorItems.forEach((elem) => {
-                const elemParent = window.helper.findAncestor(elem, '.language-selector__item');
-                elemParent.style.display = 'none';
-                if (chunkPlatforms.indexOf(elem.getAttribute('data-platform')) > -1) {
-                    elemParent.style.display = 'block';
-                }
-            });
-        }
-
-        return languageSelector;
-    };
-
-    const showAllPlatformsInContentChunk = (languageSelector) => {
-        const languageSelectorItems = languageSelector.querySelectorAll('.language-selector__link');
-        languageSelectorItems.forEach((elem) => {
-            const elemParent = window.helper.findAncestor(elem, '.language-selector__item');
-            elemParent.style.display = 'block';
-        });
-
-        return languageSelector;
-    };
-
-    const cloneLanguageSelectorToCodeBlocks = () => {
-        let languageSelector = document.querySelector('.language-selector');
-
-        if (languageSelector && languageSelector.querySelector('.language-selector__list:not(.language-selector__list--static)') && languageSelector.querySelector('.language-selector__list').childNodes.length > 1) {
-            languageSelector = languageSelector.cloneNode(true);
-            const codeBlocks = document.querySelectorAll('*:not([data-platform-code]) + [data-platform-code]:not([data-platform-code=""]), [data-platform-code]:first-child:not([data-platform-code=""])');
-
-            languageSelector.classList.add('language-selector--code-block');
-
-            codeBlocks.forEach(item => {
-                languageSelector = hidePlaformInContentChunk(item, languageSelector);
-
-                const clonedSelector = item.parentNode.insertBefore(languageSelector, item);
-                languageSelector = clonedSelector.cloneNode(true);
-
-                languageSelector = showAllPlatformsInContentChunk(languageSelector);
-            });
-        }
-    };
-
     const cloneLanguageSelectorToFixed = () => {
         let languageSelector = document.querySelector('.language-selector');
 
@@ -231,6 +188,11 @@
             var label = document.createElement('div');
             label.classList.add('language-selector__label');
             languageSelector.insertBefore(label, languageSelector.firstChild);
+
+            const iconItems = languageSelector.querySelectorAll('[data-icon]');
+            for (let i = 0; i < iconItems.length; i++) {
+                iconItems[i].style.backgroundImage = `url('${iconItems[i].getAttribute('data-icon')}')`;
+            }
 
             var text = document.createElement('label');
             text.classList.add('language-selector__fixed-label');
@@ -260,9 +222,12 @@
         if (viewportWidth >= 1150 && selector) {
             const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
             const mainSelector = document.querySelector('.language-selector');
-            const isTop = topOffset <= mainSelector.getBoundingClientRect().top + mainSelector.offsetHeight + window.scrollY;
+            const isTop = topOffset <= mainSelector.getBoundingClientRect().top + mainSelector.offsetHeight + (window.scrollY || document.documentElement.scrollTop);
 
             if (isTop) {
+                const relativePositionTo = document.querySelector('.article__content h1');
+                const topOffset = relativePositionTo ? relativePositionTo.getBoundingClientRect().top : 0;
+                selector.style.top = `${topOffset > 60 ? topOffset : 60}px`;
                 selector.classList.remove('language-selector--visible');
             } else {
                 selector.classList.add('language-selector--visible');
@@ -274,19 +239,20 @@
         const articleContent = document.querySelector('.article__content');
 
         if (articleContent) {
-            const copyButtons = articleContent.querySelectorAll('.infobar__copy');
+            const copyTooltips = articleContent.querySelectorAll('.infobar__tooltip');
 
-            copyButtons.forEach(item => {
+            copyTooltips.forEach(item => {
                 item.innerHTML = (window.UIMessages ? window.UIMessages.copyCode : '');
             });
 
             articleContent.addEventListener('click', (e) => {
                 if (e.target && e.target.matches('.infobar__copy')) {
                     e.preventDefault();
-                    const text = e.target.innerHTML;
-                    e.target.innerHTML = (window.UIMessages ? window.UIMessages.copyCodeActive : '');
+                    const textElem = e.target.querySelector('.infobar__tooltip');
+                    const text = textElem.innerHTML;
+                    textElem.innerHTML = (window.UIMessages ? window.UIMessages.copyCodeActive : '');
                     setTimeout(() => {
-                        e.target.innerHTML = text;
+                        textElem.innerHTML = text;
                     }, 1500);
                     const code = window.helper.findAncestor(e.target, 'pre').querySelector('.clean-code').innerHTML;
                     window.helper.copyToClipboard(window.helper.htmlDecode(code));
@@ -309,6 +275,7 @@
             const activeSelector = document.querySelector('.language-selector__link--active');
             if (fixedLabel && activeSelector) {
                 fixedLabel.innerHTML = activeSelector.innerHTML;
+                fixedLabel.style.backgroundImage = `url('${activeSelector.getAttribute('data-icon')}')`;
             }
         }
     };
@@ -334,13 +301,14 @@
     const handleEmptyPlatforms = () => {
         const codeBlocks = document.querySelectorAll('.code-samples');
         const message = window.UIMessages && window.UIMessages.emptyCodeBlock ? window.UIMessages.emptyCodeBlock : 'We don\'t have a code sample for the selected technology.';
+        const langSelector = document.querySelector('.language-selector__list');
 
         codeBlocks.forEach((block) => {
-            let availablePlatforms = [...block.querySelectorAll('[data-platform]')].map((item) => {
+            let availablePlatforms = Array.prototype.slice.call(langSelector.querySelectorAll('[data-platform]')).map((item) => {
                 return item.getAttribute('data-platform');
             });
 
-            const availableCodeBlocks = [...block.querySelectorAll('[data-platform-code]')].map((item) => {
+            const availableCodeBlocks = Array.prototype.slice.call(block.querySelectorAll('[data-platform-code]')).map((item) => {
                 return item.getAttribute('data-platform-code');
             });
 
@@ -351,18 +319,17 @@
             let emptyBlocks = '';
             availablePlatforms.forEach((platform) => {
                 emptyBlocks += `<pre class="code-samples__empty" data-platform-code="${platform}"><div class="code-samples__text">${message}</div></pre>`;
-                block.querySelector(`[data-platform="${platform}"]`).classList.add('language-selector__empty');
             });
 
             block.innerHTML = block.innerHTML + emptyBlocks;
         });
     };
 
-    cloneLanguageSelectorToCodeBlocks();
     cloneLanguageSelectorToFixed();
     handleEmptyPlatforms();
     handleFixedSelector();
     window.addEventListener('scroll', handleFixedSelector, window.supportsPassive ? { passive: true } : false);
+    window.addEventListener('resize', handleFixedSelector, window.supportsPassive ? { passive: true } : false);
     selectLanguage();
     copyCode();
     setTimeout(() => {

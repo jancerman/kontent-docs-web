@@ -2,6 +2,7 @@ const requestDelivery = require('./requestDelivery');
 const getUrlMap = require('./urlMap');
 const ensureSingle = require('./ensureSingle');
 const isPreview = require('../helpers/isPreview');
+const richTextResolverTemplates = require('./richTextResolverTemplates');
 
 const commonContent = {
     getKCDetails: (res) => {
@@ -10,7 +11,9 @@ const commonContent = {
             previewapikey: res.locals.previewapikey,
             securedapikey: res.locals.securedapikey,
             host: res.locals.host,
-            isPreview: isPreview(res.locals.previewapikey)
+            protocol: res.locals.protocol,
+            isPreview: isPreview(res.locals.previewapikey),
+            dpr: res.locals.dpr
         };
     },
     getTree: async (contentType, depth, res) => {
@@ -74,6 +77,25 @@ const commonContent = {
                 type: 'descending',
                 field: 'system.last_modified'
             },
+            ...commonContent.getKCDetails(res)
+        });
+    },
+    getRSSChangelog: async (res) => {
+        const urlMap = await ensureSingle(res, 'urlMap', async () => {
+            return await getUrlMap(res);
+        });
+
+        const baseUrl = urlMap.filter((item) => { return item.codename === 'api_changelog' });
+
+        return await requestDelivery({
+            codename: 'api_changelog',
+            urlMap: urlMap,
+            resolveRichText: true,
+            richTextResolvers: [{
+                type: 'release_note',
+                resolver: richTextResolverTemplates.releaseNoteRSS,
+                custom: baseUrl.length ? baseUrl[0] : null
+            }],
             ...commonContent.getKCDetails(res)
         });
     },
@@ -155,7 +177,8 @@ const commonContent = {
                 const platform = {
                     title: item.title.value,
                     slug: item.url.value,
-                    codename: item.platform.value[0].codename
+                    codename: item.platform.value[0].codename,
+                    icon: item.icon.value.length ? `${item.icon.value[0].url}?w=16&dpr=${res.locals.dpr}` : ''
                 }
                 order.push(platform);
             });

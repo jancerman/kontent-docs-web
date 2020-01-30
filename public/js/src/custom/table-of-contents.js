@@ -26,27 +26,9 @@
                 }
             });
 
-            item.setAttribute('id', `a-${anchorName}${anchorNameCount > 1 ? `-${anchorNameCount}` : ''}`);
-            item.innerHTML = `${item.innerHTML}<span class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip"></span></span>`;
-        });
-    };
-
-    // Make all icons copy the headings URL to clipboard and show appropriate message in tooltip
-    const copyAnchorClipboard = () => {
-        const anchors = document.querySelectorAll('.anchor-copy');
-
-        anchors.forEach((item) => {
-            item.addEventListener('click', () => {
-                const hash = item.parentElement.getAttribute('id');
-                const url = window.location.href.split('#')[0];
-                window.helper.copyToClipboard(`${url}#${hash}`);
-
-                const tooltip = item.querySelector('.anchor-copy__tooltip');
-                tooltip.classList.add('anchor-copy__tooltip--active');
-                setTimeout(() => {
-                    tooltip.classList.remove('anchor-copy__tooltip--active');
-                }, 1500);
-            })
+            const id = `a-${anchorName}${anchorNameCount > 1 ? `-${anchorNameCount}` : ''}`;
+            item.setAttribute('id', id);
+            item.innerHTML = `${item.innerHTML}<a href="#${id}" class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip"></span></a>`;
         });
     };
 
@@ -74,7 +56,13 @@
 
     // For all sub-headings create a list cascade representing table of contents and append it to the appropriate element
     const createTableOfContents = () => {
-        const headings = articleContent.querySelectorAll('h2:not(.table-of-contents__heading):not(.table-of-contents__whatsnext):not(.feedback__heading)');
+        let headingsSelector = 'h2:not(.table-of-contents__heading):not(.table-of-contents__whatsnext):not(.feedback__heading)';
+
+        if (document.querySelector('[data-display-mode="step-by-step"]')) {
+            headingsSelector = 'h2:not(.table-of-contents__heading):not(.feedback__heading)';
+        }
+
+        const headings = articleContent.querySelectorAll(headingsSelector);
         let tableOfContents = '';
         let prevHeadingLevel = 2;
         headings.forEach(item => {
@@ -88,7 +76,7 @@
                 tableOfContents += '<ul>';
             }
 
-            tableOfContents += `<li><a href="#${item.getAttribute('id')}">${item.innerHTML}</a></li>`;
+            tableOfContents += `<li><a href="#${item.getAttribute('id')}">${item.textContent}</a></li>`;
 
             prevHeadingLevel = headingLevel;
         });
@@ -175,9 +163,19 @@
         if (viewportWidth >= 1150 && selector) {
             const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
             const main = document.querySelector('.table-of-contents');
-            const isTop = topOffset <= main.getBoundingClientRect().top + main.offsetHeight + window.scrollY;
+            const isTop = topOffset <= main.getBoundingClientRect().top + main.offsetHeight + (window.scrollY || document.documentElement.scrollTop);
 
             if (isTop) {
+                const relativePositionTo = document.querySelector('.article__content h1');
+                const langSelector = document.querySelector('.language-selector--fixed');
+                const topOffset = relativePositionTo ? relativePositionTo.getBoundingClientRect().top : 0;
+                const langSelectorHeight = langSelector ? langSelector.querySelector('.language-selector__fixed-label').offsetHeight + langSelector.querySelector('.language-selector__label').offsetHeight + 31 : 0;
+                if (langSelector) {
+                    selector.style.top = `${topOffset + langSelectorHeight > 160 ? topOffset + langSelectorHeight : 160}px`;
+                } else {
+                    selector.style.top = `${topOffset > 60 ? topOffset : 60}px`;
+                }
+
                 selector.classList.remove('table-of-contents--visible');
             } else {
                 selector.classList.add('table-of-contents--visible');
@@ -269,15 +267,15 @@
             } : false);
             anchorOnLoad();
             toggleItemsFromWithinContentChunks();
-            copyAnchorClipboard();
-            affix();
-            window.addEventListener('scroll', affix, window.supportsPassive ? {
-                passive: true
-            } : false);
+            if (!document.querySelector('[data-display-mode="step-by-step"]')) {
+                affix();
+                window.addEventListener('scroll', affix, window.supportsPassive ? {
+                    passive: true
+                } : false);
+            }
         }, 0);
     } else if (anchorsOnly) {
         createAnchors();
         anchorOnLoad();
-        copyAnchorClipboard();
     }
 })();

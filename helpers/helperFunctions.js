@@ -1,5 +1,6 @@
 const axios = require('axios');
 const cache = require('memory-cache');
+// var fs = require('fs');
 
 const helper = {
     escapeHtml: (unsafe) => {
@@ -119,11 +120,18 @@ const helper = {
         const time = (new Date()).toISOString();
 
         try {
-            data = await axios.get(`https://kcdmaster.blob.core.windows.net/api-reference-pages/${codename}${KCDetails.isPreview ? '-preview' : ''}.html`);
+            data = await axios.get(`${baseURL}/api/ProviderStarter?api=${codename}&isPreview=${KCDetails.isPreview ? 'true' : 'false'}&source=${KCDetails.host}&method=${methodName}&t=${time}`);
+            /* data = {};
+            fs.readFile('./helpers/delivery_api.html', (err, text) => { // management_api_v2
+                if (err) {
+                    throw err;
+                }
+                data.data = text;
+            }); */
         } catch (err) {
             try {
                 if (baseURL) {
-                    data = await axios.get(`${baseURL}/api/ProviderStarter?api=${codename}&isPreview=${KCDetails.isPreview ? 'true' : 'false'}&source=${KCDetails.host}&method=${methodName}&t=${time}`);
+                    data = await axios.get(`https://${KCDetails.isPreview ? 'kcddev' : 'kcdmaster'}.blob.core.windows.net/api-reference-pages/${codename}${KCDetails.isPreview ? '-preview' : ''}.html`);
                 }
             } catch (err) {
                 data = {};

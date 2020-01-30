@@ -1,14 +1,14 @@
 .infobar {
     position: absolute;
-    background-color: #efedeb;
+    background-color: #fff;
     top: 0;
     left: 0;
     right: 0;
-    height: 3em;
+    height: 2em;
     justify-content: space-between;
-    padding: .6875em 1em;
+    padding: 0 .75em;
     box-sizing: border-box;
-    font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+    font-family: 'GT Walsheim Pro', Helvetica, Arial, sans-serif;
     display: none;
 
     &--visible {
@@ -22,40 +22,80 @@
     &__lang {
         line-height: 1.375em;
         display: inline-block;
-        padding: 0 .5em !important;
-        border: .125em solid #8b9ba6;
-        color: #8b9ba6;
+        border: 1px solid #e75811;
+        color: #e75811; 
+        border-radius: 1em 1em 0 1em;
+        font-size: .875em;
+        padding: .25em .75em .125em !important;
+        margin: 0 .25em 0 0;
 
         &:before {
             display: none;
         }
     }
 
+    &__tooltip {
+        position: absolute;
+        visibility: hidden;
+        z-index: -1;
+        opacity: 0;
+        transition: .25s opacity;
+        background-color: #3b3638;
+        text-shadow: none;
+        white-space: nowrap;
+        font-size: .875em;
+        border-radius: .5em;
+        padding: 0 .75em;
+        right: 52px;
+        top: 50%;
+        transform: translateY(-50%);
+
+        &:after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 7px 0 7px 10px;
+            border-color: transparent transparent transparent #3b3638;
+        }
+    }
+
     &__copy {
         line-height: 1.675em;
         display: inline-block;
-        padding: 0 .5em !important;
-        border: .125em solid #8b9ba6;
-        background-color: #8b9ba6;   
+        padding: .375em !important;
+        background-color: #fff;   
         color: #fff; 
-        font-size: .875em;
-        text-shadow: 0 1px #a6b1b8;
         cursor: pointer;
         transition: .25s;
+        border-radius: .675em;
+        height: 1.125em;
+        position: relative;
+        top: 0;
 
         &:hover, &:active {
-            background-color: transparent;  
-            color:  #8b9ba6;
-            text-shadow: 0 1px #fff;
+            background-color: #e8e8e8;  
+
+            & .infobar__tooltip {
+                visibility: visible;
+                z-index: 1000;
+                opacity: 1;
+            }
         }
 
         &:before {
-            content: "\e69e";
-            font-family: 'kentico-icons';
-            padding: 0 .25em 0 0;
-            position: relative;
-            top: .075em;
-            font-size: .875em;
+            content: '';
+            background-image: url('../img/ui/copy.svg');
+            width: 1.125em;
+            height: 1.125em;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            display: block;
         }
     }
 }

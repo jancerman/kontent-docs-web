@@ -17,7 +17,7 @@
                 top: -3.75em;
                 bottom: -6em;
                 right: -.25em;
-                background-color: #E3E9EC;
+                background-color: #fff;
             }
         }
 
@@ -75,7 +75,7 @@
             content: @icon-menu;
             font-family: 'kentico-icons';
             font-size: 1.5em;
-            color: #6B7C85;
+            color: #231F20;
         }
 
         &.trigger-active {
@@ -86,7 +86,7 @@
     }
 
     &__image-border {
-        border: .25em solid #E3E9EC;
+        border: .25em solid #D3D2D2;
     }
 
     & img&__image {
@@ -111,15 +111,34 @@
 
     &__content {
         width: 100%;
-        color: #2D373B;
+        color: #231F20;
         position: relative;
         
         a {
-            color: #008AE1;
+            color: #F05A22;
+            text-decoration: underline;
 
             &:hover,
             &:active {
-                color: #e46952;
+                text-decoration: none;
+            }
+
+            &[href*='/reference/'] {
+                &:after {
+                    content: 'API';
+                    border-radius: .875em .875em .875em 0;
+                    border: 2px solid #F05A22;
+                    font-size: .625em;
+                    display: inline-block;
+                    margin: 0 0 0 .5em;
+                    line-height: 1em;
+                    padding: .375em .375em .25em;
+                    color: #231F20;
+                    font-weight: 400;
+                    letter-spacing: 1px;
+                    position: relative;
+                    top: -1px;
+                }
             }
         }
 
@@ -129,8 +148,9 @@
 
         h1 {
             font-size: 1.75em;
-            padding: 0 0 .125em;
+            padding: 0 0 .375em;
             line-height: 1.25em;
+            font-weight: 500;
 
             @media screen and (min-width: 480px) {
                 font-size: 2em;
@@ -149,20 +169,21 @@
             font-size: 1.5em;
             padding: .375em 0;
             line-height: 1.25em;
+            font-weight: 500;
 
             @media screen and (min-width: 480px) {
                 font-size: 1.675em;
             }
     
             @media screen and (min-width: 768px) {
-                font-size: 1.875em;
+                font-size: 2em;
             }
         }
 
         h3 {
             font-size: 1.125em;
             padding: .375em 0;
-            font-weight: 700;
+            font-weight: 500;
             line-height: 1.25em;
 
             @media screen and (min-width: 480px) {
@@ -175,27 +196,19 @@
         }
 
         h4 {
-            font-size: 1.125em;
+            font-size: 1em;
             padding: .375em 0;
-            font-style: italic;
             line-height: 1.25em;
-
-            @media screen and (min-width: 480px) {
-                font-size: 1.25em;
-            }
-    
-            @media screen and (min-width: 768px) {
-                font-size: 1.375em;
-            }
+            font-weight: 500;
         }
         
         p {
-            line-height: 1.5em;
+            line-height: 1.625em;
             padding: 0 0 1em;
         }
 
         ul, ol {
-            padding: 0 0 1.125em;
+            padding: 0 0 1.125em .75em;
 
             ul, ol {
                 padding: .125em 0 0;
@@ -212,17 +225,18 @@
             list-style-type: none;
 
             & > li {
-                padding: 0 0 .25em 1.125em;
+                padding: 0 0 .25em 1.875em;
                 position: relative;
     
                 &:before {
                     content: '';
-                    width: .375em;
-                    height: .375em;
-                    background-color: #008AE1;
+                    width: .875em;
+                    height: .4375em;
+                    border-radius: .25em .25em .25em 0;
+                    background-color: #F05A22;
                     position: absolute;
                     left: 0;
-                    top: .6em;
+                    top: .4625em;
                 }
             }
         }
@@ -243,7 +257,7 @@
         }
 
         figure {
-            margin: 0 0 1.5em;
+            margin: 0 0 1em;
 
             img {
                 margin: 0 0 .75em;
@@ -257,20 +271,26 @@
                 em {
                     font-style: normal;
                 }
+
+                p {
+                    padding: 0;
+                }
             }
         }
 
         table {
-            border-top: .125em solid #e4e9ec;
-            border-left: .125em solid #e4e9ec;
+            border-top: .125em solid #d7d7d7;
+            border-left: .125em solid #d7d7d7;
+            border-radius: 1.5em;
             max-width: 100vw;
             background-color: #fff;
             margin: 0;
+            border-collapse: separate;
 
             td {
-                border-bottom: .125em solid #e4e9ec;
-                border-right: .125em solid #e4e9ec;
-                padding: .5em .75em;
+                border-bottom: .125em solid #d7d7d7;
+                border-right: .125em solid #d7d7d7;
+                padding: 1.5em 1.5em;
                 box-sizing: border-box;
                 min-width: 7em;
                 max-width: 15em;
@@ -279,7 +299,28 @@
             tr {
                 &:first-child {
                     td {
-                        background-color: #f3f6f7;
+                        background-color: #f3f3f3;
+
+                        &:first-child {
+                            border-radius: 1.5em 0 0 0;
+                        }
+
+                        &:last-child {
+                            border-radius: 0 1.5em 0 0;
+                        }
+                    }
+                }
+
+                &:last-child {
+                    td {
+
+                        &:first-child {
+                            border-radius: 0 0 0 1.5em;
+                        }
+
+                        &:last-child {
+                            border-radius: 0 0 .675em 0;
+                        }
                     }
                 }
             }
@@ -297,7 +338,7 @@
 
         & > * {
             font-size: 1em;
-            color: #7C909B;
+            color: #919091;
             line-height: 1.375em;
             display: inline-block;
 
@@ -305,10 +346,10 @@
                 content: @icon-circle;
                 font-family: 'kentico-icons';
                 display: inline-block;
-                padding: 0 1.5em;
-                font-size: .375em;
+                padding: 0 2em;
+                font-size: .25em;
                 position: relative;
-                top: -.5em;
+                top: -1em;
             }
 
             &:last-child {
@@ -329,7 +370,7 @@
             display: inline-block;
             padding: .125em 1em .125em 0; 
             margin: 0 0 .5em; 
-            color: #7C909B;
+            color: #343131;
         }
     }
 
@@ -345,21 +386,22 @@
                 font-size: .875em;
                 padding: 0;
                 display:  inline-block;
-                padding: .125em .5em;
+                padding: .125em .75em;
                 color: #fff;
                 border-radius: .125em;
                 margin: 0 .5em .5em 0;
+                border-radius: .75em 0 .75em .75em;
 
                 &:before {
                     display: none;
                 }
     
                 &--red {
-                    background-color: #f02222;
+                    background-color: #e85a20;
                 }
     
                 &--green {
-                    background-color: #00A54B;
+                    background-color: #45a485;
                 }
             }
 
@@ -373,5 +415,9 @@
 
     &__filter {
         padding: 1.5em 0;
+    }
+    
+    &__heading-introduction {
+        display: none;
     }
 }

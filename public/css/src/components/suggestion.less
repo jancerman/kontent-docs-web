@@ -1,7 +1,7 @@
 .suggestion {
     display: block;
     text-decoration: none;
-    color: #2D373B;
+    color: #231F20;
 
     &:after {
         content: '';
@@ -11,7 +11,7 @@
 
     &--empty {
         padding: .375em 1.5em .75em;
-        border: 0.125em solid #F3F6F7;
+        border: 0.125em solid #f3f3f3;
         border-top: none;
 
         @media screen and (min-width: 480px) {
@@ -42,19 +42,17 @@
         }
     }
 
-    &__heading {
-        font-size: 1.125em;
-        color: #2D373B;
-        padding: 0 0 .5em;
-        font-weight: 700;
+    &__heading,
+    &__sub-heading {
+        font-size: 1em;
+        color: #231F20;
+        padding: 0 0 .125em;
+        display: block;
+        line-height: 1.25em;
     } 
 
-    &__sub-heading {
-        color: #2D373B;
-        font-size: 1em;
-        line-height: 1.375em;
-        display: block;
-        padding: 0 0 .25em;
+    &__heading {
+        font-weight: 400;
     }
 
     &__category {
@@ -63,31 +61,32 @@
         line-height: 1.375em;
         text-transform: uppercase;
         padding: .5em 1.25em;
-        background-color: #518EC9;
-        margin: 1em 0 0;
+        background-color: #4e64c1;
         display: inline-block;
+        border-radius: 1.5em 1.5em 1.5em .5em;
+        margin: .5em 0 0;
 
         @media screen and (min-width: 480px) {
-            margin: 1.75em 0 0;
+            margin: 0;
         }
 
-        &--tutorials {
-            background-color: #518EC9;
+        /*&--tutorials {
+            background-color: #4e64c1;
         }
 
         &--api {
-            background-color: #518EC9;
-        }
+            background-color: #4e64c1;
+        }*/
     }
 
     &__text {
-        color: #6B7C85;
+        color: #908e8f;
         font-size: 1em;
         line-height: 1.5em;
     }
 
     em {
         font-style: normal;
-        color: #008AE1;
+        color: #e75811;
     }
 }

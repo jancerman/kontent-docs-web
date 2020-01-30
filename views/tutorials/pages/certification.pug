@@ -30,7 +30,9 @@ block content
                                 .g-recaptcha(data-sitekey=`${process.env['Recaptcha-v2.site']}`)
                                 +error('g-recaptcha-response')
                             .form__row.form__row--btn
-                                button.form__button !{UIMessages && UIMessages.certification_form___submit_button.value}
+                                button.form__button 
+                                    span !{UIMessages && UIMessages.certification_form___submit_button.value}
+                                    span
                         .form__success(data-form-success="")
                         .form__warning(data-form-warning="")
     if process.env['Recaptcha-v2.site']

@@ -17,8 +17,12 @@ if UIMessages
         .feedback__wrapper
             h2.feedback__heading !{UIMessages.feedback_form___heading.value}
             .feedback__answer
-                a.feedback__button.feedback__button--yes(href='#yesMsg') !{UIMessages.feedback_form___yes_button.value}
-                a.feedback__button.feedback__button--no(href='#noMsg') !{UIMessages.feedback_form___no_button.value}
+                a.feedback__button.feedback__button--yes(href='#yesMsg') 
+                    span !{UIMessages.feedback_form___yes_button.value}
+                    span
+                a.feedback__button.feedback__button--no(href='#noMsg') 
+                    span !{UIMessages.feedback_form___no_button.value}
+                    span
             .feedback__response-wrapper.feedback__response-wrapper--hidden
                 .feedback__close
                 .feedback__response
@@ -32,6 +36,8 @@ if UIMessages
                         #g-recaptcha-placeholder
                         +error('g-recaptcha-response')
                     .form__row.form__row--btn
-                        button.form__button !{UIMessages.feedback_form___submit_button.value}
+                        button.form__button 
+                            span !{UIMessages.feedback_form___submit_button.value}
+                            span
     if process.env['Recaptcha-v2.site']
         #recaptcha-script(data-site=process.env['Recaptcha-v2.site'])

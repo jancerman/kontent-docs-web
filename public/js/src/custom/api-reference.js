@@ -8,6 +8,26 @@
     }, 0);
   };
 
+  var findAncestor = (el, sel) => {
+    while ((el = el.parentElement) && !((el.matches || el.matchesSelector).call(el, sel)));
+    return el;
+  };
+
+  var updateLabel = function (item) {
+    if (!item) {
+      return;
+    }
+
+    var selectorLabel = findAncestor(item, '.language-selector');
+    if (selectorLabel) {
+      selectorLabel = selectorLabel.querySelector('.language-selector__label');
+    }
+
+    if (selectorLabel) {
+      selectorLabel.innerHTML = item.innerHTML;
+    }
+  };
+
   /* Code blocks inside documentation body */
   var getPrismClassName = function (item) {
     var lang;
@@ -53,6 +73,7 @@
         block.classList.add(getPrismClassName(block.getAttribute('data-platform-code')));
         window.Prism.highlightElement(codeElem);
       }
+      block.classList.add('loaded');
     }, 0);
   };
 
@@ -89,6 +110,7 @@
 
       for (var i = 0; i < links.length; i++) {
         if (links[i].getAttribute('data-platform') === platform) {
+          updateLabel(links[i]);
           links[i].classList.add('language-selector__link--active');
         } else {
           links[i].classList.remove('language-selector__link--active');
@@ -168,6 +190,8 @@
         var platform = getPlatformFromClassName(e.target.className);
         var className = 'tab-click_' + platform;
 
+        updateLabel(e.target);
+
         window.helper.setCookie('KCDOCS.preselectedLanguage', platform);
 
         if (!tabs.length) {
@@ -178,6 +202,8 @@
           if ((tabs[i].classList.contains(className) || tabs[i].getAttribute('data-platform') === platform) && tabs[i] !== e.target) {
             clicked = true;
             triggerClick(tabs[i]);
+
+            updateLabel(tabs[i]);
           }
         }
 
@@ -294,4 +320,45 @@
   addAchorsToHeadings();
   scrollToHeading();
   forceCorrectHash();
+
+  var createSelectLanguageSelector = function (sel) {
+    setTimeout(function () {
+      var lists = document.querySelectorAll(sel);
+
+      for (var i = 0; i < lists.length; i++) {
+          var wrap = document.createElement('div');
+          wrap.classList.add('language-selector');
+
+          var label = document.createElement('label');
+          label.classList.add('language-selector__label');
+
+          lists[i].parentNode.insertBefore(wrap, lists[i]);
+          wrap.appendChild(label);
+          wrap.appendChild(lists[i]);
+      }
+    }, 0);
+  };
+
+  var interactSelectLanguageSelector = function () {
+    document.querySelector('body').addEventListener('click', (e) => {
+      if (e.target && e.target.matches('.language-selector__label')) {
+        var languageSelector = findAncestor(e.target, '.language-selector');
+        if (languageSelector.classList.contains('language-selector--opened')) {
+            languageSelector.classList.remove('language-selector--opened');
+        } else {
+            languageSelector.classList.add('language-selector--opened');
+        }
+      } else {
+        var allLanguageSelectors = document.querySelectorAll('.language-selector');
+
+        for (var i = 0; i < allLanguageSelectors.length; i++) {
+          allLanguageSelectors[i].classList.remove('language-selector--opened');
+        }
+      }
+    });
+  };
+
+  createSelectLanguageSelector('.language-selector__list');
+  // createSelectLanguageSelector('.react-tabs__tab-list');
+  interactSelectLanguageSelector();
 })();

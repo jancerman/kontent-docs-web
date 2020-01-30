@@ -3,19 +3,22 @@ meta(charset='utf-8')
 if description
     meta(name='description', content=description.trim().replace(/\s+/g, ' '))
 if !isPreview
-    if (content && content.visibility && content.visibility.value.filter(item => item.codename === 'excluded_from_search').length)
-        meta(name='robots', content='noindex')
+    if ((content && content.visibility && content.visibility.value.filter(item => item.codename === 'excluded_from_search').length) || status === 404)
+        meta(name='robots', content='noindex,nofollow')
     else 
         meta(name='robots', content='index,follow')
 else
     meta(name='robots', content='noindex, nofollow')
-link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700')
+link(rel='preload' as='font' href='/fonts/GT-Walsheim-Regular.woff2' type='font/woff2' crossorigin='anonymous')
+link(rel='preload' as='font' href='/fonts/GT-Walsheim-Regular.woff' type='font/woff' crossorigin='anonymous')
+link(rel='preload' as='font' href='/fonts/GT-Walsheim-Bold.woff2' type='font/woff2' crossorigin='anonymous')
+link(rel='preload' as='font' href='/fonts/GT-Walsheim-Bold.woff' type='font/woff' crossorigin='anonymous')
 link(rel='stylesheet', href='/css/app.min.css?v=' + deployVersion)
 link(rel='stylesheet', href='/kentico-icons.min.css?v=' + deployVersion)
 if helper
     script var searchAPI={appid:"#{process.env['Search.AppId']}",apikey:"#{process.env['Search.ApiKey']}",indexname:"#{process.env['Search.IndexName']}"};
 if UIMessages
-    script var UIMessages={copyUrl:"#{UIMessages.heading___copy_url_hover.value}",copyUrlActive:"#{UIMessages.heading___copy_url_active.value}",searchNoResults:"#{UIMessages.search___no_results.value}",dntLabel:"#{helper.removeNewLines(UIMessages.embedded_content_dnt_notice.value)}",copyCode:"#{UIMessages.code_block___copy_code_button.value}",copyCodeActive:"#{UIMessages.code_block___copy_code_button_active.value}",cookieBar:"#{UIMessages.cookie_policy_bar.value}",technologyLabel:"#{UIMessages.technology_selector_label.value}",emptyCodeBlock:"#{UIMessages.code_block___empty_state_text.value}"};
+    script var UIMessages={copyUrl:"#{UIMessages.heading___copy_url_hover.value}",copyUrlActive:"#{UIMessages.heading___copy_url_active.value}",searchNoResults:"#{UIMessages.search___no_results.value}",dntLabel:"#{helper.removeNewLines(UIMessages.embedded_content_dnt_notice.value)}",copyCode:"#{UIMessages.code_block___copy_code_button.value}",copyCodeActive:"#{UIMessages.code_block___copy_code_button_active.value}",cookieBar:"#{UIMessages.cookie_policy_bar.value}",technologyLabel:"#{UIMessages.technology_selector_label.value}",emptyCodeBlock:"#{UIMessages.code_block___empty_state_text.value}",nextPartText:"#{UIMessages.next_part_link_text.value}",prevPartText:"#{UIMessages.previous_part_link_text.value}"};
 if platformsConfig
     script var platformsConfig=[
         each item, index in platformsConfig

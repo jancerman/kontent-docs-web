@@ -37,7 +37,8 @@ const error = asyncHandler(async (req, res) => {
         footer: footer && footer.length ? footer[0] : null,
         UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
         platformsConfig: platformsConfigPairings && platformsConfigPairings.length ? platformsConfigPairings : null,
-        helper: helper
+        helper: helper,
+        status: req.err && req.err.status ? req.err.status : null
     });
 });
 

@@ -1,12 +1,17 @@
 .code-samples {
+    border: 1px solid #d3d2d2;
+    border-radius: 2em 2em .675em 2em;
+    padding: 1em 1em 0 1em;
+    margin: 0 0 1em;
+    box-sizing: border-box;
+
     &__empty {
-        background-color: #F5F2F0;
         padding: 2.5em 1em 3em;
         text-align: center;
     }
 
     &__text {
-        color: #7C909B;
+        color: #343131;
         position: relative;
         display: inline-block;
         padding: .675em 1.1875em .675em 4em;
@@ -18,11 +23,16 @@
             height: 46px;
             background-size: contain;
             background-repeat: no-repeat;
-            position: absolute;
-            left: 0;
-            top: 50%;
-            margin-top: -23px; 
-            background-image: url('/img/empty-codeblock.svg');
+            display: block;
+            margin: 0 auto 1em;
+            background-image: url('/img/ui/empty.svg');
         }
     }
+}
+
+.code-sample-standalone {
+    border: 1px solid #d3d2d2;
+    border-radius: 2em 2em .675em 2em;
+    padding: 1em 1em 0 1em;
+    margin: 0 0 1em;
 }

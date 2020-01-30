@@ -30,8 +30,8 @@ const platforms = {
 
         const availablePlatforms = content[0].children;
 
-        if (!platformItem.length && availablePlatforms.length) {
-            platformItem.push(availablePlatforms[0]);
+        if (!platformItem.length && availablePlatforms.value.length) {
+            platformItem.push(availablePlatforms.value[0]);
         }
 
         if (platformItem.length) {
@@ -109,7 +109,11 @@ const platforms = {
         }
 
         if (!preselectedPlatform) {
-            preselectedPlatform = platforms.getDefaultPlatform(req, content, preselectedPlatform);
+            if (cookiesPlatform) {
+                preselectedPlatform = cookiesPlatform;
+            } else {
+                preselectedPlatform = platforms.getDefaultPlatform(req, content, preselectedPlatform);
+            }
         } else {
             preselectedPlatform = platforms.getAvailablePlatform(content, preselectedPlatform);
         }

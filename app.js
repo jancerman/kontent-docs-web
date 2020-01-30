@@ -45,7 +45,7 @@ const urlWhitelist = [
   '/kentico-icons.min.css',
   '/favicon.ico',
   '/api-reference',
-  '/rss/articles',
+  '/rss/*',
   '/redirect-urls',
   '/cache-invalidate',
   '/robots.txt',
@@ -140,6 +140,8 @@ const pageExists = async (req, res) => {
 // Routes
 app.use(async (req, res, next) => {
   res.locals.host = req.headers.host;
+  res.locals.protocol = req.protocol;
+  res.locals.dpr = Math.round((parseFloat(req.cookies['KCDOCS.dpr']) || 1) * 100) / 100; // Get device pixel ration from cookies and round it to 2 decimals
   handleKCKeys(req, res);
   return next();
 });
@@ -190,7 +192,7 @@ app.use('/redirect-urls', async (req, res, next) => {
 app.use('/sitemap.xml', sitemap);
 
 app.use('/rss', async (req, res, next) => {
-  await handleCache.evaluateCommon(res, ['rss_articles']);
+  await handleCache.evaluateCommon(res, ['rss_articles', 'rss_changelog']);
   return next();
 }, rss);
 
@@ -241,12 +243,18 @@ app.use(async (err, req, res, _next) => { // eslint-disable-line no-unused-vars
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   consola.error(err.stack);
-  if (appInsights && appInsights.defaultClient && err.status !== 404) {
-    appInsights.defaultClient.trackException({
-      message: 'ERR_STACK_TRACE: ' + err.stack,
-      exception: err,
-      contextObjects: req,
-    });
+  if (appInsights && appInsights.defaultClient) {
+    if (err.status !== 404) {
+      appInsights.defaultClient.trackException({
+        message: 'ERR_STACK_TRACE: ' + err.stack,
+        exception: err,
+        contextObjects: req,
+      });
+    }
+
+    if (req.headers.referer) {
+      appInsights.defaultClient.trackTrace({ message: 'REFERER_HEADER: ' + req.headers.referer });
+    }
   }
 
   // render the error page
