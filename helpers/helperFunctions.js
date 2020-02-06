@@ -144,15 +144,6 @@ const helper = {
         }
 
         return data;
-    },
-    getDomain: (protocol, host) => {
-        let domain = protocol + '://' + host;
-
-        if (domain.indexOf('kcd-web-live-master') > -1) {
-            domain = protocol + '://docs.kontent.ai';
-        }
-
-        return domain;
     }
 };
 

@@ -302,7 +302,7 @@ const richTextResolverTemplates = {
     },
     releaseNoteRSS: (item, config) => {
         const anchorName = item.title.value.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/&[^\s]*;/g, '').replace(/\W/g, '-').replace(/[-]+/g, '-');
-        const url = `${helper.getDomain(config.protocol, config.host)}${config.customField.url}#a-${anchorName}`;
+        const url = `${config.protocol}://${config.host}${config.customField.url}#a-${anchorName}`;
         return `<item>
             <title>${item.title.value}</title>
             <pubDate>${moment(item.system.lastModified).format('ddd, DD MMM YYYY HH:mm:ss ZZ')}</pubDate>

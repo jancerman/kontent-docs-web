@@ -30,8 +30,7 @@ router.get('/articles', asyncHandler(async (req, res) => {
         entities: entities,
         moment: moment,
         articles: articles,
-        urlMap: urlMap,
-        domain: helper.getDomain(req.protocol, req.get('Host'))
+        urlMap: urlMap
     });
 }));
 

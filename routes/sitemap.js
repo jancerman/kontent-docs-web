@@ -4,7 +4,6 @@ const router = express.Router();
 const moment = require('moment');
 
 const getUrlMap = require('../helpers/urlMap');
-const helper = require('../helpers/helperFunctions');
 
 router.get('/', asyncHandler(async (req, res, next) => {
   const urlMap = await getUrlMap(res, true);
@@ -13,13 +12,23 @@ router.get('/', asyncHandler(async (req, res, next) => {
     return next();
   }
 
+  const getDomain = (req) => {
+    let domain = req.protocol + '://' + req.get('Host');
+
+    if (domain.indexOf('kcd-web-live-master') > -1) {
+      domain = req.protocol + '://docs.kontent.ai';
+    }
+
+    return domain;
+  };
+
   res.set('Content-Type', 'application/xml');
 
   return res.render('tutorials/pages/sitemap', {
     req: req,
     moment: moment,
     urlMap: urlMap,
-    domain: helper.getDomain(req.protocol, req.get('Host'))
+    domain: getDomain(req)
   });
 }));
 
