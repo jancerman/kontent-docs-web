@@ -84,7 +84,11 @@
         const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g, '-').replace(/[-]+/g, '-')}` : '';
         const tech = suggestion.platforms && suggestion.platforms.length === 1 ? `?tech=${getTech(suggestion.platforms[0])}` : '';
         suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}${suggestionUrl[0].url.indexOf('?tech') === -1 ? tech : ''}${suggestion.section !== 'API' ? anchor : ''}` : '';
-        const section = (suggestion.section === 'tutorials' && suggestion.resolvedUrl.includes('/reference/')) ? 'API' : suggestion.section;
+        let section = (suggestion.section === 'tutorials' && suggestion.resolvedUrl.includes('/reference/')) ? 'reference' : suggestion.section;
+
+        if (section.toLowerCase() === 'api') {
+            section = 'reference';
+        }
 
         // Template for a single search result suggestion
         return `<a href="${suggestion.resolvedUrl}" class="suggestion">
