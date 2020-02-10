@@ -40,9 +40,18 @@
             // Load all lazy elements
             const lazyloadElems = document.querySelectorAll('.lazy');
             lazyloadElems.forEach((elem) => {
-                elem.src = elem.dataset.src;
-                elem.classList.remove('lazy');
-                elem.removeAttribute('data-src');
+                const parent = window.helper.findAncestor(elem, '.embed');
+                let dnt;
+
+                if (parent) {
+                    dnt = parent.querySelector('.embed__dnt-enable');
+                }
+
+                if (!dnt) {
+                    elem.src = elem.dataset.src;
+                    elem.classList.remove('lazy');
+                    elem.removeAttribute('data-src');
+                }
             });
 
             setTimeout(() => {
