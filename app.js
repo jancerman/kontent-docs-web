@@ -245,13 +245,9 @@ app.use(async (err, req, res, _next) => { // eslint-disable-line no-unused-vars
   consola.error(err.stack);
   if (appInsights && appInsights.defaultClient) {
     if (err.status !== 404) {
-      appInsights.defaultClient.trackEvent({
-        name: 'ERR',
-        properties: {
-          ERR_STACK_TRACE: err.stack,
-          REFERER_HEADER: req.headers.referer ? req.headers.referer : ''
-        }
-      })
+      appInsights.defaultClient.trackException({
+        exception: new Error(`${err.stack}\n${req.headers.referer ? req.headers.referer : ''}`)
+      });
     }
   }
 
