@@ -32,7 +32,7 @@
   "dependencies": {
     "@kentico/kontent-delivery": "^9.0.0",
     "acorn": "^7.1.0",
-    "applicationinsights": "^1.5.0",
+    "applicationinsights": "^1.7.2",
     "axios": "^0.19.0",
     "axios-retry": "^3.1.2",
     "cheerio": "^1.0.0-rc.3",

@@ -44,7 +44,7 @@ router.get('/api-changelog', asyncHandler(async (req, res) => {
     });
 
     // Regex hack to fix XML markup brokem by the Delivery SDK Rich text resolver
-    changelog = changelog[0].content.value.replace(/\s\s+/g, ' ').replace(/ <guid/g, '</link><guid').replace(/pubdate/g, 'pubDate').replace(/ispermalink/g, 'isPermaLink');
+    changelog = changelog[0].content.value.replace(/\s\s+/g, ' ').replace(/ <guid/g, '</link><guid').replace(/pubdate/g, 'pubDate').replace(/ispermalink/g, 'isPermaLink').replace(/<!--/g, '<!').replace(/-->/g, '>');
 
     res.set('Content-Type', 'application/xml');
 
