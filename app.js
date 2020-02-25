@@ -242,17 +242,18 @@ app.use(async (err, req, res, _next) => { // eslint-disable-line no-unused-vars
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  res.status(err.status || 500);
+
   consola.error(err.stack);
+
   if (appInsights && appInsights.defaultClient) {
-    if (err.status !== 404) {
-      appInsights.defaultClient.trackException({
-        exception: new Error(`${err.stack}\n${req.headers.referer ? req.headers.referer : ''}`)
-      });
-    }
+    appInsights.defaultClient.trackException({
+      exception: new Error(`${err.stack}\n${req.headers.referer ? req.headers.referer : ''}`)
+    });
   }
 
   // render the error page
-  res.status(err.status || 500);
   req.err = err;
   await handleCache.evaluateCommon(res, ['not_found']);
   return error(req, res);
