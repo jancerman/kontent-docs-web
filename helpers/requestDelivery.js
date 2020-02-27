@@ -172,22 +172,19 @@ const getResponse = async (query, config) => {
     let response = await query
         .toPromise()
         .catch(err => {
-            if (err.originalError.response.status >= 400) {
-                error = err;
-            }
+            error = err;
         });
 
-    // Retry in case of stale content
+    // Retry in case of stale content or error
     const temps = [0];
     for await (let temp of temps) {
-        if (!error && ((response && response.hasStaleContent) || !response)) {
+        if ((!error && ((response && response.hasStaleContent) || !response)) || error) {
+            error = null;
             await helpers.sleep(5000);
             response = await query
                 .toPromise()
                 .catch(err => {
-                    if (err.originalError.response.status >= 400) {
-                        error = err;
-                    }
+                    error = err;
                 });
 
             if (temp < 5) {

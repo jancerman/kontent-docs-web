@@ -247,22 +247,19 @@ const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
     let articles = await query
         .toPromise()
         .catch(err => {
-            if (err.originalError.response.status >= 400) {
-                error = err;
-            }
+            error = err;
         });
 
     // Retry in case of stale content
     const temps = [0];
     for await (let temp of temps) {
-        if (!error && ((articles && articles.hasStaleContent) || !articles)) {
+        if ((!error && ((articles && articles.hasStaleContent) || !articles)) || error) {
+            error = null;
             await helper.sleep(5000);
             articles = await query
                 .toPromise()
                 .catch(err => {
-                    if (err.originalError.response.status >= 400) {
-                        error = err;
-                    }
+                    error = err;
                 });
 
             if (temp < 5) {
@@ -325,22 +322,19 @@ const getUrlMap = async (res, isSitemap) => {
     let response = await query
         .toPromise()
         .catch(err => {
-            if (err.originalError.response.status >= 400) {
-                error = err;
-            }
+            error = err;
         });
 
     // Retry in case of stale content
     const temps = [0];
     for await (let temp of temps) {
-        if (!error && ((response && response.hasStaleContent) || !response)) {
+        if ((!error && ((response && response.hasStaleContent) || !response)) || error) {
+            error = null;
             await helper.sleep(5000);
             response = await query
                 .toPromise()
                 .catch(err => {
-                    if (err.originalError.response.status >= 400) {
-                        error = err;
-                    }
+                    error = err;
                 });
 
             if (temp < 5) {
