@@ -244,12 +244,11 @@ app.use(async (err, req, res, _next) => { // eslint-disable-line no-unused-vars
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   res.status(err.status || 500);
-
   consola.error(err.stack);
 
   if (appInsights && appInsights.defaultClient) {
     appInsights.defaultClient.trackException({
-      exception: new Error(`${err.stack}\n${req.headers.referer ? req.headers.referer : ''}`)
+      exception: new Error(`${err.stack}${req.headers.referer ? `\n\nReferer request header value: ${req.headers.referer}` : ''}`)
     });
   }
 
