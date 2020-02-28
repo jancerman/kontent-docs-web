@@ -11,6 +11,7 @@ const cacheControl = require('express-cache-controller');
 const serveStatic = require('serve-static');
 const slashes = require('connect-slashes');
 const consola = require('consola');
+const axios = require('axios');
 
 const handleCache = require('./helpers/handleCache');
 const getUrlMap = require('./helpers/urlMap');
@@ -229,6 +230,17 @@ app.use('/', async (req, res, next) => {
 
   return next();
 }, tutorials, reference);
+
+setInterval(async () => {
+  try {
+    await axios({
+      method: 'post',
+      url: `${process.env.baseURL}/cache-invalidate/pool`,
+    });
+  } catch (error) {
+    consola.error(error.response.data);
+  }
+}, 300000);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
