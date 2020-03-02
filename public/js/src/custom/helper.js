@@ -232,7 +232,7 @@ window.helper = (() => {
         });
     };
 
-    const decodeHTMLEntities = (text) => {
+    const decodeHTMLEntities = (text, encode) => {
         var entities = [
             ['amp', '&'],
             ['apos', '\''],
@@ -247,10 +247,20 @@ window.helper = (() => {
         ];
 
         for (var i = 0, max = entities.length; i < max; ++i) {
-            text = text.replace(new RegExp('&' + entities[i][0] + ';', 'g'), entities[i][1]);
+            if (!encode) {
+                text = text.replace(new RegExp('&' + entities[i][0] + ';', 'g'), entities[i][1]);
+            } else {
+                if (entities[i][1] !== ' ') {
+                    text = text.replace(new RegExp(entities[i][1], 'g'), '&' + entities[i][0] + ';');
+                }
+            }
         }
 
         return text;
+    };
+
+    const encodeHTMLEntities = (text) => {
+        return decodeHTMLEntities(text, true);
     };
 
     const setCookie = (name, value, days) => {
@@ -349,6 +359,7 @@ window.helper = (() => {
         loadStylesheet: loadStylesheet,
         addStylesheet: addStylesheet,
         decodeHTMLEntities: decodeHTMLEntities,
+        encodeHTMLEntities: encodeHTMLEntities,
         setCookie: setCookie,
         getCookie: getCookie,
         eraseCookie: eraseCookie,

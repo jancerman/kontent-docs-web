@@ -75,7 +75,7 @@ const helper = {
             const icon = text.length ? text[0] : '';
             const tooltip = text.length > 1 ? text[1] : '';
 
-            return `<i aria-hidden="true" class="icon ${icon}">${tooltip ? `<span class="icon__tooltip">${tooltip}</span>` : ''}</i>`;
+            return `<i aria-hidden="true" class="icon ${helper.escapeHtml(icon)}">${tooltip ? `<span class="icon__tooltip">${tooltip}</span>` : ''}</i>`;
         });
 
         // If macro in format {~ sometext ~}, replace it by inline code

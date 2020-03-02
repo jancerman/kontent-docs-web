@@ -11,6 +11,7 @@ const cacheControl = require('express-cache-controller');
 const serveStatic = require('serve-static');
 const slashes = require('connect-slashes');
 const consola = require('consola');
+const axios = require('axios');
 
 const handleCache = require('./helpers/handleCache');
 const getUrlMap = require('./helpers/urlMap');
@@ -230,6 +231,17 @@ app.use('/', async (req, res, next) => {
   return next();
 }, tutorials, reference);
 
+setInterval(async () => {
+  try {
+    await axios({
+      method: 'post',
+      url: `${process.env.baseURL}/cache-invalidate/pool`,
+    });
+  } catch (error) {
+    consola.error(error.response.data);
+  }
+}, 300000);
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   const err = new Error('Not Found');
@@ -244,12 +256,11 @@ app.use(async (err, req, res, _next) => { // eslint-disable-line no-unused-vars
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   res.status(err.status || 500);
-
   consola.error(err.stack);
 
   if (appInsights && appInsights.defaultClient) {
     appInsights.defaultClient.trackException({
-      exception: new Error(`${err.stack}\n${req.headers.referer ? req.headers.referer : ''}`)
+      exception: new Error(`${err.stack}${req.headers.referer ? `\n\nReferer request header value: ${req.headers.referer}` : ''}`)
     });
   }
 

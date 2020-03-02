@@ -30,6 +30,41 @@
         }
     }
 
+    &--key_points {
+        background-color: transparent;
+        border-color: #231f20;
+
+        &:before {
+            font-family: "kentico-icons";
+            content: "\e65e";
+            color: #231f20;
+            font-size: 1.125em;
+            line-height: 1em;
+            top: 1.25em;
+            left: 1.375em;
+
+            @media screen and (min-width: 768px) {
+                font-size: 1.25em;
+                top: 1.25em;
+                left: 1.75em;
+            }
+        }
+
+        p, a, li {
+            color: #231f20 !important;
+        }
+        
+        ul > li:before {
+            background-color: #231f20 !important;
+        }
+
+        a[href*='/reference/'] {
+            &:after {
+                color: #231f20 !important;
+            }
+        }
+    }
+
     &--tip {
         background-color: #ecf6f3;
         border-color: #45a485;

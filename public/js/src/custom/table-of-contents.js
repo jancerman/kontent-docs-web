@@ -85,7 +85,7 @@
                 tableOfContents += '<ul>';
             }
 
-            tableOfContents += `<li><a href="#${item.getAttribute('id')}">${item.textContent}</a></li>`;
+            tableOfContents += `<li><a href="#${item.getAttribute('id')}">${window.helper.encodeHTMLEntities(item.textContent)}</a></li>`;
 
             prevHeadingLevel = headingLevel;
         });
