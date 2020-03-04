@@ -207,11 +207,11 @@ const richTextResolverTemplates = {
             return `
                 <figure>
                     ${openLinkTag}
-                        <img class="${attributes.cssClass}" alt="${alt}" src="${item.image.value[0].url}${attributes.transformationQueryString}">
+                        <img class="article__image ${attributes.cssClass}" alt="${alt}" src="${item.image.value[0].url}${attributes.transformationQueryString}">
                     ${closeLinkTag}
                     <noscript>
                         ${openLinkTag}
-                            <img class="article__image-border" alt="${alt}" src="${item.image.value[0].url}${attributes.transformationQueryString}">
+                            <img class="article__image ${attributes.cssClass}" alt="${alt}" src="${item.image.value[0].url}${attributes.transformationQueryString}">
                         ${closeLinkTag}
                     </noscript>
                     ${item.description.value && item.description.value !== '<p><br></p>' ? '<figcaption>'+ item.description.value +'</figcaption>' : ''}
