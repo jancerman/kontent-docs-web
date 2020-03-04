@@ -1,0 +1,22 @@
+.aside {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    overflow: auto;
+    width: 266px;
+    padding-left: 1em;
+    opacity: 1!important;
+    z-index: 3000!important;
+    max-height: none!important;
+    visibility: visible!important;
+    transition: top 0.25s ease 0s,opacity 0.25s ease 0s,max-height 0.25s ease 0s;
+    display: none;
+
+    &--top {
+        top: 156px;
+    }
+
+    @media screen and (min-width: 1280px) {
+        display: block;
+    }
+}

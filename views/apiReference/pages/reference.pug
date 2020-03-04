@@ -42,4 +42,8 @@ block content
                     if (nextSteps && nextSteps.value !== '<p><br></p>')
                         h2.table-of-contents__whatsnext !{UIMessages && UIMessages.article___next_steps.value}
                         | !{minify(nextSteps.value)}
-                    include ../../tutorials/includes/feedback.pug
+                    if (!containsReleaseNote)
+                        include ../../tutorials/includes/feedback.pug
+            if (containsReleaseNote)
+                aside.article__aside
+                    .aside
