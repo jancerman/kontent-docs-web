@@ -235,7 +235,8 @@ setInterval(async () => {
   try {
     await axios({
       method: 'post',
-      url: `${process.env.baseURL}/cache-invalidate/pool`,
+      baseURL: process.env.baseURL,
+      url: '/cache-invalidate/pool',
     });
   } catch (error) {
     consola.error(error.response.data);
