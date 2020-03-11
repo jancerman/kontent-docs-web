@@ -1,99 +1,83 @@
 (() => {
-    const getUniqueOptions = (options) => {
-        const unique = [];
+    const FILTER_ACTIVE_CLASSNAME = 'filter__item--active';
 
-        for (let i = 0; i < options.length; i++) {
-            const optionValue = options[i].getAttribute('data-filter-value');
-            let exists = false;
+    const itemInteractionServices = (target, filterElems) => {
+        const filterItems = helper.findAncestor(target, '.filter__list').querySelectorAll('.filter__item');
 
-            for (let j = 0; j < unique.length; j++) {
-                const uniqueValue = unique[j].getAttribute('data-filter-value');
-
-                if (optionValue === uniqueValue) {
-                    exists = true;
-                    break;
-                }
-            }
-
-            if (!exists) {
-                unique.push(options[i]);
-            }
-        }
-
-        return unique;
-    };
-
-    const renderFilters = () => {
-        const filters = document.querySelectorAll('[data-filter-selector]');
-
-        for (let i = 0; i < filters.length; i++) {
-            let options = document.querySelectorAll(`[data-filter-target=${filters[i].getAttribute('data-filter-selector')}]`);
-            options = getUniqueOptions(options);
-
-            let optionsMarkup = `<div class="filter-label">${filters[i].getAttribute('data-filter-selector-label')}</div><div class="filter"><div class="filter__label">All</div><ul class="filter__list"><li class="filter__item" data-filter-option="__all">All</li>`;
-
-            for (let j = 0; j < options.length; j++) {
-                optionsMarkup += `<li class="filter__item" data-filter-option="${options[j].getAttribute('data-filter-value')}">${options[j].getAttribute('data-filter-label')}</li>`;
-            }
-
-            optionsMarkup += '</ul></div>';
-
-            filters[i].innerHTML = optionsMarkup;
-        }
-    };
-
-    const labelInteraction = (target, filters) => {
-        if (target.matches('.filter__label')) {
-            const filter = helper.findAncestor(target, '.filter');
-
-            if (filter.classList.contains('filter--opened')) {
-                filter.classList.remove('filter--opened');
-            } else {
-                filter.classList.add('filter--opened');
-            }
+        if (target.classList.contains(FILTER_ACTIVE_CLASSNAME)) {
+            target.classList.remove(FILTER_ACTIVE_CLASSNAME);
         } else {
-            for (let i = 0; i < filters.length; i++) {
-                filters[i].classList.remove('filter--opened');
-            }
+            target.classList.add(FILTER_ACTIVE_CLASSNAME);
         }
-    };
 
-    const itemInteraction = (target, filterElems) => {
-        if (target.matches('.filter__item')) {
-            const filterLabel = helper.findAncestor(target, '.filter').querySelector('.filter__label');
-            const filterItems = helper.findAncestor(target, '.filter__list').querySelectorAll('.filter__item');
-            filterLabel.innerHTML = target.innerHTML;
+        const activeFilterItems = Array.prototype.slice.call(filterItems).filter((elem) => {
+            return elem.classList.contains(FILTER_ACTIVE_CLASSNAME);
+        });
+        const activeFilterCodenames = [];
 
-            for (let i = 0; i < filterItems.length; i++) {
-                filterItems[i].classList.remove('filter__item--active');
-            }
+        for (let i = 0; i < activeFilterItems.length; i++) {
+            activeFilterCodenames.push(activeFilterItems[i].getAttribute('data-filter-option'));
+        }
 
-            target.classList.add('filter__item--active');
+        for (let i = 0; i < filterElems.length; i++) {
+            filterElems[i].classList.remove('filter-hidden');
 
-            for (let i = 0; i < filterElems.length; i++) {
-                filterElems[i].classList.remove('filter-hidden');
-
+            if (activeFilterCodenames.length) {
                 const items = filterElems[i].getAttribute('data-filter-item').split(' ');
+                let isShown = false;
+                for (let j = 0; j < activeFilterCodenames.length; j++) {
+                    for (let k = 0; k < items.length; k++) {
+                        if (activeFilterCodenames[j] === items[k]) {
+                            isShown = true;
+                        }
+                    }
+                }
 
-                if (items.indexOf(target.getAttribute('data-filter-option')) === -1) {
+                if (!isShown) {
                     filterElems[i].classList.add('filter-hidden');
                 }
             }
         }
     };
 
+    const itemInteractionChanges = (target, filterElems) => {
+        const filterItems = helper.findAncestor(target, '.filter__list').querySelectorAll('.filter__item');
+
+        for (let i = 0; i < filterItems.length; i++) {
+            filterItems[i].classList.remove(FILTER_ACTIVE_CLASSNAME);
+        }
+        target.classList.add(FILTER_ACTIVE_CLASSNAME);
+
+        const activeFilterItems = Array.prototype.slice.call(filterItems).filter((elem) => {
+            return elem.classList.contains(FILTER_ACTIVE_CLASSNAME);
+        });
+        const activeFilterCodename = activeFilterItems.length ? activeFilterItems[0].getAttribute('data-breaking-change-option') : '';
+
+        for (let i = 0; i < filterElems.length; i++) {
+            filterElems[i].classList.remove('breaking-hidden');
+            if (activeFilterCodename === 'true') {
+                const isBreaking = filterElems[i].getAttribute('data-breaking-change');
+                if (isBreaking !== 'true') {
+                    filterElems[i].classList.add('breaking-hidden');
+                }
+            }
+        }
+    };
+
     const filterInteractions = () => {
-        const filters = document.querySelectorAll('[data-filter-selector] .filter');
         const filterElems = document.querySelectorAll('[data-filter-item]');
+        const breakingChangeElems = document.querySelectorAll('[data-breaking-change]');
 
         document.querySelector('body').addEventListener('click', (e) => {
             if (e.target) {
-                labelInteraction(e.target, filters);
-                itemInteraction(e.target, filterElems);
+                if (e.target.matches('[data-filter-option]')) {
+                    itemInteractionServices(e.target, filterElems);
+                } else if (e.target.matches('[data-breaking-change-option]')) {
+                    itemInteractionChanges(e.target, breakingChangeElems);
+                }
             }
         });
     };
 
-    renderFilters();
     filterInteractions();
 })();
