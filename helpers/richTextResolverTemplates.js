@@ -286,7 +286,7 @@ const richTextResolverTemplates = {
         });
 
         return `
-            <div data-filter-item="${servicesCodenames.join(' ')}" data-breaking-change="${displaySeverity ? 'true' : 'false'}">
+            <div class="mix ${servicesCodenames.join(' ')} ${item.severity.value[0].codename} all_changes">
                 <h2>${item.title.value}</h2>
                 <div class="article__info-bar">
                     <time class="article__date article__date--body" datetime="${moment(item.release_date.value).format('YYYY-MM-DD')}">${isPlanned ? 'Planned for ': ''}${moment(item.release_date.value).format('MMMM D, YYYY')}</time>

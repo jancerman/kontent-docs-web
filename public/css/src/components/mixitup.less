@@ -1,0 +1,53 @@
+.mixitup-page-list {
+    margin: 2em 0 0;
+    display: flex;
+
+    button {
+        border: none;
+        width: 2em;
+        color: #231F20;
+        background-color: transparent;
+        font-family: 'GT Walsheim Pro',Helvetica,Arial,sans-serif;
+        padding: .75em 0 .75em 0;
+        position: relative;
+        outline: none;
+        cursor: pointer;
+        font-size: 1em;
+
+        &:hover {
+            color: #F05A22;
+        }
+
+        &.filter__item--active {
+            background-color: transparent;
+            color: #F05A22;
+            
+            &:before {
+                position: absolute;
+                content: '';
+                left: .5em;
+                right: .5em;
+                bottom: 0;
+                height: 1px;
+                background-color: #F05A22;
+            }
+
+            &:after {
+                display: none;
+            }
+        }
+    }
+
+    .filter__next,
+    .filter__prev {
+        background-image: url('/img/ui/pagination-arrow.svg');
+        background-position: center center;
+        background-repeat: no-repeat;
+    }
+
+    .filter__prev {
+        transform: rotate(180deg);
+    }
+    
+}
+    
