@@ -282,7 +282,7 @@ const richTextResolverTemplates = {
         const servicesCodenames = [];
         item.affected_services.value.forEach((service) => {
             servicesCodenames.push(service.codename);
-            services += `<li class="article__tags-item article__tags-item--green" data-filter-target="affected-services" data-filter-value="${service.codename}" data-filter-label="${service.name}">${service.name}</li>`;
+            services += `<li class="article__tags-item article__tags-item--green">${service.name}</li>`;
         });
 
         return `
