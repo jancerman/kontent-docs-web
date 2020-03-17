@@ -66,119 +66,111 @@
         }
     }
 
-    &--fixed {
+    &__label,
+    &__fixed-label {
         display: none;
+    }
+
+    .aside:not(.aside--top) & {
+        padding: 1.5em 0;
+
+        .language-selector__list {
+            top: 6.75em;
+        }
+    }
+
+    .aside & {
+        display: block;
+        overflow: visible;
+        margin: 0;
+        transition: opacity .25s;
+        opacity: 1;
+        visibility: visible;
         font-size: 1em;
         z-index: 5556;
+        padding: 0 0 1.5em;
 
-        @media (min-width: 1150px) {
+        .language-selector__label {
             display: block;
-            position: fixed;
-            top: 3.75em;
-            width: 920px;
-            max-width: 70% !important;
-            overflow: visible;
-            margin: 0;
-            transition: opacity .25s;
-            opacity: 1;
-            visibility: visible;
+            height: 3.2857em;
+            line-height: 3em;
+            font-size: .875em;
+            border: 1px solid #d9d8d8;
+            box-sizing: border-box;
+            padding: 0.125em 3.125em;
+            cursor: pointer;
+            position: relative;
+            color: #918f8f;
+            border-radius: 1.4285em 1.4285em 1.4285em .5714em;
+            margin-top: .5em;
+            background-repeat: no-repeat;
+            background-position: top 50% left 1.25em;
+            background-size: 16px auto;
+            width: 100%;
 
-            .language-selector__label {
-                width: 165px;
-                height: 3.2857em;
-                line-height: 3em;
-                position: absolute;
-                font-size: .875em;
-                right: 0;
-                border: 1px solid #d9d8d8;
-                box-sizing: border-box;
-                padding: 0.125em 3.125em;
-                cursor: pointer;
-                top: 1.75em;
-                color: #918f8f;
-                border-radius: 1.4285em 1.4285em 1.4285em .5714em;
-                margin-top: .5em;
-                background-repeat: no-repeat;
-                background-position: top 50% left 1.25em;
-                background-size: 16px auto;
-
-                &:before {
-                    font-family: 'kentico-icons';
-                    content: "\e66f";
-                    font-size: 1em;
-                    position: absolute;
-                    top: 0;
-                    right: 1.25em;
-                    color: #231F20;
-                    line-height: 3.2857em;
-                }
-            }
-    
-            .language-selector__list {
-                width: 165px;
-                position: absolute;
-                right: 0;
-                top: 5.25em;
-                background-color: #fff;
-                visibility: hidden;
-                opacity: 0;
-                transition: .25s;
-                box-shadow: 0 0 2em 0 rgba(35,31,32,0.25);
-                border-radius: .5em 1.25em 1.25em 1.25em;
-                padding: .675em 0;
-            }
-    
-            .language-selector__item {
-                display: block;
-
-                &:first-child {
-                    a.language-selector__link {
-                        border: none;
-                    }
-                }
-            }
-
-            .language-selector__link {
-                border: none;
-                width: 100%;
-                box-sizing: border-box;
-                padding: 0.5em 3.25em;
-                text-align: left;
-                text-transform: none;
-                font-size: .875em;
-                margin: 0;
-                background-repeat: no-repeat;
-                background-position: top 50% left 1.25em;
-                background-size: 16px auto;
-    
-                &:hover,
-                &--active {
-                    margin: 0;
-                    border: none;
-                    font-weight: 300;
-                    color: #F05A22;
-                }
-            }
-
-            .language-selector__fixed-label {
+            &:before {
+                font-family: 'kentico-icons';
+                content: "\e66f";
+                font-size: 1em;
                 position: absolute;
                 top: 0;
-                right: 0;
-                width: 165px;
-                font-size: 1em;
+                right: 1.25em;
                 color: #231F20;
-                font-weight: 400;
+                line-height: 3.2857em;
             }
         }
 
-        @media (min-width: 1440px) {
-            width: 1005px;
+        .language-selector__list {
+            position: absolute;
+            top: 5.25em;
+            background-color: #fff;
+            visibility: hidden;
+            opacity: 0;
+            transition: .25s;
+            box-shadow: inset 0 0 0 1px rgba(35,31,32,.25);
+            border-radius: .5em 1.25em 1.25em 1.25em;
+            padding: .675em 0;
+            width: ~"calc(100% - 1em)";
+            z-index: 1;
+        }
 
-            .language-selector__label,
-            .language-selector__fixed-label,
-            .language-selector__list {
-                width: 250px;
+        .language-selector__item {
+            display: block;
+
+            &:first-child {
+                a.language-selector__link {
+                    border: none;
+                }
             }
+        }
+
+        .language-selector__link {
+            border: none;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0.5em 3.25em;
+            text-align: left;
+            text-transform: none;
+            font-size: .875em;
+            margin: 0;
+            background-repeat: no-repeat;
+            background-position: top 50% left 1.25em;
+            background-size: 16px auto;
+
+            &:hover,
+            &--active {
+                margin: 0;
+                border: none;
+                font-weight: 300;
+                color: #F05A22;
+            }
+        }
+
+        .language-selector__fixed-label {
+            display: block;
+            font-size: 1em;
+            color: #231F20;
+            font-weight: 500;
         }
     }
 
@@ -187,7 +179,7 @@
         visibility: visible;
     }
 
-    &--opened {
+    .aside &--opened {
         .language-selector__list {
             opacity: 1;
             visibility: visible;
@@ -202,4 +194,4 @@
             }
         }
     }
- }
+}

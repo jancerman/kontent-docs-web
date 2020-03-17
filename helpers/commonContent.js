@@ -135,6 +135,13 @@ const commonContent = {
             ...commonContent.getKCDetails(res)
         });
     },
+    getReleaseNoteType: async (res) => {
+        return await requestDelivery({
+            data: 'type',
+            type: 'release_note',
+            ...commonContent.getKCDetails(res)
+        });
+    },
     getPlatformsConfig: async (res) => {
         return await requestDelivery({
             type: 'platform_picker',

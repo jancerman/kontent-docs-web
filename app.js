@@ -103,7 +103,7 @@ const handleKCKeys = (req, res) => {
 };
 
 const pageExists = async (req, res) => {
-  const urlMap = await handleCache.evaluateSingle(res, 'urlMap', async () => {
+  const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
     return await getUrlMap(res);
   });
 
@@ -167,8 +167,31 @@ app.use('/form', bodyParser.text({
 
 app.use('/kentico-icons.min.css', kenticoIcons);
 
+const isOneOfCacheRevelidate = (req) => {
+  const urls = [
+    '/reference/',
+    '/rss/',
+    '/tutorials/',
+    '/certification/'
+  ];
+
+  if (req.originalUrl === '/') {
+    return true;
+  }
+
+  let revalidate = false;
+
+  for (var i = 0; i < urls.length; i++) {
+    if (req.originalUrl.startsWith(urls[i])) {
+      revalidate = true;
+    }
+  }
+
+  return revalidate;
+};
+
 app.use('/', asyncHandler(async (req, res, next) => {
-  if (!req.originalUrl.startsWith('/cache-invalidate') && !req.originalUrl.startsWith('/kentico-icons.min.css') && !req.originalUrl.startsWith('/form')) {
+  if (isOneOfCacheRevelidate(req)) {
     await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home', 'navigationItems', 'articles']);
     await handleCache.cacheAllAPIReferences(res);
   }

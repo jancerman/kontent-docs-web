@@ -24,19 +24,29 @@
         @media screen and (min-width: 1024px) {
             width: 280px;
         }
-	}
+    }
+    
+    &__aside {
+        display: none;
+
+        @media screen and (min-width: 1280px) {
+            display: block;
+            width: 280px;
+            position: relative;
+        }
+    }
 
 	&__right {
         padding: 1em 0 0 0;
 
         @media screen and (min-width: 768px) {
-            width: ~"calc(100% - 250px)";
+            width: ~"calc(100% - 280px)";
             padding: 0 0 0 1.5em;
             box-sizing: border-box;
         }
 
-        @media screen and (min-width: 1024px) {
-            width: ~"calc(100% - 280px)";
+        @media screen and (min-width: 1280px) {
+            width: ~"calc(100% - 560px)";
         }
     }
     
@@ -326,11 +336,11 @@
                 }
             }
         }
+    }
 
-        @media screen and (min-width: 1150px) {
-            & > *:not(.table):not(img):not(figure):not(.embed) {
-                max-width: 75%;
-            }
+    @media screen and (min-width: 1150px) and (max-width: 1279px) {
+        & > *:not(.table):not(img):not(figure):not(.embed) {
+            max-width: 75%;
         }
     }
 
@@ -412,10 +422,6 @@
     &__info-bar {
         position: relative;
         top: -.5em;
-    }
-
-    &__filter {
-        padding: 1.5em 0;
     }
     
     &__heading-introduction {

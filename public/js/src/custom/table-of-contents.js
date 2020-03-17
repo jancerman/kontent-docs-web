@@ -8,7 +8,6 @@
     const tableOfContentsElem = document.querySelector('.table-of-contents');
     const anchorsOnly = document.querySelector('.article__content--anchors-only');
     let affixHeadings;
-    let tableOfContentsElemFixed;
 
     // For all sub-headings set unique id and create the copy to clipboard icon
     const createAnchors = () => {
@@ -152,46 +151,6 @@
         });
     };
 
-    const cloneToFixed = () => {
-        let toc = document.querySelector('.table-of-contents');
-
-        if (toc) {
-            toc = toc.cloneNode(true);
-            const content = document.querySelector('.article__content');
-
-            toc.classList.add('table-of-contents--fixed');
-            content.appendChild(toc);
-            tableOfContentsElemFixed = document.querySelector('.table-of-contents--fixed');
-        }
-    };
-
-    const handleFixed = () => {
-        const selector = document.querySelector('.table-of-contents--fixed');
-        const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-
-        if (viewportWidth >= 1150 && selector) {
-            const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
-            const main = document.querySelector('.table-of-contents');
-            const isTop = topOffset <= main.getBoundingClientRect().top + main.offsetHeight + (window.scrollY || document.documentElement.scrollTop);
-
-            if (isTop) {
-                const relativePositionTo = document.querySelector('.article__content h1');
-                const langSelector = document.querySelector('.language-selector--fixed');
-                const topOffset = relativePositionTo ? relativePositionTo.getBoundingClientRect().top : 0;
-                const langSelectorHeight = langSelector ? langSelector.querySelector('.language-selector__fixed-label').offsetHeight + langSelector.querySelector('.language-selector__label').offsetHeight + 31 : 0;
-                if (langSelector) {
-                    selector.style.top = `${topOffset + langSelectorHeight > 160 ? topOffset + langSelectorHeight : 160}px`;
-                } else {
-                    selector.style.top = `${topOffset > 60 ? topOffset : 60}px`;
-                }
-
-                selector.classList.remove('table-of-contents--visible');
-            } else {
-                selector.classList.add('table-of-contents--visible');
-            }
-        }
-    };
-
     const arrayMin = (arr) => {
         let len = arr.length;
         let min = Infinity;
@@ -235,7 +194,7 @@
 
     const affix = () => {
         let headingsPosition = [];
-        if (affixHeadings && tableOfContentsElemFixed) {
+        if (affixHeadings && tableOfContentsElem) {
             const affixHeadingsLocal = filterNonHiddenHeadings(affixHeadings);
 
             for (let i = 0; i < affixHeadingsLocal.length; i++) {
@@ -250,8 +209,8 @@
             const topHeading = arrayMin(headingsPosition);
 
             if (topHeading) {
-                const active = tableOfContentsElemFixed.querySelector('.active');
-                const futureActive = tableOfContentsElemFixed.querySelector(`[href="#${topHeading[1]}"]`);
+                const active = tableOfContentsElem.querySelector('.active');
+                const futureActive = tableOfContentsElem.querySelector(`[href="#${topHeading[1]}"]`);
 
                 if (active) {
                     active.classList.remove('active');
@@ -268,12 +227,7 @@
         setTimeout(() => {
             createAnchors();
             createTableOfContents();
-            cloneToFixed();
             bindSmothScroll();
-            handleFixed();
-            window.addEventListener('scroll', handleFixed, window.supportsPassive ? {
-                passive: true
-            } : false);
             anchorOnLoad();
             toggleItemsFromWithinContentChunks();
             if (!document.querySelector('[data-display-mode="step-by-step"]')) {

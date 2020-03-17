@@ -1,49 +1,25 @@
 .filter {
     position: relative;
-    display: inline-block;
+    display: block;
+    max-width: 290px;
+    margin: 0 0 2em;
 
-	&__label {
-        width: 260px;
-        height: 3.2857em;
-        line-height: 3.2857em;
-        font-size: .875em;
-        border: 1px solid #d9d8d8;
-        box-sizing: border-box;
-        padding: 0.125em 1.7142em;
-        cursor: pointer;
-        color: #918f8f;
-        border-radius: 1.4285em 1.4285em 1.4285em .5714em;
-        text-transform: uppercase;
-        margin-top: .5em;
-        position: relative;
-        transition: .25s border;
-
-        &:before {
-            font-family: 'kentico-icons';
-            content: "\e66f";
-            font-size: 1em;
-            position: absolute;
-            top: 0;
-            right: 1.25em;
-            color: #231F20;
-            line-height: 3.2857em;
-        }
-	}
+    .aside:not(.aside--top) & {
+        margin: 1.5em 0 2em;
+    }
 
 	&__list {
         &,
         ul& {
-            width: 260px;
-            position: absolute;
-            right: 0;
-            top: 3.75em;
-            background-color: #fff;
-            visibility: hidden;
-            opacity: 0;
-            transition: .25s;
-            box-shadow: 0 0 2em 0 rgba(35,31,32,0.25);
-            border-radius: .5em 1.25em 1.25em 1.25em;
+            opacity: 1;
+            visibility: visible;
+            z-index: 5555;
             padding: .675em 0;
+        }
+
+        &--toggle,
+        ul&--toggle {
+            padding: 0;
         }
 	}
 
@@ -53,13 +29,23 @@
             border: none;
             width: 100%;
             box-sizing: border-box;
-            padding: 0.5em 1.875em;
+            padding: .5em 1em .5em 2.25em;
             text-align: left;
             cursor: pointer;
             font-size: .875em;
+            transition: .25s all;
+            position: relative;
 
             &:before {
-                display: none;
+                content: '';
+                width: 1.25em;
+                height: 1.25em; 
+                border-radius: .5em .5em .25em;
+                background-color: transparent;
+                position: absolute;
+                left: 0;
+                top: 0.5em;
+                border: 1px solid rgba(35,31,32,0.25);
             }
     
             &:hover,
@@ -69,18 +55,65 @@
                 font-weight: 300;
                 color: #F05A22;
             }
+
+            &--active {
+                &:after {
+                    position: absolute;
+                    content: '';
+                    top: .675em;
+                    left: .5em;
+                    width: .25em;
+                    height: .675em;
+                    transform: rotate(45deg);
+                    border: 2px solid #f05a22;
+                    border-width: 0 2px 2px 0;
+                    border-radius: 2px;
+                }
+            }
         }
     }
-    
-    &--opened {
-        .filter__label {
-            border-color: #F05A22;
+}
+
+ul.filter__list--toggle,
+.filter__list--toggle {
+    display: flex;
+
+    li.filter__item,
+    .filter__item {
+        border: 1px solid #d9d8d8;
+        padding: .5em 1em;
+        white-space: nowrap;
+        text-align: center;
+
+        &:before,
+        &:after {
+            display: none;
         }
 
-        .filter__list {
-            opacity: 1;
-            visibility: visible;
-            z-index: 5555;
+        &:hover {
+            color: #F05A22;
+            border: 1px solid #d9d8d8;
+        }
+
+        &--active {
+            border: 1px solid #F05A22;
+            background-color: #fff3ef;
+            color: #F05A22;
+            font-weight: 500;
+
+            &:hover {
+                color: #F05A22;
+                border: 1px solid #F05A22;
+                font-weight: 500;
+            }
+        }
+
+        &:first-child {
+            border-radius: .5em 0 0 .5em;
+        }
+
+        &:last-child {
+            border-radius: 0 .5em .5em 0;
         }
     }
 }
@@ -89,7 +122,11 @@
     display: none;
 }
 
+.breaking-hidden {
+    display: none;
+}
+
 .filter-label {
-    display: inline-block;
+    display: block;
     padding: 0 .5em 0 0;
 }

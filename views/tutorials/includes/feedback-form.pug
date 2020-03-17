@@ -1,0 +1,31 @@
+mixin error(name)
+    .form__error(data-form-error=name)
+mixin input(type, id, label, className)
+    div(class=`form__row${className ? ' ' + className : '' }`)
+        input.form__input(id=id, name=id, type=type)
+        if label
+            label.form__label(for=id) #{label}
+        +error(id)
+mixin textarea(id, label)
+    .form__row
+        textarea.form__input.form__input--textarea(id=id, name=id, required='required')
+        if label
+            label.form__label(for=id) #{label}
+        +error(id)
+.feedback-form.feedback-form--hidden
+    .feedback-form__response-wrapper
+        .feedback-form__close
+        form.feedback-form__form.form
+            .feedback__message#noMsg.feedback__message--no !{UIMessages.feedback_form___no_message.value}
+            +textarea('feedback', UIMessages.feedback_form___feedback_label.value)
+            +input('email', 'email', UIMessages.feedback_form___email_label.value)
+            .form__row
+                .form__recaptcha-disabled
+                #g-recaptcha-placeholder
+                +error('g-recaptcha-response')
+            .form__row.form__row--btn
+                button.form__button 
+                    span !{UIMessages.feedback_form___submit_button.value}
+                    span
+    if process.env['Recaptcha-v2.site']
+        #recaptcha-script(data-site=process.env['Recaptcha-v2.site'])
