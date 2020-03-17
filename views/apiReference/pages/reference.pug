@@ -18,8 +18,20 @@ block content
                                         | !{UIMessages.article___no_author.value}
                             if (isPreview || isKenticoIP)
                                 a(href=`https://app.kontent.ai/goto/edit-item/project/${projectId}/variant-codename/default/item/${content.system.id}`, target='_blank', rel='noopener') Edit
-                    if (containsReleaseNote)
-                        .article__filter(data-filter-selector='affected-services', data-filter-selector-label='Show changes for')
+                    if (containsReleaseNote && releaseNoteContentType)
+                        div(data-aside-container='filter')
+                            .article__filter(data-aside='filter')
+                                .filter
+                                    ul.filter__list.filter__list--toggle(data-filter-group='changes')
+                                        li.filter__item(data-filter='.all_changes') !{UIMessages && UIMessages.toggle_all_changes.value}
+                                        li.filter__item(data-filter='.breaking_change') !{UIMessages && UIMessages.toggle_breaking_changes_only.value}
+
+                                .filter
+                                    .filter-label !{UIMessages && UIMessages.affected_services_selector_title.value}
+                                    ul.filter__list(data-filter-group='services')
+                                        each item, index in releaseNoteContentType.elements.filter(elem => elem.codename === 'affected_services')[0].options
+                                            li.filter__item(data-toggle=`.${item.codename}`) !{item.name}
+
                     if (platform && !availablePlatforms.length)
                         .language-selector
                             ul.language-selector__list
@@ -36,10 +48,24 @@ block content
                     if (introduction && introduction !== '<p><br></p>')
                         | !{minify(introduction)}
                     if (!containsReleaseNote)
-                        include ../../tutorials/includes/table-of-contents.pug
+                        div(data-aside-container='table-of-contents')
+                            div(data-aside='table-of-contents')
+                                include ../../tutorials/includes/table-of-contents.pug
                     if (content && content.content && content.content.value)
-                        | !{minify(content.content.value)}
+                        if (containsReleaseNote)
+                            .container 
+                                | !{minify(content.content.value)}
+                            .mixitup-page-list
+                        else
+                            | !{minify(content.content.value)}
                     if (nextSteps && nextSteps.value !== '<p><br></p>')
                         h2.table-of-contents__whatsnext !{UIMessages && UIMessages.article___next_steps.value}
                         | !{minify(nextSteps.value)}
-                    include ../../tutorials/includes/feedback.pug
+                    if (!containsReleaseNote)
+                        div(data-aside-container='feedback')
+                            div(data-aside='feedback')
+                                include ../../tutorials/includes/feedback.pug
+            if (containsReleaseNote)
+                aside.article__aside
+                    .aside
+    include ../../tutorials/includes/feedback-form.pug

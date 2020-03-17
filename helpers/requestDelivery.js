@@ -45,6 +45,10 @@ const addQueryToOrder = (query, config) => {
 const defineQuery = (deliveryConfig, config) => {
     const deliveryClient = new DeliveryClient(deliveryConfig);
 
+    if (config.data === 'type' && config.type) {
+        return deliveryClient.type(config.type);
+    }
+
     let query = deliveryClient.items()
 
     if (config.type) {
@@ -238,7 +242,14 @@ const requestDelivery = async (config) => {
     let response = await getResponse(query, config);
     response = extendLinkedItems(response);
 
-    return response ? response.items : response;
+    if (response && response.items) {
+        return response.items;
+    }
+    if (response && response.type) {
+        return response.type;
+    }
+
+    return response;
 };
 
 module.exports = requestDelivery;

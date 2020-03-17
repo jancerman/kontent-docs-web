@@ -1,5 +1,5 @@
 (() => {
-    const formFeedback = document.querySelector('.feedback__form');
+    const formFeedback = document.querySelector('.feedback-form__form');
     if (formFeedback) {
         const submitButtonFeedback = formFeedback.querySelector('.form__button');
         const recaptchaCoverFeedback = formFeedback.querySelector('.form__recaptcha-disabled');
@@ -33,6 +33,7 @@
             if (data.isValid) {
                 window.helperForm.clearForm(formFeedback);
                 window.helperForm.hideForm(formFeedback);
+                document.querySelector('.feedback-form').classList.add('feedback-form--hidden');
                 displaySuccessMessage();
             } else {
                 window.helperForm.displayValidationMessages(data, formFeedback);

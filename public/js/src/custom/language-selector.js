@@ -177,64 +177,6 @@
         });
     };
 
-    const cloneLanguageSelectorToFixed = () => {
-        let languageSelector = document.querySelector('.language-selector');
-
-        if (languageSelector) {
-            languageSelector = languageSelector.cloneNode(true);
-            const content = document.querySelector('.article__content');
-
-            languageSelector.classList.add('language-selector--fixed');
-            var label = document.createElement('div');
-            label.classList.add('language-selector__label');
-            languageSelector.insertBefore(label, languageSelector.firstChild);
-
-            const iconItems = languageSelector.querySelectorAll('[data-icon]');
-            for (let i = 0; i < iconItems.length; i++) {
-                iconItems[i].style.backgroundImage = `url('${iconItems[i].getAttribute('data-icon')}')`;
-            }
-
-            var text = document.createElement('label');
-            text.classList.add('language-selector__fixed-label');
-            text.innerHTML = window.UIMessages && window.UIMessages.technologyLabel ? window.UIMessages.technologyLabel : 'Technology';
-            languageSelector.insertBefore(text, languageSelector.firstChild);
-
-            document.querySelector('body').addEventListener('click', (e) => {
-                if (e.target && e.target.matches('.language-selector--fixed .language-selector__label')) {
-                    if (languageSelector.classList.contains('language-selector--opened')) {
-                        languageSelector.classList.remove('language-selector--opened');
-                    } else {
-                        languageSelector.classList.add('language-selector--opened');
-                    }
-                } else {
-                    languageSelector.classList.remove('language-selector--opened');
-                }
-            });
-
-            content.appendChild(languageSelector);
-        }
-    };
-
-    const handleFixedSelector = () => {
-        const selector = document.querySelector('.language-selector--fixed');
-        const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-
-        if (viewportWidth >= 1150 && selector) {
-            const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
-            const mainSelector = document.querySelector('.language-selector');
-            const isTop = topOffset <= mainSelector.getBoundingClientRect().top + mainSelector.offsetHeight + (window.scrollY || document.documentElement.scrollTop);
-
-            if (isTop) {
-                const relativePositionTo = document.querySelector('.article__content h1');
-                const topOffset = relativePositionTo ? relativePositionTo.getBoundingClientRect().top : 0;
-                selector.style.top = `${topOffset > 60 ? topOffset : 60}px`;
-                selector.classList.remove('language-selector--visible');
-            } else {
-                selector.classList.add('language-selector--visible');
-            }
-        }
-    };
-
     const copyCode = () => {
         const articleContent = document.querySelector('.article__content');
 
@@ -325,14 +267,29 @@
         });
     };
 
-    cloneLanguageSelectorToFixed();
+    const handleAsideSelector = () => {
+        const languageSelector = document.querySelector('.language-selector');
+
+        if (languageSelector) {
+            document.querySelector('body').addEventListener('click', (e) => {
+                if (e.target && e.target.matches('.aside .language-selector__label')) {
+                    if (languageSelector.classList.contains('language-selector--opened')) {
+                        languageSelector.classList.remove('language-selector--opened');
+                    } else {
+                        languageSelector.classList.add('language-selector--opened');
+                    }
+                } else {
+                    languageSelector.classList.remove('language-selector--opened');
+                }
+            });
+        }
+    };
+
     handleEmptyPlatforms();
-    handleFixedSelector();
-    window.addEventListener('scroll', handleFixedSelector, window.supportsPassive ? { passive: true } : false);
-    window.addEventListener('resize', handleFixedSelector, window.supportsPassive ? { passive: true } : false);
     selectLanguage();
     copyCode();
     setTimeout(() => {
         makeInfobarsVisible();
     }, 0);
+    handleAsideSelector();
 })();

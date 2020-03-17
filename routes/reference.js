@@ -24,8 +24,16 @@ const handleArticle = async (settings, req, res) => {
     let cookiesPlatform = req.cookies['KCDOCS.preselectedLanguage'];
     let availablePlatforms;
     let preselectedPlatform;
+    let releaseNoteContentType;
 
     const containsReleaseNote = helper.hasLinkedItemOfType(settings.content[0].content, 'release_note');
+
+    if (containsReleaseNote) {
+        releaseNoteContentType = await handleCache.ensureSingle(res, 'releaseNoteContentType', async () => {
+            return await commonContent.getReleaseNoteType(res);
+        });
+    }
+
     const preselectedPlatformSettings = await platforms.getPreselectedPlatform(settings.content[0], cookiesPlatform, req, res);
 
     if (!preselectedPlatformSettings) {
@@ -67,6 +75,7 @@ const handleArticle = async (settings, req, res) => {
     settings.renderSettings.data.canonicalUrl = canonicalUrl;
     settings.renderSettings.data.projectId = res.locals.projectid;
     settings.renderSettings.data.containsReleaseNote = containsReleaseNote;
+    settings.renderSettings.data.releaseNoteContentType = releaseNoteContentType;
 
     return settings.renderSettings;
 };

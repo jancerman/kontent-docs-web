@@ -107,85 +107,28 @@
             padding: 0 0 0 1.125em;
         }
     }
+}
 
-    &--fixed {
-        display: none;
+.aside {
+    .table-of-contents {
+        margin-bottom: 2em;
     }
 
-    &--force-visible {
-        @media (min-width: 1150px) {
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            z-index: 5555 !important;
+    h2.table-of-contents__heading {
+        padding: 0 0 .5em;
+        color: #231F20;
+        text-transform: none;
+        font-weight: 500;
+
+        &:before {
+            display: none;
         }
     }
 
-    @media (min-width: 1150px) {
-        &--fixed {
-            max-width: 70.5% !important;
-            display: block;
-            z-index: 5555;
-            overflow: visible;
-            top: 3.75em;
-            width: 920px;
-            position: fixed;
-            margin: 0;
-            padding: 0;
-            visibility: hidden;
-            opacity: 0;
-            z-index: -1;
-            transition: opacity .25s;
-
-            .language-selector--fixed + & {
-                top: 10em;
-            }
-
-            h2.table-of-contents__heading {
-                padding: 0;
-                color: #231F20;
-                text-transform: none;
-
-                &:before {
-                    display: none;
-                }
-            }
-
-            & > * {
-                position: absolute;
-                right: 0;
-                width: 170px;
-                top: 0;
-            }
-
-            ul.table-of-contents__list {
-                padding: 0;
-                opacity: 1 !important;
-                max-height: 5000px !important;
-                visibility: visible !important;
-                top: 1.75em;
-
-                li {
-                    a {
-                        padding: .125em 0;
-                    }
-                }
-            }
-        }
-
-        &--visible {
-            opacity: 1;
-            visibility: visible;
-            z-index: 5555;
-        }
-    }
-
-    @media (min-width: 1420px) {
-        &--fixed {
-            width: 1005px;
-
-            & > * {
-                width: 250px;
+    .table-of-contents__list {
+        li {
+            a {
+                padding: .125em 0;
             }
         }
     }

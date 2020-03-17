@@ -343,6 +343,34 @@ window.helper = (() => {
         return siblings;
     };
 
+    const fixElem = (selector, className) => {
+        const elem = document.querySelector(selector);
+        const footer = document.querySelector('.footer');
+        const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        const viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+        if (viewportWidth >= 768 && elem) {
+            const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
+            const isTop = topOffset <= document.querySelector('.navigation').offsetHeight;
+            const bottom = (window.innerHeight + window.pageYOffset + window.helper.outerHeight(footer))
+            const isBottom = bottom >= document.body.offsetHeight;
+
+            if (isTop) {
+                elem.classList.add(className + '--top');
+            } else {
+                elem.classList.remove(className + '--top');
+            }
+
+            if (isBottom) {
+                const bottomPosition = viewportHeight - footer.getBoundingClientRect().top;
+                elem.style.bottom = `${bottomPosition < 0 ? 0 : bottomPosition}px`;
+                elem.classList.add(className + '--bottom');
+            } else {
+                elem.classList.remove(className + '--bottom');
+            }
+        }
+    };
+
     return {
         getParents: getParents,
         findAncestor: findAncestor,
@@ -364,7 +392,8 @@ window.helper = (() => {
         getCookie: getCookie,
         eraseCookie: eraseCookie,
         loadRecaptcha: loadRecaptcha,
-        nextUntil: nextUntil
+        nextUntil: nextUntil,
+        fixElem: fixElem
     }
 })();
 

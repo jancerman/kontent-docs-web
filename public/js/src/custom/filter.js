@@ -1,99 +1,113 @@
-(() => {
-    const getUniqueOptions = (options) => {
-        const unique = [];
-
-        for (let i = 0; i < options.length; i++) {
-            const optionValue = options[i].getAttribute('data-filter-value');
-            let exists = false;
-
-            for (let j = 0; j < unique.length; j++) {
-                const uniqueValue = unique[j].getAttribute('data-filter-value');
-
-                if (optionValue === uniqueValue) {
-                    exists = true;
-                    break;
-                }
-            }
-
-            if (!exists) {
-                unique.push(options[i]);
-            }
+(function () {
+    var updateRoomUrl = function (services, changes, page) {
+        var loc = window.location;
+        var url = loc.protocol + '//' + loc.hostname + (loc.port ? ':' + loc.port : '') + loc.pathname;
+        var qs = [];
+        if (services) {
+            qs.push(`show=${services}`);
+        }
+        if (changes === 'true') {
+            qs.push(`breaking=${changes}`);
+        }
+        if (parseInt(page) > 1) {
+            qs.push(`page=${page}`);
         }
 
-        return unique;
+        return `${url}${qs.length ? `?${qs.join('&')}` : ''}`;
     };
 
-    const renderFilters = () => {
-        const filters = document.querySelectorAll('[data-filter-selector]');
-
-        for (let i = 0; i < filters.length; i++) {
-            let options = document.querySelectorAll(`[data-filter-target=${filters[i].getAttribute('data-filter-selector')}]`);
-            options = getUniqueOptions(options);
-
-            let optionsMarkup = `<div class="filter-label">${filters[i].getAttribute('data-filter-selector-label')}</div><div class="filter"><div class="filter__label">All</div><ul class="filter__list"><li class="filter__item" data-filter-option="__all">All</li>`;
-
-            for (let j = 0; j < options.length; j++) {
-                optionsMarkup += `<li class="filter__item" data-filter-option="${options[j].getAttribute('data-filter-value')}">${options[j].getAttribute('data-filter-label')}</li>`;
-            }
-
-            optionsMarkup += '</ul></div>';
-
-            filters[i].innerHTML = optionsMarkup;
+    var updateUrl = function (services, changes, page) {
+        var url = updateRoomUrl(services, changes, page);
+        if (history && history.replaceState) {
+            history.replaceState({}, null, url);
         }
     };
 
-    const labelInteraction = (target, filters) => {
-        if (target.matches('.filter__label')) {
-            const filter = helper.findAncestor(target, '.filter');
+    var getActiveServices = function () {
+        var items = document.querySelectorAll('[data-filter-group="services"] .filter__item--active');
 
-            if (filter.classList.contains('filter--opened')) {
-                filter.classList.remove('filter--opened');
-            } else {
-                filter.classList.add('filter--opened');
-            }
+        if (!items.length) {
+            return '';
+        }
+
+        var codenames = [];
+
+        for (var i = 0; i < items.length; i++) {
+            codenames.push(items[i].getAttribute('data-toggle').replace('.', ''));
+        }
+
+        return codenames.join(',');
+    };
+
+    var getBreaking = function () {
+        var item = document.querySelector('[data-filter-group="changes"] .filter__item--active');
+
+        if (item && item.getAttribute('data-filter') === '.breaking_change') {
+            return 'true';
         } else {
-            for (let i = 0; i < filters.length; i++) {
-                filters[i].classList.remove('filter--opened');
-            }
+            return 'false';
         }
     };
 
-    const itemInteraction = (target, filterElems) => {
-        if (target.matches('.filter__item')) {
-            const filterLabel = helper.findAncestor(target, '.filter').querySelector('.filter__label');
-            const filterItems = helper.findAncestor(target, '.filter__list').querySelectorAll('.filter__item');
-            filterLabel.innerHTML = target.innerHTML;
+    var setFilterOnLoad = function (url) {
+        var show = helper.getParameterByName('show', url);
+        var breaking = helper.getParameterByName('breaking', url);
+        var page = helper.getParameterByName('page', url);
 
-            for (let i = 0; i < filterItems.length; i++) {
-                filterItems[i].classList.remove('filter__item--active');
-            }
-
-            target.classList.add('filter__item--active');
-
-            for (let i = 0; i < filterElems.length; i++) {
-                filterElems[i].classList.remove('filter-hidden');
-
-                const items = filterElems[i].getAttribute('data-filter-item').split(' ');
-
-                if (items.indexOf(target.getAttribute('data-filter-option')) === -1) {
-                    filterElems[i].classList.add('filter-hidden');
+        if (show) {
+            show = show.split(',');
+            var items = document.querySelectorAll('[data-filter-group="services"] .filter__item');
+            for (var i = 0; i < items.length; i++) {
+                var attr = items[i].getAttribute('data-toggle').replace('.', '');
+                for (var j = 0; j < show.length; j++) {
+                    if (attr === show[j]) {
+                        items[i].click();
+                    }
                 }
             }
         }
+
+        var item;
+        if (breaking === 'true') {
+            item = document.querySelector('[data-filter-group="changes"] [data-filter=".breaking_change"]');
+        } else {
+            item = document.querySelector('[data-filter-group="changes"] [data-filter=".all_changes"]');
+        }
+        if (item) {
+            item.click();
+        }
+
+        item = document.querySelector(`.mixitup-page-list [data-page="${parseInt(page) > 1 ? page : '1'}"]`);
+        if (item) {
+            item.click();
+        }
     };
 
-    const filterInteractions = () => {
-        const filters = document.querySelectorAll('[data-filter-selector] .filter');
-        const filterElems = document.querySelectorAll('[data-filter-item]');
-
-        document.querySelector('body').addEventListener('click', (e) => {
-            if (e.target) {
-                labelInteraction(e.target, filters);
-                itemInteraction(e.target, filterElems);
+    var mixer = window.mixitup('.container', {
+        animation: {
+            enable: false
+        },
+        classNames: {
+            modifierActive: ' filter__item--active'
+        },
+        multifilter: {
+            enable: true
+        },
+        pagination: {
+            limit: 10,
+            hidePageListIfSinglePage: true,
+        },
+        templates: {
+            pagerPrev: '<button type="button" class="filter__prev" data-page="prev"></button>',
+            pagerNext: '<button type="button" class="filter__next" data-page="next"></button>'
+        },
+        callbacks: {
+            onMixEnd: function () {
+                var state = mixer.getState();
+                updateUrl(getActiveServices(), getBreaking(), state.activePagination.page);
             }
-        });
-    };
+        }
+    });
 
-    renderFilters();
-    filterInteractions();
+    setFilterOnLoad();
 })();
