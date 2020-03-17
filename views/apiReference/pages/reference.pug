@@ -16,7 +16,7 @@ block content
                                         | !{content.author.value[0].name.value}
                                     else
                                         | !{UIMessages.article___no_author.value}
-                            if isPreview 
+                            if (isPreview || isKenticoIP)
                                 a(href=`https://app.kontent.ai/goto/edit-item/project/${projectId}/variant-codename/default/item/${content.system.id}`, target='_blank', rel='noopener') Edit
                     if (containsReleaseNote)
                         .article__filter(data-filter-selector='affected-services', data-filter-selector-label='Show changes for')

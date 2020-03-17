@@ -153,6 +153,14 @@ const helper = {
         }
 
         return domain;
+    },
+    isKenticoIP: (req) => {
+        const ip = (req.headers['x-forwarded-for'] || '').split(',').pop() ||
+            req.connection.remoteAddress ||
+            req.socket.remoteAddress ||
+            req.connection.socket.remoteAddress;
+
+        return ip === '85.93.116.83';
     }
 };
 
