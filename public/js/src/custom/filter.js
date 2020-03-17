@@ -4,7 +4,7 @@
         var url = loc.protocol + '//' + loc.hostname + (loc.port ? ':' + loc.port : '') + loc.pathname;
         var qs = [];
         if (services) {
-            qs.push(`hide=${services}`);
+            qs.push(`show=${services}`);
         }
         if (changes === 'true') {
             qs.push(`breaking=${changes}`);
@@ -23,11 +23,10 @@
         }
     };
 
-    var getInactiveServices = function () {
-        var items = document.querySelectorAll('[data-filter-group="services"] .filter__item:not(.filter__item--active)');
-        var itemsAll = document.querySelectorAll('[data-filter-group="services"] .filter__item');
+    var getActiveServices = function () {
+        var items = document.querySelectorAll('[data-filter-group="services"] .filter__item--active');
 
-        if (items.length === itemsAll.length) {
+        if (!items.length) {
             return '';
         }
 
@@ -51,23 +50,19 @@
     };
 
     var setFilterOnLoad = function (url) {
-        var hide = helper.getParameterByName('hide', url);
+        var show = helper.getParameterByName('show', url);
         var breaking = helper.getParameterByName('breaking', url);
         var page = helper.getParameterByName('page', url);
 
-        if (hide) {
-            hide = hide.split(',');
-            var itemsAll = document.querySelectorAll('[data-filter-group="services"] .filter__item');
-            for (var i = 0; i < itemsAll.length; i++) {
-                var attr = itemsAll[i].getAttribute('data-toggle').replace('.', '');
-                var isHidden = false;
-                for (var j = 0; j < hide.length; j++) {
-                    if (attr === hide[j]) {
-                        isHidden = true;
+        if (show) {
+            show = show.split(',');
+            var items = document.querySelectorAll('[data-filter-group="services"] .filter__item');
+            for (var i = 0; i < items.length; i++) {
+                var attr = items[i].getAttribute('data-toggle').replace('.', '');
+                for (var j = 0; j < show.length; j++) {
+                    if (attr === show[j]) {
+                        items[i].click();
                     }
-                }
-                if (!isHidden) {
-                    itemsAll[i].click();
                 }
             }
         }
@@ -109,7 +104,7 @@
         callbacks: {
             onMixEnd: function () {
                 var state = mixer.getState();
-                updateUrl(getInactiveServices(), getBreaking(), state.activePagination.page);
+                updateUrl(getActiveServices(), getBreaking(), state.activePagination.page);
             }
         }
     });

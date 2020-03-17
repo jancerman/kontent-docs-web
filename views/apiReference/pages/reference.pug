@@ -48,7 +48,9 @@ block content
                     if (introduction && introduction !== '<p><br></p>')
                         | !{minify(introduction)}
                     if (!containsReleaseNote)
-                        include ../../tutorials/includes/table-of-contents.pug
+                        div(data-aside-container='table-of-contents')
+                            div(data-aside='table-of-contents')
+                                include ../../tutorials/includes/table-of-contents.pug
                     if (content && content.content && content.content.value)
                         if (containsReleaseNote)
                             .container 
@@ -60,7 +62,10 @@ block content
                         h2.table-of-contents__whatsnext !{UIMessages && UIMessages.article___next_steps.value}
                         | !{minify(nextSteps.value)}
                     if (!containsReleaseNote)
-                        include ../../tutorials/includes/feedback.pug
+                        div(data-aside-container='feedback')
+                            div(data-aside='feedback')
+                                include ../../tutorials/includes/feedback.pug
             if (containsReleaseNote)
                 aside.article__aside
                     .aside
+    include ../../tutorials/includes/feedback-form.pug

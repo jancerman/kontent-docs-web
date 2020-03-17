@@ -18,6 +18,13 @@ block content
                             a(href=`https://app.kontent.ai/goto/edit-item/project/${projectId}/variant-codename/default/item/${content.system.id}`, target='_blank', rel='noopener') Edit
                     if (introduction && introduction !== '<p><br></p>')
                         | !{minify(introduction)}
-                    include ../includes/table-of-contents.pug
+                    div(data-aside-container='table-of-contents')
+                        div(data-aside='table-of-contents')
+                            include ../includes/table-of-contents.pug
                     | !{minify(content.content.value)}
-                    include ../includes/feedback.pug
+                    div(data-aside-container='feedback')
+                        div(data-aside='feedback')
+                            include ../includes/feedback.pug
+            aside.article__aside
+                .aside
+    include ../includes/feedback-form.pug
