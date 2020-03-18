@@ -205,13 +205,20 @@
 
     const selectLanguage = () => {
         const articleContent = document.querySelector('.article');
-        const selector = document.querySelectorAll('.language-selector__list');
+        const selector = document.querySelectorAll('.language-selector__list:not(.language-selector__list--static)');
 
         if (selector.length) {
             highlightSelector();
             selectCode();
             switchContentChunk();
             selectLanguageOnClick(articleContent);
+        } else {
+            const fixedLabel = document.querySelector('.language-selector__label');
+            const activeSelector = document.querySelector('.language-selector__link--active');
+            if (fixedLabel && activeSelector) {
+                fixedLabel.innerHTML = activeSelector.innerHTML;
+                fixedLabel.style.backgroundImage = `url('${activeSelector.getAttribute('data-icon')}')`;
+            }
         }
     };
 
@@ -275,6 +282,11 @@
                     languageSelector.classList.remove('language-selector--opened');
                 }
             });
+
+            const links = languageSelector.querySelectorAll('.language-selector__link');
+            for (let i = 0; i < links.length; i++) {
+                links[i].style.backgroundImage = `url('${links[i].getAttribute('data-icon')}')`;
+            }
         }
     };
 
