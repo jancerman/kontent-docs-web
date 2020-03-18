@@ -66,11 +66,13 @@
         }
     };
 
-    wrapper.addEventListener('click', (event) => {
-        if (event.target && !event.target.matches('.feedback-form__response-wrapper') && !event.target.matches('.feedback-form__response-wrapper *')) {
-            close.click();
-        }
-    });
+    if (wrapper) {
+        wrapper.addEventListener('click', (event) => {
+            if (event.target && !event.target.matches('.feedback-form__response-wrapper') && !event.target.matches('.feedback-form__response-wrapper *')) {
+                close.click();
+            }
+        });
+    }
 
     if (yesMsg && noMsg && !posted) {
         btnArea.addEventListener('click', handleFeedback)
