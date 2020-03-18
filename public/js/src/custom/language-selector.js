@@ -178,7 +178,7 @@
     };
 
     const copyCode = () => {
-        const articleContent = document.querySelector('.article__content');
+        const articleContent = document.querySelector('.article');
 
         if (articleContent) {
             const copyTooltips = articleContent.querySelectorAll('.infobar__tooltip');
@@ -204,21 +204,14 @@
     };
 
     const selectLanguage = () => {
-        const articleContent = document.querySelector('.article__content');
-        const selector = document.querySelectorAll('.language-selector__list:not(.language-selector__list--static)');
+        const articleContent = document.querySelector('.article');
+        const selector = document.querySelectorAll('.language-selector__list');
 
         if (selector.length) {
             highlightSelector();
             selectCode();
             switchContentChunk();
             selectLanguageOnClick(articleContent);
-        } else {
-            const fixedLabel = document.querySelector('.language-selector__label');
-            const activeSelector = document.querySelector('.language-selector__link--active');
-            if (fixedLabel && activeSelector) {
-                fixedLabel.innerHTML = activeSelector.innerHTML;
-                fixedLabel.style.backgroundImage = `url('${activeSelector.getAttribute('data-icon')}')`;
-            }
         }
     };
 
