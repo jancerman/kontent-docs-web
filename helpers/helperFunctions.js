@@ -159,8 +159,7 @@ const helper = {
             req.connection.remoteAddress ||
             req.socket.remoteAddress ||
             req.connection.socket.remoteAddress;
-
-        return ip === '85.93.116.83';
+        return ip === process.env.KenticoUserIp;
     }
 };
 
