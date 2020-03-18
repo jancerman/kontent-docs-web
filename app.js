@@ -78,7 +78,8 @@ app.use(serveStatic(path.join(__dirname, 'public'), {
 }));
 app.use(slashes(false));
 app.use(cacheControl({
-  noCache: true
+  // noCache: true
+  maxAge: 300
 }));
 app.enable('trust proxy');
 
