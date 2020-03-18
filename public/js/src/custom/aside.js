@@ -15,7 +15,7 @@
     };
 
     const moveFromAside = () => {
-        if (!asideContainer.childNodes.length) {
+        if (asideContainer && !asideContainer.childNodes.length) {
             return;
         }
 
