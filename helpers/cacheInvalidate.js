@@ -35,6 +35,13 @@ const deleteSpecificKeys = async (KCDetails, items, keyNameToDelete) => {
     }
 };
 
+const revalidateReleaseNoteType = async (KCDetails, res) => {
+    const key = 'releaseNoteContentType';
+    handleCache.deleteCache(key, KCDetails);
+    const releaseNoteType = await commonContent.getReleaseNoteType(res);
+    handleCache.putCache(key, releaseNoteType, KCDetails);
+};
+
 const splitPayloadByContentType = (items) => {
     const itemsByTypes = {
         footer: [],
@@ -136,6 +143,7 @@ const invalidateMultiple = async (itemsByTypes, KCDetails, type, keyName) => {
 
 const invalidateArticles = async (itemsByTypes, KCDetails, res) => {
     if (itemsByTypes.articles.length) {
+        await revalidateReleaseNoteType(KCDetails, res);
         await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'article');
         await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'reference');
         handleCache.deleteCache('articles', KCDetails);
