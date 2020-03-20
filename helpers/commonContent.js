@@ -89,10 +89,10 @@ const commonContent = {
             return await getUrlMap(res);
         });
 
-        const baseUrl = urlMap.filter((item) => { return item.codename === 'api_changelog' });
+        const baseUrl = urlMap.filter((item) => { return item.codename === 'product_changelog' });
 
         return await requestDelivery({
-            codename: 'api_changelog',
+            codename: 'product_changelog',
             urlMap: urlMap,
             resolveRichText: true,
             richTextResolvers: [{
