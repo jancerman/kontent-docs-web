@@ -44,9 +44,13 @@ const commonContent = {
         });
     },
     getUIMessages: async (res) => {
+        const urlMap = await ensureSingle(res, 'urlMap', async () => {
+            return await getUrlMap(res);
+        });
         return await requestDelivery({
             type: 'ui_messages',
             resolveRichText: true,
+            urlMap: urlMap,
             ...commonContent.getKCDetails(res)
         });
     },

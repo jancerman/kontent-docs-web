@@ -3,10 +3,14 @@ const commonContent = require('../helpers/commonContent');
 const requestDelivery = require('../helpers/requestDelivery');
 const getRootCodenamesOfSingleItem = require('../helpers/rootItemsGetter');
 const handleCache = require('../helpers/handleCache');
+const getUrlMap = require('../helpers/urlMap');
 const app = require('../app');
 
-const requestItemAndDeleteCacheKey = async (keyNameToDelete, codename, KCDetails) => {
-    const urlMap = handleCache.getCache('urlMap', KCDetails);
+const requestItemAndDeleteCacheKey = async (keyNameToDelete, codename, KCDetails, res) => {
+    const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
+        return await getUrlMap(res);
+    });
+
     const item = await requestDelivery({
         codename: codename,
         depth: 2,
@@ -29,9 +33,9 @@ const requestItemAndDeleteCacheKey = async (keyNameToDelete, codename, KCDetails
     }
 };
 
-const deleteSpecificKeys = async (KCDetails, items, keyNameToDelete) => {
+const deleteSpecificKeys = async (KCDetails, items, keyNameToDelete, res) => {
     for await (const item of items) {
-        await requestItemAndDeleteCacheKey(keyNameToDelete, item.codename, KCDetails);
+        await requestItemAndDeleteCacheKey(keyNameToDelete, item.codename, KCDetails, res);
     }
 };
 
@@ -106,11 +110,11 @@ const getRootItems = async (items, KCDetails) => {
     return rootCodenames;
 };
 
-const invalidateRootItems = async (items, KCDetails) => {
+const invalidateRootItems = async (items, KCDetails, res) => {
     const rootItems = Array.from(await getRootItems(items, KCDetails));
 
     for await (const rootItem of rootItems) {
-        await requestItemAndDeleteCacheKey(null, rootItem, KCDetails);
+        await requestItemAndDeleteCacheKey(null, rootItem, KCDetails, res);
     }
 };
 
@@ -127,14 +131,14 @@ const invalidateGeneral = async (itemsByTypes, KCDetails, res, type, keyName) =>
     return false;
 };
 
-const invalidateMultiple = async (itemsByTypes, KCDetails, type, keyName) => {
+const invalidateMultiple = async (itemsByTypes, KCDetails, type, keyName, res) => {
     if (!keyName) {
         keyName = type;
     }
 
     if (itemsByTypes[type].length) {
         itemsByTypes[type].forEach(async (item) => {
-            await requestItemAndDeleteCacheKey(keyName, item.codename, KCDetails);
+            await requestItemAndDeleteCacheKey(keyName, item.codename, KCDetails, res);
         });
     }
 
@@ -144,8 +148,8 @@ const invalidateMultiple = async (itemsByTypes, KCDetails, type, keyName) => {
 const invalidateArticles = async (itemsByTypes, KCDetails, res) => {
     if (itemsByTypes.articles.length) {
         await revalidateReleaseNoteType(KCDetails, res);
-        await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'article');
-        await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'reference');
+        await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'article', res);
+        await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'reference', res);
         handleCache.deleteCache('articles', KCDetails);
         handleCache.deleteCache('rss_articles', KCDetails);
         await handleCache.evaluateCommon(res, ['articles', 'rss_articles']);
@@ -185,10 +189,10 @@ const processInvalidation = async (res) => {
         const KCDetails = commonContent.getKCDetails(res);
         const keys = cache.keys();
         const itemsByTypes = splitPayloadByContentType(items);
+        await invalidateUrlMap(res, KCDetails);
         await invalidateHome(res, KCDetails);
         await invalidateSubNavigation(res, keys);
-        await invalidateUrlMap(res, KCDetails);
-        await invalidateRootItems(items, KCDetails);
+        await invalidateRootItems(items, KCDetails, res);
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'apiSpecifications');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'footer');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'UIMessages');
@@ -197,8 +201,8 @@ const processInvalidation = async (res) => {
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'picker', 'platformsConfig');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'navigationItems');
         await invalidateArticles(itemsByTypes, KCDetails, res);
-        await invalidateMultiple(itemsByTypes, KCDetails, 'scenarios', 'scenario');
-        await invalidateMultiple(itemsByTypes, KCDetails, 'topics', 'topic');
+        await invalidateMultiple(itemsByTypes, KCDetails, 'scenarios', 'scenario', res);
+        await invalidateMultiple(itemsByTypes, KCDetails, 'topics', 'topic', res);
 
         if (app.appInsights) {
             app.appInsights.defaultClient.trackTrace({ message: 'URL_MAP_INVALIDATE: ' + items });
