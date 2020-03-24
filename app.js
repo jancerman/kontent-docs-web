@@ -82,6 +82,7 @@ app.use(cacheControl({
   maxAge: 300
 }));
 app.enable('trust proxy');
+app.set('etag', false);
 
 const handleKCKeys = (req, res) => {
   if (typeof req.query.projectid !== 'undefined') {
