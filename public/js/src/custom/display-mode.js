@@ -124,19 +124,6 @@
         }
     };
 
-    const handleVisibilityOfToc = () => {
-        const tocArticle = document.querySelector('.table-of-contents:not(.table-of-contents--fixed)');
-        const tocColumn = document.querySelector('.table-of-contents--fixed');
-
-        if (tocArticle) {
-            tocArticle.classList.add('hidden');
-        }
-
-        if (tocColumn) {
-            tocColumn.classList.add('table-of-contents--force-visible');
-        }
-    };
-
     const makeSectionsInteractive = (wrapper) => {
         // On page load get url hash
         const hash = window.location.hash;
@@ -163,7 +150,6 @@
 
         // Display section by id
         const section = wrapper.querySelector(`[data-display-mode-index="${index}"]`);
-        handleVisibilityOfToc();
         section.setAttribute('data-display-mode-visible', true);
         activateTOC(`#${section.getAttribute('data-display-mode-id')}`);
 
