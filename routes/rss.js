@@ -35,16 +35,16 @@ router.get('/articles', asyncHandler(async (req, res) => {
     });
 }));
 
-router.get('/api-changelog', asyncHandler(async (req, res) => {
+router.get('/changelog', asyncHandler(async (req, res) => {
     const home = await handleCache.ensureSingle(res, 'home', async () => {
         return commonContent.getHome(res);
     });
-    let changelog = await handleCache.ensureSingle(res, 'rss_changelog', async () => {
+    const changelog = await handleCache.ensureSingle(res, 'rss_changelog', async () => {
         return commonContent.getRSSChangelog(res);
     });
 
     // Regex hack to fix XML markup brokem by the Delivery SDK Rich text resolver
-    changelog = changelog[0].content.value.replace(/\s\s+/g, ' ').replace(/ <guid/g, '</link><guid').replace(/pubdate/g, 'pubDate').replace(/ispermalink/g, 'isPermaLink').replace(/<!--/g, '<!').replace(/-->/g, '>');
+    const changelogItems = changelog[0].content.value.replace(/\s\s+/g, ' ').replace(/ <guid/g, '</link><guid').replace(/pubdate/g, 'pubDate').replace(/ispermalink/g, 'isPermaLink').replace(/<!--/g, '<!').replace(/-->/g, '>');
 
     res.set('Content-Type', 'application/xml');
 
@@ -54,7 +54,8 @@ router.get('/api-changelog', asyncHandler(async (req, res) => {
         home: home[0],
         entities: entities,
         moment: moment,
-        changelog: changelog
+        title: changelog[0].title.value,
+        changelog: changelogItems
     });
 }));
 
