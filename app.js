@@ -145,6 +145,7 @@ app.use(async (req, res, next) => {
   res.locals.protocol = req.protocol;
   res.locals.dpr = Math.round((parseFloat(req.cookies['KCDOCS.dpr']) || 1) * 100) / 100; // Get device pixel ration from cookies and round it to 2 decimals
   handleKCKeys(req, res);
+  res.setHeader('Arr-Disable-Session-Affinity', 'True');
   return next();
 });
 
