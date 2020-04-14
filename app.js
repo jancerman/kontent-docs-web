@@ -173,7 +173,8 @@ const isOneOfCacheRevelidate = (req) => {
     '/reference/',
     '/rss/',
     '/tutorials/',
-    '/certification/'
+    '/certification/',
+    '/product-changelog'
   ];
 
   if (req.originalUrl === '/') {

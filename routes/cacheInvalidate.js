@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const cache = require('memory-cache');
 const crypto = require('crypto');
+var util = require('util');
 const asyncHandler = require('express-async-handler');
 const cacheInvalidate = require('../helpers/cacheInvalidate');
 
@@ -35,11 +36,11 @@ const poolPayload = (req) => {
 };
 
 router.post('/', asyncHandler(async (req, res) => {
-    if (process.env['Webhook.Cache.Invalidate.CommonContent']) {
-        if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
+    //if (process.env['Webhook.Cache.Invalidate.CommonContent']) {
+        //if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
             poolPayload(req, res);
-        }
-    }
+        //}
+    //}
 
     return res.end();
 }));
@@ -50,5 +51,27 @@ router.post('/pool', asyncHandler(async (req, res) => {
 
     return res.end();
 }));
+
+router.get('/keys', (req, res) => {
+    const keys = cache.keys();
+    res.cacheControl = {
+        maxAge: 0
+    };
+    return res.render('tutorials/pages/cacheKeys', { keys });
+});
+
+router.get('/keys/:key', (req, res) => {
+    const key = cache.get(req.params.key);
+    res.set('Content-Type', 'text/plain');
+    res.cacheControl = {
+        maxAge: 0
+    };
+    return res.send(util.inspect(key));
+});
+
+router.get('/keys/:key/invalidate', (req, res) => {
+    cache.del(req.params.key);
+    return res.redirect('/cache-invalidate/keys');
+});
 
 module.exports = router;

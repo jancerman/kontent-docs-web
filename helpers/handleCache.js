@@ -84,7 +84,7 @@ const evaluateCommon = async (res, keysTohandle) => {
         for await (const item of array) {
             if (keysTohandle.indexOf(item.name) > -1) {
                 await manageCache(item.name, async (res) => {
-                    await item.method(res);
+                    return await item.method(res);
                 }, KCDetails, KCDetails.isPreview, res);
             }
         }
