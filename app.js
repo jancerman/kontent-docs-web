@@ -12,6 +12,9 @@ const serveStatic = require('serve-static');
 const slashes = require('connect-slashes');
 const consola = require('consola');
 const axios = require('axios');
+const cache = require('memory-cache');
+const util = require('util');
+const { setIntervalAsync } = require('set-interval-async/dynamic')
 
 const handleCache = require('./helpers/handleCache');
 const getUrlMap = require('./helpers/urlMap');
@@ -256,16 +259,30 @@ app.use('/', async (req, res, next) => {
   return next();
 }, tutorials, reference);
 
-setInterval(async () => {
-  try {
-    await axios({
-      method: 'post',
-      baseURL: process.env.baseURL,
-      url: '/cache-invalidate/pool',
-    });
-  } catch (error) {
-    consola.error(error.response.data);
+const logPool = (log) => {
+  const key = 'cache-interval-pool';
+  const logs = cache.get(key) || [];
+  logs.unshift(log);
+  if (logs.length > 200) {
+      logs.length = 200;
   }
+  cache.put(key, logs);
+};
+
+setIntervalAsync(async () => {
+  const log = {
+    timestamp: (new Date()).toISOString(),
+    pool: util.inspect(cache.get('webhook-payload-pool'))
+  };
+
+  try {
+    const response = await axios.post(`${process.env.baseURL}/cache-invalidate/pool`, {});
+    log.url = response && response.config ? response.config.url : '';
+  } catch (error) {
+    log.error = error && error.response ? error.response.data : '';
+  }
+
+  logPool(log);
 }, 300000);
 
 // catch 404 and forward to error handler

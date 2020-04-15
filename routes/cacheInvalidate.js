@@ -36,11 +36,11 @@ const poolPayload = (req) => {
 };
 
 router.post('/', asyncHandler(async (req, res) => {
-    //if (process.env['Webhook.Cache.Invalidate.CommonContent']) {
-        //if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
+    if (process.env['Webhook.Cache.Invalidate.CommonContent']) {
+        if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
             poolPayload(req, res);
-        //}
-    //}
+        }
+    }
 
     return res.end();
 }));
@@ -48,12 +48,12 @@ router.post('/', asyncHandler(async (req, res) => {
 router.post('/pool', asyncHandler(async (req, res) => {
     await cacheInvalidate(res);
     cache.del('webhook-payload-pool');
-
     return res.end();
 }));
 
 router.get('/keys', (req, res) => {
     const keys = cache.keys();
+    keys.sort();
     res.cacheControl = {
         maxAge: 0
     };
