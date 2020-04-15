@@ -5,7 +5,7 @@ const asyncHandler = require('express-async-handler');
 const handleCache = require('../helpers/handleCache');
 
 router.get('/', asyncHandler(async (req, res) => {
-    const icons = await handleCache.evaluateSingle(res, 'kenticoIcons_', async () => {
+    const icons = await handleCache.ensureSingle(res, 'kenticoIcons_', async () => {
         return await axios.get('https://cdn.jsdelivr.net/gh/Kentico/kentico-icons/production/icon-variables.less');
     });
 
