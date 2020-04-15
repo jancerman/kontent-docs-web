@@ -222,7 +222,7 @@ app.use('/redirect-urls', async (req, res, next) => {
 app.use('/sitemap.xml', sitemap);
 
 app.use('/rss', async (req, res, next) => {
-  await handleCache.evaluateCommon(res, ['rss_articles', 'rss_changelog']);
+  await handleCache.evaluateCommon(res, ['rss_changelog']);
   return next();
 }, rss);
 

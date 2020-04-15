@@ -73,17 +73,6 @@ const commonContent = {
             ...commonContent.getKCDetails(res)
         });
     },
-    getRSSArticles: async (res) => {
-        return await requestDelivery({
-            type: 'article',
-            limit: 20,
-            order: {
-                type: 'descending',
-                field: 'system.last_modified'
-            },
-            ...commonContent.getKCDetails(res)
-        });
-    },
     getRSSChangelog: async (res) => {
         const urlMap = await ensureSingle(res, 'urlMap', async () => {
             return await getUrlMap(res);

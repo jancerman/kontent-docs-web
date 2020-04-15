@@ -151,8 +151,7 @@ const invalidateArticles = async (itemsByTypes, KCDetails, res) => {
         await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'article', res);
         await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'reference', res);
         handleCache.deleteCache('articles', KCDetails);
-        handleCache.deleteCache('rss_articles', KCDetails);
-        await handleCache.evaluateCommon(res, ['articles', 'rss_articles']);
+        await handleCache.evaluateCommon(res, ['articles']);
     }
 
     return false;
