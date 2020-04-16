@@ -1,51 +1,43 @@
 .anchor-copy {
     cursor: pointer;   
-    position: relative;
+    position: absolute;
     display: none;
+    left: 0;
+    top: .25em;
 
     &:before {
         font-size: 16px;
         content: '#';
         display: inline-block;
-        width: 1.5em;
-        padding: .25em 0;
+        width: 24px;
+        padding: 3px 0;
         background-position: center center;
-        background-size: 1em 1em;
+        background-size: 16px 16px;
         background-repeat: no-repeat;
-        margin: 0 0 0 .375em;
-        border-radius: .5em;
+        margin: 0 0 0 6px;
+        border-radius: 8px;
         text-align: center;
         color: #F05A22;
         position: relative;
-        top: -.125em;
-        line-height: 1em;
+        top: -2px;
+        line-height: 16px;
         opacity: 0;
         transition: opacity .25s;
     }
 
-    h2:hover &, h3:hover &, h4:hover & {
-        display: inline-block;
+    @media screen and (min-width: 768px) {
+        &:hover, h2:hover &, h3:hover &, h4:hover & {
+            display: inline-block;
 
-        &:before {
-            opacity: 1;
+            &:before {
+                opacity: 1;
+            }
+        }
+
+        &:hover {
+            &:before {
+                background-color: #e8e8e8;
+            }
         }
     }
-
-    &:hover {
-        &:before {
-            background-color: #e8e8e8;
-        }
-    }
-}
-
-h2 .anchor-copy:hover .anchor-copy__tooltip {
-    top: 30%;
-}
-
-h3 .anchor-copy:hover .anchor-copy__tooltip {
-    top: 15%;
-}
-
-h4 .anchor-copy:hover .anchor-copy__tooltip {
-    top: 10%;
 }

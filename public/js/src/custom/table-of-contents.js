@@ -27,7 +27,7 @@
 
             const id = `a-${anchorName}${anchorNameCount > 1 ? `-${anchorNameCount}` : ''}`;
             item.setAttribute('id', id);
-            item.innerHTML = `${item.innerHTML}<a href="#${id}" class="anchor-copy" aria-hidden="true"><span class="anchor-copy__tooltip"></span></a>`;
+            item.innerHTML = `<a href="#${id}" class="anchor-copy" aria-hidden="true"></a>${item.innerHTML}`;
         });
     };
 
