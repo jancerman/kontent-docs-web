@@ -272,12 +272,37 @@
         }
     };
 
+    const initErrorSearch = (urlMap) => {
+        const container = document.querySelector('[error-search]');
+        if (!container) return;
+
+        const searchTerm = window.location.pathname.split('/').pop().replace(/-/g, ' ');
+
+        tutorials.search(searchTerm).then(({ hits }) => {
+            const iterations = hits.length > 5 ? 5 : hits.length;
+            let suggestionsHTML = '<ul>';
+
+            for (let i = 0; i < iterations; i++) {
+                const suggestionUrl = urlMap.filter(item => item.codename === hits[i].codename);
+                if (suggestionUrl.length) {
+                    hits[i].resolvedUrl = suggestionUrl[0].url;
+                }
+
+                suggestionsHTML += `<li><a href="${hits[i].resolvedUrl}">${hits[i].title}</a></li>`;
+            }
+
+            suggestionsHTML += '</ul>';
+            container.innerHTML = suggestionsHTML;
+        });
+    };
+
     const initAlgoliaSearch = () => {
         document.onkeydown = arrowPress;
 
         // Get urlMap and init the autocomplete
         window.helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
             initAutocomplete(urlMap);
+            initErrorSearch(urlMap);
         }, 'json');
     };
 
