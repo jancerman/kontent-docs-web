@@ -1,0 +1,23 @@
+[data-items-hidden="true"] {
+    display: none !important;
+}
+
+[data-items-expanded] {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    transition: .25s color, .25s border;
+    cursor: pointer;
+    border: 1px solid #D3D2D2;
+    border-radius: 2.25em;
+    padding: 1em !important;
+
+    @media screen and (min-width: 1260px) {
+        padding: 0 !important; 
+    }
+
+    &:hover {
+        color: #F05A22;
+        border-color: #F05A22;
+    }
+}

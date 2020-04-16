@@ -152,18 +152,44 @@ const richTextResolverTemplates = {
     signpost: (item) => {
         let type = '';
         let listClass = '';
+        let itemsToShow = -1;
 
         if (item.type.value.length) type = item.type.value[0].codename;
         if (type === 'platform_selection') listClass = ' selection--platforms';
+        if (item.items_to_show.value) itemsToShow = parseInt(item.items_to_show.value);
 
         return `
             <section class="presentation__section">
                 <h2 class="presentation__heading">${item.title.value}</h2>
                 ${item.description.value && item.description.value !== '<p><br></p>' ? '<h3 class="presentation__sub-heading">'+ item.description.value +'</h3>' : ''}
-                <ul class="selection${listClass}">
+                <ul class="selection${listClass}" data-items-to-show="${!isNaN(itemsToShow) && itemsToShow > -1 ? itemsToShow : -1}">
                     ${item.content.value}
                 </ul>
             </section>
+        `;
+    },
+    signpostItem: (item, config) => {
+        const urlMap = config.urlMap;
+        const dpr = config.dpr ? `&dpr=${config.dpr}` : '';
+        let resolvedUrl = '';
+
+        if (item.link__link_to_content_item.value[0] && urlMap) {
+            resolvedUrl = urlMap.filter(elem => elem.codename === item.link__link_to_content_item.value[0].system.codename)[0].url;
+        }
+
+        if (item.link__link_to_web_url.value) {
+            resolvedUrl = item.link__link_to_web_url.value;
+        }
+
+        return `
+            <li class="selection__item">
+                ${resolvedUrl ? '<a class="selection__link" href="'+ resolvedUrl + '">' : '<div class="selection__link">'}
+                    <div class="selection__img-sizer">
+                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + `?w=290&fm=jpg&auto=format${dpr}` : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
+                    </div>
+                    <div class="selection__title">${item.title.value}</div>
+                ${resolvedUrl ? '</a>' : '</div>'}
+            </li>
         `;
     },
     homeLinkToContentItem: (item, config) => {

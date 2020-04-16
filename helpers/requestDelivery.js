@@ -83,6 +83,9 @@ const componentsResolvers = [{
     type: 'signpost',
     resolver: richTextResolverTemplates.signpost
 }, {
+    type: 'signpost_item',
+    resolver: richTextResolverTemplates.signpostItem
+}, {
     type: 'callout',
     resolver: richTextResolverTemplates.callout
 }, {
