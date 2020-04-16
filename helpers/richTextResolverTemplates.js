@@ -246,8 +246,25 @@ const richTextResolverTemplates = {
 
         return '';
     },
-    callToAction: (item) => {
-        return `<div class="call-to-action" data-click="support"><span>${item.text.value}</span><span></span></div>`;
+    callToAction: (item, config) => {
+        const action = item.action.value.length ? item.action.value[0].codename : null;
+
+        if (action === 'show_intercom') {
+            return `<div class="call-to-action" data-click="support"><span>${item.text.value}</span><span></span></div>`;
+        }
+
+        const urlMap = config.urlMap;
+        let resolvedUrl = '';
+
+        if (item.link__link_to_content_item.value[0] && urlMap) {
+            resolvedUrl = urlMap.filter(elem => elem.codename === item.link__link_to_content_item.value[0].system.codename)[0].url;
+        }
+
+        if (item.link__link_to_web_url.value) {
+            resolvedUrl = item.link__link_to_web_url.value;
+        }
+
+        return `<a href="${resolvedUrl}" class="call-to-action"><span>${item.text.value}</span><span></span></a>`;
     },
     contentChunk: (item) => {
         const platforms = [];
