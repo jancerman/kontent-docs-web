@@ -11,7 +11,9 @@ block content
                         time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
                         .article__author 
                             if (content.author.value && content.author.value.length)
-                                | !{content.author.value[0].name.value}
+                                each author, index in content.author.value
+                                    - let separator = ''; if (index < content.author.value.length - 2) {separator = ', ';} if (index === content.author.value.length - 2) {separator = ' and '}
+                                    | !{author.name.value}!{separator}                                  
                             else
                                 | !{UIMessages.article___no_author.value}
                         if (isPreview || isKenticoIP)
