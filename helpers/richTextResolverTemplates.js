@@ -318,7 +318,8 @@ const richTextResolverTemplates = {
     },
     releaseNote: (item) => {
         const isPlanned = (new Date(item.release_date.value)).getTime() > (new Date()).getTime();
-        const displaySeverity = item.severity.value[0].codename === 'breaking_change';
+        const severityCodename = item.severity.value.length ? item.severity.value[0].codename : '';
+        const displaySeverity = severityCodename === 'breaking_change';
 
         let services = '';
         const servicesCodenames = [];
