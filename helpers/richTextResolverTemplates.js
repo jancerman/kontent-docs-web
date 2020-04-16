@@ -160,8 +160,8 @@ const richTextResolverTemplates = {
 
         return `
             <section class="presentation__section">
-                <h2 class="presentation__heading">${item.title.value}</h2>
-                ${item.description.value && item.description.value !== '<p><br></p>' ? '<h3 class="presentation__sub-heading">'+ item.description.value +'</h3>' : ''}
+                ${item.title.value && item.title.value !== '<p><br></p>' ? `<h2 class="presentation__heading">${item.title.value}</h2>` : ''}
+                ${item.description.value && item.description.value !== '<p><br></p>' ? `<span class="presentation__sub-heading">${item.description.value}</span>` : ''}
                 <ul class="selection${listClass}" data-items-to-show="${!isNaN(itemsToShow) && itemsToShow > -1 ? itemsToShow : -1}">
                     ${item.content.value}
                 </ul>
@@ -183,11 +183,10 @@ const richTextResolverTemplates = {
 
         return `
             <li class="selection__item">
-                ${resolvedUrl ? '<a class="selection__link" href="'+ resolvedUrl + '">' : '<div class="selection__link">'}
-                    <div class="selection__img-sizer">
-                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + `?w=290&fm=jpg&auto=format${dpr}` : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
-                    </div>
-                    <div class="selection__title">${item.title.value}</div>
+                ${resolvedUrl ? `<a class="selection__link" href="${resolvedUrl}">` : '<div class="selection__link">'}
+                    ${item.image.value[0] ? `<div class="selection__img-sizer"><img class="selection__img" src="${`${item.image.value[0].url}?w=290&fm=jpg&auto=format${dpr}`}"></div>` : ''}
+                    ${item.title.value ? `<div class="selection__title">${item.title.value}</div>` : ''}
+                    ${item.description.value && item.description.value !== '<p><br></p>' ? `<div class="selection__description">${item.description.value}</div>` : ''}
                 ${resolvedUrl ? '</a>' : '</div>'}
             </li>
         `;
