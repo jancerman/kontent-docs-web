@@ -36,7 +36,7 @@ const getContentLevel = async (currentLevel, urlMap, req, res) => {
         settings.slug = req.originalUrl.split('/')[1];
         delete settings.depth;
     } else if (currentLevel === 0) {
-        settings.type = ['scenario', 'certification', 'multiplatform_article'];
+        settings.type = ['scenario', 'certification', 'article', 'multiplatform_article'];
         settings.resolveRichText = true;
         settings.urlMap = urlMap;
     } else if (currentLevel === 1) {
