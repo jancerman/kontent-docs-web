@@ -348,10 +348,15 @@ window.helper = (() => {
         const footer = document.querySelector('.footer');
         const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
         const viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        const nav = document.querySelector('.navigation');
+        const previewWarning = document.querySelector('.preview-warning');
+
+        const navOffset = nav ? nav.offsetHeight : 0;
+        const previewWarningOffset = previewWarning ? previewWarning.offsetHeight : 0;
 
         if (viewportWidth >= 768 && elem) {
             const topOffset = ((window.pageYOffset || document.scrollTop) - (document.clientTop || 0)) || 0;
-            const isTop = topOffset <= document.querySelector('.navigation').offsetHeight;
+            const isTop = topOffset <= (navOffset + previewWarningOffset);
             const bottom = (window.innerHeight + window.pageYOffset + window.helper.outerHeight(footer))
             const isBottom = bottom >= document.body.offsetHeight;
 
