@@ -113,30 +113,36 @@
     };
 
     const logSearchTermNumber = (term) => {
-        window.dataLayer.push({
-            event: 'event',
-            eventCategory: 'search--searched-result',
-            eventAction: window.filterXSS(decodeURIComponent(term)),
-            eventLabel: searchResultsNumber
-        });
+        if (window.dataLayer) {
+            window.dataLayer.push({
+                event: 'event',
+                eventCategory: 'search--searched-result',
+                eventAction: window.filterXSS(decodeURIComponent(term)),
+                eventLabel: searchResultsNumber
+            });
+        }
     };
 
     const logSearchTermErased = () => {
-        window.dataLayer.push({
-            event: 'event',
-            eventCategory: 'search--used',
-            eventAction: window.filterXSS(decodeURIComponent(searchTerm)),
-            eventLabel: 'Not clicked'
-        });
+        if (window.dataLayer) {
+            window.dataLayer.push({
+                event: 'event',
+                eventCategory: 'search--used',
+                eventAction: window.filterXSS(decodeURIComponent(searchTerm)),
+                eventLabel: 'Not clicked'
+            });
+        }
     };
 
     const logSearchTermSelected = (term, url) => {
-        window.dataLayer.push({
-            event: 'event',
-            eventCategory: 'search--used',
-            eventAction: decodeURIComponent(term),
-            eventLabel: url
-        });
+        if (window.dataLayer) {
+            window.dataLayer.push({
+                event: 'event',
+                eventCategory: 'search--used',
+                eventAction: decodeURIComponent(term),
+                eventLabel: url
+            });
+        }
     };
 
     const onAutocompleteSelected = (suggestion, context) => {
