@@ -66,7 +66,9 @@ router.get('/keys/:key', (req, res) => {
     res.cacheControl = {
         maxAge: 0
     };
-    return res.send(util.inspect(key));
+    return res.send(util.inspect(key, {
+        maxArrayLength: 200
+    }));
 });
 
 router.get('/keys/:key/invalidate', (req, res) => {
