@@ -338,6 +338,7 @@ const richTextResolverTemplates = {
     releaseNote: (item) => {
         const isPlanned = (new Date(item.release_date.value)).getTime() > (new Date()).getTime();
         const severityCodename = item.severity.value.length ? item.severity.value[0].codename : '';
+        const severityName = item.severity.value.length ? item.severity.value[0].name : '';
         const displaySeverity = severityCodename === 'breaking_change';
 
         let services = '';
@@ -348,13 +349,13 @@ const richTextResolverTemplates = {
         });
 
         return `
-            <div class="mix ${servicesCodenames.join(' ')} ${item.severity.value[0].codename} all_changes">
+            <div class="mix ${servicesCodenames.join(' ')} ${severityCodename} all_changes">
                 <h2>${item.title.value}</h2>
                 <div class="article__info-bar">
                     <time class="article__date article__date--body" datetime="${moment(item.release_date.value).format('YYYY-MM-DD')}">${isPlanned ? 'Planned for ': ''}${moment(item.release_date.value).format('MMMM D, YYYY')}</time>
                     ${displaySeverity || services ? `
                         <ul class="article__tags">
-                            ${displaySeverity ? `<li class="article__tags-item article__tags-item--red">${item.severity.value[0].name}</li>` : ''}
+                            ${displaySeverity ? `<li class="article__tags-item article__tags-item--red">${severityName}</li>` : ''}
                             ${services}
                         </ul>` : ''}
                 </div>
