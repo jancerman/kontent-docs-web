@@ -166,15 +166,17 @@ const richTextResolverTemplates = {
         let type = '';
         let listClass = '';
         let itemsToShow = -1;
+        const missingTitle = (item.title.value === '' || item.title.value === '<p><br></p>');
+        const missingDescription = (item.description.value === '' || item.description.value === '<p><br></p>');
 
         if (item.type.value.length) type = item.type.value[0].codename;
         if (type === 'platform_selection') listClass = ' selection--platforms';
         if (item.items_to_show.value) itemsToShow = parseInt(item.items_to_show.value);
 
         return `
-            <section class="presentation__section">
-                ${item.title.value && item.title.value !== '<p><br></p>' ? `<h2 class="presentation__heading">${item.title.value}</h2>` : ''}
-                ${item.description.value && item.description.value !== '<p><br></p>' ? `<span class="presentation__sub-heading">${item.description.value}</span>` : ''}
+            <section class="presentation__section${missingTitle && missingDescription ? ' presentation__section--list-only' : ''}">
+                ${!missingTitle ? `<h2 class="presentation__heading">${item.title.value}</h2>` : ''}
+                ${!missingDescription ? `<span class="presentation__sub-heading">${item.description.value}</span>` : ''}
                 <ul class="selection${listClass}" data-items-to-show="${!isNaN(itemsToShow) && itemsToShow > -1 ? itemsToShow : -1}">
                     ${item.content.value}
                 </ul>
