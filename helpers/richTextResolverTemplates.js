@@ -111,6 +111,18 @@ const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
                 <i>See the image on <a href="https://giphy.com/embed/${item.id.value}">https://giphy.com/embed/${item.id.value}</a></i>
             </p>
             `,
+        diagrams_net: `
+            <div class="embed embed--diagrams-net${cssClass}">
+                <iframe class="lazy" frameborder="0" data-src="https://app.diagrams.net?lightbox=1&nav=1#${item.id.value}"></iframe>
+                <div class="embed__overlay" aria-hidden="true"></div>
+                <noscript>
+                    <iframe frameborder="0" src="https://app.diagrams.net?lightbox=1&nav=1#${item.id.value}"></iframe>
+                </noscript>
+            </div>
+            <p class="print-only"> 
+                <i>See the image on <a href="https://app.diagrams.net?lightbox=1&nav=1#${item.id.value}">https://app.diagrams.net?lightbox=1&nav=1#${item.id.value}</a></i>
+            </p>
+            `,
     }
 };
 
@@ -144,10 +156,11 @@ const richTextResolverTemplates = {
         }
 
         if (item.provider.value.length) {
-            return getEmbeddedTemplate(cssClass, item, netlifyId)[item.provider.value[0].codename];
-        } else {
-            return '';
+            const templates = getEmbeddedTemplate(cssClass, item, netlifyId);
+            return templates[item.provider.value[0].codename] || '';
         }
+
+        return '';
     },
     signpost: (item) => {
         let type = '';
@@ -250,6 +263,10 @@ const richTextResolverTemplates = {
 
         if (action === 'show_intercom') {
             return `<div class="call-to-action" data-click="support"><span>${item.text.value}</span><span></span></div>`;
+        }
+
+        if (action === 'enable_embed') {
+            return `<div class="call-to-action"><span>${item.text.value}</span><span></span></div>`;
         }
 
         const urlMap = config.urlMap;
