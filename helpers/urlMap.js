@@ -183,7 +183,9 @@ const createUrlMap = async (response, isSitemap, url, urlMap = [], res) => {
 };
 
 const handleNode = async (settings) => {
-    if (settings.response.system && settings.item.system && settings.response.system.type === 'navigation_item' && settings.item.system.type === 'multiplatform_article') {
+    if (settings.response.system && settings.item.system &&
+            (settings.response.system.type === 'navigation_item' && (settings.item.system.type === 'multiplatform_article' || settings.item.system.type === 'article'))
+       ) {
         settings.url.length = 2;
     }
 
