@@ -43,7 +43,7 @@ const handleArticle = async (settings, req, res) => {
     preselectedPlatform = preselectedPlatformSettings.preselectedPlatform;
     cookiesPlatform = preselectedPlatformSettings.cookiesPlatform;
 
-    if (cookiesPlatform) {
+    if (cookiesPlatform !== req.cookies['KCDOCS.preselectedLanguage']) {
         res.cookie('KCDOCS.preselectedLanguage', cookiesPlatform);
     }
 

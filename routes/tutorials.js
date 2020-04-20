@@ -120,7 +120,7 @@ const getContent = async (req, res) => {
             preselectedPlatform = preselectedPlatformSettings.preselectedPlatform;
             cookiesPlatform = preselectedPlatformSettings.cookiesPlatform;
 
-            if (cookiesPlatform) {
+            if (cookiesPlatform !== req.cookies['KCDOCS.preselectedLanguage']) {
                 res.cookie('KCDOCS.preselectedLanguage', cookiesPlatform);
             }
 
