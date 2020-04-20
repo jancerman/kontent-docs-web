@@ -3,6 +3,8 @@ block content
     main(id='main')
         .article
             .article__content
-                | !{content}
-                .article__search(error-search)  
+                h1 !{title}
+                p(data-error-search-title)  !{UIMessages.search___404_page_results.value}
+                .article__search(data-error-search) 
+                | !{content} 
     script console.log(`#{req.err.stack.replace(/\\/g, '/')}`);

@@ -279,26 +279,30 @@
     };
 
     const initErrorSearch = (urlMap) => {
-        const container = document.querySelector('[error-search]');
+        const container = document.querySelector('[data-error-search]');
+        const title = document.querySelector('[data-error-search-title]');
         if (!container) return;
 
         const searchTerm = window.location.pathname.split('/').pop().replace(/-/g, ' ');
 
         tutorials.search(searchTerm).then(({ hits }) => {
             const iterations = hits.length > 5 ? 5 : hits.length;
-            let suggestionsHTML = '<ul>';
+            if (iterations > 0) {
+                let suggestionsHTML = '<ul>';
 
-            for (let i = 0; i < iterations; i++) {
-                const suggestionUrl = urlMap.filter(item => item.codename === hits[i].codename);
-                if (suggestionUrl.length) {
-                    hits[i].resolvedUrl = suggestionUrl[0].url;
+                for (let i = 0; i < iterations; i++) {
+                    const suggestionUrl = urlMap.filter(item => item.codename === hits[i].codename);
+                    if (suggestionUrl.length) {
+                        hits[i].resolvedUrl = suggestionUrl[0].url;
+                    }
+
+                    suggestionsHTML += `<li><a href="${hits[i].resolvedUrl}">${hits[i].title}</a></li>`;
                 }
 
-                suggestionsHTML += `<li><a href="${hits[i].resolvedUrl}">${hits[i].title}</a></li>`;
+                suggestionsHTML += '</ul>';
+                title.setAttribute('data-error-search-title', 'visible');
+                container.innerHTML = suggestionsHTML;
             }
-
-            suggestionsHTML += '</ul>';
-            container.innerHTML = suggestionsHTML;
         });
     };
 
