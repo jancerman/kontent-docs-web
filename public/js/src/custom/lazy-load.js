@@ -119,8 +119,8 @@
 
         document.querySelector('body').addEventListener('click', (e) => {
             e.stopPropagation();
-            e.preventDefault();
             if (e.target && e.target.matches('div.embed__dnt-enable, div.embed__dnt-enable *')) {
+                e.preventDefault();
                 handleLazyEmbed(e.target);
             }
         });
