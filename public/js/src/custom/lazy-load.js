@@ -17,6 +17,9 @@
                         elem.src = elem.dataset.src;
                         elem.classList.remove('lazy');
                         elem.removeAttribute('data-src');
+                        if (elem.classList.contains('article__image')) {
+                            elem.removeAttribute('style');
+                        }
                         elemObserver.unobserve(elem);
                     }
                 }
@@ -38,6 +41,9 @@
                     el.src = el.dataset.src;
                     el.classList.remove('lazy');
                     el.removeAttribute('data-src');
+                    if (el.tagName === 'IMG') {
+                        el.removeAttribute('style');
+                    }
                 }
             }
         });

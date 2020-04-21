@@ -13,7 +13,6 @@ const commonContent = {
             host: res.locals.host,
             protocol: res.locals.protocol,
             isPreview: isPreview(res.locals.previewapikey),
-            dpr: res.locals.dpr
         };
     },
     getTree: async (contentType, depth, res) => {
@@ -178,7 +177,7 @@ const commonContent = {
                     title: item.title.value,
                     slug: item.url.value,
                     codename: item.platform.value[0].codename,
-                    icon: item.icon.value.length ? `${item.icon.value[0].url}?w=16&dpr=${res.locals.dpr}` : ''
+                    icon: item.icon.value.length ? `${item.icon.value[0].url}?w=16` : ''
                 }
                 order.push(platform);
             });

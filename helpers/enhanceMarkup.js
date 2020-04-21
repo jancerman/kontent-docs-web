@@ -37,6 +37,28 @@ const processLinks = ($) => {
     });
 };
 
+const createAnchors = ($) => {
+    const $headings = $('h2:not(.table-of-contents__heading):not(.feedback__heading), h3, h4');
+    const anchorNameList = [];
+
+    $headings.each(function () {
+        var $that = $(this);
+        const anchorName = $that.html().toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/&[^\s]*;/g, '').replace(/\W/g, '-').replace(/[-]+/g, '-');
+        anchorNameList.push(anchorName);
+
+        let anchorNameCount = 0;
+        anchorNameList.forEach((name) => {
+            if (name === anchorName) {
+                anchorNameCount += 1;
+            }
+        });
+
+        const id = `a-${anchorName}${anchorNameCount > 1 ? `-${anchorNameCount}` : ''}`;
+        $that.attr('id', id);
+        $that.html(`<a href="#${id}" class="anchor-copy" aria-hidden="true"></a>${$that.html()}`);
+    });
+};
+
 const enhanceMarkup = (text) => {
     text = helper.resolveMacros(text);
     const $ = cheerio.load(text);
@@ -45,6 +67,7 @@ const enhanceMarkup = (text) => {
     setWidthToImages($);
     processLinks($);
     removeEmptyParagraph($);
+    createAnchors($);
 
     const output = $.html();
     return output.replace('<html><head></head><body>', '').replace('</body></html>', '');

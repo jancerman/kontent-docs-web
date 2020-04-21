@@ -3,7 +3,7 @@ const helper = require('./helperFunctions');
 const Entities = require('html-entities').AllHtmlEntities;
 const entities = new Entities();
 
-const getImageAttributes = (item, cssClass, dpr, transformationQueryString) => {
+const getImageAttributes = (item, cssClass, transformationQueryString) => {
     if (item.image_width.value.length) {
         switch (item.image_width.value[0].codename) {
             case 'n25_':
@@ -25,10 +25,6 @@ const getImageAttributes = (item, cssClass, dpr, transformationQueryString) => {
             default:
                 transformationQueryString += '896';
         }
-    }
-
-    if (dpr) {
-        transformationQueryString += `&dpr=${dpr}`;
     }
 
     if (item.image.value.length && item.image.value[0].url.endsWith('.gif')) {
@@ -185,8 +181,11 @@ const richTextResolverTemplates = {
     },
     signpostItem: (item, config) => {
         const urlMap = config.urlMap;
-        const dpr = config.dpr ? `&dpr=${config.dpr}` : '';
         let resolvedUrl = '';
+        const imageWidth = item.image.value[0] ? item.image.value[0].width || 0 : 0;
+        const imageHeight = item.image.value[0] ? item.image.value[0].height || 0 : 0;
+        const placeholderSrc = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1" width="${imageWidth}" height="${imageHeight}"></svg>`;
+        const imageSrc = item.image.value[0] ? `${item.image.value[0].url}?w=290&fm=jpg&auto=format` : ''
 
         if (item.link__link_to_content_item.value[0] && urlMap) {
             resolvedUrl = urlMap.filter(elem => elem.codename === item.link__link_to_content_item.value[0].system.codename)[0].url;
@@ -199,7 +198,14 @@ const richTextResolverTemplates = {
         return `
             <li class="selection__item">
                 ${resolvedUrl ? `<a class="selection__link" href="${resolvedUrl}">` : '<div class="selection__link">'}
-                    ${item.image.value[0] ? `<div class="selection__img-sizer"><img class="selection__img" src="${`${item.image.value[0].url}?w=290&fm=jpg&auto=format${dpr}`}"></div>` : ''}
+                    ${item.image.value[0] ? `
+                        <div class="selection__img-sizer">
+                            <img class="selection__img lazy lazy--exclude-dnt" data-dpr data-lazy-onload src='${placeholderSrc}' data-src="${imageSrc}"${imageWidth && imageHeight ? `style="max-width:${imageWidth}px;max-height:${imageHeight}px;width:100%" width="${imageWidth}" height="${imageHeight}"` : ''}>
+                            <noscript>
+                                <img class="selection__img" src="${imageSrc}">
+                            </noscript>
+                        </div> 
+                    ` : ''}
                     ${item.title.value ? `<div class="selection__title">${item.title.value}</div>` : ''}
                     ${item.description.value && item.description.value !== '<p><br></p>' ? `<div class="selection__description">${item.description.value}</div>` : ''}
                 ${resolvedUrl ? '</a>' : '</div>'}
@@ -208,8 +214,11 @@ const richTextResolverTemplates = {
     },
     homeLinkToContentItem: (item, config) => {
         const urlMap = config.urlMap;
-        const dpr = config.dpr ? `&dpr=${config.dpr}` : '';
         let resolvedUrl = '';
+        const imageWidth = item.image.value[0] ? item.image.value[0].width || 0 : 0;
+        const imageHeight = item.image.value[0] ? item.image.value[0].height || 0 : 0;
+        const placeholderSrc = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1" width="${imageWidth}" height="${imageHeight}"></svg>`;
+        const imageSrc = item.image.value[0] ? `${item.image.value[0].url}?w=290&fm=jpg&auto=format` : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image';
 
         if (item.linked_item.value[0] && urlMap) {
             resolvedUrl = urlMap.filter(elem => elem.codename === item.linked_item.value[0].system.codename)[0].url;
@@ -219,7 +228,10 @@ const richTextResolverTemplates = {
             <li class="selection__item">
                 ${resolvedUrl ? '<a class="selection__link" href="'+ resolvedUrl + '">' : '<div class="selection__link">'}
                     <div class="selection__img-sizer">
-                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + `?w=290&fm=jpg&auto=format${dpr}` : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
+                        <img class="selection__img lazy lazy--exclude-dnt" data-dpr data-lazy-onload src='${placeholderSrc}' data-src="${imageSrc}"${imageWidth && imageHeight ? `style="max-width:${imageWidth}px;max-height:${imageHeight}px;width:100%" width="${imageWidth}" height="${imageHeight}"` : ''}>
+                        <noscript>
+                            <img class="selection__img" src="${imageSrc}">
+                        </noscript>
                     </div>
                     <div class="selection__title">${item.title.value}</div>
                 ${resolvedUrl ? '</a>' : '</div>'}
@@ -236,18 +248,19 @@ const richTextResolverTemplates = {
         if (item.image.value.length) {
             const alt = item.image.value[0].description ? item.image.value[0].description : '';
             const url = encodeURI(item.url.value.trim());
-            const dpr = config.dpr;
             const transformationQueryString = '?fm=jpg&auto=format&w=';
             let cssClass = item.border.value.length && item.border.value[0].codename === 'show' ? ' article__image-border' : '';
             cssClass += item.zoomable.value.length && item.zoomable.value[0].codename === 'true' && !url ? ' article__add-lightbox' : '';
+            const imageWidth = item.image.value[0] ? item.image.value[0].width || 0 : 0;
+            const imageHeight = item.image.value[0] ? item.image.value[0].height || 0 : 0;
             const openLinkTag = url ? '<a href="'+ url +'" target="_blank" class="no-icon">' : '';
             const closeLinkTag = url ? '</a>' : '';
-
-            const attributes = getImageAttributes(item, cssClass, dpr, transformationQueryString);
+            const placeholderSrc = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1" width="${item.image.value[0].width}" height="${item.image.value[0].height}"></svg>`;
+            const attributes = getImageAttributes(item, cssClass, transformationQueryString);
             return `
                 <figure>
                     ${openLinkTag}
-                        <img class="article__image ${attributes.cssClass}" alt="${alt}" src="${item.image.value[0].url}${attributes.transformationQueryString}">
+                        <img class="article__image lazy lazy--exclude-dnt ${attributes.cssClass}" alt="${alt}" data-dpr data-lazy-onload src='${placeholderSrc}' data-src="${item.image.value[0].url}${attributes.transformationQueryString}"${imageWidth && imageHeight ? `style="max-width:${imageWidth}px;max-height:${imageHeight}px;width:100%" width="${imageWidth}" height="${imageHeight}"` : ''}>
                     ${closeLinkTag}
                     <noscript>
                         ${openLinkTag}
@@ -294,12 +307,11 @@ const richTextResolverTemplates = {
         return value;
     },
     homeLinkToExternalUrl: (item, config) => {
-        const dpr = config.dpr ? `&dpr=${config.dpr}` : '';
         return `
             <li class="selection__item">
                 <a class="selection__link" href="${item.url.value}">
                     <div class="selection__img-sizer">
-                        <img class="selection__img" src="${item.image.value[0] ? item.image.value[0].url + `?w=290&fm=jpg&auto=format${dpr}` : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
+                        <img class="selection__img" src="${item.image.value[0] ? `${item.image.value[0].url}?w=290&fm=jpg&auto=format` : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image'}">
                     </div>
                     <div class="selection__title">${item.title.value}</div>
                 </a>

@@ -9,36 +9,15 @@
     const anchorsOnly = document.querySelector('.article__content--anchors-only');
     let affixHeadings;
 
-    // For all sub-headings set unique id and create the copy to clipboard icon
-    const createAnchors = () => {
-        const headings = articleContent.querySelectorAll('h2:not(.table-of-contents__heading):not(.feedback__heading), h3, h4');
-        const anchorNameList = [];
-
-        headings.forEach((item) => {
-            const anchorName = item.innerHTML.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/&[^\s]*;/g, '').replace(/\W/g, '-').replace(/[-]+/g, '-');
-            anchorNameList.push(anchorName);
-
-            let anchorNameCount = 0;
-            anchorNameList.forEach((name) => {
-                if (name === anchorName) {
-                    anchorNameCount += 1;
-                }
-            });
-
-            const id = `a-${anchorName}${anchorNameCount > 1 ? `-${anchorNameCount}` : ''}`;
-            item.setAttribute('id', id);
-            item.innerHTML = `<a href="#${id}" class="anchor-copy" aria-hidden="true"></a>${item.innerHTML}`;
-        });
-    };
-
     // Scroll to anchor on page load. Init all lazy loading elements to be able to scroll to the correct position
-    const anchorOnLoad = () => {
+    const requestOnLoad = () => {
         const hash = window.location.href.split('#')[1];
 
-        if (hash) {
-            // Load all lazy elements
-            const lazyloadElems = document.querySelectorAll('.lazy');
-            lazyloadElems.forEach((elem) => {
+        // Load all lazy elements
+        const lazyloadElems = document.querySelectorAll('.lazy');
+        lazyloadElems.forEach((elem) => {
+            const onload = elem.hasAttribute('data-lazy-onload');
+            if (onload || hash) {
                 const parent = window.helper.findAncestor(elem, '.embed');
                 let dnt;
 
@@ -50,16 +29,12 @@
                     elem.src = elem.dataset.src;
                     elem.classList.remove('lazy');
                     elem.removeAttribute('data-src');
+                    if (elem.classList.contains('article__image')) {
+                        elem.removeAttribute('style');
+                    }
                 }
-            });
-
-            setTimeout(() => {
-                document.getElementById(hash).scrollIntoView({
-                    block: 'start',
-                    behavior: 'smooth'
-                });
-            }, 200);
-        }
+            }
+        });
     };
 
     // For all sub-headings create a list cascade representing table of contents and append it to the appropriate element
@@ -225,10 +200,9 @@
 
     if (tableOfContentsElem) {
         setTimeout(() => {
-            createAnchors();
             createTableOfContents();
             bindSmothScroll();
-            anchorOnLoad();
+            requestOnLoad();
             toggleItemsFromWithinContentChunks();
             if (!document.querySelector('[data-display-mode="step-by-step"]')) {
                 affix();
@@ -238,7 +212,6 @@
             }
         }, 0);
     } else if (anchorsOnly) {
-        createAnchors();
-        anchorOnLoad();
+        requestOnLoad();
     }
 })();

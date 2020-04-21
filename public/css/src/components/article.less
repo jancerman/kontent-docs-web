@@ -104,6 +104,8 @@
     }
 
     & img&__image {
+        box-sizing: border-box;
+        
         @media screen and (min-width: 768px) {
             &--100{
                 max-width: 100%;
@@ -124,6 +126,10 @@
             & + noscript + figcaption {
                 max-width: 100%;
             }
+        }
+
+        &.lazy {
+            padding: 0;
         }
     }
 
