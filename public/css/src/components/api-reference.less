@@ -1096,3 +1096,41 @@ h1, h2, h3, h4, strong {
   right: auto !important;
   left: -28px !important;
 }
+
+.redoc-wrap {
+  [class*="StyledMarkdownBlock"] table {
+      border-radius: .75em !important;
+      display: table !important;
+
+      td, th {
+          padding: .75em !important;
+      }
+  
+      tr {
+          &:first-child {
+              td, th {   
+                  &:first-child {
+                      border-radius: .75em 0 0 0 !important;
+                  }
+  
+                  &:last-child {
+                      border-radius: 0 .75em 0 0 !important;
+                  }
+              }
+          }
+  
+          &:last-child {
+              td, th {
+  
+                  &:first-child {
+                      border-radius: 0 0 0 .75em !important;
+                  }
+  
+                  &:last-child {
+                      border-radius: 0 0 .75em 0 !important;
+                  }
+              }
+          }
+      }
+  }
+}
