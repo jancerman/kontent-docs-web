@@ -301,6 +301,12 @@ app.use(async (err, req, res, _next) => { // eslint-disable-line no-unused-vars
   res.status(err.status || 500);
   consola.error(err.stack);
 
+  if (appInsights && appInsights.defaultClient) {
+    appInsights.defaultClient.trackTrace({
+      message: `${err.stack}${req.headers.referer ? `\n\nReferer request header value: ${req.headers.referer}` : ''}`
+    });
+  }
+
   // render the error page
   req.err = err;
   await handleCache.evaluateCommon(res, ['not_found']);
