@@ -67,7 +67,7 @@ block content
                         else
                             | !{minify(content.content.value)}
                     if (nextSteps && nextSteps.value !== '<p><br></p>')
-                        h2.table-of-contents__whatsnext !{UIMessages && UIMessages.article___next_steps.value}
+                        h2.table-of-contents__whatsnext(id='a-whats-next') !{UIMessages && UIMessages.article___next_steps.value}
                         | !{minify(nextSteps.value)}
                     if (!containsReleaseNote)
                         div(data-aside-container='feedback')
