@@ -267,34 +267,22 @@
         });
     };
 
-    const handleAsideSelector = () => {
-        const languageSelector = document.querySelector('.language-selector');
+    const addIcons = () => {
+        const links = document.querySelectorAll('.language-selector__link');
 
-        if (languageSelector) {
-            document.querySelector('body').addEventListener('click', (e) => {
-                if (e.target && e.target.matches('.aside .language-selector__label')) {
-                    if (languageSelector.classList.contains('language-selector--opened')) {
-                        languageSelector.classList.remove('language-selector--opened');
-                    } else {
-                        languageSelector.classList.add('language-selector--opened');
-                    }
-                } else {
-                    languageSelector.classList.remove('language-selector--opened');
-                }
-            });
-
-            const links = languageSelector.querySelectorAll('.language-selector__link');
-            for (let i = 0; i < links.length; i++) {
-                links[i].style.backgroundImage = `url('${links[i].getAttribute('data-icon')}')`;
-            }
+        for (let i = 0; i < links.length; i++) {
+            links[i].classList.add('language-selector__link--icon');
+            links[i].style.backgroundImage = `url('${links[i].getAttribute('data-icon')}')`;
+            const text = links[i].innerHTML;
+            links[i].innerHTML = `<span>${text}</span>`;
         }
     };
 
     handleEmptyPlatforms();
     selectLanguage();
+    addIcons();
     copyCode();
     setTimeout(() => {
         makeInfobarsVisible();
     }, 0);
-    handleAsideSelector();
 })();
