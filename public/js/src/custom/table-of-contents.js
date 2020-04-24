@@ -90,6 +90,23 @@
         }
     };
 
+    const scrollToLinkInSubNavigation = () => {
+        const subNavigation = document.querySelector('.sub-navigation');
+        const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+
+        if (!subNavigation || vw < 768) return;
+
+        const currentPath = window.location.pathname;
+        const scrollItem = subNavigation.querySelector(`.sub-navigation__link--active[href*="${currentPath}"]`);
+
+        if (!scrollItem) return;
+
+        scrollItem.scrollIntoView({
+            block: 'start',
+            behavior: 'smooth'
+        });
+    };
+
     const toggleItemsFromWithinContentChunks = () => {
         const run = () => {
             let chunks = document.querySelectorAll('[data-platform-chunk]');
@@ -204,6 +221,7 @@
             bindSmothScroll();
             requestOnLoad();
             toggleItemsFromWithinContentChunks();
+            scrollToLinkInSubNavigation();
             if (!document.querySelector('[data-display-mode="step-by-step"]')) {
                 affix();
                 window.addEventListener('scroll', affix, window.supportsPassive ? {
@@ -212,6 +230,7 @@
             }
         }, 0);
     } else if (anchorsOnly) {
+        scrollToLinkInSubNavigation();
         requestOnLoad();
     }
 })();
