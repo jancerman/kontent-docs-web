@@ -104,6 +104,7 @@
             el.src = el.dataset.src;
             el.classList.remove('lazy');
             el.removeAttribute('data-src');
+            target.parentNode.nextElementSibling.classList.remove('hidden');
             target.parentNode.removeChild(target);
         }
     };
@@ -115,11 +116,16 @@
         lazy.forEach(item => {
             const wrapper = window.helper.getParents(item);
             wrapper[0].insertBefore(window.helper.createElementFromHTML(`<div class="embed__dnt-enable">${window.helper.decodeHTMLEntities(label)}</div>`), wrapper[0].firstChild);
+            const btn = item.parentNode.nextElementSibling;
+
+            if (btn.hasAttribute('data-lightbox')) {
+                btn.classList.add('hidden');
+            }
         });
 
         document.querySelector('body').addEventListener('click', (e) => {
             e.stopPropagation();
-            if (e.target && e.target.matches('div.embed__dnt-enable, div.embed__dnt-enable *')) {
+            if (e.target && (e.target.matches('div.embed__dnt-enable, div.embed__dnt-enable *'))) {
                 e.preventDefault();
                 handleLazyEmbed(e.target);
             }

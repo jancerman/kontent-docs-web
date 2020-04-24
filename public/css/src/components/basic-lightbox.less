@@ -18,7 +18,7 @@
     -webkit-transition: opacity .4s ease;
     transition: opacity .4s ease;
     z-index: 6000;
-    will-change: opacity
+    will-change: opacity;
 }
 
 .basicLightbox--visible {
@@ -49,6 +49,11 @@
     width: auto;
     height: auto;
     background-color: #fff;
+}
+
+.basicLightbox__placeholder>iframe {
+    max-width: 95%;
+    max-height: 85%;
 }
 
 .basicLightbox__placeholder>img + .basicLightbox__description {

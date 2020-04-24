@@ -38,6 +38,7 @@ const getImageAttributes = (item, cssClass, transformationQueryString) => {
 }
 
 const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
+    const elemId = `${item.provider.value[0].codename}-${Math.floor(Math.random() * 9999999) + 1}`;
     return {
         youtube: `
             <div class="embed${cssClass}">
@@ -108,15 +109,15 @@ const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
             </p>
             `,
         diagrams_net: `
-            <div class="embed embed--diagrams-net${cssClass}">
-                <iframe class="lazy" frameborder="0" data-src="https://app.diagrams.net?lightbox=1&nav=1#${item.id.value}"></iframe>
-                <div class="embed__overlay" aria-hidden="true"></div>
+            <div class="embed embed--diagrams-net${cssClass}" id="embed-${elemId}">
+                <iframe width="2000" height="1125" class="lazy" frameborder="0" data-src="https://app.diagrams.net?lightbox=1&nav=1#${item.id.value}"></iframe>
                 <noscript>
                     <iframe frameborder="0" src="https://app.diagrams.net?lightbox=1&nav=1#${item.id.value}"></iframe>
                 </noscript>
             </div>
+            <a data-lightbox="embed-${elemId}" target="_blank" href="https://app.diagrams.net?lightbox=1&nav=1#${item.id.value}">Zoom diagram</a>
             <p class="print-only"> 
-                <i>See the image on <a href="https://app.diagrams.net?lightbox=1&nav=1#${item.id.value}">https://app.diagrams.net?lightbox=1&nav=1#${item.id.value}</a></i>
+                <i>See the diagram on <a href="https://app.diagrams.net?lightbox=1&nav=1#${item.id.value}">https://app.diagrams.net?lightbox=1&nav=1#${item.id.value}</a></i>
             </p>
             `,
     }
