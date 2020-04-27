@@ -175,6 +175,15 @@
         });
     };
 
+    const moveToCAboveSections = () => {
+        const toc = document.querySelector('[data-aside-container="table-of-contents"]');
+        const target = document.querySelector('[data-display-mode-wrapper]');
+
+        if (!toc) return;
+
+        target.insertAdjacentElement('beforebegin', toc);
+    };
+
     const init = () => {
         const displayModeElem = document.querySelector('[data-display-mode]');
 
@@ -184,6 +193,7 @@
 
         if (displayModeElem.getAttribute('data-display-mode') === 'step-by-step') {
             const sectionsWrapper = createSections(displayModeElem);
+            moveToCAboveSections();
             makeSectionsInteractive(sectionsWrapper);
         }
     };
