@@ -55,7 +55,7 @@
             item.addEventListener('click', (e) => {
               e.preventDefault();
               const itemToZoom = document.querySelector(`#${item.getAttribute('data-lightbox')}`);
-              console.log(itemToZoom.innerHTML);
+
               if (itemToZoom) {
                 window.basicLightbox.create(itemToZoom.innerHTML).show();
               }

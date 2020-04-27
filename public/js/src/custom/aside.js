@@ -28,13 +28,13 @@
 
     const enableDisableAside = (mql) => {
         if (mql.matches) {
-            moveFromAside();
-        } else {
             moveToAside();
+        } else {
+            moveFromAside();
         }
     };
 
-    const mql = window.matchMedia('(max-width: 1280px)');
+    const mql = window.matchMedia('(min-width: 1280px)');
     mql.addListener(enableDisableAside);
     enableDisableAside(mql);
 })();
