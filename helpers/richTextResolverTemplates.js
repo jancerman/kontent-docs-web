@@ -248,7 +248,7 @@ const richTextResolverTemplates = {
     image: (item, config) => {
         if (item.image.value.length) {
             const alt = item.image.value[0].description ? item.image.value[0].description : '';
-            const url = encodeURI(item.url.value.trim());
+            const url = item.url.value.trim();
             const transformationQueryString = '?fm=jpg&auto=format&w=';
             let cssClass = item.border.value.length && item.border.value[0].codename === 'show' ? ' article__image-border' : '';
             cssClass += item.zoomable.value.length && item.zoomable.value[0].codename === 'true' && !url ? ' article__add-lightbox' : '';
