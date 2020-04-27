@@ -1,5 +1,6 @@
 const axios = require('axios');
 const cache = require('memory-cache');
+const cheerio = require('cheerio');
 // var fs = require('fs');
 
 const helper = {
@@ -160,7 +161,49 @@ const helper = {
             req.socket.remoteAddress ||
             req.connection.socket.remoteAddress;
         return ip === process.env.KenticoUserIp;
-    }
+    },
+    addTitlesToLinks: (content, urlMap, articles) => {
+        const $ = cheerio.load(content);
+        const $links = $('a');
+
+        $links.each(function () {
+            const $that = $(this);
+            let url = $that.attr('href').split('#')[0].replace('https://docs.kontent.ai', '');
+            let codename = '';
+            let title = '';
+
+            for (let i = 0; i < urlMap.length; i++) {
+                if (urlMap[i].url === url) {
+                    codename = urlMap[i].codename;
+                }
+            }
+
+            // Some multiplatform articles do not have represetation of their url with tech query string in urlMap
+            if (!codename) {
+                url = url.split('?')[0];
+
+                for (let i = 0; i < urlMap.length; i++) {
+                    if (urlMap[i].url === url) {
+                        codename = urlMap[i].codename;
+                    }
+                }
+            }
+
+            if (codename) {
+                for (let i = 0; i < articles.length; i++) {
+                    if (articles[i].system.codename === codename) {
+                        title = articles[i].title.value;
+                    }
+                }
+                if (title) {
+                    $that.attr('title', title);
+                }
+            }
+        });
+
+        const output = $.html();
+        return output.replace('<html><head></head><body>', '').replace('</body></html>', '');
+    },
 };
 
 module.exports = helper;

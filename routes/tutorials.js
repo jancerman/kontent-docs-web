@@ -88,6 +88,9 @@ const getContent = async (req, res) => {
     const UIMessages = await handleCache.ensureSingle(res, 'UIMessages', async () => {
         return commonContent.getUIMessages(res);
     });
+    const articles = await handleCache.ensureSingle(res, 'articles', async () => {
+        return commonContent.getArticles(res);
+    });
     const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
     let content = await getContentLevel(currentLevel, urlMap, req, res);
     let view = 'tutorials/pages/article';
@@ -147,6 +150,15 @@ const getContent = async (req, res) => {
     const isExcludedNavigation = urlMap.filter(item => (item.codename === content[0].system.codename) && (item.url.startsWith('/other/'))).length > 0;
     if (!req.params.scenario && !req.params.topic && req.params.article && !isExcludedNavigation) {
         return null;
+    }
+
+    if (content && content.length) {
+        if (content[0].content) {
+            content[0].content.value = helper.addTitlesToLinks(content[0].content.value, urlMap, articles);
+        }
+        if (content[0].next_steps) {
+            content[0].next_steps.value = helper.addTitlesToLinks(content[0].next_steps.value, urlMap, articles);
+        }
     }
 
     return {

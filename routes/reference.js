@@ -20,6 +20,9 @@ const handleArticle = async (settings, req, res) => {
     const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${parentSlug}`, async () => {
         return await commonContent.getSubNavigation(res, parentSlug);
     });
+    const articles = await handleCache.ensureSingle(res, 'articles', async () => {
+        return commonContent.getArticles(res);
+    });
     const platformsConfig = await platforms.getPlatformsConfig(res);
     let cookiesPlatform = req.cookies['KCDOCS.preselectedLanguage'];
     let availablePlatforms;
@@ -58,6 +61,15 @@ const handleArticle = async (settings, req, res) => {
 
         settings.content = multiplatformArticleContent.content;
         availablePlatforms = multiplatformArticleContent.availablePlatforms;
+    }
+
+    if (settings.content && settings.content.length) {
+        if (settings.content[0].content) {
+            settings.content[0].content.value = helper.addTitlesToLinks(settings.content[0].content.value, settings.urlMap, articles);
+        }
+        if (settings.content[0].next_steps) {
+            settings.content[0].next_steps.value = helper.addTitlesToLinks(settings.content[0].next_steps.value, settings.urlMap, articles);
+        }
     }
 
     preselectedPlatform = platforms.getPreselectedPlatformByConfig(preselectedPlatform, platformsConfig);
