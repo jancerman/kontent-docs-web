@@ -274,7 +274,7 @@
             links[i].classList.add('language-selector__link--icon');
             links[i].style.backgroundImage = `url('${links[i].getAttribute('data-icon')}')`;
             const text = links[i].innerHTML;
-            links[i].innerHTML = `<span>${text}</span>`;
+            links[i].innerHTML = `${text}`;
         }
     };
 

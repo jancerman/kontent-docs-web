@@ -69,20 +69,16 @@
             background-repeat: no-repeat;
             padding-left: 2em;
             min-height: 1.5em;
+            width: 0;
+            overflow: hidden;
 
             @media screen and (min-width: 480px) {
                 min-height: none;
                 padding-left: 2em;
                 background-position: 0 center;
                 background-size: 1.375em auto;
-            }
-
-            span {
-                display: none;
-
-                @media screen and (min-width: 480px) {
-                    display: block;
-                }
+                width: auto;
+                overflow: visible;
             }
         }
     }
