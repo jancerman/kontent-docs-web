@@ -91,6 +91,9 @@ const getContent = async (req, res) => {
     const articles = await handleCache.ensureSingle(res, 'articles', async () => {
         return commonContent.getArticles(res);
     });
+    const references = await handleCache.ensureSingle(res, 'apiSpecifications', async () => {
+        return commonContent.getReferences(res);
+    });
     const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
     let content = await getContentLevel(currentLevel, urlMap, req, res);
     let view = 'tutorials/pages/article';
@@ -153,11 +156,16 @@ const getContent = async (req, res) => {
     }
 
     if (content && content.length) {
+        const titleItems = [...articles, ...references];
+        if (content[0].introduction) {
+            content[0].introduction.value = helper.addTitlesToLinks(content[0].introduction.value, urlMap, titleItems);
+        }
+
         if (content[0].content) {
-            content[0].content.value = helper.addTitlesToLinks(content[0].content.value, urlMap, articles);
+            content[0].content.value = helper.addTitlesToLinks(content[0].content.value, urlMap, titleItems);
         }
         if (content[0].next_steps) {
-            content[0].next_steps.value = helper.addTitlesToLinks(content[0].next_steps.value, urlMap, articles);
+            content[0].next_steps.value = helper.addTitlesToLinks(content[0].next_steps.value, urlMap, titleItems);
         }
     }
 

@@ -23,6 +23,9 @@ const handleArticle = async (settings, req, res) => {
     const articles = await handleCache.ensureSingle(res, 'articles', async () => {
         return commonContent.getArticles(res);
     });
+    const references = await handleCache.ensureSingle(res, 'apiSpecifications', async () => {
+        return commonContent.getReferences(res);
+    });
     const platformsConfig = await platforms.getPlatformsConfig(res);
     let cookiesPlatform = req.cookies['KCDOCS.preselectedLanguage'];
     let availablePlatforms;
@@ -64,11 +67,16 @@ const handleArticle = async (settings, req, res) => {
     }
 
     if (settings.content && settings.content.length) {
+        const titleItems = [...articles, ...references];
+        if (settings.content[0].introduction) {
+            settings.content[0].introduction.value = helper.addTitlesToLinks(settings.content[0].introduction.value, settings.urlMap, titleItems);
+        }
+
         if (settings.content[0].content) {
-            settings.content[0].content.value = helper.addTitlesToLinks(settings.content[0].content.value, settings.urlMap, articles);
+            settings.content[0].content.value = helper.addTitlesToLinks(settings.content[0].content.value, settings.urlMap, titleItems);
         }
         if (settings.content[0].next_steps) {
-            settings.content[0].next_steps.value = helper.addTitlesToLinks(settings.content[0].next_steps.value, settings.urlMap, articles);
+            settings.content[0].next_steps.value = helper.addTitlesToLinks(settings.content[0].next_steps.value, settings.urlMap, titleItems);
         }
     }
 
