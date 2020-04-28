@@ -3,7 +3,20 @@ block content
     main(id='main').presentation
         .article
             .article__content
-                h1 #{title}
+                h1 Redirects
+                h2 Redirect rules
+                table
+                    tr
+                        td Redirect to
+                        td Redirect from
+                    each url in redirectRules   
+                        tr
+                            td 
+                                a(href= req.protocol + '://' + req.get('host') + url.originalUrl, target='_blank') #{url.originalUrl}
+                            td
+                                each redirect in url.redirectUrls
+                                    div #{redirect}
+                h2 Redirect URLs
                 table
                     tr
                         td Original URL

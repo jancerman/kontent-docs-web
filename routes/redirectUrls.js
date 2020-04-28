@@ -38,6 +38,35 @@ const getRedirectUrls = async (res) => {
   return redirectMap;
 };
 
+const getRedirectRules = async (res) => {
+  const redirectRules = await handleCache.ensureSingle(res, 'redirectRules', async () => {
+    return await getRedirectRules(res);
+  });
+
+  const redirectMap = [];
+
+  for (let i = 0; i < redirectRules.length; i++) {
+    const to = redirectRules[i].redirect_to.value;
+    const redirectTo = [];
+
+    if (!redirectRules[i].processed) {
+      for (let j = 0; j < redirectRules.length; j++) {
+        if (to === redirectRules[j].redirect_to.value) {
+          redirectTo.push(redirectRules[j].redirect_from.value)
+          redirectRules[j].processed = true;
+        }
+      }
+
+      redirectMap.push({
+        originalUrl: to,
+        redirectUrls: redirectTo
+      });
+    }
+  }
+
+  return redirectMap;
+};
+
 router.get('/', async (req, res) => {
   const footer = await handleCache.ensureSingle(res, 'footer', async () => {
     return commonContent.getFooter(res);
@@ -48,6 +77,7 @@ router.get('/', async (req, res) => {
   const home = await handleCache.ensureSingle(res, 'home', async () => {
     return commonContent.getHome(res);
   });
+  const redirectRules = await getRedirectRules(res);
   const redirectMap = await getRedirectUrls(res);
   const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
 
@@ -57,6 +87,7 @@ router.get('/', async (req, res) => {
     isPreview: isPreview(res.locals.previewapikey),
     title: 'Redirect URLs',
     navigation: home[0] ? home[0].navigation.value : [],
+    redirectRules: redirectRules,
     redirectMap: redirectMap,
     footer: footer[0] ? footer[0] : null,
     UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
