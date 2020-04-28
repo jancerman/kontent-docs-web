@@ -177,7 +177,7 @@ const commonContent = {
                     title: item.title.value,
                     slug: item.url.value,
                     codename: item.platform.value[0].codename,
-                    icon: item.icon.value.length ? `${item.icon.value[0].url}?w=16` : ''
+                    icon: item.icon.value.length ? `${item.icon.value[0].url}?w=20` : ''
                 }
                 order.push(platform);
             });
