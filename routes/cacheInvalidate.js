@@ -35,13 +35,36 @@ const poolPayload = (req) => {
     cache.put('webhook-payload-pool', pool);
 };
 
+const logInvalidate = (log) => {
+    const key = 'cache-invalidate';
+    const logs = cache.get(key) || [];
+    logs.unshift(log);
+    if (logs.length > 200) {
+        logs.length = 200;
+    }
+    cache.put(key, logs);
+};
+
 router.post('/', asyncHandler(async (req, res) => {
+    const log = {
+        timestamp: (new Date()).toISOString(),
+        env: false,
+        valid: false
+    };
+
     if (process.env['Webhook.Cache.Invalidate.CommonContent']) {
+        log.env = true;
         if (isValidSignature(req, process.env['Webhook.Cache.Invalidate.CommonContent'])) {
+            log.valid = true;
             poolPayload(req, res);
         }
     }
 
+    log.pool = util.inspect(cache.get('webhook-payload-pool'), {
+        maxArrayLength: 500
+    });
+
+    logInvalidate(log);
     return res.end();
 }));
 

@@ -272,7 +272,9 @@ const logPool = (log) => {
 setIntervalAsync(async () => {
   const log = {
     timestamp: (new Date()).toISOString(),
-    pool: util.inspect(cache.get('webhook-payload-pool'))
+    pool: util.inspect(cache.get('webhook-payload-pool'), {
+        maxArrayLength: 500
+    })
   };
 
   try {
