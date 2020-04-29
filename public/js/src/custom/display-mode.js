@@ -181,7 +181,7 @@
 
         if (!toc) return;
 
-        target.insertAdjacentElement('beforebegin', toc);
+        target.insertAdjacentElement('afterend', toc);
     };
 
     const init = () => {
