@@ -74,6 +74,36 @@
       }, 0);
     };
 
+    const initLightboxOnChangelog = () => {
+      setTimeout(() => {
+        let elems = document.querySelectorAll('[href="#subscribe-breaking-changes-email"]');
+
+        const initLightbox = () => {
+          document.querySelectorAll('[href="#subscribe-breaking-changes-email"]').forEach((item) => {
+            // Init lighbox with caption
+            item.addEventListener('click', (e) => {
+              e.preventDefault();
+              const itemToZoom = '<div class="iframe-box"><div class="iframe-box__close"></div><iframe width="240" height="145" src="https://tracker.kontent.ai/l/849473/2020-04-21/4qsx" /></div>';
+
+              if (itemToZoom) {
+                window.basicLightbox.create(itemToZoom).show();
+              }
+            });
+          });
+        }
+
+        const interval = setInterval(() => {
+          elems = document.querySelectorAll('[href="#subscribe-breaking-changes-email"]');
+
+          if (elems.length) {
+            initLightbox();
+            clearInterval(interval);
+          }
+        }, 100);
+      }, 0);
+    };
+
     initLightboxOnImages();
     initLightboxOnEmbeds();
+    initLightboxOnChangelog();
   })();
