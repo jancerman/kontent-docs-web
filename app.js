@@ -77,7 +77,10 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(serveStatic(path.join(__dirname, 'public'), {
-  maxAge: 2592000
+  maxAge: 2592000,
+  setHeaders: (res) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://tracker.kontent.ai');
+  }
 }));
 app.use(slashes(false));
 app.use(cacheControl({
