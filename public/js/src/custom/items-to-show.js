@@ -37,7 +37,6 @@
                 const moreLessButton = e.target;
                 const expanded = moreLessButton.getAttribute('data-items-expanded') === 'true';
                 const itemsToShow = moreLessButton.parentNode.querySelectorAll('[data-items-hidden]');
-                console.log(moreLessButton.parentNode, itemsToShow)
                 for (let i = 0; i < itemsToShow.length; i++) {
                     itemsToShow[i].setAttribute('data-items-hidden', expanded.toString());
                 }

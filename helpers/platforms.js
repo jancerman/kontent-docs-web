@@ -35,7 +35,7 @@ const platforms = {
         }
 
         if (platformItem.length) {
-            content = await handleCache.evaluateSingle(res, `article_${platformItem[0].url.value}`, async () => {
+            content = await handleCache.evaluateSingle(res, platformItem[0].system.codename, async () => {
                 return await requestDelivery({
                     codename: platformItem[0].system.codename,
                     type: 'article',

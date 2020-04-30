@@ -22,40 +22,33 @@ const getSubNavigationLevels = (req) => {
     ];
 };
 
-const getContentLevel = async (currentLevel, urlMap, req, res) => {
+const getContentLevel = async (currentLevel, codename, urlMap, req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
 
     const settings = {
-        slug: getSubNavigationLevels(req)[currentLevel],
+        codename: codename,
         depth: 2,
         ...KCDetails
     };
 
     if (currentLevel === -1) {
         settings.type = 'navigation_item';
-        settings.slug = req.originalUrl.split('/')[1];
         delete settings.depth;
     } else if (currentLevel === 0) {
-        settings.type = ['scenario', 'certification', 'article', 'multiplatform_article'];
         settings.resolveRichText = true;
         settings.urlMap = urlMap;
     } else if (currentLevel === 1) {
         settings.type = 'topic';
     } else if (currentLevel === 2) {
-        settings.type = ['article', 'multiplatform_article'];
         settings.resolveRichText = true;
         settings.urlMap = urlMap;
     }
 
-    let cacheKey;
-
-    if (Array.isArray(settings.type)) {
-        cacheKey = `${settings.type[0]}_${settings.slug}`;
-    } else {
-        cacheKey = `${settings.type}_${settings.slug}`;
+    if (!settings.codename) {
+        settings.slug = getSubNavigationLevels(req)[currentLevel]
     }
 
-    return await handleCache.evaluateSingle(res, cacheKey, async () => {
+    return await handleCache.evaluateSingle(res, settings.codename, async () => {
         return await requestDelivery(settings);
     });
 };
@@ -69,19 +62,22 @@ const getCurrentLevel = (levels) => {
 
 const getContent = async (req, res) => {
     const KCDetails = commonContent.getKCDetails(res);
+
     const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
         return await getUrlMap(res);
     });
     const home = await handleCache.ensureSingle(res, 'home', async () => {
         return commonContent.getHome(res);
     });
+
     let slug = req.originalUrl.split('/')[1];
     slug = slug.split('?')[0];
-    const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
-        return await commonContent.getSubNavigation(res, slug);
+    const subnavCodename = helper.getCodenameByUrl(`/${slug}`, urlMap);
+
+    const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${subnavCodename}`, async () => {
+        return await commonContent.getSubNavigation(res, subnavCodename);
     });
-    const subNavigationLevels = getSubNavigationLevels(req);
-    const currentLevel = getCurrentLevel(subNavigationLevels);
+
     const footer = await handleCache.ensureSingle(res, 'footer', async () => {
         return commonContent.getFooter(res);
     });
@@ -94,8 +90,13 @@ const getContent = async (req, res) => {
     const references = await handleCache.ensureSingle(res, 'apiSpecifications', async () => {
         return commonContent.getReferences(res);
     });
+
     const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
-    let content = await getContentLevel(currentLevel, urlMap, req, res);
+    const itemCodename = helper.getCodenameByUrl(req.originalUrl, urlMap);
+    const subNavigationLevels = getSubNavigationLevels(req);
+    const currentLevel = getCurrentLevel(subNavigationLevels);
+
+    let content = await getContentLevel(currentLevel, itemCodename, urlMap, req, res);
     let view = 'tutorials/pages/article';
     let availablePlatforms;
 

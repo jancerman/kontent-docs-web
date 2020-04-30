@@ -34,11 +34,11 @@ const commonContent = {
             ...commonContent.getKCDetails(res)
         });
     },
-    getSubNavigation: async (res, slug) => {
+    getSubNavigation: async (res, codename) => {
         return await requestDelivery({
             type: 'navigation_item',
             depth: 3,
-            slug: slug,
+            codename: codename,
             ...commonContent.getKCDetails(res)
         });
     },

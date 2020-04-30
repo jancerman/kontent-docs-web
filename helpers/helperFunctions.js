@@ -204,6 +204,25 @@ const helper = {
         const output = $.html();
         return output.replace('<html><head></head><body>', '').replace('</body></html>', '');
     },
+    getCodenameByUrl: (originalUrl, urlMap) => {
+        let codename = '';
+        let url = originalUrl.split('#')[0];
+
+        for (let i = 0; i < urlMap.length; i++) {
+            if (urlMap[i].url === url) {
+                codename = urlMap[i].codename;
+            }
+
+            if (!codename) {
+                url = originalUrl.split('?')[0];
+                if (urlMap[i].url === url) {
+                    codename = urlMap[i].codename;
+                }
+            }
+        }
+        return codename;
+    }
+
 };
 
 module.exports = helper;

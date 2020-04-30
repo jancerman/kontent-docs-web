@@ -17,8 +17,9 @@ const handleArticle = async (settings, req, res) => {
     settings.renderSettings.view = 'apiReference/pages/reference';
     let parentSlug = req.originalUrl.split('/')[1];
     parentSlug = parentSlug.split('?')[0];
-    const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${parentSlug}`, async () => {
-        return await commonContent.getSubNavigation(res, parentSlug);
+    const codename = helper.getCodenameByUrl(`/${parentSlug}`, settings.urlMap);
+    const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${codename}`, async () => {
+        return await commonContent.getSubNavigation(res, codename);
     });
     const articles = await handleCache.ensureSingle(res, 'articles', async () => {
         return commonContent.getArticles(res);
@@ -164,10 +165,13 @@ router.get('/:main', asyncHandler(async (req, res, next) => {
         return next();
     }
 
-    let slug = req.originalUrl.split('/')[1];
-    slug = slug.split('?')[0];
-    const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
-        return await commonContent.getSubNavigation(res, slug);
+    const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
+        return await getUrlMap(res);
+    });
+
+    const itemCodename = helper.getCodenameByUrl(req.originalUrl, urlMap);
+    const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${itemCodename}`, async () => {
+        return await commonContent.getSubNavigation(res, itemCodename);
     });
 
     let redirectSlug = '';
@@ -175,6 +179,9 @@ router.get('/:main', asyncHandler(async (req, res, next) => {
     if (subNavigation[0] && subNavigation[0].children && subNavigation[0].children.value[0].url) {
         redirectSlug = subNavigation[0].children.value[0].url.value;
     }
+
+    let slug = req.originalUrl.split('/')[1];
+    slug = slug.split('?')[0];
 
     return res.redirect(301, `/${slug}/${redirectSlug}`);
 }));
@@ -200,44 +207,18 @@ router.get('/:main/:slug', asyncHandler(async (req, res, next) => {
         return await commonContent.getUIMessages(res);
     });
 
+    const itemCodename = helper.getCodenameByUrl(req.originalUrl, urlMap);
     const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
 
-    let content = await handleCache.evaluateSingle(res, `reference_${slug}`, async () => {
+    const content = await handleCache.evaluateSingle(res, itemCodename, async () => {
         return await requestDelivery({
-            slug: slug,
+            codename: itemCodename,
             depth: 2,
-            types: ['zapi_specification'],
             resolveRichText: true,
             urlMap: urlMap,
             ...KCDetails
         });
     });
-
-    if (!(content && content.length)) {
-        content = await handleCache.evaluateSingle(res, `article_${slug}`, async () => {
-            return await requestDelivery({
-                slug: slug,
-                depth: 2,
-                types: ['article'],
-                resolveRichText: true,
-                urlMap: urlMap,
-                ...KCDetails
-            });
-        });
-    }
-
-    if (!(content && content.length)) {
-        content = await handleCache.evaluateSingle(res, `scenario_${slug}`, async () => {
-            return await requestDelivery({
-                slug: slug,
-                depth: 2,
-                types: ['scenario'],
-                resolveRichText: true,
-                urlMap: urlMap,
-                ...KCDetails
-            });
-        });
-    }
 
     if (!urlMap[0]) {
         return next();

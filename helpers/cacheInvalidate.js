@@ -6,11 +6,10 @@ const handleCache = require('../helpers/handleCache');
 const getUrlMap = require('../helpers/urlMap');
 const app = require('../app');
 
-const requestItemAndDeleteCacheKey = async (keyNameToDelete, codename, KCDetails, res) => {
+const requestItemAndDeleteCacheKey = async (codename, KCDetails, res) => {
     const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
         return await getUrlMap(res);
     });
-
     const item = await requestDelivery({
         codename: codename,
         depth: 2,
@@ -20,22 +19,16 @@ const requestItemAndDeleteCacheKey = async (keyNameToDelete, codename, KCDetails
     });
 
     if (item && item.length) {
-        if (!keyNameToDelete) {
-            keyNameToDelete = item[0].system.type;
-        }
-
-        const key = `${keyNameToDelete}_${item[0].url.value}`;
-
-        if (handleCache.getCache(key, KCDetails)) {
-            handleCache.deleteCache(key, KCDetails);
-            handleCache.putCache(key, item, KCDetails);
+        if (handleCache.getCache(codename, KCDetails)) {
+            handleCache.deleteCache(codename, KCDetails);
+            handleCache.putCache(codename, item, KCDetails);
         }
     }
 };
 
-const deleteSpecificKeys = async (KCDetails, items, keyNameToDelete, res) => {
+const deleteSpecificKeys = async (KCDetails, items, res) => {
     for await (const item of items) {
-        await requestItemAndDeleteCacheKey(keyNameToDelete, item.codename, KCDetails, res);
+        await requestItemAndDeleteCacheKey(item.codename, KCDetails, res);
     }
 };
 
@@ -114,7 +107,7 @@ const invalidateRootItems = async (items, KCDetails, res) => {
     const rootItems = Array.from(await getRootItems(items, KCDetails));
 
     for await (const rootItem of rootItems) {
-        await requestItemAndDeleteCacheKey(null, rootItem, KCDetails, res);
+        await requestItemAndDeleteCacheKey(rootItem, KCDetails, res);
     }
 };
 
@@ -131,14 +124,10 @@ const invalidateGeneral = async (itemsByTypes, KCDetails, res, type, keyName) =>
     return false;
 };
 
-const invalidateMultiple = async (itemsByTypes, KCDetails, type, keyName, res) => {
-    if (!keyName) {
-        keyName = type;
-    }
-
+const invalidateMultiple = async (itemsByTypes, KCDetails, type, res) => {
     if (itemsByTypes[type].length) {
         itemsByTypes[type].forEach(async (item) => {
-            await requestItemAndDeleteCacheKey(keyName, item.codename, KCDetails, res);
+            await requestItemAndDeleteCacheKey(item.codename, KCDetails, res);
         });
     }
 
@@ -148,8 +137,7 @@ const invalidateMultiple = async (itemsByTypes, KCDetails, type, keyName, res) =
 const invalidateArticles = async (itemsByTypes, KCDetails, res) => {
     if (itemsByTypes.articles.length) {
         await revalidateReleaseNoteType(KCDetails, res);
-        await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'article', res);
-        await deleteSpecificKeys(KCDetails, itemsByTypes.articles, 'reference', res);
+        await deleteSpecificKeys(KCDetails, itemsByTypes.articles, res);
         handleCache.deleteCache('articles', KCDetails);
         await handleCache.evaluateCommon(res, ['articles']);
     }
@@ -167,17 +155,15 @@ const invalidateUrlMap = async (res, KCDetails) => {
     await handleCache.evaluateCommon(res, ['urlMap']);
 };
 
-const invalidateSubNavigation = async (res, keys) => {
+const invalidateSubNavigation = async (res, keys, KCDetails) => {
     let subNavigationKeys = keys.filter(key => key.startsWith('subNavigation_'));
     subNavigationKeys = subNavigationKeys.map(key => {
-        key = key.split('_')[1];
-        return key.split('?')[0];
+        return key.replace('subNavigation_', '').replace(`_${KCDetails.projectid}`, '');
     });
     handleCache.deleteMultipleKeys('subNavigation_', keys);
-
-    for await (const slug of subNavigationKeys) {
-        await handleCache.evaluateSingle(res, `subNavigation_${slug}`, async () => {
-            return await commonContent.getSubNavigation(res, slug);
+    for await (const codename of subNavigationKeys) {
+        await handleCache.evaluateSingle(res, `subNavigation_${codename}`, async () => {
+            return await commonContent.getSubNavigation(res, codename);
         });
     }
 };
@@ -190,7 +176,7 @@ const processInvalidation = async (res) => {
         const itemsByTypes = splitPayloadByContentType(items);
         await invalidateUrlMap(res, KCDetails);
         await invalidateHome(res, KCDetails);
-        await invalidateSubNavigation(res, keys);
+        await invalidateSubNavigation(res, keys, KCDetails);
         await invalidateRootItems(items, KCDetails, res);
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'apiSpecifications');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'footer');
@@ -200,8 +186,8 @@ const processInvalidation = async (res) => {
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'picker', 'platformsConfig');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'navigationItems');
         await invalidateArticles(itemsByTypes, KCDetails, res);
-        await invalidateMultiple(itemsByTypes, KCDetails, 'scenarios', 'scenario', res);
-        await invalidateMultiple(itemsByTypes, KCDetails, 'topics', 'topic', res);
+        await invalidateMultiple(itemsByTypes, KCDetails, 'scenarios', res);
+        await invalidateMultiple(itemsByTypes, KCDetails, 'topics', res);
 
         if (app.appInsights) {
             app.appInsights.defaultClient.trackTrace({ message: 'URL_MAP_INVALIDATE: ' + items });

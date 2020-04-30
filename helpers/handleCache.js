@@ -110,14 +110,11 @@ const ensureSingle = async (res, keyName, method) => {
 
 const cacheAllAPIReferences = async (res) => {
     const KCDetails = commonContent.getKCDetails(res);
-
     const provideReferences = async (apiCodename, KCDetails) => {
         await helper.getReferenceFiles(apiCodename, true, KCDetails, 'cacheAllAPIReferences');
     };
-
     const keys = cache.keys();
     let references;
-
     if (!(keys.filter(item => item.indexOf('reDocReference_') > -1).length) && !KCDetails.isPreview) {
         references = await ensureSingle(res, 'apiSpecifications', async () => {
             return commonContent.getReferences(res);
