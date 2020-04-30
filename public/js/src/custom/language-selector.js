@@ -25,6 +25,13 @@
         });
     };
 
+    const handleClickedTooltip = (elem) => {
+        elem.classList.add('language-selector__link--clicked');
+        setTimeout(() => {
+            elem.classList.remove('language-selector__link--clicked');
+        }, 2000);
+    };
+
     const highlightSelector = (articleContent, e) => {
         const fixedLabel = document.querySelector('.language-selector__label');
         let textTofixedLabel;
@@ -37,6 +44,7 @@
             updatePlatformInUrls(e.target.getAttribute('data-slug'));
             textTofixedLabel = e.target.innerHTML;
             bgTofixedLabel = e.target.getAttribute('data-icon');
+            handleClickedTooltip(e.target);
         } else {
             const preselectedPlatform = window.helper.getCookie('KCDOCS.preselectedLanguage');
             const preselectedElem = document.querySelectorAll(`[data-platform="${preselectedPlatform}"]`);
@@ -278,11 +286,38 @@
         }
     };
 
+    const handleSizing = () => {
+        const containerWidth = document.querySelector('.article__content').offsetWidth;
+        const selector = document.querySelector('.language-selector');
+        const items = selector.querySelectorAll('.language-selector__item');
+        const links = selector.querySelectorAll('.language-selector__link');
+        let itemsWidth = 0;
+
+        for (let i = 0; i < items.length; i++) {
+            itemsWidth += items[i].offsetWidth;
+        }
+
+        if (itemsWidth > containerWidth) {
+            selector.classList.add('language-selector--tooltips');
+            for (let i = 0; i < links.length; i++) {
+                links[i].setAttribute('data-tech-tooltip-active', 'true');
+            }
+        } else {
+            selector.classList.remove('language-selector--tooltips');
+            for (let i = 0; i < links.length; i++) {
+                links[i].setAttribute('data-tech-tooltip-active', 'false');
+            }
+        }
+
+        selector.classList.remove('language-selector--unprocessed');
+    };
+
     handleEmptyPlatforms();
     selectLanguage();
     addIcons();
     copyCode();
     setTimeout(() => {
         makeInfobarsVisible();
+        handleSizing();
     }, 0);
 })();
