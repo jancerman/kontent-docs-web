@@ -287,10 +287,21 @@
     };
 
     const handleSizing = () => {
-        const containerWidth = document.querySelector('.article__content').offsetWidth;
+        const container = document.querySelector('.article__content');
         const selector = document.querySelector('.language-selector');
+
+        if (!(container && selector)) return;
+
+        const containerWidth = container.offsetWidth;
         const items = selector.querySelectorAll('.language-selector__item');
         const links = selector.querySelectorAll('.language-selector__link');
+
+        selector.classList.add('language-selector--unprocessed');
+        selector.classList.remove('language-selector--tooltips');
+        for (let i = 0; i < links.length; i++) {
+            links[i].setAttribute('data-tech-tooltip-active', 'false');
+        }
+
         let itemsWidth = 0;
 
         for (let i = 0; i < items.length; i++) {
@@ -312,6 +323,18 @@
         selector.classList.remove('language-selector--unprocessed');
     };
 
+    const observeStickyState = () => {
+        const stickyElm = document.querySelector('.language-selector');
+        if (stickyElm) {
+            const article = document.querySelector('.article__content');
+            if (article) {
+                article.classList.add('article__content--language-selector');
+            }
+            const observer = new IntersectionObserver(([e]) => e.target.classList.toggle('language-selector--sticky', e.intersectionRatio < 1), { threshold: [1] });
+            observer.observe(stickyElm);
+        }
+    };
+
     handleEmptyPlatforms();
     selectLanguage();
     addIcons();
@@ -319,5 +342,9 @@
     setTimeout(() => {
         makeInfobarsVisible();
         handleSizing();
+        observeStickyState();
     }, 0);
+
+    window.addEventListener('resize', handleSizing);
+    window.addEventListener('orientationChange', handleSizing);
 })();
