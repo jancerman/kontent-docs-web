@@ -20,16 +20,12 @@ block content
                             a(href=`https://app.kontent.ai/goto/edit-item/project/${projectId}/variant-codename/default/item/${content.system.id}`, target='_blank', rel='noopener') Edit
                     if (platform && !availablePlatforms.length)
                         .language-selector.language-selector--unprocessed
-                            label.language-selector__fixed-label !{UIMessages.technology_selector_label.value}
-                            .language-selector__label
                             ul.language-selector__list
                                 each item in platform
                                     li.language-selector__item
                                         a(href=`#`, data-platform=item.codename, data-slug=item.slug, data-dpr, data-icon=item.icon, data-tech-tooltip=item.title, data-tech-tooltip-active='false', data-tech-tooltip-clicked=UIMessages.technology_picker_tooltip.value.replace('{TechnologyName}', item.title), class=`language-selector__link`)
                     if (availablePlatforms && availablePlatforms.length)
                         .language-selector.language-selector--unprocessed
-                            label.language-selector__fixed-label !{UIMessages.technology_selector_label.value}
-                            .language-selector__label
                             ul.language-selector__list.language-selector__list--static
                                 - var highlighIndex = 0; availablePlatforms.forEach((item, index) => { if (preselectedPlatform === item.slug) { highlighIndex = index } });
                                 each item, index in availablePlatforms

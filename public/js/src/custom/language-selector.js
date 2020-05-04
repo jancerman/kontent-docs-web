@@ -26,9 +26,24 @@
     };
 
     const handleClickedTooltip = (elem) => {
+        const selector = document.querySelector('.language-selector');
+        const links = document.querySelectorAll('.language-selector__link');
+
+        selector.classList.add('language-selector--clicked');
+
+        for (let i = 0; i < links.length; i++) {
+            links[i].classList.remove('language-selector__link--clicked');
+            const tooltip = links[i].querySelector('.language-selector__tooltip');
+            tooltip.innerHTML = tooltip.getAttribute('data-tech-tooltip');
+        }
+
         elem.classList.add('language-selector__link--clicked');
+        const tooltipElem = elem.querySelector('.language-selector__tooltip');
+        tooltipElem.innerHTML = tooltipElem.getAttribute('data-tech-tooltip-clicked');
         setTimeout(() => {
             elem.classList.remove('language-selector__link--clicked');
+            tooltipElem.innerHTML = tooltipElem.getAttribute('data-tech-tooltip');
+            selector.classList.remove('language-selector--clicked');
         }, 2000);
     };
 
@@ -286,6 +301,20 @@
         }
     };
 
+    const addTooltips = () => {
+        const links = document.querySelectorAll('.language-selector__link');
+        for (let i = 0; i < links.length; i++) {
+            const tech = links[i].getAttribute('data-tech-tooltip');
+            const clicked = links[i].getAttribute('data-tech-tooltip-clicked');
+            const tooltipElem = document.createElement('div');
+            tooltipElem.classList.add('language-selector__tooltip');
+            tooltipElem.setAttribute('data-tech-tooltip', tech);
+            tooltipElem.setAttribute('data-tech-tooltip-clicked', clicked);
+            tooltipElem.innerHTML = tech;
+            links[i].appendChild(tooltipElem);
+        }
+    };
+
     const handleSizing = () => {
         const container = document.querySelector('.article__content');
         const selector = document.querySelector('.language-selector');
@@ -307,7 +336,7 @@
         for (let i = 0; i < items.length; i++) {
             itemsWidth += items[i].offsetWidth;
         }
-
+        console.log(itemsWidth, containerWidth);
         if (itemsWidth > containerWidth) {
             selector.classList.add('language-selector--tooltips');
             for (let i = 0; i < links.length; i++) {
@@ -335,14 +364,26 @@
         }
     };
 
+    const scrollToLink = () => {
+        const scrollItem = document.querySelector('.language-selector__link--active');
+        if (!scrollItem) return;
+
+        scrollItem.scrollIntoView({
+            block: 'start',
+            behavior: 'smooth'
+        });
+    };
+
     handleEmptyPlatforms();
     selectLanguage();
     addIcons();
+    addTooltips();
     copyCode();
     setTimeout(() => {
         makeInfobarsVisible();
         handleSizing();
         observeStickyState();
+        scrollToLink();
     }, 0);
 
     window.addEventListener('resize', handleSizing);
