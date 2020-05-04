@@ -54,10 +54,12 @@
             // Init lighbox with caption
             item.addEventListener('click', (e) => {
               e.preventDefault();
-              const itemToZoom = document.querySelector(`#${item.getAttribute('data-lightbox')}`);
+              const itemToZoom = document.querySelector(`#${item.getAttribute('data-lightbox')} iframe`);
+              const wrap = document.createElement('div');
+              wrap.appendChild(itemToZoom.cloneNode(true));
 
               if (itemToZoom) {
-                window.basicLightbox.create(itemToZoom.innerHTML).show();
+                window.basicLightbox.create(wrap.innerHTML).show();
               }
             });
           });

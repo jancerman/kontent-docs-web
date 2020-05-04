@@ -99,6 +99,24 @@
         right: 0;
         bottom: 0;
         z-index: 99999;
+
+        &:before {
+            content: attr(data-overlay-text);
+            position: absolute;
+            bottom: 2em;
+            left: 50%;
+            transform: translate(-50%, 0);
+            width: 240px;
+            color: #F05A22;
+            text-decoration: underline;
+            text-align: center;
+        }
+
+        &:hover {
+            &:before {
+                text-decoration: none;
+            }
+        }
     }
 
     &__dnt-enable {
