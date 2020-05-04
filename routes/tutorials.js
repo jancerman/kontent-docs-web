@@ -74,9 +74,12 @@ const getContent = async (req, res) => {
     slug = slug.split('?')[0];
     const subnavCodename = helper.getCodenameByUrl(`/${slug}`, urlMap);
 
-    const subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${subnavCodename}`, async () => {
-        return await commonContent.getSubNavigation(res, subnavCodename);
-    });
+    let subNavigation;
+    if (subnavCodename) {
+        subNavigation = await handleCache.evaluateSingle(res, `subNavigation_${subnavCodename}`, async () => {
+            return await commonContent.getSubNavigation(res, subnavCodename);
+        });
+    }
 
     const footer = await handleCache.ensureSingle(res, 'footer', async () => {
         return commonContent.getFooter(res);
