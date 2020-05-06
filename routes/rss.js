@@ -29,7 +29,8 @@ router.get('/changelog', asyncHandler(async (req, res) => {
         entities: entities,
         moment: moment,
         title: changelog[0].title.value,
-        changelog: changelogItems
+        changelog: changelogItems,
+        domain: helper.getDomain(req.protocol, req.get('Host'))
     });
 }));
 
