@@ -10,6 +10,7 @@ const helper = require('../helpers/helperFunctions');
 const handleCache = require('../helpers/handleCache');
 const platforms = require('../helpers/platforms');
 const getUrlMap = require('../helpers/urlMap');
+const customRichTextResolver = require('../helpers/customRichTextResolver');
 
 let cookiesPlatform;
 
@@ -173,6 +174,20 @@ const getContent = async (req, res) => {
         }
     }
 
+    let containsChangelog;
+    let releaseNoteContentType;
+    if (content && content.length) {
+        containsChangelog = helper.hasLinkedItemOfType(content[0].content, 'changelog');
+
+        if (containsChangelog) {
+            releaseNoteContentType = await handleCache.ensureSingle(res, 'releaseNoteContentType', async () => {
+                return await commonContent.getReleaseNoteType(res);
+            });
+        }
+
+        content[0].content.value = await customRichTextResolver(content[0].content.value, res);
+    }
+
     return {
         view: view,
         req: req,
@@ -201,7 +216,9 @@ const getContent = async (req, res) => {
         platformsConfig: platformsConfigPairings && platformsConfigPairings.length ? platformsConfigPairings : null,
         helper: helper,
         getFormValue: helper.getFormValue,
-        preselectedPlatform: preselectedPlatform
+        preselectedPlatform: preselectedPlatform,
+        containsChangelog: containsChangelog,
+        releaseNoteContentType: releaseNoteContentType
     };
 };
 

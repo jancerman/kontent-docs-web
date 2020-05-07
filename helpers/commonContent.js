@@ -2,7 +2,6 @@ const requestDelivery = require('./requestDelivery');
 const getUrlMap = require('./urlMap');
 const ensureSingle = require('./ensureSingle');
 const isPreview = require('../helpers/isPreview');
-const richTextResolverTemplates = require('./richTextResolverTemplates');
 
 const commonContent = {
     getKCDetails: (res) => {
@@ -72,22 +71,14 @@ const commonContent = {
             ...commonContent.getKCDetails(res)
         });
     },
-    getRSSChangelog: async (res) => {
+    getChangelog: async (res) => {
         const urlMap = await ensureSingle(res, 'urlMap', async () => {
             return await getUrlMap(res);
         });
-
-        const baseUrl = urlMap.filter((item) => { return item.codename === 'product_changelog' });
-
         return await requestDelivery({
             codename: 'product_changelog',
-            urlMap: urlMap,
             resolveRichText: true,
-            richTextResolvers: [{
-                type: 'release_note',
-                resolver: richTextResolverTemplates.releaseNoteRSS,
-                custom: baseUrl.length ? baseUrl[0] : null
-            }],
+            urlMap: urlMap,
             ...commonContent.getKCDetails(res)
         });
     },
@@ -131,6 +122,17 @@ const commonContent = {
         return await requestDelivery({
             data: 'type',
             type: 'release_note',
+            ...commonContent.getKCDetails(res)
+        });
+    },
+    getReleaseNotes: async (res) => {
+        return await requestDelivery({
+            type: 'release_note',
+            resolveRichText: true,
+            order: {
+                field: 'elements.release_date',
+                type: 'descending'
+            },
             ...commonContent.getKCDetails(res)
         });
     },

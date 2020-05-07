@@ -5,11 +5,11 @@ block content
             .article__left
                 include ../includes/sub-navigation.pug
             .article__right
-                div(class=`article__content${containsReleaseNote ? ' article__content--anchors-only' : ''}`)
+                div(class=`article__content${containsChangelog ? ' article__content--anchors-only' : ''}`)
                     h1 !{content.title.value}
-                    if (!containsReleaseNote || isPreview)
+                    if (!containsChangelog || isPreview)
                         .article__notes
-                            if (!containsReleaseNote)
+                            if (!containsChangelog)
                                 time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
                                 .article__author 
                                     if (content.author.value && content.author.value.length)
@@ -18,7 +18,7 @@ block content
                                         | !{UIMessages.article___no_author.value}
                             if (isPreview || isKenticoIP)
                                 a(href=`https://app.kontent.ai/goto/edit-item/project/${projectId}/variant-codename/default/item/${content.system.id}`, target='_blank', rel='noopener') Edit
-                    if (containsReleaseNote && releaseNoteContentType)
+                    if (containsChangelog && releaseNoteContentType)
                         div(data-aside-container='filter')
                             .article__filter(data-aside='filter')
                                 .filter
@@ -47,12 +47,12 @@ block content
                                         a(href=`${req.path}?tech=${item.slug}`, data-dpr, data-icon=item.icon, data-tech-tooltip=item.title, data-tech-tooltip-active='false', data-tech-tooltip-clicked=UIMessages.technology_picker_tooltip.value.replace('{TechnologyName}', item.title), class=`language-selector__link${index === highlighIndex ? ' language-selector__link--active' : ''}`)
                     if (introduction && introduction !== '<p><br></p>')
                         | !{minify(introduction)}
-                    if (!containsReleaseNote)
+                    if (!containsChangelog)
                         div(data-aside-container='table-of-contents')
                             div(data-aside='table-of-contents')
                                 include ../../tutorials/includes/table-of-contents.pug
                     if (content && content.content && content.content.value)
-                        if (containsReleaseNote)
+                        if (containsChangelog)
                             .container 
                                 | !{minify(content.content.value)}
                             .mixitup-page-list
@@ -61,7 +61,7 @@ block content
                     if (nextSteps && nextSteps.value !== '<p><br></p>')
                         h2.table-of-contents__whatsnext(id='a-whats-next') !{UIMessages && UIMessages.article___next_steps.value}
                         | !{minify(nextSteps.value)}
-                    if (!containsReleaseNote)
+                    if (!containsChangelog)
                         div(data-aside-container='feedback')
                             div(data-aside='feedback')
                                 include ../../tutorials/includes/feedback.pug

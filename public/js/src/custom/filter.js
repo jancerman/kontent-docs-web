@@ -13,7 +13,7 @@
             qs.push(`page=${page}`);
         }
 
-        return `${url}${qs.length ? `?${qs.join('&')}` : ''}`;
+        return `${url}${qs.length ? `?${qs.join('&')}` : ''}${loc.hash}`;
     };
 
     var updateUrl = function (services, changes, page) {

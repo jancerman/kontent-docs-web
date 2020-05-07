@@ -115,6 +115,9 @@ const componentsResolvers = [{
 }, {
     type: 'release_note',
     resolver: richTextResolverTemplates.releaseNote
+}, {
+    type: 'changelog',
+    resolver: richTextResolverTemplates.changelog
 }];
 
 const resolveRichText = (item, config) => {

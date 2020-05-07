@@ -1,7 +1,5 @@
 const moment = require('moment');
 const helper = require('./helperFunctions');
-const Entities = require('html-entities').AllHtmlEntities;
-const entities = new Entities();
 
 const getImageAttributes = (item, cssClass, transformationQueryString) => {
     if (item.image_width.value.length) {
@@ -376,19 +374,8 @@ const richTextResolverTemplates = {
             </div>
         `;
     },
-    releaseNoteRSS: (item, config) => {
-        const anchorName = item.title.value.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/&[^\s]*;/g, '').replace(/\W/g, '-').replace(/[-]+/g, '-');
-        const url = `${helper.getDomain(config.protocol, config.host)}${config.customField.url}#a-${anchorName}`;
-        return `<item>
-            <title>${item.title.value}</title>
-            <pubDate>${moment(item.system.lastModified).format('ddd, DD MMM YYYY HH:mm:ss ZZ')}</pubDate>
-            <atom:updated>${moment(item.system.lastModified).format('YYYY-MM-DDTHH:mm:ssZ')}</atom:updated>
-            <description>
-                <![CDATA[${entities.decode(helper.stripTags(item.content.value).trim().replace(/(\r\n|\n|\r)/gm, ''))}]]>
-            </description>
-            <link>${url}</link>
-            <guid isPermaLink="false">${url}</guid>
-        </item>`;
+    changelog: () => {
+        return '<div id="changelog-resolve"></div>';
     }
 };
 

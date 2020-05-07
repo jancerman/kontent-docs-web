@@ -50,7 +50,8 @@ const splitPayloadByContentType = (items) => {
         picker: [],
         navigationItems: [],
         apiSpecifications: [],
-        redirectRules: []
+        redirectRules: [],
+        releaseNotes: []
     };
 
     for (let i = 0; i < items.length; i++) {
@@ -78,6 +79,8 @@ const splitPayloadByContentType = (items) => {
             itemsByTypes.apiSpecifications.push(item);
         } else if (item.type === 'redirect_rule') {
             itemsByTypes.redirectRules.push(item);
+        } else if (item.type === 'release_note') {
+            itemsByTypes.releaseNotes.push(item);
         }
     }
 
@@ -183,6 +186,7 @@ const processInvalidation = async (res) => {
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'UIMessages');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'notFound');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'redirectRules');
+        await invalidateGeneral(itemsByTypes, KCDetails, res, 'releaseNotes');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'picker', 'platformsConfig');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'navigationItems');
         await invalidateArticles(itemsByTypes, KCDetails, res);

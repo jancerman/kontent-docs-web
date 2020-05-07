@@ -6,4 +6,13 @@ rss(version='2.0', xmlns:atom='http://www.w3.org/2005/Atom')
         language en-us
         | <link>!{domain}</link>
         | <description><![CDATA[!{entities.decode(helper.stripTags(home.description.value).trim())}]]></description>
-        | !{changelog}
+        each item in releaseNotes
+            - const anchorName = item.title.value.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/&[^\s]*;/g, '').replace(/\W/g, '-').replace(/[-]+/g, '-');
+            - const url = `${domain}${path}#a-${anchorName}`;
+            item
+                title !{item.title.value}
+                pubDate !{moment(item.release_date.value).format('ddd, DD MMM YYYY HH:mm:ss ZZ')}
+                atom:updated !{moment(item.release_date.value).format('YYYY-MM-DDTHH:mm:ssZ')}
+                | <description><![CDATA[!{entities.decode(helper.stripTags(item.content.value).trim().replace(/(\r\n|\n|\r)/gm, ''))}]]></description>
+                | <link>!{url}</link>
+                | <guid isPermaLink="false">!{url}</guid>

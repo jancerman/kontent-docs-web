@@ -8,17 +8,23 @@ const asyncHandler = require('express-async-handler');
 const handleCache = require('../helpers/handleCache');
 const commonContent = require('../helpers/commonContent');
 const helper = require('../helpers/helperFunctions');
+const getUrlMap = require('../helpers/urlMap');
 
 router.get('/changelog', asyncHandler(async (req, res) => {
     const home = await handleCache.ensureSingle(res, 'home', async () => {
         return commonContent.getHome(res);
     });
-    const changelog = await handleCache.ensureSingle(res, 'rss_changelog', async () => {
-        return commonContent.getRSSChangelog(res);
+    const changelog = await handleCache.ensureSingle(res, 'product_changelog', async () => {
+        return commonContent.getChangelog(res);
+    });
+    const releaseNotes = await handleCache.ensureSingle(res, 'releaseNotes', async () => {
+        return await commonContent.getReleaseNotes(res);
+    });
+    const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
+        return await getUrlMap(res);
     });
 
-    // Regex hack to fix XML markup brokem by the Delivery SDK Rich text resolver
-    const changelogItems = changelog[0].content.value.replace(/\s\s+/g, ' ').replace(/ <guid/g, '</link><guid').replace(/pubdate/g, 'pubDate').replace(/ispermalink/g, 'isPermaLink').replace(/<!--/g, '<!').replace(/-->/g, '>');
+    const path = urlMap.filter((item) => { return item.codename === 'product_changelog' });
 
     res.set('Content-Type', 'application/xml');
 
@@ -29,8 +35,9 @@ router.get('/changelog', asyncHandler(async (req, res) => {
         entities: entities,
         moment: moment,
         title: changelog[0].title.value,
-        changelog: changelogItems,
-        domain: helper.getDomain(req.protocol, req.get('Host'))
+        releaseNotes: releaseNotes,
+        domain: helper.getDomain(req.protocol, req.get('Host')),
+        path: path && path.length ? path[0].url : ''
     });
 }));
 

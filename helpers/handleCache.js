@@ -70,8 +70,8 @@ const cacheKeys = [{
         name: 'apiSpecifications',
         method: commonContent.getReferences
     }, {
-        name: 'rss_changelog',
-        method: commonContent.getRSSChangelog
+        name: 'releaseNotes',
+        method: commonContent.getReleaseNotes
     }
 ];
 

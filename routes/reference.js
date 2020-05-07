@@ -12,6 +12,7 @@ const helper = require('../helpers/helperFunctions');
 const minify = require('../helpers/minify');
 const platforms = require('../helpers/platforms');
 const getUrlMap = require('../helpers/urlMap');
+const customRichTextResolver = require('../helpers/customRichTextResolver');
 
 const handleArticle = async (settings, req, res) => {
     settings.renderSettings.view = 'apiReference/pages/reference';
@@ -32,13 +33,18 @@ const handleArticle = async (settings, req, res) => {
     let availablePlatforms;
     let preselectedPlatform;
     let releaseNoteContentType;
+    let containsChangelog;
 
-    const containsReleaseNote = helper.hasLinkedItemOfType(settings.content[0].content, 'release_note');
+    if (settings.content && settings.content.length) {
+        containsChangelog = helper.hasLinkedItemOfType(settings.content[0].content, 'changelog');
 
-    if (containsReleaseNote) {
-        releaseNoteContentType = await handleCache.ensureSingle(res, 'releaseNoteContentType', async () => {
-            return await commonContent.getReleaseNoteType(res);
-        });
+        if (containsChangelog) {
+            releaseNoteContentType = await handleCache.ensureSingle(res, 'releaseNoteContentType', async () => {
+                return await commonContent.getReleaseNoteType(res);
+            });
+        }
+
+        settings.content[0].content.value = await customRichTextResolver(settings.content[0].content.value, res);
     }
 
     const preselectedPlatformSettings = await platforms.getPreselectedPlatform(settings.content[0], cookiesPlatform, req, res);
@@ -95,7 +101,7 @@ const handleArticle = async (settings, req, res) => {
     settings.renderSettings.data.moment = moment;
     settings.renderSettings.data.canonicalUrl = canonicalUrl;
     settings.renderSettings.data.projectId = res.locals.projectid;
-    settings.renderSettings.data.containsReleaseNote = containsReleaseNote;
+    settings.renderSettings.data.containsChangelog = containsChangelog;
     settings.renderSettings.data.releaseNoteContentType = releaseNoteContentType;
 
     return settings.renderSettings;
