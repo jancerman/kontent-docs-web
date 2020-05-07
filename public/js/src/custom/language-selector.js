@@ -336,7 +336,7 @@
         for (let i = 0; i < items.length; i++) {
             itemsWidth += items[i].offsetWidth;
         }
-        console.log(itemsWidth, containerWidth);
+
         if (itemsWidth > containerWidth) {
             selector.classList.add('language-selector--tooltips');
             for (let i = 0; i < links.length; i++) {
@@ -369,7 +369,8 @@
         if (!scrollItem) return;
 
         scrollItem.scrollIntoView({
-            block: 'start',
+            block: 'nearest',
+            inline: 'nearest',
             behavior: 'smooth'
         });
     };
