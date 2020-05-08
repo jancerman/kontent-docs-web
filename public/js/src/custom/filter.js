@@ -1,15 +1,19 @@
 (function () {
+    var pageSize = 10;
+
     var updateRoomUrl = function (services, changes, page) {
         var loc = window.location;
         var url = loc.protocol + '//' + loc.hostname + (loc.port ? ':' + loc.port : '') + loc.pathname;
         var qs = [];
+        page = parseInt(page);
+
         if (services) {
             qs.push(`show=${services}`);
         }
         if (changes === 'true') {
             qs.push(`breaking=${changes}`);
         }
-        if (parseInt(page) > 1) {
+        if (page > 1) {
             qs.push(`page=${page}`);
         }
 
@@ -49,10 +53,31 @@
         }
     };
 
+    var getPageByHash = function (hash) {
+        var headings = document.querySelectorAll('.article__content h2[id]');
+        var hashPosition = 0;
+        var page = 1;
+        var id = hash.replace('#', '');
+
+        for (var i = 0; i < headings.length; i++) {
+            if (headings[i].getAttribute('id') === id) {
+                hashPosition = i;
+            }
+        }
+
+        page = parseInt(hashPosition / pageSize + 1);
+        return page;
+    };
+
     var setFilterOnLoad = function (url) {
         var show = helper.getParameterByName('show', url);
         var breaking = helper.getParameterByName('breaking', url);
-        var page = helper.getParameterByName('page', url);
+        var page = parseInt(helper.getParameterByName('page', url)) || 1;
+        var hash = window.location.hash;
+
+        if (hash && page <= 1) {
+            page = getPageByHash(hash);
+        }
 
         if (show) {
             show = show.split(',');
@@ -77,7 +102,7 @@
             item.click();
         }
 
-        item = document.querySelector(`.mixitup-page-list [data-page="${parseInt(page) > 1 ? page : '1'}"]`);
+        item = document.querySelector(`.mixitup-page-list [data-page="${page > 1 ? page : '1'}"]`);
         if (item) {
             item.click();
         }
@@ -94,7 +119,7 @@
             enable: true
         },
         pagination: {
-            limit: 10,
+            limit: pageSize,
             hidePageListIfSinglePage: true,
         },
         templates: {
