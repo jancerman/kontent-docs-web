@@ -174,7 +174,7 @@ app.use('/form', bodyParser.text({
 
 app.use('/kentico-icons.min.css', kenticoIcons);
 
-const isOneOfCacheRevelidate = (req) => {
+const isOneOfCacheRevalidate = (req) => {
   const urls = [
     '/reference/',
     '/rss/',
@@ -199,7 +199,7 @@ const isOneOfCacheRevelidate = (req) => {
 };
 
 app.use('/', asyncHandler(async (req, res, next) => {
-  if (isOneOfCacheRevelidate(req)) {
+  if (isOneOfCacheRevalidate(req)) {
     await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home', 'navigationItems', 'articles']);
     await handleCache.cacheAllAPIReferences(res);
   }
@@ -258,6 +258,11 @@ app.use('/', async (req, res, next) => {
 
   return next();
 }, tutorials, reference);
+
+// Check aliases on whitelisted url paths that do not match any routing above
+app.use('/', asyncHandler(async (req, res, next) => {
+  return await urlAliases(req, res, next);
+}));
 
 const logPool = (log) => {
   const key = 'cache-interval-pool';
