@@ -373,7 +373,12 @@ window.helper = (() => {
             } else {
                 elem.classList.remove(className + '--bottom');
             }
-        }
+        };
+    };
+
+    const getAbsoluteUrl = () => {
+        const loc = window.location;
+        return `${window.location.protocol}//${window.location.host}${loc.pathname}${loc.search}${loc.hash}`;
     };
 
     return {
@@ -398,7 +403,8 @@ window.helper = (() => {
         eraseCookie: eraseCookie,
         loadRecaptcha: loadRecaptcha,
         nextUntil: nextUntil,
-        fixElem: fixElem
+        fixElem: fixElem,
+        getAbsoluteUrl: getAbsoluteUrl
     }
 })();
 

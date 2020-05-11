@@ -8,6 +8,7 @@
     const tableOfContentsElem = document.querySelector('.table-of-contents');
     const anchorsOnly = document.querySelector('.article__content--anchors-only');
     let affixHeadings;
+    let activeHeadingID = '';
 
     // Scroll to anchor on page load. Init all lazy loading elements to be able to scroll to the correct position
     const requestOnLoad = () => {
@@ -184,6 +185,17 @@
         return position;
     };
 
+    const logAnchorUpdate = (anchor) => {
+        if (window.dataLayer) {
+            window.dataLayer.push({
+                event: 'event',
+                eventCategory: 'Anchor',
+                eventAction: anchor,
+                eventLabel: window.helper.getAbsoluteUrl()
+            });
+        }
+    };
+
     const affix = () => {
         let headingsPosition = [];
         if (affixHeadings && tableOfContentsElem) {
@@ -210,6 +222,15 @@
 
                 if (futureActive) {
                     futureActive.classList.add('active');
+
+                    setTimeout(() => {
+                        if (futureActive.classList.contains('active')) {
+                            if (activeHeadingID !== futureActive.getAttribute('href')) {
+                                activeHeadingID = futureActive.getAttribute('href');
+                                logAnchorUpdate(activeHeadingID);
+                            }
+                        }
+                    }, 500);
                 }
             }
         }
