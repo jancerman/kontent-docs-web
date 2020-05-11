@@ -113,7 +113,12 @@
             selectorToGetVisible += `, [${attribute}=""]`;
         }
         document.querySelectorAll(`[${attribute}]:not([${attribute}=""])`).forEach(item => item.classList.add('hidden'));
-        document.querySelectorAll(selectorToGetVisible).forEach(item => item.classList.remove('hidden'));
+        document.querySelectorAll(selectorToGetVisible).forEach(item => {
+            const attributeItems = item.getAttribute(attribute).split('|');
+            if ((allowEmpty && !attributeItems.length) || (attributeItems.indexOf(selectedPlatform) > -1)) {
+                item.classList.remove('hidden');
+            }
+        });
     }
 
     const selectCode = (e) => {
