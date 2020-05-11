@@ -287,7 +287,11 @@ const richTextResolverTemplates = {
         let resolvedUrl = '';
 
         if (item.link__link_to_content_item.value[0] && urlMap) {
-            resolvedUrl = urlMap.filter(elem => elem.codename === item.link__link_to_content_item.value[0].system.codename)[0].url;
+            const link = urlMap.filter(elem => elem.codename === item.link__link_to_content_item.value[0].system.codename);
+
+            if (link && link.length) {
+                resolvedUrl = link[0].url;
+            }
         }
 
         if (item.link__link_to_web_url.value) {
