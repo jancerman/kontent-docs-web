@@ -1,17 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const cache = require('memory-cache');
-const crypto = require('crypto');
+const signatureHelper = require('@kentico/kontent-webhook-helper');
 var util = require('util');
 const asyncHandler = require('express-async-handler');
 const cacheInvalidate = require('../helpers/cacheInvalidate');
 
 const isValidSignature = (req, secret) => {
-    const givenSignature = req.headers['x-kc-signature'];
-    const computedSignature = crypto.createHmac('sha256', secret)
-        .update(req.body)
-        .digest();
-    return crypto.timingSafeEqual(Buffer.from(givenSignature, 'base64'), computedSignature);
+    return signatureHelper(req.body, secret, req.headers['x-kc-signature']);
 };
 
 const poolPayload = (req) => {
