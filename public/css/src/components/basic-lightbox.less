@@ -19,10 +19,47 @@
     transition: opacity .4s ease;
     z-index: 6000;
     will-change: opacity;
+
+    &__close-container {
+        width: 95%;
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: .375em;
+        opacity: 1;
+        transition: opacity .4s ease;
+        will-change: opacity;
+        overflow: hidden;
+
+        &--hidden {
+            opacity: .01;
+        }
+    }
+
+    &__close {
+        height: 2em;
+        width: 2em;
+        background-color: #fff;
+        color: #F05A22;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: color .25s, background-color .25s;
+
+        &:before {
+            content:"×";
+            font-size: 2em;
+        }
+
+        &:hover, &:active {
+            color: #fff;
+            background-color: #F05A22;
+        }
+    }
 }
 
 .basicLightbox--visible {
-    opacity: 1
+    opacity: 1;
 }
 
 .basicLightbox__placeholder {
@@ -54,6 +91,8 @@
 .basicLightbox__placeholder>iframe {
     max-width: 95%;
     max-height: 85%;
+    background-color: #fff;
+    transform: translate3d(0,0,0);
 }
 
 .basicLightbox__placeholder>img + .basicLightbox__description {
