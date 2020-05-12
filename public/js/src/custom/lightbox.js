@@ -15,6 +15,15 @@
     }, 250);
   };
 
+  const registerCloseOnEsc = (instance) => {
+    document.onkeydown = function(e) {
+      e = e || window.event;
+      if (e.keyCode === 27 && instance && instance.close) {
+        instance.close();
+      }
+    };
+  };
+
   const initLightboxOnImages = () => {
     setTimeout(() => {
       let imgs = document.querySelectorAll('img.article__add-lightbox');
@@ -44,9 +53,12 @@
           const height = item.getAttribute('height');
 
           // Init lighbox with caption
+          let instance;
           item.addEventListener('click', () => {
-            window.basicLightbox.create(`<div class="basicLightbox__close-container basicLightbox__close-container--hidden"><div class="basicLightbox__close"></div></div><img src="${item.getAttribute('src').split('?')[0] + '?w=1600&fm=jpg&auto=format'}"${width ? ` width=${width}` : ''}${height ? ` height=${height}` : ''}>${figcaption}`).show();
+            instance = window.basicLightbox.create(`<div class="basicLightbox__close-container basicLightbox__close-container--hidden"><div class="basicLightbox__close"></div></div><img src="${item.getAttribute('src').split('?')[0] + '?w=1600&fm=jpg&auto=format'}"${width ? ` width=${width}` : ''}${height ? ` height=${height}` : ''}>${figcaption}`);
+            instance.show();
             showCloseButtonOnElemLoaded('img');
+            registerCloseOnEsc(instance);
           });
         });
       }
@@ -69,6 +81,7 @@
       const initLightbox = () => {
         document.querySelectorAll('[data-lightbox]').forEach((item) => {
           // Init lighbox with caption
+          let instance;
           item.addEventListener('click', (e) => {
             e.preventDefault();
             const itemToZoom = document.querySelector(`#${item.getAttribute('data-lightbox')} iframe`);
@@ -76,8 +89,10 @@
             wrap.appendChild(itemToZoom.cloneNode(true));
 
             if (itemToZoom) {
-              window.basicLightbox.create(`<div class="basicLightbox__close-container basicLightbox__close-container--hidden"><div class="basicLightbox__close"></div></div>${wrap.innerHTML}`).show();
+              instance = window.basicLightbox.create(`<div class="basicLightbox__close-container basicLightbox__close-container--hidden"><div class="basicLightbox__close"></div></div>${wrap.innerHTML}`);
+              instance.show();
               showCloseButtonOnElemLoaded('iframe');
+              registerCloseOnEsc(instance);
             }
           });
         });
@@ -101,12 +116,15 @@
       const initLightbox = () => {
         document.querySelectorAll('[href="#subscribe-breaking-changes-email"]').forEach((item) => {
           // Init lighbox with caption
+          let instance;
           item.addEventListener('click', (e) => {
             e.preventDefault();
             const itemToZoom = '<div class="iframe-box"><div class="iframe-box__close"></div><iframe width="240" height="145" src="https://tracker.kontent.ai/l/849473/2020-04-21/4qsx" /></div>';
 
             if (itemToZoom) {
-              window.basicLightbox.create(itemToZoom).show();
+              instance = window.basicLightbox.create(itemToZoom);
+              instance.show();
+              registerCloseOnEsc(instance);
             }
           });
         });
