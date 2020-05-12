@@ -164,7 +164,7 @@ const helper = {
     },
     addTitlesToLinks: (content, urlMap, articles) => {
         const $ = cheerio.load(content);
-        const $links = $('a');
+        const $links = $('a:not(.call-to-action)');
 
         $links.each(function () {
             const $that = $(this);
