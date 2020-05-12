@@ -316,7 +316,7 @@ app.use(async (err, req, res, _next) => { // eslint-disable-line no-unused-vars
 
   // render the error page
   req.err = err;
-  await handleCache.evaluateCommon(res, ['not_found']);
+  await handleCache.evaluateCommon(res, ['notFound']);
   return error(req, res);
 });
 

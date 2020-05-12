@@ -61,7 +61,7 @@ const cacheKeys = [{
         name: 'articles',
         method: commonContent.getArticles
     }, {
-        name: 'not_found',
+        name: 'notFound',
         method: commonContent.getNotFound
     }, {
         name: 'navigationItems',
@@ -72,6 +72,9 @@ const cacheKeys = [{
     }, {
         name: 'releaseNotes',
         method: commonContent.getReleaseNotes
+    }, {
+        name: 'redirectRules',
+        method: commonContent.getRedirectRules
     }
 ];
 
