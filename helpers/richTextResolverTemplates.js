@@ -298,6 +298,10 @@ const richTextResolverTemplates = {
             resolvedUrl = item.link__link_to_web_url.value;
         }
 
+        if (!resolvedUrl) {
+            resolvedUrl = '/page-not-found';
+        }
+
         return `<a href="${resolvedUrl}" class="call-to-action"><span>${item.text.value}</span><span></span></a>`;
     },
     contentChunk: (item) => {
