@@ -20,6 +20,7 @@ const handleCache = require('./helpers/handleCache');
 const getUrlMap = require('./helpers/urlMap');
 const commonContent = require('./helpers/commonContent');
 const helper = require('./helpers/helperFunctions');
+const isPreview = require('./helpers/isPreview');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -161,6 +162,9 @@ app.use(async (req, res, next) => {
   res.locals.protocol = req.protocol;
   handleKCKeys(req, res);
   res.setHeader('Arr-Disable-Session-Affinity', 'True');
+  if (!isPreview(res.locals.previewapikey)) {
+    res.setHeader('Surrogate-Control', 'max-age=3600');
+  }
   return next();
 });
 
