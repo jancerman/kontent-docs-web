@@ -14,7 +14,7 @@ const error = asyncHandler(async (req, res) => {
 
     const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
 
-    const content = await handleCache.ensureSingle(res, 'not_found', async () => {
+    const content = await handleCache.ensureSingle(res, 'notFound', async () => {
         return commonContent.getNotFound(res);
     });
 

@@ -39,7 +39,7 @@ const getRedirectUrls = async (res) => {
 };
 
 const getRedirectRules = async (res) => {
-  const redirectRules = await handleCache.ensureSingle(res, 'redirectRules', async () => {
+  const redirectRules = await handleCache.evaluateSingle(res, 'redirectRules', async () => {
     return await getRedirectRules(res);
   });
 

@@ -155,6 +155,12 @@ const helper = {
 
         return domain;
     },
+    isLiveSite: (host) => {
+        if (host.indexOf('kcd-web-live-master') > -1) {
+            return true;
+        }
+        return false;
+    },
     isKenticoIP: (req) => {
         const ip = (req.headers['x-forwarded-for'] || '').split(',').pop() ||
             req.connection.remoteAddress ||

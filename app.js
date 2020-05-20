@@ -19,6 +19,7 @@ const { setIntervalAsync } = require('set-interval-async/dynamic')
 const handleCache = require('./helpers/handleCache');
 const getUrlMap = require('./helpers/urlMap');
 const commonContent = require('./helpers/commonContent');
+const helper = require('./helpers/helperFunctions');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -83,10 +84,19 @@ app.use(serveStatic(path.join(__dirname, 'public'), {
   }
 }));
 app.use(slashes(false));
+
 app.use(cacheControl({
-  // noCache: true
   maxAge: 300
 }));
+app.use((req, res, next) => {
+  if (!helper.isLiveSite(req.get('Host'))) {
+    res.cacheControl = {
+      noCache: true
+    };
+  }
+  return next();
+});
+
 app.enable('trust proxy');
 
 const handleKCKeys = (req, res) => {
@@ -180,7 +190,8 @@ const isOneOfCacheRevalidate = (req) => {
     '/rss/',
     '/tutorials/',
     '/certification/',
-    '/product-changelog'
+    '/changelog/',
+    '/other/'
   ];
 
   if (req.originalUrl === '/') {

@@ -17,7 +17,7 @@ router.get('/changelog', asyncHandler(async (req, res) => {
     const changelog = await handleCache.ensureSingle(res, 'product_changelog', async () => {
         return commonContent.getChangelog(res);
     });
-    const releaseNotes = await handleCache.ensureSingle(res, 'releaseNotes', async () => {
+    const releaseNotes = await handleCache.evaluateSingle(res, 'releaseNotes', async () => {
         return await commonContent.getReleaseNotes(res);
     });
     const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {

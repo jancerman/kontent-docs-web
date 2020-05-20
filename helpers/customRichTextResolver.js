@@ -9,7 +9,7 @@ const resolveChangelog = async ($, res) => {
 
     if (!$elem.length) return;
 
-    const releaseNotes = await handleCache.ensureSingle(res, 'releaseNotes', async () => {
+    const releaseNotes = await handleCache.evaluateSingle(res, 'releaseNotes', async () => {
         return await commonContent.getReleaseNotes(res);
     });
 

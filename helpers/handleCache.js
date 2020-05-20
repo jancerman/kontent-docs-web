@@ -95,7 +95,6 @@ const evaluateCommon = async (res, keysTohandle) => {
 
 const evaluateSingle = async (res, keyName, method) => {
     const KCDetails = commonContent.getKCDetails(res);
-
     return await manageCache(keyName, async (res) => {
         return await method(res);
     }, KCDetails, KCDetails.isPreview);
@@ -119,7 +118,7 @@ const cacheAllAPIReferences = async (res) => {
     const keys = cache.keys();
     let references;
     if (!(keys.filter(item => item.indexOf('reDocReference_') > -1).length) && !KCDetails.isPreview) {
-        references = await ensureSingle(res, 'apiSpecifications', async () => {
+        references = await evaluateSingle(res, 'apiSpecifications', async () => {
             return commonContent.getReferences(res);
         });
 

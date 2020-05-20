@@ -180,7 +180,7 @@ const getContent = async (req, res) => {
         containsChangelog = helper.hasLinkedItemOfType(content[0].content, 'changelog');
 
         if (containsChangelog) {
-            releaseNoteContentType = await handleCache.ensureSingle(res, 'releaseNoteContentType', async () => {
+            releaseNoteContentType = await handleCache.evaluateSingle(res, 'releaseNoteContentType', async () => {
                 return await commonContent.getReleaseNoteType(res);
             });
         }
