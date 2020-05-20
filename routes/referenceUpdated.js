@@ -21,6 +21,7 @@ router.post('/', async (req, res) => {
 
     if (isReferenceUpdatedEvent(event)) {
         await helper.getReferenceFiles(apiCodename, true, KCDetails, 'referenceUpdated');
+        await handleCache.sendFastlySoftPurge(apiCodename, res);
     }
 
     if (isReferenceDeletedEvent(event)) {

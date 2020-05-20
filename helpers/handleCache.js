@@ -1,4 +1,6 @@
 const cache = require('memory-cache');
+const axios = require('axios');
+const consola = require('consola');
 const getUrlMap = require('./urlMap');
 const commonContent = require('./commonContent');
 const helper = require('../helpers/helperFunctions');
@@ -130,6 +132,30 @@ const cacheAllAPIReferences = async (res) => {
     }
 };
 
+const sendFastlySoftPurge = async (key, res) => {
+    if (!helper.isLiveSite(res.locals.host)) return;
+
+    const urlMap = await ensureSingle(res, 'urlMap', async () => {
+        return await getUrlMap(res);
+    });
+
+    for (let i = 0; i < urlMap.length; i++) {
+        if (urlMap[i].codename === key) {
+            try {
+                await axios({
+                    method: 'purge',
+                    url: `${process.env.baseURL}${urlMap[i].url}`,
+                    headers: {
+                        'Fastly-Soft-Purge': '1'
+                    }
+                });
+            } catch (error) {
+                consola.error(error && error.response ? error.response.data : '');
+            }
+        }
+    }
+};
+
 module.exports = {
     evaluateCommon,
     evaluateSingle,
@@ -138,5 +164,6 @@ module.exports = {
     putCache,
     deleteCache,
     deleteMultipleKeys,
-    ensureSingle
+    ensureSingle,
+    sendFastlySoftPurge
 };

@@ -24,6 +24,8 @@ const requestItemAndDeleteCacheKey = async (codename, KCDetails, res) => {
             handleCache.putCache(codename, item, KCDetails);
         }
     }
+
+    await handleCache.sendFastlySoftPurge(codename, res);
 };
 
 const deleteSpecificKeys = async (KCDetails, items, res) => {
