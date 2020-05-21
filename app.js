@@ -19,7 +19,6 @@ const { setIntervalAsync } = require('set-interval-async/dynamic')
 const handleCache = require('./helpers/handleCache');
 const getUrlMap = require('./helpers/urlMap');
 const commonContent = require('./helpers/commonContent');
-const helper = require('./helpers/helperFunctions');
 const isPreview = require('./helpers/isPreview');
 
 const home = require('./routes/home');
@@ -90,7 +89,7 @@ app.use(cacheControl({
   maxAge: 300
 }));
 app.use((req, res, next) => {
-  if (!helper.isLiveSite(req.get('Host'))) {
+  if (isPreview(res.locals.previewapikey)) {
     res.cacheControl = {
       noCache: true
     };

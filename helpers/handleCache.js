@@ -4,6 +4,7 @@ const consola = require('consola');
 const getUrlMap = require('./urlMap');
 const commonContent = require('./commonContent');
 const helper = require('../helpers/helperFunctions');
+const isPreview = require('../helpers/isPreview');
 
 const deleteCachePreviewCheck = (keyName, KCDetails, isPreviewRequest) => {
     if (isPreviewRequest && cache.get(`${keyName}_${KCDetails.projectid}`)) {
@@ -133,7 +134,7 @@ const cacheAllAPIReferences = async (res) => {
 };
 
 const sendFastlySoftPurge = async (key, res) => {
-    if (!helper.isLiveSite(res.locals.host)) return;
+    if (isPreview(res.locals.previewapikey)) return;
 
     const urlMap = await ensureSingle(res, 'urlMap', async () => {
         return await getUrlMap(res);
