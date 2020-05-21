@@ -4,8 +4,9 @@
 nav.navigation
     .navigation__wrapper
         .navigation__left
-            a.navigation__logo(href='/', rel='noreferrer')
-                img(src='/img/ui/logo.svg', alt='Kentico Kontent Docs logo')
+            .navigation__logo-wrapper
+                a.navigation__logo(href='/', rel='noreferrer')
+                    img(src='/img/ui/logo.svg', alt='Kentico Kontent Docs logo')
             ul(class= `navigation__list${isNotHome ? '' : ' navigation__list--full'}`)
                 each item in navigation
                     li.navigation__item

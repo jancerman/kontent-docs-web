@@ -79,10 +79,7 @@
         *::-ms-backdrop, .navigation__right { flex: auto; } /* IE11 */
     }
 
-	&__logo {
-        display: block;
-        color: transparent;
-        padding: 16px 0px 15px;
+    &__logo-wrapper {
         flex-shrink: 0;
         width: 102px;
 
@@ -92,6 +89,15 @@
 
         @media screen and (min-width: 1024px) {
             width: 304px;
+        }
+    }
+
+	&__logo {
+        display: inline-block;
+        color: transparent;
+        padding: 16px 0px 15px;
+
+        @media screen and (min-width: 1024px) {
             padding: 24px 0px 22px;
         }
 
