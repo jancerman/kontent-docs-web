@@ -2,7 +2,6 @@ const cheerio = require('cheerio');
 const commonContent = require('./commonContent');
 const handleCache = require('./handleCache');
 const richTextResolverTemplates = require('./richTextResolverTemplates');
-const enhanceMarkup = require('./enhanceMarkup');
 
 const resolveChangelog = async ($, res) => {
     const $elem = $('#changelog-resolve');
@@ -16,7 +15,7 @@ const resolveChangelog = async ($, res) => {
     let html = '';
 
     for (let i = 0; i < releaseNotes.length; i++) {
-        html += enhanceMarkup(richTextResolverTemplates.releaseNote(releaseNotes[i]));
+        html += richTextResolverTemplates.releaseNote(releaseNotes[i]);
     }
 
     $elem.html(html);

@@ -7,7 +7,7 @@ rss(version='2.0', xmlns:atom='http://www.w3.org/2005/Atom')
         | <link>!{domain}</link>
         | <description><![CDATA[!{entities.decode(helper.stripTags(home.description.value).trim())}]]></description>
         each item in releaseNotes
-            - const anchorName = item.title.value.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});/ig, '').replace(/\W/g, '-').replace(/[-]+/g, '-');
+            - const anchorName = helper.generateAnchor(item.title.value);
             - const url = `${domain}${path}#a-${anchorName}`;
             item
                 title !{item.title.value}

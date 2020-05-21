@@ -359,6 +359,7 @@ const richTextResolverTemplates = {
         const severityCodename = item.severity.value.length ? item.severity.value[0].codename : '';
         const severityName = item.severity.value.length ? item.severity.value[0].name : '';
         const displaySeverity = severityCodename === 'breaking_change';
+        const id = `a-${helper.generateAnchor(item.title.value)}`;
 
         let services = '';
         const servicesCodenames = [];
@@ -369,7 +370,10 @@ const richTextResolverTemplates = {
 
         return `
             <div class="mix ${servicesCodenames.join(' ')} ${severityCodename} all_changes">
-                <h2>${item.title.value}</h2>
+                <h2 id="${id}">
+                    <a href="#${id}" class="anchor-copy" aria-hidden="true"></a>
+                    ${item.title.value}
+                </h2>
                 <div class="article__info-bar">
                     <time class="article__date article__date--body" datetime="${moment(item.release_date.value).format('YYYY-MM-DD')}">${isPlanned ? 'Planned for ': ''}${moment(item.release_date.value).format('MMMM D, YYYY')}</time>
                     ${displaySeverity || services ? `

@@ -126,9 +126,13 @@ const commonContent = {
         });
     },
     getReleaseNotes: async (res) => {
+        const urlMap = await ensureSingle(res, 'urlMap', async () => {
+            return await getUrlMap(res);
+        });
         return await requestDelivery({
             type: 'release_note',
             resolveRichText: true,
+            urlMap: urlMap,
             order: {
                 field: 'elements.release_date',
                 type: 'descending'

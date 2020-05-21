@@ -43,7 +43,7 @@ const createAnchors = ($) => {
 
     $headings.each(function () {
         var $that = $(this);
-        const anchorName = $that.html().toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});/ig, '').replace(/\W/g, '-').replace(/[-]+/g, '-');
+        const anchorName = helper.generateAnchor($that.html());
         anchorNameList.push(anchorName);
         let anchorNameCount = 0;
         anchorNameList.forEach((name) => {

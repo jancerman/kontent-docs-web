@@ -227,6 +227,9 @@ const helper = {
             }
         }
         return codename;
+    },
+    generateAnchor: (text) => {
+        return text.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});/ig, '').replace(/\W/g, '-').replace(/[-]+/g, '-');
     }
 
 };
