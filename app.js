@@ -31,7 +31,6 @@ const urlAliases = require('./routes/urlAliases');
 const redirectUrls = require('./routes/redirectUrls');
 const referenceUpdated = require('./routes/referenceUpdated');
 const linkUrls = require('./routes/linkUrls');
-const previewUrls = require('./routes/previewUrls');
 const cacheInvalidate = require('./routes/cacheInvalidate');
 const reference = require('./routes/reference');
 const error = require('./routes/error');
@@ -42,9 +41,6 @@ const app = express();
 
 const urlWhitelist = [
   '/other/*',
-  '/scenario/*',
-  '/article/*',
-  '/mta/*',
   '/form/*',
   '/urlmap',
   '/kentico-icons.min.css',
@@ -178,8 +174,6 @@ app.use('/cache-invalidate', bodyParser.text({
 }), cacheInvalidate);
 
 app.use('/', redirectRules);
-
-app.use('/', previewUrls);
 
 app.use('/form', bodyParser.text({
   type: '*/*'
