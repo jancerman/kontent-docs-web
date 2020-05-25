@@ -58,7 +58,7 @@ const urlWhitelist = [
   '/robots.txt',
   '/link-to',
   '/sitemap.xml',
-  '/pdf/*'
+  '/pdf'
 ];
 
 // Azure Application Insights monitors

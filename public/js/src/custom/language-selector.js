@@ -326,7 +326,7 @@
 
         if (!(container && selector)) return;
 
-        const containerWidth = container.offsetWidth;
+        const containerWidth = container.offsetWidth || 2000;
         const items = selector.querySelectorAll('.language-selector__item');
         const links = selector.querySelectorAll('.language-selector__link');
 
@@ -339,7 +339,7 @@
         let itemsWidth = 0;
 
         for (let i = 0; i < items.length; i++) {
-            itemsWidth += items[i].offsetWidth;
+            itemsWidth += items[i].offsetWidth || 0;
         }
 
         if (itemsWidth > containerWidth) {

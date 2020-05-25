@@ -1,5 +1,5 @@
 (function () {
-    if (localStorage) {
+    if (localStorage && !helper.getParameterByName('pdf')) {
         if (localStorage.getItem('KCDOCS.cookieBar') !== 'true') {
             var bar = '<div class="cookie-bar js-cookie-bar"><div class="cookie-bar__container"><div class="cookie-bar__inner"><div class="cookie-bar__text"></div><div class="cookie-bar__close js-cookie-bar__close">×</div></div></div></div>';
             document.querySelector('.footer').insertAdjacentHTML('afterend', bar);
