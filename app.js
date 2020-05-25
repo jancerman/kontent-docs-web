@@ -85,7 +85,7 @@ app.use(cacheControl({
   maxAge: 300
 }));
 app.use((req, res, next) => {
-  if (isPreview(res.locals.previewapikey)) {
+  if (isPreview(process.env['KC.PreviewApiKey'])) {
     res.cacheControl = {
       noCache: true
     };
