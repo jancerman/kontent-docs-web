@@ -15,6 +15,8 @@ link(rel='preload' as='font' href='/fonts/GT-Walsheim-Bold.woff2' type='font/wof
 link(rel='preload' as='font' href='/fonts/GT-Walsheim-Bold.woff' type='font/woff' crossorigin='anonymous')
 link(rel='stylesheet', href='/css/app.min.css?v=' + deployVersion)
 link(rel='stylesheet', href='/kentico-icons.min.css?v=' + deployVersion)
+if (req.query.pdf)
+    link(rel='stylesheet', href='/css/pdf.css?v=' + deployVersion)
 if helper
     script var searchAPI={appid:"#{process.env['Search.AppId']}",apikey:"#{process.env['Search.ApiKey']}",indexname:"#{process.env['Search.IndexName']}"};
 if UIMessages

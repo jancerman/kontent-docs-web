@@ -36,6 +36,7 @@ const reference = require('./routes/reference');
 const error = require('./routes/error');
 const form = require('./routes/form');
 const redirectRules = require('./routes/redirectRules');
+const generatePDF = require('./routes/generatePDF');
 
 const app = express();
 
@@ -51,7 +52,8 @@ const urlWhitelist = [
   '/cache-invalidate',
   '/robots.txt',
   '/link-to',
-  '/sitemap.xml'
+  '/sitemap.xml',
+  '/pdf'
 ];
 
 // Azure Application Insights monitors
@@ -234,6 +236,8 @@ app.use('/sitemap.xml', sitemap);
 app.use('/rss', rss);
 
 app.use('/robots.txt', robots);
+
+app.use('/pdf', generatePDF);
 
 app.get('/urlmap', asyncHandler(async (req, res) => {
   res.cacheControl = {

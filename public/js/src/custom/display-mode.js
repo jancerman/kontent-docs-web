@@ -210,7 +210,9 @@
         }
     };
 
-    setTimeout(() => {
-        init();
-    }, 0);
+    if (!helper.getParameterByName('pdf')) {
+        setTimeout(() => {
+            init();
+        }, 0);
+    }
 })();
