@@ -380,6 +380,16 @@
         });
     };
 
+    const initNote = () => {
+        const noteElem = document.querySelector('[data-platform-note]');
+        const activePlatformElem = document.querySelector('.language-selector__link--active');
+
+        if (noteElem && activePlatformElem) {
+            const lang = activePlatformElem.getAttribute('data-tech-tooltip');
+            noteElem.innerHTML = lang;
+        }
+    };
+
     handleEmptyPlatforms();
     selectLanguage();
     addIcons();
@@ -388,6 +398,7 @@
     setTimeout(() => {
         makeInfobarsVisible();
         handleSizing();
+        initNote();
         observeStickyState();
         scrollToLink();
     }, 0);
