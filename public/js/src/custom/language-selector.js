@@ -387,6 +387,8 @@
         if (noteElem && activePlatformElem) {
             const lang = activePlatformElem.getAttribute('data-tech-tooltip');
             noteElem.innerHTML = lang;
+        } else if (noteElem) {
+            noteElem.parentNode.removeChild(noteElem);
         }
     };
 

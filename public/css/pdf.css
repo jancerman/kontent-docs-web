@@ -2,7 +2,7 @@
 .callout,
 .table table,
 .table td {
-    font-size: 16px !important;
+    font-size: 13px !important;
 }
 
 .table td {
@@ -29,9 +29,14 @@
     opacity: 1 !important;
 }
 
+main {
+    margin: 0 !important;
+}
+
 .logo {
     width: 80px !important;
     padding: 0px !important;
+    display: none !important;
 }
 
 .article__image {
@@ -79,6 +84,12 @@ code[class*=language-], pre[class*=language-] {
 .infobar__lang {
     padding: 0.25em 0.75em 0.125em!important;
 }
+
+h2, h3, h4 {
+    padding: 1em 0 .375em !important;
+    margin: 0 !important;
+}
+
 
 
 

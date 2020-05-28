@@ -48,7 +48,8 @@ Without the following variables, related features will not work on the website.
 * `Jira.Project` - Jira Project codename (used for feedback form)
 * `Jira.IssueType` - Jira Issue index (used for feedback form)
 * `baseURL` - URL of the current environment (i.e. http://localhost:3000) (used for webhooks pooling)
-* `KenticoUserIp` - IP that has enabled more options when previewing content
+* `Api2Pdf.ApiKey` - API key forthe api2PDF service
+* `ngrok` - ngrok tunnel URL (i.e. https://91a2c81a7f1f.ngrok.io) (useful for api2PDF service local development/testing)
 
 ## How To Contribute
 Feel free to open a new issue where you describe your proposed changes, or even create a new pull request from your branch with proposed changes.
