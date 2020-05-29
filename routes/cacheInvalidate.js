@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cache = require('memory-cache');
-const signatureHelper = require('@kentico/kontent-webhook-helper');
+const { signatureHelper } = require('@kentico/kontent-webhook-helper');
 var util = require('util');
 const asyncHandler = require('express-async-handler');
 const cacheInvalidate = require('../helpers/cacheInvalidate');
@@ -10,7 +10,7 @@ const commonContent = require('../helpers/commonContent');
 const isPreview = require('../helpers/isPreview');
 
 const isValidSignature = (req, secret) => {
-    return signatureHelper(JSON.stringify(req.body), secret, req.headers['x-kc-signature']);
+    return signatureHelper.isValidSignatureFromString(JSON.stringify(req.body), secret, req.headers['x-kc-signature']);
 };
 
 const poolPayload = (req) => {
