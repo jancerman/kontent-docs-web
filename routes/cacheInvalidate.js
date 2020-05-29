@@ -5,6 +5,9 @@ const crypto = require('crypto');
 var util = require('util');
 const asyncHandler = require('express-async-handler');
 const cacheInvalidate = require('../helpers/cacheInvalidate');
+const handleCache = require('../helpers/handleCache');
+const commonContent = require('../helpers/commonContent');
+const isPreview = require('../helpers/isPreview');
 
 const isValidSignature = (req, secret) => {
     const givenSignature = req.headers['x-kc-signature'];
@@ -78,7 +81,7 @@ router.get('/keys', (req, res) => {
     const keys = cache.keys();
     keys.sort();
     res.cacheControl = {
-        maxAge: 0
+        noCache: true
     };
     return res.render('tutorials/pages/cacheKeys', { keys });
 });
@@ -87,16 +90,28 @@ router.get('/keys/:key', (req, res) => {
     const key = cache.get(req.params.key);
     res.set('Content-Type', 'text/plain');
     res.cacheControl = {
-        maxAge: 0
+        noCache: true
     };
     return res.send(util.inspect(key, {
         maxArrayLength: 200
     }));
 });
 
-router.get('/keys/:key/invalidate', (req, res) => {
+router.get('/keys/:key/invalidate', asyncHandler(async (req, res) => {
     cache.del(req.params.key);
-    return res.redirect('/cache-invalidate/keys');
-});
+    const KCDetails = commonContent.getKCDetails(res);
+    const codename = req.params.key.replace(`_${KCDetails.projectid}`, '');
+
+    if (codename === 'urlMap' && !isPreview(res.locals.previewapikey)) {
+        await handleCache.axiosFastlySoftPurge(`${process.env.baseURL}/urlmap`);
+    } else {
+        await handleCache.sendFastlySoftPurge(codename, res);
+    }
+
+    res.cacheControl = {
+        noCache: true
+    };
+    return res.redirect(303, '/cache-invalidate/keys');
+}));
 
 module.exports = router;

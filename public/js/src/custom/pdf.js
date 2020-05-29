@@ -15,8 +15,6 @@
             nextElems.push(sibling);
         } while (sibling && sibling.nodeType === 1 && sibling.tagName.startsWith('H') && sibling.tagName.length === 2)
 
-        console.log(nextElems)
-
         const div = document.createElement('div');
         div.style.pageBreakInside = 'avoid';
         div.classList.add('page-break-prevent');

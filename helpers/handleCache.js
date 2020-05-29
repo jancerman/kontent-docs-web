@@ -133,6 +133,20 @@ const cacheAllAPIReferences = async (res) => {
     }
 };
 
+const axiosFastlySoftPurge = async (url) => {
+    try {
+        await axios({
+            method: 'purge',
+            url: url,
+            headers: {
+                'Fastly-Soft-Purge': '1'
+            }
+        });
+    } catch (error) {
+        consola.error(error && error.response ? error.response.data : '');
+    }
+};
+
 const sendFastlySoftPurge = async (key, res) => {
     if (isPreview(res.locals.previewapikey)) return;
 
@@ -142,17 +156,7 @@ const sendFastlySoftPurge = async (key, res) => {
 
     for (let i = 0; i < urlMap.length; i++) {
         if (urlMap[i].codename === key) {
-            try {
-                await axios({
-                    method: 'purge',
-                    url: `${process.env.baseURL}${urlMap[i].url}`,
-                    headers: {
-                        'Fastly-Soft-Purge': '1'
-                    }
-                });
-            } catch (error) {
-                consola.error(error && error.response ? error.response.data : '');
-            }
+            await axiosFastlySoftPurge(`${process.env.baseURL}${urlMap[i].url}`);
         }
     }
 };
@@ -166,5 +170,6 @@ module.exports = {
     deleteCache,
     deleteMultipleKeys,
     ensureSingle,
-    sendFastlySoftPurge
+    sendFastlySoftPurge,
+    axiosFastlySoftPurge
 };
