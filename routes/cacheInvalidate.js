@@ -10,7 +10,7 @@ const commonContent = require('../helpers/commonContent');
 const isPreview = require('../helpers/isPreview');
 
 const isValidSignature = (req, secret) => {
-    return signatureHelper.isValidSignatureFromString(JSON.stringify(req.body), secret, req.headers['x-kc-signature']);
+    return signatureHelper.isValidSignatureFromString(req.body, secret, req.headers['x-kc-signature']);
 };
 
 const poolPayload = (req) => {
