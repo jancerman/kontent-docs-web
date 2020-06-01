@@ -28,6 +28,13 @@ if platformsConfig
             if index < platformsConfig.length - 1
                 | ,
         | ]
+if termDefinitions
+    script var termDefinitions=[
+        each item, index in termDefinitions
+            | {codename:"#{item.system.codename}",term:"#{item.term.value}",text:"!{helper.removeNewLines(helper.escapeQuotes(item.definition.value))}"}
+            if index < termDefinitions.length - 1
+                | ,
+        | ]
 if (process.env['GTM.id'])
     script function initGTM(){(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','#{process.env['GTM.id']}');};
 else 

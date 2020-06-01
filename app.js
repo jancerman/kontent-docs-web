@@ -210,7 +210,7 @@ const isOneOfCacheRevalidate = (req) => {
 
 app.use('/', asyncHandler(async (req, res, next) => {
   if (isOneOfCacheRevalidate(req)) {
-    await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home', 'navigationItems', 'articles']);
+    await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home', 'navigationItems', 'articles', 'termDefinitions']);
     await handleCache.cacheAllAPIReferences(res);
   }
 

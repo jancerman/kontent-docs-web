@@ -28,6 +28,10 @@ const handleArticle = async (settings, req, res) => {
     const references = await handleCache.ensureSingle(res, 'apiSpecifications', async () => {
         return commonContent.getReferences(res);
     });
+    const termDefinitions = await handleCache.evaluateSingle(res, 'termDefinitions', async () => {
+        return await commonContent.getTermDefinitions(res);
+    });
+
     const platformsConfig = await platforms.getPlatformsConfig(res);
     let cookiesPlatform = req.cookies['KCDOCS.preselectedLanguage'];
     let availablePlatforms;
@@ -98,6 +102,7 @@ const handleArticle = async (settings, req, res) => {
     settings.renderSettings.data.nextSteps = settings.content && settings.content.length && settings.content[0].next_steps ? settings.content[0].next_steps : '';
     settings.renderSettings.data.content = settings.content && settings.content.length ? settings.content[0] : null;
     settings.renderSettings.data.subNavigation = subNavigation && subNavigation.length ? subNavigation[0].children.value : [];
+    settings.renderSettings.data.termDefinitions = termDefinitions && termDefinitions.length ? termDefinitions : null;
     settings.renderSettings.data.moment = moment;
     settings.renderSettings.data.canonicalUrl = canonicalUrl;
     settings.renderSettings.data.projectId = res.locals.projectid;

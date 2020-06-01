@@ -68,7 +68,7 @@ const getContent = async (req, res) => {
         return await getUrlMap(res);
     });
     const home = await handleCache.ensureSingle(res, 'home', async () => {
-        return commonContent.getHome(res);
+        return await commonContent.getHome(res);
     });
 
     let slug = req.originalUrl.split('/')[1];
@@ -83,16 +83,19 @@ const getContent = async (req, res) => {
     }
 
     const footer = await handleCache.ensureSingle(res, 'footer', async () => {
-        return commonContent.getFooter(res);
+        return await commonContent.getFooter(res);
     });
     const UIMessages = await handleCache.ensureSingle(res, 'UIMessages', async () => {
-        return commonContent.getUIMessages(res);
+        return await commonContent.getUIMessages(res);
     });
     const articles = await handleCache.ensureSingle(res, 'articles', async () => {
-        return commonContent.getArticles(res);
+        return await commonContent.getArticles(res);
     });
     const references = await handleCache.ensureSingle(res, 'apiSpecifications', async () => {
-        return commonContent.getReferences(res);
+        return await commonContent.getReferences(res);
+    });
+    const termDefinitions = await handleCache.evaluateSingle(res, 'termDefinitions', async () => {
+        return await commonContent.getTermDefinitions(res);
     });
 
     const platformsConfigPairings = await commonContent.getPlatformsConfigPairings(res);
@@ -214,6 +217,7 @@ const getContent = async (req, res) => {
         footer: footer && footer.length ? footer[0] : null,
         UIMessages: UIMessages && UIMessages.length ? UIMessages[0] : null,
         platformsConfig: platformsConfigPairings && platformsConfigPairings.length ? platformsConfigPairings : null,
+        termDefinitions: termDefinitions && termDefinitions.length ? termDefinitions : null,
         helper: helper,
         getFormValue: helper.getFormValue,
         preselectedPlatform: preselectedPlatform,

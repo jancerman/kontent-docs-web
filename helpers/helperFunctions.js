@@ -11,6 +11,10 @@ const helper = {
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#039;');
     },
+    escapeQuotes: (unsafe) => {
+        return unsafe
+            .replace(/"/g, '\\"')
+    },
     removeNewLines: (unsafe) => {
         return unsafe.replace(/\r?\n|\r/g, '');
     },

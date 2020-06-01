@@ -84,6 +84,8 @@ const splitPayloadByContentType = (items) => {
             itemsByTypes.redirectRules.push(item);
         } else if (item.type === 'release_note') {
             itemsByTypes.releaseNotes.push(item);
+        } else if (item.type === 'term_definition') {
+            itemsByTypes.termDefinitions.push(item);
         }
     }
 
@@ -193,6 +195,7 @@ const processInvalidation = async (res) => {
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'notFound');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'redirectRules');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'releaseNotes');
+        await invalidateGeneral(itemsByTypes, KCDetails, res, 'termDefinitions');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'picker', 'platformsConfig');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'navigationItems');
         await invalidateArticles(itemsByTypes, KCDetails, res);

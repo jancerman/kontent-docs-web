@@ -118,6 +118,9 @@ const componentsResolvers = [{
 }, {
     type: 'changelog',
     resolver: richTextResolverTemplates.changelog
+}, {
+    type: 'terminology',
+    resolver: richTextResolverTemplates.terminology
 }];
 
 const resolveRichText = (item, config) => {

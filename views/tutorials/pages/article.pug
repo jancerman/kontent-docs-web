@@ -6,6 +6,11 @@ block content
                 include ../includes/sub-navigation.pug
             .article__right
                 div(class=`article__content${containsChangelog ? ' article__content--anchors-only' : ''}`)
+                    if termDefinitions
+                        .term-tooltip-container(aria-hidden='true')
+                            .term-tooltip-content
+                            .term-tooltip-close
+                            .term-tooltip-arrow
                     h1 !{content.title.value}
                     if (!containsChangelog || isPreview)
                         .article__notes

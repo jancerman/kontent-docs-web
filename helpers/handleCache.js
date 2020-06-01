@@ -78,6 +78,9 @@ const cacheKeys = [{
     }, {
         name: 'redirectRules',
         method: commonContent.getRedirectRules
+    }, {
+        name: 'termDefinitions',
+        method: commonContent.getTermDefinitions
     }
 ];
 

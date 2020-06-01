@@ -140,6 +140,20 @@ const commonContent = {
             ...commonContent.getKCDetails(res)
         });
     },
+    getTermDefinitions: async (res) => {
+        const urlMap = await ensureSingle(res, 'urlMap', async () => {
+            return await getUrlMap(res);
+        });
+        return await requestDelivery({
+            type: 'term_definition',
+            resolveRichText: true,
+            urlMap: urlMap,
+            order: {
+                field: 'elements.term',
+            },
+            ...commonContent.getKCDetails(res)
+        });
+    },
     getPlatformsConfig: async (res) => {
         return await requestDelivery({
             type: 'platform_picker',

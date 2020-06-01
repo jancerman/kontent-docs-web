@@ -386,8 +386,21 @@ const richTextResolverTemplates = {
             </div>
         `;
     },
+    termDefinition: (item) => {
+        const id = `a-${helper.generateAnchor(item.term.value)}`;
+        return `
+            <h2 id="${id}">
+                <a href="#${id}" class="anchor-copy" aria-hidden="true"></a>
+                ${item.term.value}
+            </h2>
+            ${item.definition.value}
+        `
+    },
     changelog: () => {
         return '<div id="changelog-resolve"></div>';
+    },
+    terminology: () => {
+        return '<div id="terminology-resolve"></div>';
     }
 };
 
