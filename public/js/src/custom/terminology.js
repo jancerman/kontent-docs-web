@@ -6,7 +6,11 @@
     const visibleClassName = 'term-tooltip-container--visible';
     const wrapper = document.querySelector('.term-tooltip-container');
     const content = wrapper.querySelector('.term-tooltip-content');
+    let termHovered = false;
+    let activeTerm = '';
 
+// Algorithm for automatic terms recognition and replace for html element
+/*
     const wrapWord = (el, word) => {
         const codename = word.codename;
         const expr = new RegExp(word.term, 'gi');
@@ -42,7 +46,7 @@
             wrapWord(article, window.termDefinitions[i]);
         }
     };
-
+*/
     const setTooltipContent = (wrapper, content) => {
         wrapper.innerHTML = `
             <h3 class="term-tooltip__title">${content.term}</h3>
@@ -89,30 +93,54 @@
 
         setArrowPosition(wrapper, textLeft, styleLeft, textHalfWidth);
 
-        content.scrollTop = 0;
-        content.scrollLeft = 0;
+        setTimeout(() => {
+            content.scrollTop = 0;
+            content.scrollLeft = 0;
+        }, 0);
+
         wrapper.style.top = `${styleTop}px`;
         wrapper.style.left = `${styleLeft}px`;
     };
 
+    const logHoveredTerm = (term) => {
+        setTimeout(() => {
+            if (window.dataLayer && activeTerm === term && termHovered) {
+                console.log(window.filterXSS(decodeURIComponent(term)));
+                window.dataLayer.push({
+                    event: 'event',
+                    eventCategory: 'term--hover',
+                    eventAction: window.filterXSS(decodeURIComponent(term)),
+                    eventLabel: window.helper.getAbsoluteUrl()
+                });
+            }
+        }, 1000);
+    };
+
     const initTooltips = () => {
-        const terms = document.querySelectorAll('.term-tooltip');
+        const terms = document.querySelectorAll('[href^="#term-definition-"]');
         const close = wrapper.querySelector('.term-tooltip-close');
         if (!wrapper && !terms.length) return;
 
         for (let i = 0; i < terms.length; i++) {
             terms[i].addEventListener('mouseenter', function (e) {
                 for (let i = 0; i < window.termDefinitions.length; i++) {
-                    if (e.target.getAttribute('data-term-codename') === window.termDefinitions[i].codename) {
+                    if (e.target.getAttribute('href').replace('#term-definition-', '') === window.termDefinitions[i].codename) {
                         activeTooltip = e.target;
+                        termHovered = true;
+                        activeTerm = window.termDefinitions[i].term;
                         setTooltipContent(content, window.termDefinitions[i]);
                         setTooltipPosition(e.target, wrapper, content);
+                        logHoveredTerm(window.termDefinitions[i].term)
                     }
                 }
                 wrapper.classList.add(visibleClassName);
             });
             terms[i].addEventListener('mouseleave', () => {
+                termHovered = false;
                 wrapper.classList.remove(visibleClassName);
+            });
+            terms[i].addEventListener('click', (e) => {
+                e.preventDefault();
             });
         }
 
@@ -138,7 +166,7 @@
         });
     };
 
-    highightTerms();
+    // highightTerms();
     initTooltips();
     keepTooltipPosition();
 })();

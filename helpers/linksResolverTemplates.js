@@ -24,6 +24,8 @@ const resolveLinkUrlsInElement = (element, item, urlMap) => {
             resolvedUrl = resolvedUrl[0].url;
         } else if (link.type === 'article') {
             resolvedUrl = `/other/${item.urlSlug}`;
+        } else if (link.type === 'term_definition') {
+            resolvedUrl = `#term-definition-${link.codename}`;
         } else {
             resolvedUrl = '/page-not-found';
         }
@@ -46,6 +48,8 @@ const linksResolverTemplates = {
             return url[0].url;
         } else if (item.type === 'article') {
             return `/other/${item.urlSlug}`;
+        } else if (item.type === 'term_definition') {
+            return `#term-definition-${item.codename}`;
         } else {
             return '/page-not-found';
         }
