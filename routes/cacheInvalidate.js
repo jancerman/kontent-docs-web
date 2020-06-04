@@ -8,6 +8,7 @@ const cacheInvalidate = require('../helpers/cacheInvalidate');
 const handleCache = require('../helpers/handleCache');
 const commonContent = require('../helpers/commonContent');
 const isPreview = require('../helpers/isPreview');
+const helper = require('../helpers/helperFunctions');
 
 const isValidSignature = (req, secret) => {
     return signatureHelper.isValidSignatureFromString(req.body, secret, req.headers['x-kc-signature']);
@@ -99,7 +100,10 @@ router.get('/keys/:key/invalidate', asyncHandler(async (req, res) => {
     const codename = req.params.key.replace(`_${KCDetails.projectid}`, '');
 
     if (codename === 'urlMap' && !isPreview(res.locals.previewapikey)) {
-        await handleCache.axiosFastlySoftPurge(`${process.env.baseURL}/urlmap`);
+        const domain = process.env.baseURL.split('://');
+        if (domain[1]) {
+            await handleCache.axiosFastlySoftPurge(`${helper.getDomain(domain[0], domain[1])}/urlmap`);
+        }
     } else {
         await handleCache.sendFastlySoftPurge(codename, res);
     }

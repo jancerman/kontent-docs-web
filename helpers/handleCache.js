@@ -159,7 +159,10 @@ const sendFastlySoftPurge = async (key, res) => {
 
     for (let i = 0; i < urlMap.length; i++) {
         if (urlMap[i].codename === key) {
-            await axiosFastlySoftPurge(`${process.env.baseURL}${urlMap[i].url}`);
+            const domain = process.env.baseURL.split('://');
+            if (domain[1]) {
+                await axiosFastlySoftPurge(`${helper.getDomain(domain[0], domain[1])}${urlMap[i].url}`);
+            }
         }
     }
 };

@@ -5,6 +5,7 @@ const getRootCodenamesOfSingleItem = require('../helpers/rootItemsGetter');
 const handleCache = require('../helpers/handleCache');
 const getUrlMap = require('../helpers/urlMap');
 const isPreview = require('../helpers/isPreview');
+const helper = require('../helpers/helperFunctions');
 const app = require('../app');
 
 const requestItemAndDeleteCacheKey = async (codename, KCDetails, res) => {
@@ -161,7 +162,10 @@ const invalidateHome = async (res, KCDetails) => {
 const invalidateUrlMap = async (res, KCDetails) => {
     handleCache.deleteCache('urlMap', KCDetails);
     if (!isPreview(res.locals.previewapikey)) {
-        await handleCache.axiosFastlySoftPurge(`${process.env.baseURL}/urlmap`);
+        const domain = process.env.baseURL.split('://');
+        if (domain[1]) {
+            await handleCache.axiosFastlySoftPurge(`${helper.getDomain(domain[0], domain[1])}/urlmap`);
+        }
     }
     await handleCache.evaluateCommon(res, ['urlMap']);
 };
