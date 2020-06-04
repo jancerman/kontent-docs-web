@@ -91,5 +91,14 @@ h2, h3, h4 {
 }
 
 
+.term-tooltip {
+    border-bottom: none;
+    color: #231F20;
+}
+
+.term-tooltip-container {
+    display: none !important;
+}
+
 
 

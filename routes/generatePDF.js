@@ -37,6 +37,8 @@ router.get('/', asyncHandler(async (req, res, next) => {
             } else {
                 baseURL = 'https://kcd-web-live-dev.azurewebsites.net';
             }
+        } else if (baseURL.indexOf('kcd-web-live-master') > -1) {
+            baseURL = 'https://docs.kontent.ai';
         }
     }
 
@@ -61,13 +63,13 @@ router.get('/', asyncHandler(async (req, res, next) => {
                 <div style="display:flex;align-items:center;">
                     ${isPreview(res.locals.previewapikey) ?
                         '<span style="color:red;">Preview</span>' :
-                        `<a href="${pageUrl}" style="color:#F05A22;">${pageUrl}</a>`}
+                        `<a href="${pageUrl}" style="color:silver;">${pageUrl}</a>`}
                 </div>
             </div>`,
         footerTemplate: `
             <div style="font-family:Arial;width:100%;font-size:9px;padding:0 0.6in;color:silver;">
                 <div style="display:inline-block;width:49%;">
-                    <a href="${baseURL}" style="color:#F05A22;">${baseURLShortened}</a>
+                    <a href="${baseURL}" style="color:silver;">${baseURLShortened}</a>
                 </div>
                 <div style="display:inline-block;width:49%;text-align:right;">
                     <span class="pageNumber"></span> of <span class="totalPages"></span>

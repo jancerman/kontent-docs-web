@@ -1,5 +1,5 @@
 (() => {
-    if (!window.termDefinitions) return;
+    if (!window.termDefinitions || window.helper.getParameterByName('pdf')) return;
 
     let activeTooltip;
     let ticking = false;
