@@ -1,12 +1,12 @@
 const cache = require('memory-cache');
 const commonContent = require('../helpers/commonContent');
+const app = require('../app');
 const requestDelivery = require('../helpers/requestDelivery');
 const getRootCodenamesOfSingleItem = require('../helpers/rootItemsGetter');
 const handleCache = require('../helpers/handleCache');
 const getUrlMap = require('../helpers/urlMap');
 const isPreview = require('../helpers/isPreview');
 const helper = require('../helpers/helperFunctions');
-const app = require('../app');
 
 const requestItemAndDeleteCacheKey = async (codename, KCDetails, res) => {
     const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
@@ -55,7 +55,8 @@ const splitPayloadByContentType = (items) => {
         navigationItems: [],
         apiSpecifications: [],
         redirectRules: [],
-        releaseNotes: []
+        releaseNotes: [],
+        termDefinitions: []
     };
 
     for (let i = 0; i < items.length; i++) {
@@ -183,7 +184,24 @@ const invalidateSubNavigation = async (res, keys, KCDetails) => {
     }
 };
 
-const processInvalidation = async (res) => {
+const sendPurgeToGeneralPages = async (itemsByTypes, req, res) => {
+    if (!isPreview(res.locals.previewapikey)) {
+        const domain = process.env.baseURL.split('://');
+        if (domain[1]) {
+            const axiosDomain = helper.getDomain(domain[0], domain[1]);
+
+            if (itemsByTypes.releaseNotes.length && req.app.locals.changelogPath) {
+                await handleCache.axiosFastlySoftPurge(`${axiosDomain}${req.app.locals.changelogPath}`);
+            }
+
+            if (itemsByTypes.termDefinitions.length && req.app.locals.terminologyPath) {
+                await handleCache.axiosFastlySoftPurge(`${axiosDomain}${req.app.locals.terminologyPath}`);
+            }
+        }
+    }
+};
+
+const processInvalidation = async (req, res) => {
     const items = cache.get('webhook-payload-pool') || [];
     if (items.length) {
         const KCDetails = commonContent.getKCDetails(res);
@@ -205,6 +223,7 @@ const processInvalidation = async (res) => {
         await invalidateArticles(itemsByTypes, KCDetails, res);
         await invalidateMultiple(itemsByTypes, KCDetails, 'scenarios', res);
         await invalidateMultiple(itemsByTypes, KCDetails, 'topics', res);
+        await sendPurgeToGeneralPages(itemsByTypes, req, res);
 
         if (app.appInsights) {
             app.appInsights.defaultClient.trackTrace({ message: 'URL_MAP_INVALIDATE: ' + items });

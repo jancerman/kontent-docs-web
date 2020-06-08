@@ -178,14 +178,21 @@ const getContent = async (req, res) => {
     }
 
     let containsChangelog;
+    let containsTerminology;
     let releaseNoteContentType;
     if (content && content.length) {
         containsChangelog = helper.hasLinkedItemOfType(content[0].content, 'changelog');
+        containsTerminology = helper.hasLinkedItemOfType(content[0].content, 'terminology');
 
         if (containsChangelog) {
+            req.app.locals.changelogPath = helper.getPathWithoutQS(req.originalUrl);
             releaseNoteContentType = await handleCache.evaluateSingle(res, 'releaseNoteContentType', async () => {
                 return await commonContent.getReleaseNoteType(res);
             });
+        }
+
+        if (containsTerminology) {
+            req.app.locals.terminologyPath = helper.getPathWithoutQS(req.originalUrl);
         }
 
         content[0].content.value = await customRichTextResolver(content[0].content.value, res);

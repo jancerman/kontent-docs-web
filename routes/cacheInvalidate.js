@@ -69,7 +69,7 @@ router.post('/', asyncHandler(async (req, res) => {
 }));
 
 router.post('/pool', asyncHandler(async (req, res) => {
-    await cacheInvalidate(res);
+    await cacheInvalidate(req, res);
     cache.del('webhook-payload-pool');
     return res.end();
 }));
@@ -92,14 +92,22 @@ router.get('/keys/:key/invalidate', asyncHandler(async (req, res) => {
     cache.del(req.params.key);
     const KCDetails = commonContent.getKCDetails(res);
     const codename = req.params.key.replace(`_${KCDetails.projectid}`, '');
-
-    if (codename === 'urlMap' && !isPreview(res.locals.previewapikey)) {
+    if (!isPreview(res.locals.previewapikey)) {
         const domain = process.env.baseURL.split('://');
-        if (domain[1]) {
-            await handleCache.axiosFastlySoftPurge(`${helper.getDomain(domain[0], domain[1])}/urlmap`);
+        let path = '';
+        if (codename === 'urlMap') {
+            path = '/urlmap';
+        } else if (codename === 'releaseNotes' && req.app.locals.changelogPath) {
+            path = req.app.locals.changelogPath;
+        } else if (codename === 'termDefinitions' && req.app.locals.terminologyPath) {
+            path = req.app.locals.terminologyPath;
+        } else {
+            await handleCache.sendFastlySoftPurge(codename, res);
         }
-    } else {
-        await handleCache.sendFastlySoftPurge(codename, res);
+
+        if (path && domain[1]) {
+            await handleCache.axiosFastlySoftPurge(`${helper.getDomain(domain[0], domain[1])}${path}`);
+        }
     }
 
     return res.redirect(303, '/cache-invalidate/keys');

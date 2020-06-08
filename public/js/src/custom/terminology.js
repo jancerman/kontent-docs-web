@@ -105,7 +105,6 @@
     const logHoveredTerm = (term) => {
         setTimeout(() => {
             if (window.dataLayer && activeTerm === term && termHovered) {
-                console.log(window.filterXSS(decodeURIComponent(term)));
                 window.dataLayer.push({
                     event: 'event',
                     eventCategory: 'term--hover',

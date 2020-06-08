@@ -38,14 +38,21 @@ const handleArticle = async (settings, req, res) => {
     let preselectedPlatform;
     let releaseNoteContentType;
     let containsChangelog;
+    let containsTerminology;
 
     if (settings.content && settings.content.length) {
         containsChangelog = helper.hasLinkedItemOfType(settings.content[0].content, 'changelog');
+        containsTerminology = helper.hasLinkedItemOfType(settings.content[0].content, 'terminology');
 
         if (containsChangelog) {
+            req.app.locals.changelogPath = helper.getPathWithoutQS(req.originalUrl);
             releaseNoteContentType = await handleCache.evaluateSingle(res, 'releaseNoteContentType', async () => {
                 return await commonContent.getReleaseNoteType(res);
             });
+        }
+
+        if (containsTerminology) {
+            req.app.locals.terminologyPath = helper.getPathWithoutQS(req.originalUrl);
         }
 
         settings.content[0].content.value = await customRichTextResolver(settings.content[0].content.value, res);
