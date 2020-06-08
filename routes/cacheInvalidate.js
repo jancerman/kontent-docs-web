@@ -77,18 +77,12 @@ router.post('/pool', asyncHandler(async (req, res) => {
 router.get('/keys', (req, res) => {
     const keys = cache.keys();
     keys.sort();
-    res.cacheControl = {
-        noCache: true
-    };
     return res.render('tutorials/pages/cacheKeys', { keys });
 });
 
 router.get('/keys/:key', (req, res) => {
     const key = cache.get(req.params.key);
     res.set('Content-Type', 'text/plain');
-    res.cacheControl = {
-        noCache: true
-    };
     return res.send(util.inspect(key, {
         maxArrayLength: 200
     }));
@@ -108,9 +102,6 @@ router.get('/keys/:key/invalidate', asyncHandler(async (req, res) => {
         await handleCache.sendFastlySoftPurge(codename, res);
     }
 
-    res.cacheControl = {
-        noCache: true
-    };
     return res.redirect(303, '/cache-invalidate/keys');
 }));
 

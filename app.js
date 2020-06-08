@@ -86,8 +86,9 @@ app.use(slashes(false));
 app.use(cacheControl({
   maxAge: 300
 }));
+
 app.use((req, res, next) => {
-  if (isPreview(process.env['KC.PreviewApiKey'])) {
+  if (isPreview(process.env['KC.PreviewApiKey']) || (req.originalUrl.indexOf('/cache-invalidate') > -1)) {
     res.cacheControl = {
       noCache: true
     };
@@ -159,7 +160,7 @@ app.use(async (req, res, next) => {
   res.locals.protocol = req.protocol;
   handleKCKeys(req, res);
   res.setHeader('Arr-Disable-Session-Affinity', 'True');
-  if (!isPreview(res.locals.previewapikey)) {
+  if (!(isPreview(res.locals.previewapikey) || (req.originalUrl.indexOf('/cache-invalidate') > -1))) {
     res.setHeader('Surrogate-Control', 'max-age=3600');
   }
   return next();
