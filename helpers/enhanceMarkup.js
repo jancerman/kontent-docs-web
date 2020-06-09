@@ -10,6 +10,13 @@ const replaceNodeWithItsContent = ($, selector) => {
     });
 };
 
+const replaceTooltipSpaces = ($) => {
+    $('a[href^="#term-definition-"]').each(function() {
+        var $that = $(this);
+        $that.html($that.html().replace(/\s/g, '&nbsp;'));
+    });
+};
+
 const setWidthToImages = ($) => {
     $('img[data-asset-id]').each(function() {
         var $that = $(this);
@@ -67,6 +74,7 @@ const enhanceMarkup = (text) => {
     processLinks($);
     removeEmptyParagraph($);
     createAnchors($);
+    replaceTooltipSpaces($);
 
     const output = $.html();
     return output.replace('<html><head></head><body>', '').replace('</body></html>', '');
