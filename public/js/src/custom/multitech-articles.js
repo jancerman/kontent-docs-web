@@ -35,5 +35,3 @@ window.updateMultitechQS = () => {
         techLinks[i].setAttribute('href', window.helper.replaceUrlParam(href, 'tech', tech));
     }
 };
-
-window.updateMultitechQS();
