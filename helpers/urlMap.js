@@ -348,7 +348,7 @@ const getUrlMap = async (res, isSitemap) => {
     if (isSitemap) {
         fields = ['codename', 'url', 'date', 'visibility', 'type'];
     } else {
-        fields = ['codename', 'url'];
+        fields = ['codename', 'url', 'type'];
     }
 
     if (error && app.appInsights) {

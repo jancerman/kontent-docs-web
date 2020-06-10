@@ -60,6 +60,7 @@
             textTofixedLabel = e.target.innerHTML;
             bgTofixedLabel = e.target.getAttribute('data-icon');
             handleClickedTooltip(e.target);
+            window.updateMultitechQS();
         } else {
             const preselectedPlatform = window.helper.getCookie('KCDOCS.preselectedLanguage');
             const preselectedElem = document.querySelectorAll(`[data-platform="${preselectedPlatform}"]`);

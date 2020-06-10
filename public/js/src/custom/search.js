@@ -59,20 +59,6 @@
         return suggestion;
     };
 
-    const getTech = (platform) => {
-        let tech = platform;
-
-        if (window.platformsConfig && window.platformsConfig.length) {
-            for (var i = 0; i < window.platformsConfig.length; i++) {
-                if (window.platformsConfig[i].platform === platform) {
-                    tech = window.platformsConfig[i].url;
-                }
-            }
-        }
-
-        return tech;
-    };
-
     const formatSuggestion = (suggestion, urlMap) => {
         // Store current search input value for use of querystring that is used in Google Analytics search terms
         searchTerm = encodeURIComponent(searchInput.value);
@@ -82,7 +68,7 @@
 
         // Add an anchor to the url if available
         const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g, '-').replace(/[-]+/g, '-')}` : '';
-        const tech = suggestion.platforms && suggestion.platforms.length === 1 ? `?tech=${getTech(suggestion.platforms[0])}` : '';
+        const tech = suggestion.platforms && suggestion.platforms.length === 1 ? `?tech=${window.helper.getTech(suggestion.platforms[0])}` : '';
         suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}${suggestionUrl[0].url.indexOf('?tech') === -1 ? tech : ''}${suggestion.section !== 'API' ? anchor : ''}` : '';
         let section = (suggestion.section === 'tutorials' && suggestion.resolvedUrl.includes('/reference/')) ? 'reference' : suggestion.section;
 

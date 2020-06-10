@@ -12,6 +12,14 @@ const updateLinkAttribute = (element, resolvedUrl, link) => {
     element.value = element.value.replace('<html><head></head><body>', '').replace('</body></html>', '');
 };
 
+const getQueryString = (type) => {
+    let qs = '';
+    if (type === 'multiplatform_article') {
+        qs = '?tech={tech}';
+    }
+    return qs;
+};
+
 const resolveLinkUrlsInElement = (element, item, urlMap) => {
     element.links.forEach((link) => {
         let resolvedUrl = [];
@@ -21,7 +29,7 @@ const resolveLinkUrlsInElement = (element, item, urlMap) => {
         }
 
         if (resolvedUrl.length > 0) {
-            resolvedUrl = resolvedUrl[0].url;
+            resolvedUrl = `${resolvedUrl[0].url}${getQueryString(resolvedUrl[0].type)}`;
         } else if (link.type === 'article') {
             resolvedUrl = `/other/${item.urlSlug}`;
         } else if (link.type === 'term_definition') {
@@ -45,7 +53,7 @@ const linksResolverTemplates = {
         }
 
         if (url.length > 0) {
-            return url[0].url;
+            return `${url[0].url}${getQueryString(url[0].type)}`;
         } else if (item.type === 'article') {
             return `/other/${item.urlSlug}`;
         } else if (item.type === 'term_definition') {

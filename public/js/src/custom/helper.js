@@ -381,6 +381,20 @@ window.helper = (() => {
         return `${window.location.protocol}//${window.location.host}${loc.pathname}${loc.search}${loc.hash}`;
     };
 
+    const getTech = (platform) => {
+        let tech = platform;
+
+        if (window.platformsConfig && window.platformsConfig.length) {
+            for (var i = 0; i < window.platformsConfig.length; i++) {
+                if (window.platformsConfig[i].platform === platform) {
+                    tech = window.platformsConfig[i].url;
+                }
+            }
+        }
+
+        return tech;
+    };
+
     return {
         getParents: getParents,
         findAncestor: findAncestor,
@@ -404,7 +418,8 @@ window.helper = (() => {
         loadRecaptcha: loadRecaptcha,
         nextUntil: nextUntil,
         fixElem: fixElem,
-        getAbsoluteUrl: getAbsoluteUrl
+        getAbsoluteUrl: getAbsoluteUrl,
+        getTech: getTech
     }
 })();
 
