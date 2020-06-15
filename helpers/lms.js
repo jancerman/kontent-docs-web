@@ -7,8 +7,8 @@ const settings = {
         username: process.env['LMS.id'] || '',
         password: ''
     },
-    registerUrl: 'https://learn.with.kentico.com/api/v1/usersignup',
-    addToCourseUrl: 'https://learn.with.kentico.com/api/v1/addusertocourse'
+    registerUrl: 'https://kontent-kentico.talentlms.com/api/v1/usersignup',
+    addToCourseUrl: 'https://kontent-kentico.talentlms.com/api/v1/addusertocourse'
 };
 
 const register = async (data) => {
