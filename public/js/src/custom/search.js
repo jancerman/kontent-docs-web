@@ -2,7 +2,7 @@
  * Initializes Algolia search with use of autocomplete.js
  */
 
-(() => {
+window.initSearch = (() => {
     // Get Algolia API details from object in the global scope (should be present in the page head)
     // Or use API detail injected with url parameters
     window.searchAPI.appid = window.helper.getParameterByName('searchappid') || window.searchAPI.appid;
@@ -11,7 +11,6 @@
 
     const client = window.algoliasearch(window.searchAPI.appid, window.searchAPI.apikey);
     const tutorials = client.initIndex(window.searchAPI.indexname);
-    const url = window.location;
     const searchWrapper = document.querySelector('.navigation__search-wrapper');
     const searchOverlay = document.querySelector('.search-overlay');
     const searchTrigger = document.querySelector('[data-search-trigger]');
@@ -21,20 +20,6 @@
     let searchResultSelected = false;
     let searchResultsNumber = 0;
     const searchInput = document.querySelector('#nav-search');
-
-    // Get injected KC API details
-    const projectIdUrl = window.helper.getParameterByName('projectid');
-    const previewApiKeyUrl = window.helper.getParameterByName('previewapikey');
-
-    // Build query string with injected KC API details for the urlMap
-    const queryString = (() => {
-        let qString = '';
-        qString += (typeof projectIdUrl !== 'undefined' && projectIdUrl !== null) ? `projectid=${projectIdUrl}&` : '';
-        qString += (typeof previewApiKeyUrl !== 'undefined' && previewApiKeyUrl !== null) ? `previewapikey=${previewApiKeyUrl}&` : '';
-        qString = qString.slice(0, -1);
-        qString = qString ? `?${qString}` : '';
-        return qString;
-    })();
 
     const arrowPress = (e) => {
         e = e || window.event;
@@ -59,12 +44,12 @@
         return suggestion;
     };
 
-    const formatSuggestion = (suggestion, urlMap) => {
+    const formatSuggestion = (suggestion) => {
         // Store current search input value for use of querystring that is used in Google Analytics search terms
         searchTerm = encodeURIComponent(searchInput.value);
 
         // Get url from the urlMap
-        const suggestionUrl = urlMap.filter(item => item.codename === suggestion.codename);
+        const suggestionUrl = window.urlMap.filter(item => item.codename === suggestion.codename);
 
         // Add an anchor to the url if available
         const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g, '-').replace(/[-]+/g, '-')}` : '';
@@ -219,13 +204,13 @@
         debug: false
     };
 
-    const getAutocompleteTemplates = (urlMap) => {
+    const getAutocompleteTemplates = () => {
         return {
             header: () => {
                 return `<div class="aa-header">${searchResultsNumber} results for '<strong>${window.filterXSS(decodeURIComponent(searchTerm))}</strong>'</div>`;
             },
             suggestion: (suggestion) => {
-                return formatSuggestion(suggestion, urlMap);
+                return formatSuggestion(suggestion);
             },
             empty: () => {
                 return formatEmptySuggestion();
@@ -234,7 +219,7 @@
     };
 
     // Init Algolia
-    const initAutocomplete = (urlMap) => {
+    const initAutocomplete = () => {
         // Init autocomplete and set maximum of suggested search items
         var hitsSource = window.autocomplete.sources.hits(tutorials, {
             hitsPerPage: 50
@@ -250,7 +235,7 @@
                     getSuggestionsSource(hitsSource, query, callback);
                 },
                 displayKey: 'title',
-                templates: getAutocompleteTemplates(urlMap)
+                templates: getAutocompleteTemplates()
             }])
             .on('autocomplete:opened', onAutocompleteOpened)
             .on('autocomplete:selected', (event, suggestion, dataset, context) => {
@@ -264,7 +249,7 @@
         }
     };
 
-    const initErrorSearch = (urlMap) => {
+    const initErrorSearch = () => {
         const container = document.querySelector('[data-error-search]');
         const title = document.querySelector('[data-error-search-title]');
         if (!container) return;
@@ -277,7 +262,7 @@
                 let suggestionsHTML = '<ul>';
 
                 for (let i = 0; i < iterations; i++) {
-                    const suggestionUrl = urlMap.filter(item => item.codename === hits[i].codename);
+                    const suggestionUrl = window.urlMap.filter(item => item.codename === hits[i].codename);
                     if (suggestionUrl.length) {
                         hits[i].resolvedUrl = suggestionUrl[0].url;
                     }
@@ -295,11 +280,8 @@
     const initAlgoliaSearch = () => {
         document.onkeydown = arrowPress;
 
-        // Get urlMap and init the autocomplete
-        window.helper.ajaxGet(`${url.protocol}//${url.hostname + (location.port ? ':' + location.port : '')}/urlmap${queryString}`, (urlMap) => {
-            initAutocomplete(urlMap);
-            initErrorSearch(urlMap);
-        }, 'json');
+        initAutocomplete();
+        initErrorSearch();
     };
 
     const setFocusOnMagnifier = (prefix) => {
@@ -312,10 +294,12 @@
         }
     };
 
-    if (window.searchAPI) {
-        initAlgoliaSearch();
-        setFocusOnMagnifier('navigation');
-        setFocusOnMagnifier('hero');
-        triggerSearchPanel();
+    return () => {
+        if (window.searchAPI) {
+            initAlgoliaSearch();
+            setFocusOnMagnifier('navigation');
+            setFocusOnMagnifier('hero');
+            triggerSearchPanel();
+        }
     }
 })();
