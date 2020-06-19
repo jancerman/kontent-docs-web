@@ -114,13 +114,16 @@ const handleLangForMultiplatformArticle = async (queryString, item, res) => {
 };
 
 const addItemToMap = (settings) => {
-    settings.urlMap.push(getMapItem({
-        codename: settings.item.system.codename,
-        url: `/${settings.url.join('/')}${settings.queryString}${settings.hash}`,
-        date: settings.item.system.lastModified,
-        visibility: settings.item.visibility && settings.item.visibility.value.length ? settings.item.visibility.value : null,
-        type: settings.type
-    }, fields));
+    // Do not place multiplatform articles (urls without tech qs) in sitemap
+    if (!(settings.type === 'multiplatform_article' && settings.isSitemap)) {
+        settings.urlMap.push(getMapItem({
+            codename: settings.item.system.codename,
+            url: `/${settings.url.join('/')}${settings.queryString}${settings.hash}`,
+            date: settings.item.system.lastModified,
+            visibility: settings.item.visibility && settings.item.visibility.value.length ? settings.item.visibility.value : null,
+            type: settings.type
+        }, fields));
+    }
 
     return settings.urlMap;
 };
@@ -231,7 +234,8 @@ const handleNode = async (settings) => {
             url: settings.url,
             queryString: settings.queryString,
             hash: settings.hash,
-            type: settings.item.system.type
+            type: settings.item.system.type,
+            isSitemap: settings.isSitemap
         });
     }
 
@@ -348,6 +352,7 @@ const getUrlMap = async (res, isSitemap) => {
     if (isSitemap) {
         fields = ['codename', 'url', 'date', 'visibility', 'type'];
     } else {
+        isSitemap = false;
         fields = ['codename', 'url', 'type'];
     }
 
