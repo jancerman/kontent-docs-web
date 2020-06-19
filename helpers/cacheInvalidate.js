@@ -155,6 +155,13 @@ const invalidateArticles = async (itemsByTypes, KCDetails, res) => {
     return false;
 };
 
+const invalidateAPISpecifications = async (itemsByTypes, KCDetails, res) => {
+    if (itemsByTypes.apiSpecifications.length) {
+        await invalidateGeneral(itemsByTypes, KCDetails, res, 'apiSpecifications');
+        await deleteSpecificKeys(KCDetails, itemsByTypes.apiSpecifications, res);
+    }
+};
+
 const invalidateHome = async (res, KCDetails) => {
     handleCache.deleteCache('home', KCDetails);
     await handleCache.evaluateCommon(res, ['home']);
@@ -211,7 +218,7 @@ const processInvalidation = async (req, res) => {
         await invalidateHome(res, KCDetails);
         await invalidateSubNavigation(res, keys, KCDetails);
         await invalidateRootItems(items, KCDetails, res);
-        await invalidateGeneral(itemsByTypes, KCDetails, res, 'apiSpecifications');
+        await invalidateAPISpecifications(itemsByTypes, KCDetails, res);
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'footer');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'UIMessages');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'notFound');
