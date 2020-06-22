@@ -5,6 +5,7 @@
     let ticking = false;
     const visibleClassName = 'term-tooltip-container--visible';
     const wrapper = document.querySelector('.term-tooltip-container');
+    if (!wrapper) return;
     const content = wrapper.querySelector('.term-tooltip-content');
     let termHovered = false;
     let activeTerm = '';

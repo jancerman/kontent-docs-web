@@ -169,12 +169,10 @@ const commonContent = {
 
         if (cachedPlatforms && cachedPlatforms.length) {
             cachedPlatforms[0].options.value.forEach((item) => {
-                if (item.url.value !== item.platform.value[0].codename) {
-                    pairings.push({
-                        url: item.url.value,
-                        platform: item.platform.value[0].codename
-                    });
-                }
+                pairings.push({
+                    url: item.url.value,
+                    platform: item.platform.value[0].codename
+                });
             });
         }
 

@@ -1,15 +1,34 @@
 window.initMultitechQS = (() => {
     const getFirtPlatformUrl = (href) => {
-        let firstPlatformUrl = href;
-        let nextUrlMapItem;
+        let firstPlatformUrl;
+        const matchingUrls = window.urlMap.filter((item) => item.url.indexOf(href + '?tech=') > -1);
 
-        for (let i = 0; i < window.urlMap.length; i++) {
-            if (window.urlMap[i].url === href) {
-                nextUrlMapItem = window.urlMap[i + 1];
-                if (nextUrlMapItem && nextUrlMapItem.url.indexOf(href) > -1 && nextUrlMapItem.url.indexOf('?tech=') > -1) {
-                    firstPlatformUrl = nextUrlMapItem.url;
+        if (window.platformsConfig && window.platformsConfig.length) {
+            for (let i = 0; i < window.platformsConfig.length; i++) {
+                for (let j = 0; j < matchingUrls.length; j++) {
+                    const splitUrl = matchingUrls[j].url.split('?tech=');
+                    if (splitUrl[1] && window.platformsConfig[i].url === splitUrl[1]) {
+                        firstPlatformUrl = matchingUrls[j].url;
+                        break;
+                    }
+                }
+                if (firstPlatformUrl) {
+                    break;
                 }
             }
+        } else {
+            for (let i = 0; i < window.urlMap.length; i++) {
+                if (window.urlMap[i].url === href) {
+                    const nextUrlMapItem = window.urlMap[i + 1];
+                    if (nextUrlMapItem && nextUrlMapItem.url.indexOf(href + '?tech=') > -1) {
+                        firstPlatformUrl = nextUrlMapItem.url;
+                    }
+                }
+            }
+        }
+
+        if (!firstPlatformUrl) {
+            firstPlatformUrl = href;
         }
 
         return firstPlatformUrl;

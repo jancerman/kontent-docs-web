@@ -187,7 +187,15 @@ const richTextResolverTemplates = {
         const imageSrc = item.image.value[0] ? `${item.image.value[0].url}?w=290&fm=jpg&auto=format` : ''
 
         if (item.link__link_to_content_item.value[0] && urlMap) {
-            resolvedUrl = urlMap.filter(elem => elem.codename === item.link__link_to_content_item.value[0].system.codename)[0].url;
+            const matchUrlMapItem = urlMap.filter(elem => elem.codename === item.link__link_to_content_item.value[0].system.codename);
+
+            if (matchUrlMapItem.length) {
+                resolvedUrl = matchUrlMapItem[0].url;
+
+                if (matchUrlMapItem[0].type === 'multiplatform_article') {
+                    resolvedUrl += '?tech={tech}';
+                }
+            }
         }
 
         if (item.link__link_to_web_url.value) {
@@ -220,12 +228,19 @@ const richTextResolverTemplates = {
         const imageSrc = item.image.value[0] ? `${item.image.value[0].url}?w=290&fm=jpg&auto=format` : 'https://plchldr.co/i/290x168?&amp;bg=ededed&amp;text=Image';
 
         if (item.linked_item.value[0] && urlMap) {
-            resolvedUrl = urlMap.filter(elem => elem.codename === item.linked_item.value[0].system.codename)[0].url;
+            const matchUrlMapItem = urlMap.filter(elem => elem.codename === item.link__link_to_content_item.value[0].system.codename);
+            if (matchUrlMapItem.length) {
+                resolvedUrl = matchUrlMapItem[0].url;
+
+                if (matchUrlMapItem[0].type === 'multiplatform_article') {
+                    resolvedUrl += '?tech={tech}';
+                }
+            }
         }
 
         return `
             <li class="selection__item">
-                ${resolvedUrl ? '<a class="selection__link" href="'+ resolvedUrl + '">' : '<div class="selection__link">'}
+                ${resolvedUrl ? `<a class="selection__link" href="${resolvedUrl}">` : '<div class="selection__link">'}
                     <div class="selection__img-sizer">
                         <img class="selection__img lazy lazy--exclude-dnt" data-dpr data-lazy-onload src='${placeholderSrc}' data-src="${imageSrc}"${imageWidth && imageHeight ? `style="max-width:${imageWidth}px;max-height:${imageHeight}px;width:100%" width="${imageWidth}" height="${imageHeight}"` : ''}>
                         <noscript>
@@ -243,7 +258,7 @@ const richTextResolverTemplates = {
                 ${item.content.value}
             </div>`;
     },
-    image: (item, config) => {
+    image: (item) => {
         if (item.image.value.length) {
             const alt = item.image.value[0].description ? item.image.value[0].description : '';
             const url = item.url.value.trim();
@@ -287,10 +302,13 @@ const richTextResolverTemplates = {
         let resolvedUrl = '';
 
         if (item.link__link_to_content_item.value[0] && urlMap) {
-            const link = urlMap.filter(elem => elem.codename === item.link__link_to_content_item.value[0].system.codename);
+            const matchUrlMapItem = urlMap.filter(elem => elem.codename === item.link__link_to_content_item.value[0].system.codename);
+            if (matchUrlMapItem.length) {
+                resolvedUrl = matchUrlMapItem[0].url;
 
-            if (link && link.length) {
-                resolvedUrl = link[0].url;
+                if (matchUrlMapItem[0].type === 'multiplatform_article') {
+                    resolvedUrl += '?tech={tech}';
+                }
             }
         }
 
@@ -313,7 +331,7 @@ const richTextResolverTemplates = {
         }
         return value;
     },
-    homeLinkToExternalUrl: (item, config) => {
+    homeLinkToExternalUrl: (item) => {
         return `
             <li class="selection__item">
                 <a class="selection__link" href="${item.url.value}">

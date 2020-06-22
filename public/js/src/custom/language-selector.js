@@ -74,6 +74,7 @@
                 bgTofixedLabel = preselectedElem[0].getAttribute('data-icon');
             } else {
                 const firstPlatformElem = document.querySelectorAll('.language-selector__item:first-child .language-selector__link');
+
                 firstPlatformElem.forEach(item => {
                     item.classList.add('language-selector__link--active');
                 });

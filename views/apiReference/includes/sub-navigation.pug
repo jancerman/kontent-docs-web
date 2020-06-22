@@ -1,3 +1,5 @@
+if !selectedPlatform 
+    - selectedPlatform = '{tech}'
 .article__sub-navigation-trigger(data-toggle-trigger='sub-navigation', aria-hidden='true')
 ul.sub-navigation.sub-navigation--level-1.sub-navigation--top(data-toggle-target='sub-navigation')
     if subNavigation.length > 1
@@ -7,4 +9,4 @@ ul.sub-navigation.sub-navigation--level-1.sub-navigation--top(data-toggle-target
                     if (item.system.type === 'multiplatform_article')
                         a(href=`/${parentSlug}/${item.url.value}${selectedPlatform ? '?tech=' + selectedPlatform : ''}`, class=`sub-navigation__link${slug === item.url.value ? ' sub-navigation__link--active' : ''}`, data-lang='') !{item.short_title && item.short_title.value ? item.short_title.value : item.title.value}
                     else
-                        a(href=`/${parentSlug}/${item.url.value}${selectedPlatform && item.platform && item.platform.value.length ? '?tech=' + selectedPlatform : ''}`, class=`sub-navigation__link${slug === item.url.value ? ' sub-navigation__link--active' : ''}`)&attributes(item.platform && item.platform.value.length ? {'data-lang': ''} : {}) !{item.short_title && item.short_title.value ? item.short_title.value : item.title.value}
+                        a(href=`/${parentSlug}/${item.url.value}${(selectedPlatform && selectedPlatform !== '{tech}') && item.platform && item.platform.value.length ? '?tech=' + selectedPlatform : ''}`, class=`sub-navigation__link${slug === item.url.value ? ' sub-navigation__link--active' : ''}`)&attributes(item.platform && item.platform.value.length ? {'data-lang': ''} : {}) !{item.short_title && item.short_title.value ? item.short_title.value : item.title.value}

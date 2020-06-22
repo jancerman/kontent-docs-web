@@ -54,13 +54,31 @@ const platforms = {
             availablePlatforms: availablePlatforms
         }
     },
-    getDefaultPlatform: (req, content, preselectedPlatform) => {
+    getDefaultPlatform: async (req, res, content, preselectedPlatform) => {
+        let items;
         preselectedPlatform = req.cookies['KCDOCS.preselectedLanguage'];
 
+        const matchPlatformWithConfig = async (preselectedPlatform, items, res) => {
+            const platformsConfig = await platforms.getPlatformsConfig(res);
+            for (let i = 0; i < platformsConfig.length; i++) {
+                for (let j = 0; j < items.length; j++) {
+                    if (platformsConfig.platform === items[j].codename) {
+                        preselectedPlatform = items[j].codename;
+                        break;
+                    }
+                }
+            }
+            return preselectedPlatform;
+        };
+
         if (content && content.children && content.children.value.length) {
-            preselectedPlatform = content.children.value[0].platform.value[0].codename;
+            items = content.children.value;
         } else if (content && content.platform && content.platform.value.length) {
-            preselectedPlatform = content.platform.value[0].codename;
+            items = content.platform.value;
+        }
+
+        if (items) {
+            preselectedPlatform = await matchPlatformWithConfig(preselectedPlatform, items, res);
         }
 
         return preselectedPlatform;
@@ -112,7 +130,7 @@ const platforms = {
             if (cookiesPlatform) {
                 preselectedPlatform = cookiesPlatform;
             } else {
-                preselectedPlatform = platforms.getDefaultPlatform(req, content, preselectedPlatform);
+                preselectedPlatform = await platforms.getDefaultPlatform(req, res, content, preselectedPlatform);
             }
         } else {
             preselectedPlatform = platforms.getAvailablePlatform(content, preselectedPlatform);
@@ -130,7 +148,6 @@ const platforms = {
         } else {
             preselectedPlatform = null;
         }
-
         return preselectedPlatform;
     },
     getCanonicalUrl: (urlMap, content, preselectedPlatform) => {
