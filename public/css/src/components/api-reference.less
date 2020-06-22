@@ -119,11 +119,54 @@ body {
       background-color: #ccc;
     }
   }
+  
+  [class*="samples__SampleControls-"] {
+    padding: 0.5em 0;
+  }
+
+  .react-tabs__tab-panel,
+  [class*="JsonViewer"][class*="PrismDiv"],
+  [class*="tabs__Tabs-"] {
+    [class*="MimeLabel"] {
+      padding: .375em 1em;
+      margin: .5em 0;
+      color: #F05A22;
+      border: 1px solid #F05A22;
+      line-height: 1.375em;
+      opacity: 1;
+      display: inline-block;
+      border-radius: 16px 16px 4px 16px;
+      font-size: .875em;
+
+      &>span {
+        line-height: 1.675em;
+        color: #908e8f;
+        transition: 0.25s;
+        padding: 0 0.5em;
+        font-size: .875em;
+        border-radius: 16px;
+        transition: .25s background-color;
+
+        div {
+          display: inline-block;
+        }
+
+        &:hover {
+          background-color: #e8e8e8;
+        }
+      }
+    }
+  }
+
+  .tab-click_payload:not(:empty) {
+    padding: 12px 24px 20px 24px;
+  }
 
   .react-tabs__tab-panel,
   [class*="JsonViewer"][class*="PrismDiv"] {
     position: relative;
     text-shadow: none;
+    background-color: transparent !important;
     //max-height: 50vh;
     //overflow: auto;
 
@@ -156,36 +199,6 @@ body {
         //white-space: pre-wrap;
 
         .code-style()
-      }
-
-      &>div[class*="MimeLabel"] {
-        padding: .375em 1em;
-        margin: .5em 0 0;
-        color: #F05A22;
-        border: 1px solid #F05A22;
-        line-height: 1.375em;
-        opacity: 1;
-        display: inline-block;
-        border-radius: 16px 16px 4px 16px;
-        font-size: .875em;
-
-        &>span {
-          line-height: 1.675em;
-          color: #908e8f;
-          transition: 0.25s;
-          padding: 0 0.5em;
-          font-size: .875em;
-          border-radius: 16px;
-          transition: .25s background-color;
-
-          div {
-            display: inline-block;
-          }
-
-          &:hover {
-            background-color: #e8e8e8;
-          }
-        }
       }
 
       &>div[class*="SamplesWrapper"] {
@@ -1098,6 +1111,27 @@ h1, h2, h3, h4, strong {
 }
 
 .redoc-wrap {
+  pre[class*='language-'].line-numbers {
+    background-color: transparent !important;
+  }
+  [class*="StyledPre"] {
+    margin: 0 24px 20px 24px !important;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  [class*="samples__SampleControlsWrap-"] [class*="samples__SampleControls-"] {
+    margin: 0 24px !important;
+  }
+  .Dropdown-root {
+    margin-top: 12px;
+  }
+  [class*="styledelements__OperationBadge-"] {
+    height: max-content !important;
+    width: 45px;
+  }
+  [class*="styledelements__HttpVerb-"] {
+    font-size: 14px;
+  }
   [class*="StyledMarkdownBlock"] table {
       border-radius: .75em !important;
       display: table !important;

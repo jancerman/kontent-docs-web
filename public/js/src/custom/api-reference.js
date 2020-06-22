@@ -241,7 +241,9 @@
   floatingButtonPosition();
   window.addEventListener('scroll', function () {
     var button = document.querySelector('[class*="__FloatingButton"]');
-    setButtonPosition(button);
+    if (button) {
+      setButtonPosition(button);
+    }
   });
 
   var createAchors = function (headings) {
