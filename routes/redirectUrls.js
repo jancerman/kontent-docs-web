@@ -40,7 +40,7 @@ const getRedirectUrls = async (res) => {
 
 const getRedirectRules = async (res) => {
   const redirectRules = await handleCache.evaluateSingle(res, 'redirectRules', async () => {
-    return await getRedirectRules(res);
+    return await commonContent.getRedirectRules(res);
   });
 
   const redirectMap = [];
