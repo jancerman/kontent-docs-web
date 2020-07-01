@@ -9,11 +9,14 @@ const urlAliases = async (req, res, next) => {
     const articles = await handleCache.ensureSingle(res, 'articles', async () => {
         return commonContent.getArticles(res);
     });
+    const scenarios = await handleCache.ensureSingle(res, 'scenarios', async () => {
+        return await commonContent.getScenarios(res);
+      });
     const references = await handleCache.ensureSingle(res, 'apiSpecifications', async () => {
         return commonContent.getReferences(res);
     });
 
-    const items = [...articles, ...references];
+    const items = [...articles, ...references, ...scenarios];
     const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
         return await getUrlMap(res);
     });

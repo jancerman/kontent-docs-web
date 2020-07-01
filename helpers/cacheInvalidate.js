@@ -155,6 +155,17 @@ const invalidateArticles = async (itemsByTypes, KCDetails, res) => {
     return false;
 };
 
+const invalidateScenarios = async (itemsByTypes, KCDetails, res) => {
+    if (itemsByTypes.scenarios.length) {
+        console.log(itemsByTypes.scenarios)
+        await deleteSpecificKeys(KCDetails, itemsByTypes.scenarios, res);
+        handleCache.deleteCache('scenarios', KCDetails);
+        await handleCache.evaluateCommon(res, ['scenarios']);
+    }
+
+    return false;
+};
+
 const invalidateAPISpecifications = async (itemsByTypes, KCDetails, res) => {
     if (itemsByTypes.apiSpecifications.length) {
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'apiSpecifications');
@@ -228,7 +239,7 @@ const processInvalidation = async (req, res) => {
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'picker', 'platformsConfig');
         await invalidateGeneral(itemsByTypes, KCDetails, res, 'navigationItems');
         await invalidateArticles(itemsByTypes, KCDetails, res);
-        await invalidateMultiple(itemsByTypes, KCDetails, 'scenarios', res);
+        await invalidateScenarios(itemsByTypes, KCDetails, res);
         await invalidateMultiple(itemsByTypes, KCDetails, 'topics', res);
         await sendPurgeToGeneralPages(itemsByTypes, req, res);
 

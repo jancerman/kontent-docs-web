@@ -213,14 +213,13 @@ const isOneOfCacheRevalidate = (req) => {
 
 app.use('/', asyncHandler(async (req, res, next) => {
   if (isOneOfCacheRevalidate(req)) {
-    await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home', 'navigationItems', 'articles', 'termDefinitions']);
+    await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home', 'navigationItems', 'articles', 'scenarios', 'termDefinitions']);
     await handleCache.cacheAllAPIReferences(res);
   }
 
   const exists = await pageExists(req, res, next);
 
   if (!exists) {
-    await handleCache.evaluateCommon(res, ['articles']);
     return await urlAliases(req, res, next);
   }
 
@@ -229,10 +228,7 @@ app.use('/', asyncHandler(async (req, res, next) => {
 
 app.use('/', home);
 
-app.use('/redirect-urls', async (req, res, next) => {
-  await handleCache.evaluateCommon(res, ['articles']);
-  return next();
-}, redirectUrls);
+app.use('/redirect-urls', redirectUrls);
 
 app.use('/sitemap.xml', sitemap);
 

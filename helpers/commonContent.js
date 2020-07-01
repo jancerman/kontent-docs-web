@@ -71,6 +71,12 @@ const commonContent = {
             ...commonContent.getKCDetails(res)
         });
     },
+    getScenarios: async (res) => {
+        return await requestDelivery({
+            type: 'scenario',
+            ...commonContent.getKCDetails(res)
+        });
+    },
     getChangelog: async (res) => {
         const urlMap = await ensureSingle(res, 'urlMap', async () => {
             return await getUrlMap(res);
