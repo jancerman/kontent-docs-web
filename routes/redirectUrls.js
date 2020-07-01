@@ -67,6 +67,10 @@ const getRedirectRules = async (res) => {
     }
   }
 
+  for (let i = 0; i < redirectRules.length; i++) {
+    redirectRules[i].processed = false;
+  }
+
   return redirectMap;
 };
 
