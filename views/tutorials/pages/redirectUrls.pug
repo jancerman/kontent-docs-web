@@ -3,29 +3,33 @@ block content
     main(id='main').presentation
         .article
             .article__content
-                h1 Redirects
+                h1 Active redirects
                 h2 Redirect rules
                 table
                     tr
-                        td Redirect to
                         td Redirect from
+                        td Redirect to
                     each url in redirectRules   
                         tr
-                            td 
-                                a(href= req.protocol + '://' + req.get('host') + url.originalUrl, target='_blank') #{url.originalUrl}
                             td
                                 each redirect in url.redirectUrls
                                     div #{redirect}
-                h2 Redirect URLs
+                                else
+                                    div There are no Redirect rules set up in the current project.
+                            td
+                                a(href= req.protocol + '://' + req.get('host') + url.originalUrl, target='_blank') #{url.originalUrl}
+                h2 Redirect URLs for articles and scenarios
                 table
                     tr
-                        td Original URL
-                        td Redirect URLs
+                        td Redirect from
+                        td Redirect to
                     each url in redirectMap    
                         tr
-                            td 
-                                a(href= req.protocol + '://' + req.get('host') + url.originalUrl, target='_blank') #{url.originalUrl}
                             td
                                 each redirect in url.redirectUrls
                                     div #{redirect}
+                                else
+                                    div There are no redirects in articles or scenarios.
+                            td 
+                                a(href= req.protocol + '://' + req.get('host') + url.originalUrl, target='_blank') #{url.originalUrl}
             
