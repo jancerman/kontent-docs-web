@@ -64,6 +64,9 @@ const cacheKeys = [{
         name: 'articles',
         method: commonContent.getArticles
     }, {
+        name: 'scenarios',
+        method: commonContent.getScenarios
+    }, {
         name: 'notFound',
         method: commonContent.getNotFound
     }, {

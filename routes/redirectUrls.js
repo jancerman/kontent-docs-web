@@ -9,16 +9,16 @@ const getUrlMap = require('../helpers/urlMap');
 const handleCache = require('../helpers/handleCache');
 
 const getRedirectUrls = async (res) => {
-  const articles = await handleCache.ensureSingle(res, 'articles', async () => {
+  const articles = await handleCache.evaluateSingle(res, 'articles', async () => {
     return await commonContent.getArticles(res);
   });
-  const scenarios = await handleCache.ensureSingle(res, 'scenarios', async () => {
+  const scenarios = await handleCache.evaluateSingle(res, 'scenarios', async () => {
     return await commonContent.getScenarios(res);
   });
-  const references = await handleCache.ensureSingle(res, 'apiSpecifications', async () => {
+  const references = await handleCache.evaluateSingle(res, 'apiSpecifications', async () => {
     return commonContent.getReferences(res);
   });
-  const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
+  const urlMap = await handleCache.evaluateSingle(res, 'urlMap', async () => {
     return await getUrlMap(res);
   });
 
