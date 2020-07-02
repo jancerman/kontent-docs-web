@@ -42,6 +42,10 @@ const processLinks = ($) => {
         var linkHTML = $that.html() + '<span class="a-blank"><span>Opens in a new window</span></span>';
         $that.html(linkHTML);
     });
+    $('a[href*="tech={tech}"]').each(function () {
+        var $that = $(this);
+        $that.attr('rel', 'nofollow');
+    });
 };
 
 const createAnchors = ($) => {

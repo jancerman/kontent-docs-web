@@ -7,6 +7,10 @@ const updateLinkAttribute = (element, resolvedUrl, link) => {
         const $item = $(item);
         $item.removeAttr('data-item-id');
         $item.attr('href', resolvedUrl);
+
+        if (resolvedUrl.indexOf('tech={tech}') > -1) {
+            $item.attr('rel', 'nofollow');
+        }
     });
     element.value = $.html();
     element.value = element.value.replace('<html><head></head><body>', '').replace('</body></html>', '');

@@ -204,7 +204,7 @@ const richTextResolverTemplates = {
 
         return `
             <li class="selection__item">
-                ${resolvedUrl ? `<a class="selection__link" href="${resolvedUrl}">` : '<div class="selection__link">'}
+                ${resolvedUrl ? `<a class="selection__link" href="${resolvedUrl}"${resolvedUrl.indexOf('tech={tech}') > -1 ? ' rel="nofollow"' : ''}>` : '<div class="selection__link">'}
                     ${item.image.value[0] ? `
                         <div class="selection__img-sizer">
                             <img class="selection__img lazy lazy--exclude-dnt" data-dpr data-lazy-onload src='${placeholderSrc}' data-src="${imageSrc}"${imageWidth && imageHeight ? `width="${imageWidth}" height="${imageHeight}"` : ''}>
@@ -240,7 +240,7 @@ const richTextResolverTemplates = {
 
         return `
             <li class="selection__item">
-                ${resolvedUrl ? `<a class="selection__link" href="${resolvedUrl}">` : '<div class="selection__link">'}
+                ${resolvedUrl ? `<a class="selection__link" href="${resolvedUrl}"${resolvedUrl.indexOf('tech={tech}') > -1 ? ' rel="nofollow"' : ''}>` : '<div class="selection__link">'}
                     <div class="selection__img-sizer">
                         <img class="selection__img lazy lazy--exclude-dnt" data-dpr data-lazy-onload src='${placeholderSrc}' data-src="${imageSrc}"${imageWidth && imageHeight ? `style="max-width:${imageWidth}px;max-height:${imageHeight}px;width:100%" width="${imageWidth}" height="${imageHeight}"` : ''}>
                         <noscript>
@@ -320,7 +320,7 @@ const richTextResolverTemplates = {
             resolvedUrl = '/page-not-found';
         }
 
-        return `<a href="${resolvedUrl}" class="call-to-action"><span>${item.text.value}</span><span></span></a>`;
+        return `<a href="${resolvedUrl}" class="call-to-action"${resolvedUrl.indexOf('tech={tech}') > -1 ? ' rel="nofollow"' : ''}><span>${item.text.value}</span><span></span></a>`;
     },
     contentChunk: (item) => {
         const platforms = [];

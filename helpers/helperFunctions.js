@@ -238,7 +238,6 @@ const helper = {
     getPathWithoutQS: (url) => {
         return url.replace(/\?.*$/, '');
     }
-
 };
 
 module.exports = helper;
