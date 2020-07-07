@@ -57,6 +57,7 @@ window.initMultitechQS = (() => {
 
             techLinks[i].setAttribute('data-multitech', '');
             techLinks[i].setAttribute('href', href);
+            techLinks[i].removeAttribute('rel', href);
         };
     };
 })();
