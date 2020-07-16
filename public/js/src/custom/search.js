@@ -52,13 +52,32 @@ window.initSearch = (() => {
         const suggestionUrl = window.urlMap.filter(item => item.codename === suggestion.codename);
 
         // Add an anchor to the url if available
-        const anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g, '-').replace(/[-]+/g, '-')}` : '';
+        let anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g, '-').replace(/[-]+/g, '-')}` : '';
+        // Keep anchors only for references, changelog, and terminology
+        if (suggestion.codename !== 'terminology' && suggestion.codename !== 'product_changelog') {
+            anchor = '';
+        }
         const tech = suggestion.platforms && suggestion.platforms.length === 1 ? `?tech=${window.helper.getTech(suggestion.platforms[0])}` : '';
         suggestion.resolvedUrl = suggestionUrl.length ? `${suggestionUrl[0].url}${suggestionUrl[0].url.indexOf('?tech') === -1 ? tech : ''}${suggestion.section !== 'API' ? anchor : ''}` : '';
         let section = (suggestion.section === 'tutorials' && suggestion.resolvedUrl.includes('/reference/')) ? 'reference' : suggestion.section;
 
         if (section.toLowerCase() === 'api') {
-            section = 'reference';
+            section = 'Reference';
+        }
+
+        // Custom general label for tutorials
+        if (suggestion.section === 'tutorials') {
+            section = 'Tutorial'
+        }
+
+        // Custom label for terminology page
+        if (suggestion.codename === 'terminology') {
+            section = 'Terminology'
+        }
+
+        // Custom label for product changelog
+        if (suggestion.codename === 'product_changelog') {
+            section = 'Changelog'
         }
 
         // Template for a single search result suggestion
