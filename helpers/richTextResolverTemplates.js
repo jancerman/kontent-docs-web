@@ -242,7 +242,7 @@ const richTextResolverTemplates = {
             <li class="selection__item">
                 ${resolvedUrl ? `<a class="selection__link" href="${resolvedUrl}"${resolvedUrl.indexOf('tech={tech}') > -1 ? ' rel="nofollow"' : ''}>` : '<div class="selection__link">'}
                     <div class="selection__img-sizer">
-                        <img class="selection__img lazy lazy--exclude-dnt" data-dpr data-lazy-onload src='${placeholderSrc}' data-src="${imageSrc}"${imageWidth && imageHeight ? `style="max-width:${imageWidth}px;max-height:${imageHeight}px;width:100%" width="${imageWidth}" height="${imageHeight}"` : ''}>
+                        <img class="selection__img lazy lazy--exclude-dnt" data-dpr data-lazy-onload loading="lazy" src='${placeholderSrc}' data-src="${imageSrc}"${imageWidth && imageHeight ? `style="max-width:${imageWidth}px;max-height:${imageHeight}px;width:100%" width="${imageWidth}" height="${imageHeight}"` : ''}>
                         <noscript>
                             <img class="selection__img" src="${imageSrc}">
                         </noscript>
@@ -263,25 +263,26 @@ const richTextResolverTemplates = {
             const alt = item.image.value[0].description ? item.image.value[0].description : '';
             const url = item.url.value.trim();
             const transformationQueryString = '?fm=jpg&auto=format&w=';
-            let cssClass = item.border.value.length && item.border.value[0].codename === 'show' ? ' article__image-border' : '';
+            let cssClass = ' article__image-border'; // Always show border
+            // cssClass += item.border.value.length && item.border.value[0].codename === 'show' ? ' article__image-border' : '';
             cssClass += item.zoomable.value.length && item.zoomable.value[0].codename === 'true' && !url ? ' article__add-lightbox' : '';
             const imageWidth = item.image.value[0] ? item.image.value[0].width || 0 : 0;
             const imageHeight = item.image.value[0] ? item.image.value[0].height || 0 : 0;
-            const openLinkTag = url ? '<a href="'+ url +'" target="_blank" class="no-icon">' : '';
+            const openLinkTag = url ? '<a href="' + url + '" target="_blank" class="no-icon">' : '';
             const closeLinkTag = url ? '</a>' : '';
             const placeholderSrc = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1" width="${item.image.value[0].width}" height="${item.image.value[0].height}"></svg>`;
             const attributes = getImageAttributes(item, cssClass, transformationQueryString);
             return `
                 <figure>
                     ${openLinkTag}
-                        <img class="article__image lazy lazy--exclude-dnt ${attributes.cssClass}" alt="${alt}" data-dpr data-lazy-onload src='${placeholderSrc}' data-src="${item.image.value[0].url}${attributes.transformationQueryString}"${imageWidth && imageHeight ? `style="max-width:${imageWidth}px;max-height:${imageHeight}px;width:100%" width="${imageWidth}" height="${imageHeight}"` : ''}>
+                        <img class="article__image lazy lazy--exclude-dnt ${attributes.cssClass}" alt="${alt}" data-dpr data-lazy-onload loading="lazy" src='${placeholderSrc}' data-src="${item.image.value[0].url}${attributes.transformationQueryString}"${imageWidth && imageHeight ? `style="max-width:${imageWidth}px;max-height:${imageHeight}px;width:100%" width="${imageWidth}" height="${imageHeight}"` : ''}>
                     ${closeLinkTag}
                     <noscript>
                         ${openLinkTag}
                             <img class="article__image ${attributes.cssClass}" alt="${alt}" src="${item.image.value[0].url}${attributes.transformationQueryString}">
                         ${closeLinkTag}
                     </noscript>
-                    ${item.description.value && item.description.value !== '<p><br></p>' ? '<figcaption>'+ item.description.value +'</figcaption>' : ''}
+                    ${item.description.value && item.description.value !== '<p><br></p>' ? '<figcaption>' + item.description.value + '</figcaption>' : ''}
                 </figure>`;
         }
 
@@ -351,7 +352,7 @@ const richTextResolverTemplates = {
         });
         infoBar += '</ul><div class="infobar__copy"><div class="infobar__tooltip"></div></div></div>';
 
-    return `<pre class="line-numbers" data-platform-code="${item.platform.value.length ? item.platform.value[0].codename : ''}">${infoBar}<div class="clean-code">${helper.escapeHtml(item.code.value)}</div><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>`;
+        return `<pre class="line-numbers" data-platform-code="${item.platform.value.length ? item.platform.value[0].codename : ''}">${infoBar}<div class="clean-code">${helper.escapeHtml(item.code.value)}</div><code class="${lang}">${helper.escapeHtml(item.code.value)}</code></pre>`;
     },
     contentSwitcher: (item) => {
         let switcher = '<div class="language-selector"><ul class="language-selector__list">';
@@ -393,7 +394,7 @@ const richTextResolverTemplates = {
                     ${item.title.value}
                 </h2>
                 <div class="article__info-bar">
-                    <time class="article__date article__date--body" datetime="${moment(item.release_date.value).format('YYYY-MM-DD')}">${isPlanned ? 'Planned for ': ''}${moment(item.release_date.value).format('MMMM D, YYYY')}</time>
+                    <time class="article__date article__date--body" datetime="${moment(item.release_date.value).format('YYYY-MM-DD')}">${isPlanned ? 'Planned for ' : ''}${moment(item.release_date.value).format('MMMM D, YYYY')}</time>
                     ${displaySeverity || services ? `
                         <ul class="article__tags">
                             ${displaySeverity ? `<li class="article__tags-item article__tags-item--red">${severityName}</li>` : ''}
