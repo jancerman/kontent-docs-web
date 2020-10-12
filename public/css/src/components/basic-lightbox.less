@@ -95,7 +95,8 @@
     transform: translate3d(0,0,0);
 }
 
-.basicLightbox__placeholder>img + .basicLightbox__description {
+.basicLightbox__placeholder>img + .basicLightbox__description,
+.basicLightbox__placeholder>iframe + .basicLightbox__description {
     width: 95%;
     margin: 0 auto;
     color: #908e8f;
@@ -104,6 +105,8 @@
     background-color: #e8e8e8; 
     padding: 1.5em 1.75em;
     box-sizing: border-box;
+    position: relative;
+    top: -1px;
 
     p {
         margin: 0;

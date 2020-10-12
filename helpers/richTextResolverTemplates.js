@@ -45,6 +45,7 @@ const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
                     <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/${item.id.value}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
                 </noscript>
             </div>
+            ${helper.isNotEmptyRichText(item.caption.value) ? '<div class="figcaption">' + item.caption.value + '</div>' : ''}
             <p class="print-only"> 
                 <i>Play video on <a href="https://www.youtube.com/watch?v=${item.id.value}"> https://www.youtube.com/watch?v=${item.id.value}</a></i>
             </p>
@@ -56,6 +57,7 @@ const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
                     <iframe height="265" scrolling="no" src="https://codepen.io/${item.id.value}/?height=265&amp;theme-id=0" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
                 </noscript>
             </div>
+            ${helper.isNotEmptyRichText(item.caption.value) ? '<div class="figcaption">' + item.caption.value + '</div>' : ''}
             <p class="print-only"> 
                 <i>See the code example on <a href="https://codepen.io/${item.id.value}">https://codepen.io/${item.id.value}</a></i>
             </p>
@@ -67,6 +69,7 @@ const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
                     <iframe src="https://stackblitz.com/edit/${item.id.value}?embed=1"></iframe>
                 </noscript>
             </div>
+            ${helper.isNotEmptyRichText(item.caption.value) ? '<div class="figcaption">' + item.caption.value + '</div>' : ''}
             <p class="print-only"> 
                 <i>See the code example on <a href="https://stackblitz.com/edit/${item.id.value}">https://stackblitz.com/edit/${item.id.value}</a></i>
             </p>
@@ -78,6 +81,7 @@ const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
                     <iframe src="https://codesandbox.io/embed/${item.id.value}"></iframe>
                 </noscript>
             </div>
+            ${helper.isNotEmptyRichText(item.caption.value) ? '<div class="figcaption">' + item.caption.value + '</div>' : ''}
             <p class="print-only"> 
                 <i>See the code example on <a href="https://codesandbox.io/s/${item.id.value}">https://codesandbox.io/s/${item.id.value}</a></i>
             </p>
@@ -89,6 +93,7 @@ const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
                     <iframe src="https://${netlifyId[0]}.netlify.com${netlifyId[1]}"></iframe>
                 </noscript>
             </div>
+            ${helper.isNotEmptyRichText(item.caption.value) ? '<div class="figcaption">' + item.caption.value + '</div>' : ''}
             <p class="print-only"> 
                 <i>See the example on <a href="https://${netlifyId[0]}.netlify.com${netlifyId[1]}">https://${netlifyId[0]}.netlify.com${netlifyId[1]}</a></i>
             </p>
@@ -102,6 +107,7 @@ const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
                 </noscript>
                 <a class="embed__link" href="https://giphy.com/gifs/${item.id.value}" target="_blank">via GIPHY</a>
             </div>
+            ${helper.isNotEmptyRichText(item.caption.value) ? '<div class="figcaption">' + item.caption.value + '</div>' : ''}
             <p class="print-only"> 
                 <i>See the image on <a href="https://giphy.com/embed/${item.id.value}">https://giphy.com/embed/${item.id.value}</a></i>
             </p>
@@ -114,6 +120,7 @@ const getEmbeddedTemplate = (cssClass, item, netlifyId) => {
                     <iframe frameborder="0" src="https://app.diagrams.net?lightbox=1&nav=1#${item.id.value}"></iframe>
                 </noscript>
             </div>
+            ${helper.isNotEmptyRichText(item.caption.value) ? '<div class="figcaption">' + item.caption.value + '</div>' : ''}
             <p class="print-only"> 
                 <i>See the diagram on <a href="https://app.diagrams.net?lightbox=1&nav=1#${item.id.value}">https://app.diagrams.net?lightbox=1&nav=1#${item.id.value}</a></i>
             </p>
@@ -214,7 +221,7 @@ const richTextResolverTemplates = {
                         </div> 
                     ` : ''}
                     ${item.title.value ? `<div class="selection__title">${item.title.value}</div>` : ''}
-                    ${item.description.value && item.description.value !== '<p><br></p>' ? `<div class="selection__description">${item.description.value}</div>` : ''}
+                    ${helper.isNotEmptyRichText(item.description.value) ? `<div class="selection__description">${item.description.value}</div>` : ''}
                 ${resolvedUrl ? '</a>' : '</div>'}
             </li>
         `;
@@ -282,7 +289,7 @@ const richTextResolverTemplates = {
                             <img class="article__image ${attributes.cssClass}" alt="${alt}" src="${item.image.value[0].url}${attributes.transformationQueryString}">
                         ${closeLinkTag}
                     </noscript>
-                    ${item.description.value && item.description.value !== '<p><br></p>' ? '<figcaption>' + item.description.value + '</figcaption>' : ''}
+                    ${helper.isNotEmptyRichText(item.description.value) ? '<figcaption>' + item.description.value + '</figcaption>' : ''}
                 </figure>`;
         }
 

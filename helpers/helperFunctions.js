@@ -241,6 +241,9 @@ const helper = {
     },
     getPathWithoutQS: (url) => {
         return url.replace(/\?.*$/, '');
+    },
+    isNotEmptyRichText: (text) => {
+        return text && text !== '<p><br></p>';
     }
 };
 
