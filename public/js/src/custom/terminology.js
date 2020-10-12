@@ -12,52 +12,50 @@ window.initTerminology = () => {
     const terminologyPath = (() => {
         for (let i = 0; i < window.urlMap.length; i++) {
             if (window.urlMap[i].codename === 'terminology') {
-                return urlMap[i].url;
+                return window.urlMap[i].url;
             }
         }
         return '';
     })();
 
-        
-
-// Algorithm for automatic terms recognition and replace for html element
-/*
-    const wrapWord = (el, word) => {
-        const codename = word.codename;
-        const expr = new RegExp(word.term, 'gi');
-        const nodes = [].slice.call(el.childNodes, 0);
-        for (let i = 0; i < nodes.length; i++) {
-            const node = nodes[i];
-            if (node.nodeType === 3) {
-                const matches = node.nodeValue.match(expr);
-                if (matches) {
-                    const parts = node.nodeValue.split(expr);
-                    for (let n = 0; n < parts.length; n++) {
-                        if (n) {
-                            const span = el.insertBefore(document.createElement('span'), node);
-                            span.classList.add('term-tooltip');
-                            span.setAttribute('data-term-codename', codename);
-                            span.appendChild(document.createTextNode(matches[n - 1].replace(/\s/g, '\xa0')));
+    // Algorithm for automatic terms recognition and replace for html element
+    /*
+        const wrapWord = (el, word) => {
+            const codename = word.codename;
+            const expr = new RegExp(word.term, 'gi');
+            const nodes = [].slice.call(el.childNodes, 0);
+            for (let i = 0; i < nodes.length; i++) {
+                const node = nodes[i];
+                if (node.nodeType === 3) {
+                    const matches = node.nodeValue.match(expr);
+                    if (matches) {
+                        const parts = node.nodeValue.split(expr);
+                        for (let n = 0; n < parts.length; n++) {
+                            if (n) {
+                                const span = el.insertBefore(document.createElement('span'), node);
+                                span.classList.add('term-tooltip');
+                                span.setAttribute('data-term-codename', codename);
+                                span.appendChild(document.createTextNode(matches[n - 1].replace(/\s/g, '\xa0')));
+                            }
+                            if (parts[n]) {
+                                el.insertBefore(document.createTextNode(parts[n]), node);
+                            }
                         }
-                        if (parts[n]) {
-                            el.insertBefore(document.createTextNode(parts[n]), node);
-                        }
+                        el.removeChild(node);
                     }
-                    el.removeChild(node);
+                } else {
+                    wrapWord(node, word);
                 }
-            } else {
-                wrapWord(node, word);
             }
         }
-    }
 
-    const highightTerms = () => {
-        const article = document.querySelector('.article__content');
-        for (let i = 0; i < window.termDefinitions.length; i++) {
-            wrapWord(article, window.termDefinitions[i]);
-        }
-    };
-*/
+        const highightTerms = () => {
+            const article = document.querySelector('.article__content');
+            for (let i = 0; i < window.termDefinitions.length; i++) {
+                wrapWord(article, window.termDefinitions[i]);
+            }
+        };
+    */
 
     const generateAnchor = (text) => {
         return text.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});/ig, '').replace(/\W/g, '-').replace(/[-]+/g, '-');
@@ -80,12 +78,10 @@ window.initTerminology = () => {
 
             if (anchor) {
                 terms[i].setAttribute('href', `${terminologyPath}${anchor}`);
-                terms[i].classList.add('term-definition')
+                terms[i].classList.add('term-definition');
             }
-
-            console.log(htmlText.innerHTML)
         }
-        
+
         return htmlText.innerHTML;
     };
 
