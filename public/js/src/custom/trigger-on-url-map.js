@@ -24,5 +24,8 @@
         if (window.initMultitechQS) {
             window.initMultitechQS();
         }
+        if (window.initTerminology) {
+            window.initTerminology();
+        }
     }, 'json');
 })();

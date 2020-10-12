@@ -1,4 +1,4 @@
-window.initMultitechQS = (() => {
+window.initMultitechQS = () => {
     const getFirtPlatformUrl = (href) => {
         let firstPlatformUrl;
         const matchingUrls = window.urlMap.filter((item) => item.url.indexOf(href + '?tech=') > -1);
@@ -60,7 +60,7 @@ window.initMultitechQS = (() => {
             techLinks[i].removeAttribute('rel', href);
         };
     };
-})();
+};
 
 window.updateMultitechQS = () => {
     const techLinks = document.querySelectorAll('[data-multitech]');

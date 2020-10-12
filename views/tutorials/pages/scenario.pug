@@ -10,6 +10,7 @@ block content
                         .term-tooltip-container(aria-hidden='true')
                             .term-tooltip-content
                             .term-tooltip-close
+                            .term-tooltip-arrow
                     h1 !{content.title.value}
                     .article__notes
                         time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}

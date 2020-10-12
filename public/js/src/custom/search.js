@@ -2,7 +2,7 @@
  * Initializes Algolia search with use of autocomplete.js
  */
 
-window.initSearch = (() => {
+window.initSearch = () => {
     // Get Algolia API details from object in the global scope (should be present in the page head)
     // Or use API detail injected with url parameters
     window.searchAPI.appid = window.helper.getParameterByName('searchappid') || window.searchAPI.appid;
@@ -321,4 +321,4 @@ window.initSearch = (() => {
             triggerSearchPanel();
         }
     }
-})();
+};

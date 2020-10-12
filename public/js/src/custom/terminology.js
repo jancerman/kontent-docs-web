@@ -1,4 +1,4 @@
-(() => {
+window.initTerminology = () => {
     if (!window.termDefinitions || window.helper.getParameterByName('pdf')) return;
 
     let activeTooltip;
@@ -9,6 +9,16 @@
     const content = wrapper.querySelector('.term-tooltip-content');
     let termHovered = false;
     let activeTerm = '';
+    const terminologyPath = (() => {
+        for (let i = 0; i < window.urlMap.length; i++) {
+            if (window.urlMap[i].codename === 'terminology') {
+                return urlMap[i].url;
+            }
+        }
+        return '';
+    })();
+
+        
 
 // Algorithm for automatic terms recognition and replace for html element
 /*
@@ -48,7 +58,39 @@
         }
     };
 */
+
+    const generateAnchor = (text) => {
+        return text.toLowerCase().replace(/(<([^>]+)>)/ig, '').replace(/&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});/ig, '').replace(/\W/g, '-').replace(/[-]+/g, '-');
+    };
+
+    const handleTooltipTerminologyLinks = (text) => {
+        const htmlText = document.createElement('div');
+        htmlText.innerHTML = text;
+        const terms = htmlText.querySelectorAll('[href^="#term-definition-"]');
+
+        for (let i = 0; i < terms.length; i++) {
+            const codename = terms[i].getAttribute('href').replace('#term-definition-', '');
+            let anchor = '';
+
+            for (let i = 0; i < window.termDefinitions.length; i++) {
+                if (codename === window.termDefinitions[i].codename) {
+                    anchor = `#a-${generateAnchor(window.termDefinitions[i].term)}`
+                }
+            }
+
+            if (anchor) {
+                terms[i].setAttribute('href', `${terminologyPath}${anchor}`);
+                terms[i].classList.add('term-definition')
+            }
+
+            console.log(htmlText.innerHTML)
+        }
+        
+        return htmlText.innerHTML;
+    };
+
     const setTooltipContent = (wrapper, content) => {
+        content.text = handleTooltipTerminologyLinks(content.text)
         wrapper.innerHTML = `
             <h3 class="term-tooltip__title">${content.term}</h3>
             ${content.text}
@@ -169,4 +211,4 @@
     // highightTerms();
     initTooltips();
     keepTooltipPosition();
-})();
+};
