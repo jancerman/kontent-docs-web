@@ -15,6 +15,10 @@ const helper = {
         return unsafe
             .replace(/"/g, '\\"')
     },
+    escapeQuotesHtml: (unsafe) => {
+        return unsafe
+            .replace(/"/g, '&quot;')
+    },
     removeNewLines: (unsafe) => {
         return unsafe.replace(/\r?\n|\r/g, '');
     },

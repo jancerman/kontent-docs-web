@@ -260,7 +260,7 @@ const richTextResolverTemplates = {
     },
     image: (item) => {
         if (item.image.value.length) {
-            const alt = item.image.value[0].description ? item.image.value[0].description : '';
+            const alt = item.image.value[0].description ? helper.escapeQuotesHtml(item.image.value[0].description) : '';
             const url = item.url.value.trim();
             const transformationQueryString = '?fm=jpg&auto=format&w=';
             let cssClass = ' article__image-border'; // Always show border
