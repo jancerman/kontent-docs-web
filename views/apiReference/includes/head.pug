@@ -1,7 +1,12 @@
 meta(name='viewport', content='width=device-width, initial-scale=1')
 meta(charset='utf-8')
+title !{title}!{titleSuffix}
+meta(property='og:title', content=`${title.trim().replace(/\s+/g, ' ').replace(/"/g, '&quot;')}${titleSuffix}`)
 if description
-    meta(name='description', content=description.trim().replace(/\s+/g, ' '))
+    - description = description.trim().replace(/\s+/g, ' ').replace(/"/g, '&quot;')
+    meta(name='description', content=description)
+    meta(property='og:description', content=description)
+meta(property='og:image', content=`${process.env.baseURL}/img/kentico-kontent-og.jpg`)
 if !isPreview
     if (content && content.visibility && content.visibility.value.filter(item => item.codename === 'excluded_from_search').length)
         meta(name='robots', content='noindex')
@@ -41,7 +46,6 @@ else
 script(src='https://cdn.jsdelivr.net/npm/algoliasearch@3.32.0/dist/algoliasearchLite.min.js', defer='')
 script(src='https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js', defer='')
 script(src='/js/apireference.min.js?v=' + deployVersion, defer='', onload='initGTM()')
-title !{title}!{titleSuffix}
 if canonicalUrl && canonicalUrl !== req.originalUrl
     link(rel='canonical', href=`${canonicalUrl}`)
 link(rel='apple-touch-icon', sizes='57x57', href='/img/favicon/apple-icon-57x57.png')

@@ -1,7 +1,12 @@
 meta(name='viewport', content='width=device-width, initial-scale=1')
 meta(charset='utf-8')
+title !{title}!{titleSuffix}
+meta(property='og:title', content=`${title.trim().replace(/\s+/g, ' ').replace(/"/g, '&quot;')}${titleSuffix}`)
 if description
-    meta(name='description', content=description.trim().replace(/\s+/g, ' '))
+    - description = description.trim().replace(/\s+/g, ' ').replace(/"/g, '&quot;')
+    meta(name='description', content=description)
+    meta(property='og:description', content=description)
+meta(property='og:image', content=`${process.env.baseURL}/img/kentico-kontent-og.jpg`)
 if !isPreview
     if ((content && content.visibility && content.visibility.value.filter(item => item.codename === 'excluded_from_search').length) || status === 404)
         meta(name='robots', content='noindex,nofollow')
@@ -44,7 +49,6 @@ script(src='https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js', def
 script(src='/js/app.min.js?v=' + deployVersion, defer='', onload='initGTM()')
 if (containsChangelog)
     script(src='/js/changelog.min.js?v=' + deployVersion, defer='')
-title !{title}!{titleSuffix}
 if canonicalUrl
     link(rel='canonical', href=`${canonicalUrl}`)
 link(rel='apple-touch-icon', sizes='57x57', href='/img/favicon/apple-icon-57x57.png')
