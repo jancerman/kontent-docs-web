@@ -55,7 +55,7 @@ const handleArticle = async (settings, req, res) => {
             req.app.locals.terminologyPath = helper.getPathWithoutQS(req.originalUrl);
         }
 
-        settings.content[0].content.value = await customRichTextResolver(settings.content[0].content.value, res);
+        settings.content[0].content.value = await customRichTextResolver(settings.content[0].content.value, req, res);
     }
 
     const preselectedPlatformSettings = await platforms.getPreselectedPlatform(settings.content[0], cookiesPlatform, req, res);

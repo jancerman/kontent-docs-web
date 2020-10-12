@@ -373,7 +373,7 @@ const richTextResolverTemplates = {
 
         return codeExamples;
     },
-    releaseNote: (item) => {
+    releaseNote: (item, showEditLink, res) => {
         const isPlanned = (new Date(item.release_date.value)).getTime() > (new Date()).getTime();
         const severityCodename = item.severity.value.length ? item.severity.value[0].codename : '';
         const severityName = item.severity.value.length ? item.severity.value[0].name : '';
@@ -393,6 +393,7 @@ const richTextResolverTemplates = {
                     <a href="#${id}" class="anchor-copy" aria-hidden="true"></a>
                     ${item.title.value}
                 </h2>
+                ${showEditLink ? `<a href="${`https://app.kontent.ai/goto/edit-item/project/${res.locals.projectid}/variant-codename/default/item/${item.system.id}`}" target="_blank" rel="noopener" class="edit-link edit-link--move-up">Edit</a>` : ''}
                 <div class="article__info-bar">
                     <time class="article__date article__date--body" datetime="${moment(item.release_date.value).format('YYYY-MM-DD')}">${isPlanned ? 'Planned for ' : ''}${moment(item.release_date.value).format('MMMM D, YYYY')}</time>
                     ${displaySeverity || services ? `
@@ -405,13 +406,14 @@ const richTextResolverTemplates = {
             </div>
         `;
     },
-    termDefinition: (item) => {
+    termDefinition: (item, showEditLink, res) => {
         const id = `a-${helper.generateAnchor(item.term.value)}`;
         return `
             <h2 id="${id}">
                 <a href="#${id}" class="anchor-copy" aria-hidden="true"></a>
                 ${item.term.value}
             </h2>
+            ${showEditLink ? `<a href="${`https://app.kontent.ai/goto/edit-item/project/${res.locals.projectid}/variant-codename/default/item/${item.system.id}`}" target="_blank" rel="noopener" class="edit-link edit-link--move-up">Edit</a>` : ''}
             ${item.definition.value}
         `
     },

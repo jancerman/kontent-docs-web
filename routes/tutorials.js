@@ -195,7 +195,7 @@ const getContent = async (req, res) => {
             req.app.locals.terminologyPath = helper.getPathWithoutQS(req.originalUrl);
         }
 
-        content[0].content.value = await customRichTextResolver(content[0].content.value, res);
+        content[0].content.value = await customRichTextResolver(content[0].content.value, req, res);
     }
 
     return {

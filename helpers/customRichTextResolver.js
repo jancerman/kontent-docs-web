@@ -2,9 +2,12 @@ const cheerio = require('cheerio');
 const commonContent = require('./commonContent');
 const handleCache = require('./handleCache');
 const richTextResolverTemplates = require('./richTextResolverTemplates');
+const isPreview = require('./isPreview');
+const helper = require('./helperFunctions');
 
-const resolveChangelog = async ($, res) => {
+const resolveChangelog = async ($, req, res) => {
     const $elem = $('#changelog-resolve');
+    const showEditLink = isPreview(res.locals.previewapikey) || helper.isKenticoIP(req);
 
     if (!$elem.length) return;
 
@@ -15,14 +18,15 @@ const resolveChangelog = async ($, res) => {
     let html = '';
 
     for (let i = 0; i < releaseNotes.length; i++) {
-        html += richTextResolverTemplates.releaseNote(releaseNotes[i]);
+        html += richTextResolverTemplates.releaseNote(releaseNotes[i], showEditLink, res);
     }
 
     $elem.html(html);
 };
 
-const resolveTerminology = async ($, res) => {
+const resolveTerminology = async ($, req, res) => {
     const $elem = $('#terminology-resolve');
+    const showEditLink = isPreview(res.locals.previewapikey) || helper.isKenticoIP(req);
 
     if (!$elem.length) return;
 
@@ -33,17 +37,17 @@ const resolveTerminology = async ($, res) => {
     let html = '';
 
     for (let i = 0; i < termDefinitions.length; i++) {
-        html += richTextResolverTemplates.termDefinition(termDefinitions[i]);
+        html += richTextResolverTemplates.termDefinition(termDefinitions[i], showEditLink, res);
     }
 
     $elem.html(html);
 };
 
-const customRichTextResolver = async (text, res) => {
+const customRichTextResolver = async (text, req, res) => {
     const $ = cheerio.load(text);
 
-    await resolveChangelog($, res);
-    await resolveTerminology($, res);
+    await resolveChangelog($, req, res);
+    await resolveTerminology($, req, res);
 
     const output = $.html();
     return output.replace('<html><head></head><body>', '').replace('</body></html>', '');
