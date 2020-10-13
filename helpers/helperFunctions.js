@@ -1,7 +1,9 @@
 const axios = require('axios');
 const cache = require('memory-cache');
 const cheerio = require('cheerio');
-// var fs = require('fs');
+// const fs = require('fs');
+// const { promisify } = require('util');
+// const readFileAsync = promisify(fs.readFile);
 
 const helper = {
     escapeHtml: (unsafe) => {
@@ -131,13 +133,9 @@ const helper = {
         try {
             data = await axios.get(`${baseURL}/api/ProviderStarter?api=${codename}&isPreview=${KCDetails.isPreview ? 'true' : 'false'}&source=${KCDetails.host}&method=${methodName}&t=${time}`);
             /* data = {};
-            fs.readFile('./helpers/delivery_api.html', (err, text) => { // management_api_v2
-                if (err) {
-                    throw err;
-                }
-                data.data = text;
-            }); */
+            data.data = await readFileAsync('./helpers/delivery_api.html', 'utf8'); */
         } catch (err) {
+            console.err(err)
             try {
                 if (baseURL) {
                     data = await axios.get(`https://${KCDetails.isPreview ? 'kcddev' : 'kcdmaster'}.blob.core.windows.net/api-reference-pages/${codename}${KCDetails.isPreview ? '-preview' : ''}.html`);
@@ -151,7 +149,6 @@ const helper = {
         if (saveToCache) {
             cache.put(`reDocReference_${codename}_${KCDetails.projectid}`, data);
         }
-
         return data;
     },
     getDomain: (protocol, host) => {

@@ -14,6 +14,7 @@ body {
     background-color: #fff;
     padding: 1em 1em 0;
     z-index: 6001 !important;
+    width: 330px !important;
   }
 
   // Code samples
@@ -39,6 +40,7 @@ body {
       transition: background-color .25s, color .25s;
       position: relative;
       font-weight: 300 !important;
+      min-width: 0;
 
       &:after {
         content: '';
@@ -80,6 +82,15 @@ body {
             background-color: #36A284;
           }
         }
+      }
+    }
+
+    .tab-click_payload[role="tab"] {
+      padding-right: 14px;
+
+      &:after {
+        left: 1.75em;
+        bottom: 1em;
       }
     }
 
@@ -604,7 +615,7 @@ body {
     border-radius: 24px 24px 0 0;
 
     [class*="OneOfLabel"] {
-      font-family: GT Walsheim Pro, Helvetica, Arial, sans-serif;
+      font-family: 'GT Walsheim Pro', Helvetica, Arial, sans-serif;
       font-weight: 300;
     }
 
@@ -972,6 +983,11 @@ h3[class*="RightPanelHeader"] {
   }
 }
 
+[class*="OneOfButton"] {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
 [class*="InnerPropertiesWrap"] {
   .oneOf {
     padding: 1em 0 .75em;
@@ -991,7 +1007,6 @@ h3[class*="RightPanelHeader"] {
 }
 
 [class*="StyledMarkdownBlock"] {
-
   h3,
   h4 {
     font-size: 1.125em;
@@ -1048,6 +1063,10 @@ h3[class*="RightPanelHeader"] {
 
 [class*="shelfs__Badge"] {
   margin: 2px 0;
+}
+
+[class*="RedocAttribution"] {
+  display: none;
 }
 
 .code-samples,
@@ -1108,6 +1127,33 @@ h1, h2, h3, h4, strong {
 [class*="linkify__StyledShareLink"] {
   right: auto !important;
   left: -28px !important;
+}
+
+[class*="BackgroundStub"],
+[class*="panels__DarkRightPanel"] {
+  background-color: #fff !important;
+}
+
+[class*="PrismDiv"][class*="StyledPre"],
+[class*="PrismDiv"][class*="JsonViewer"] code {
+  font-size: 16px !important;
+}
+
+.token.url-link {
+  color: #F05A22;
+
+  &:hover,
+  &:active {
+    text-decoration: none;
+  } 
+}
+
+[class*="PrismDiv"][class*="JsonViewer"] code {
+  .token:not(.punctuation),
+  a {
+    color: #690 !important;
+    text-decoration: none !important;
+  }
 }
 
 .redoc-wrap {

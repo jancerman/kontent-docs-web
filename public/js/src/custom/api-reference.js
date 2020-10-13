@@ -360,7 +360,20 @@
     });
   };
 
+  var removeLinksFromJSON = function () {
+    var links = document.querySelectorAll('[class*="JsonViewer"] a');
+
+    for (var i = 0; i < links.length; i++) {
+      var wrap = document.createElement('span');
+      wrap.classList.add('token', 'custom-link-removal');
+      wrap.innerHTML = links[i].innerHTML;
+
+      links[i].parentNode.replaceChild(wrap, links[i]);
+    }
+  };
+
   createSelectLanguageSelector('.language-selector__list');
   // createSelectLanguageSelector('.react-tabs__tab-list');
   interactSelectLanguageSelector();
+  removeLinksFromJSON();
 })();

@@ -157,7 +157,6 @@ const invalidateArticles = async (itemsByTypes, KCDetails, res) => {
 
 const invalidateScenarios = async (itemsByTypes, KCDetails, res) => {
     if (itemsByTypes.scenarios.length) {
-        console.log(itemsByTypes.scenarios)
         await deleteSpecificKeys(KCDetails, itemsByTypes.scenarios, res);
         handleCache.deleteCache('scenarios', KCDetails);
         await handleCache.evaluateCommon(res, ['scenarios']);
