@@ -938,19 +938,21 @@ h4 {
 
 .api-status,
 span.api-status {
-  font-size: 12px;
-  color: #ec8a60;
-  font-weight: 300;
+  line-height: 1.675em;
+  font-size: 10px;
   text-transform: uppercase;
-  padding-left: .5em;
+  font-weight: 300;
+  background-color: #5160c0;
+  color: #fff;
+  margin: 0 .5em;
+  padding: 3px 8px;
+  border: 1px solid #5160c0;
+  border-radius: 8px 8px 8px 2px;
   position: relative;
+  top: -.5em;
 
   [class*="MenuItemLabel"] & {
     top: .125em;
-  }
-
-  [class*="headers"] & {
-    top: -.5em;
   }
 }
 
@@ -1122,6 +1124,11 @@ h1, h2, h3, h4, strong {
 
 [class*="MenuItemLabel"] {
   transition: .25s color;
+
+  [class*="ShelfIcon"] {
+    position: absolute;
+    left: .25em;
+  }
 }
 
 [class*="linkify__StyledShareLink"] {
@@ -1137,6 +1144,7 @@ h1, h2, h3, h4, strong {
 [class*="PrismDiv"][class*="StyledPre"],
 [class*="PrismDiv"][class*="JsonViewer"] code {
   font-size: 16px !important;
+  background-color: transparent !important;
 }
 
 .token.url-link {
@@ -1154,6 +1162,15 @@ h1, h2, h3, h4, strong {
     color: #690 !important;
     text-decoration: none !important;
   }
+}
+
+[class*="StyledResponseTitle"] + [class*="ResponseDetailsWrap"] {
+  margin-bottom: 4px;
+}
+
+[class*="shelfs__Badge"][type="warning"] {
+  background-color: #d4ad03 !important;
+  color: #fff !important;
 }
 
 .redoc-wrap {
