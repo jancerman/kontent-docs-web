@@ -15,11 +15,15 @@ const axios = require('axios');
 const cache = require('memory-cache');
 const util = require('util');
 const { setIntervalAsync } = require('set-interval-async/dynamic')
+const session = require('express-session');
+const passport = require('passport');
+const Auth0Strategy = require('passport-auth0');
 
 const handleCache = require('./helpers/handleCache');
 const getUrlMap = require('./helpers/urlMap');
 const commonContent = require('./helpers/commonContent');
 const isPreview = require('./helpers/isPreview');
+const userInViews = require('./helpers/userInViews');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -37,9 +41,52 @@ const error = require('./routes/error');
 const form = require('./routes/form');
 const redirectRules = require('./routes/redirectRules');
 const generatePDF = require('./routes/generatePDF');
+const auth = require('./routes/auth');
+const elearning = require('./routes/elearning');
 
 const app = express();
 
+// Auth0 authentication setup
+// Session
+const sess = {
+  secret: 'XuDYKakmy67fTbSd',
+  cookie: {},
+  resave: false,
+  saveUninitialized: true
+};
+
+if (!process.env.baseURL.includes('localhost')) {
+  sess.cookie.secure = true;
+}
+
+app.use(session(sess));
+
+// Auth0
+const strategy = new Auth0Strategy({
+    domain: process.env.AUTH0_DOMAIN,
+    clientID: process.env.AUTH0_CLIENT_ID,
+    clientSecret: process.env.AUTH0_CLIENT_SECRET,
+    callbackURL:
+      process.env.AUTH0_CALLBACK_URL
+  },
+  function (accessToken, refreshToken, extraParams, profile, done) {
+    return done(null, profile);
+  }
+);
+
+passport.use(strategy);
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function (user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function (user, done) {
+  done(null, user);
+});
+
+// URLs allowed in the application
 const urlWhitelist = [
   '/other/*',
   '/form/*',
@@ -53,7 +100,12 @@ const urlWhitelist = [
   '/robots.txt',
   '/link-to',
   '/sitemap.xml',
-  '/pdf'
+  '/pdf',
+  '/login',
+  '/logout',
+  '/callback',
+  '/elearning',
+  '/elearning/*'
 ];
 
 // Azure Application Insights monitors
@@ -88,6 +140,8 @@ app.use(slashes(false));
 app.use(cacheControl({
   maxAge: 300
 }));
+
+app.use(userInViews());
 
 app.use((req, res, next) => {
   if (isPreview(process.env['KC.PreviewApiKey']) || (req.originalUrl.indexOf('/cache-invalidate') > -1)) {
@@ -249,6 +303,10 @@ app.get('/urlmap', asyncHandler(async (req, res) => {
 
   return res.json(urlMap);
 }));
+
+app.use('/', elearning);
+
+app.use('/', auth);
 
 // Dynamic routing setup
 app.use('/', async (req, res, next) => {
