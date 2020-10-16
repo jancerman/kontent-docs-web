@@ -7,6 +7,7 @@ const minify = require('../helpers/minify');
 const helper = require('../helpers/helperFunctions');
 const handleCache = require('../helpers/handleCache');
 const asyncHandler = require('express-async-handler');
+const axios = require('axios');
 
 router.get('/elearning', secured(), asyncHandler(async (req, res, next) => {
   const footer = await handleCache.ensureSingle(res, 'footer', async (res) => {
@@ -30,6 +31,12 @@ router.get('/elearning', secured(), asyncHandler(async (req, res, next) => {
   if (!footer || !UIMessages || !content || !home) {
       return res.status(500).send('Unexpected error, please check site logs.');
   }
+
+  const response = await axios.get('https://subscription-service-qa.azurewebsites.net/api/internal/cs-services-user/hello@milanlund.com/', {
+    headers: { Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlIjpbImNzc2VydmljZXNyZWFkZXIiXSwiaXNzIjoia2VudGljb2Nsb3VkIiwiYXVkIjoic3Vic2NyaXB0aW9uc2VydmljZSIsImV4cCI6MTYwOTUwMjQwMCwibmJmIjoxNDkzOTAxNTgwfQ.pg51UWooxD-xyKAYhqr-_EHOQ5ljIg0jdkdDU3NmLxY' }
+  });
+
+  console.log(response.data)
 
   res.render('tutorials/pages/elearning', {
     req: req,

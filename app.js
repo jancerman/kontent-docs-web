@@ -19,8 +19,9 @@ const session = require('express-session');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
 
+const helper = require('./helpers/helperFunctions');
+const appHelper = require('./helpers/app');
 const handleCache = require('./helpers/handleCache');
-const getUrlMap = require('./helpers/urlMap');
 const commonContent = require('./helpers/commonContent');
 const isPreview = require('./helpers/isPreview');
 const userInViews = require('./helpers/userInViews');
@@ -31,6 +32,7 @@ const sitemap = require('./routes/sitemap');
 const rss = require('./routes/rss');
 const robots = require('./routes/robots');
 const kenticoIcons = require('./routes/kenticoIcons');
+const urlMap = require('./routes/urlMap');
 const urlAliases = require('./routes/urlAliases');
 const redirectUrls = require('./routes/redirectUrls');
 const referenceUpdated = require('./routes/referenceUpdated');
@@ -77,6 +79,7 @@ const strategy = new Auth0Strategy({
 passport.use(strategy);
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(userInViews());
 
 passport.serializeUser(function (user, done) {
   done(null, user);
@@ -85,28 +88,6 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(function (user, done) {
   done(null, user);
 });
-
-// URLs allowed in the application
-const urlWhitelist = [
-  '/other/*',
-  '/form/*',
-  '/urlmap',
-  '/kentico-icons.min.css',
-  '/favicon.ico',
-  '/api-reference',
-  '/rss/*',
-  '/redirect-urls',
-  '/cache-invalidate',
-  '/robots.txt',
-  '/link-to',
-  '/sitemap.xml',
-  '/pdf',
-  '/login',
-  '/logout',
-  '/callback',
-  '/elearning',
-  '/elearning/*'
-];
 
 // Azure Application Insights monitors
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
@@ -141,8 +122,6 @@ app.use(cacheControl({
   maxAge: 300
 }));
 
-app.use(userInViews());
-
 app.use((req, res, next) => {
   if (isPreview(process.env['KC.PreviewApiKey']) || (req.originalUrl.indexOf('/cache-invalidate') > -1)) {
     res.cacheControl = {
@@ -154,67 +133,11 @@ app.use((req, res, next) => {
 
 app.enable('trust proxy');
 
-const handleKCKeys = (req, res) => {
-  if (typeof req.query.projectid !== 'undefined') {
-    res.locals.projectid = req.query.projectid;
-  } else {
-    res.locals.projectid = process.env['KC.ProjectId'];
-  }
-
-  if (typeof req.query.previewapikey !== 'undefined') {
-    res.locals.previewapikey = req.query.previewapikey;
-  } else {
-    res.locals.previewapikey = process.env['KC.PreviewApiKey'];
-  }
-
-  if (typeof req.query.securedapikey !== 'undefined') {
-    res.locals.securedapikey = req.query.securedapikey;
-  } else {
-    res.locals.securedapikey = process.env['KC.SecuredApiKey'];
-  }
-};
-
-const pageExists = async (req, res) => {
-  const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
-    return await getUrlMap(res);
-  });
-
-  const path = req.originalUrl.split('?')[0];
-  let exists = false;
-
-  urlMap.forEach((item) => {
-    const itemPath = item.url.split('?')[0];
-
-    if (itemPath === path) {
-      exists = true;
-    }
-  });
-
-  if (!exists) {
-    urlWhitelist.forEach((item) => {
-      let itemPath = item.split('#')[0];
-      itemPath = itemPath.split('?')[0];
-
-      if (itemPath === path) {
-        exists = true;
-      } else if (itemPath.endsWith('/*')) {
-        itemPath = itemPath.slice(0, -1);
-
-        if (path.startsWith(itemPath)) {
-          exists = true;
-        }
-      }
-    });
-  }
-
-  return exists;
-};
-
-// Routes
 app.use(async (req, res, next) => {
   res.locals.host = req.headers.host;
   res.locals.protocol = req.protocol;
-  handleKCKeys(req, res);
+  res.locals.isKenticoIP = helper.isKenticoIP(req);
+  appHelper.handleKCKeys(req, res);
   res.setHeader('Arr-Disable-Session-Affinity', 'True');
   if (!(isPreview(res.locals.previewapikey) || (req.originalUrl.indexOf('/cache-invalidate') > -1))) {
     res.setHeader('Surrogate-Control', 'max-age=3600');
@@ -222,90 +145,46 @@ app.use(async (req, res, next) => {
   return next();
 });
 
+// Routes
 app.use('/link-to', linkUrls);
-
 app.use('/reference-updated', bodyParser.json({
   type: '*/*'
 }), referenceUpdated);
-
 app.use('/cache-invalidate', bodyParser.text({
   type: '*/*'
 }), cacheInvalidate);
-
 app.use('/', redirectRules);
-
 app.use('/form', bodyParser.text({
   type: '*/*'
 }), form);
-
 app.use('/kentico-icons.min.css', kenticoIcons);
-
-const isOneOfCacheRevalidate = (req) => {
-  const urls = [
-    '/reference/',
-    '/rss/',
-    '/tutorials/',
-    '/certification/',
-    '/changelog/',
-    '/other/'
-  ];
-
-  if (req.originalUrl === '/') {
-    return true;
-  }
-
-  let revalidate = false;
-
-  for (var i = 0; i < urls.length; i++) {
-    if (req.originalUrl.startsWith(urls[i])) {
-      revalidate = true;
-    }
-  }
-
-  return revalidate;
-};
-
 app.use('/', asyncHandler(async (req, res, next) => {
-  if (isOneOfCacheRevalidate(req)) {
+  if (appHelper.isOneOfCacheRevalidate(req)) {
     await handleCache.evaluateCommon(res, ['platformsConfig', 'urlMap', 'footer', 'UIMessages', 'home', 'navigationItems', 'articles', 'scenarios', 'termDefinitions']);
+
+    const UIMessages = await handleCache.ensureSingle(res, 'UIMessages', async () => {
+      return await commonContent.getUIMessages(res);
+    });
+    if (UIMessages && UIMessages.length) {
+      res.locals.UIMessages = UIMessages[0];
+    }
+
     await handleCache.cacheAllAPIReferences(res);
   }
-
-  const exists = await pageExists(req, res, next);
-
+  const exists = await appHelper.pageExists(req, res, next);
   if (!exists) {
     return await urlAliases(req, res, next);
   }
-
   return next();
 }));
-
 app.use('/', home);
-
 app.use('/redirect-urls', redirectUrls);
-
 app.use('/sitemap.xml', sitemap);
-
 app.use('/rss', rss);
-
 app.use('/robots.txt', robots);
-
 app.use('/pdf', generatePDF);
-
-app.get('/urlmap', asyncHandler(async (req, res) => {
-  res.cacheControl = {
-    maxAge: 0
-  };
-
-  const urlMap = await handleCache.ensureSingle(res, 'urlMap', async () => {
-    return await getUrlMap(res);
-  });
-
-  return res.json(urlMap);
-}));
-
+app.get('/urlmap', urlMap);
 app.use('/', elearning);
-
 app.use('/', auth);
 
 // Dynamic routing setup
@@ -321,7 +200,7 @@ app.use('/', async (req, res, next) => {
 
   if (res.locals.router && res.locals.router.length && res.locals.router[0].type.value.length) {
     res.locals.router = res.locals.router[0].type.value[0].codename;
-  } else /* if (topLevel === 'other' || topLevel === 'article') */ {
+  } else {
     res.locals.router = 'tutorials';
   }
 
@@ -332,16 +211,6 @@ app.use('/', async (req, res, next) => {
 app.use('/', asyncHandler(async (req, res, next) => {
   return await urlAliases(req, res, next);
 }));
-
-const logPool = (log) => {
-  const key = 'cache-interval-pool';
-  const logs = cache.get(key) || [];
-  logs.unshift(log);
-  if (logs.length > 200) {
-      logs.length = 200;
-  }
-  cache.put(key, logs);
-};
 
 setIntervalAsync(async () => {
   const log = {
@@ -358,7 +227,7 @@ setIntervalAsync(async () => {
     log.error = error && error.response ? error.response.data : '';
   }
 
-  logPool(log);
+  appHelper.logPool(log);
 }, 300000);
 
 // catch 404 and forward to error handler

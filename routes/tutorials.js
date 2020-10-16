@@ -119,6 +119,8 @@ const getContent = async (req, res) => {
         } else if (currentLevel === 0 && content[0].system.type !== 'multiplatform_article') {
             if (content[0].system.type === 'certification') {
                 view = 'tutorials/pages/certification';
+            } else if (content[0].system.type === 'training_course') {
+                view = 'tutorials/pages/trainingCourse';
             } else if (content[0].system.type === 'scenario') {
                 view = 'tutorials/pages/scenario';
             }
@@ -165,13 +167,19 @@ const getContent = async (req, res) => {
 
     if (content && content.length) {
         const titleItems = [...articles, ...references];
+
         if (content[0].introduction) {
             content[0].introduction.value = helper.addTitlesToLinks(content[0].introduction.value, urlMap, titleItems);
+        }
+
+        if (content[0].description) {
+            content[0].description.value = helper.addTitlesToLinks(content[0].description.value, urlMap, titleItems);
         }
 
         if (content[0].content) {
             content[0].content.value = helper.addTitlesToLinks(content[0].content.value, urlMap, titleItems);
         }
+
         if (content[0].next_steps) {
             content[0].next_steps.value = helper.addTitlesToLinks(content[0].next_steps.value, urlMap, titleItems);
         }
@@ -180,7 +188,7 @@ const getContent = async (req, res) => {
     let containsChangelog;
     let containsTerminology;
     let releaseNoteContentType;
-    if (content && content.length) {
+    if (content && content.length && content[0].content) {
         containsChangelog = helper.hasLinkedItemOfType(content[0].content, 'changelog');
         containsTerminology = helper.hasLinkedItemOfType(content[0].content, 'terminology');
 

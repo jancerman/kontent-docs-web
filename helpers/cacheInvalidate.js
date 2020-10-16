@@ -56,7 +56,8 @@ const splitPayloadByContentType = (items) => {
         apiSpecifications: [],
         redirectRules: [],
         releaseNotes: [],
-        termDefinitions: []
+        termDefinitions: [],
+        trainingCourses: []
     };
 
     for (let i = 0; i < items.length; i++) {
@@ -88,6 +89,8 @@ const splitPayloadByContentType = (items) => {
             itemsByTypes.releaseNotes.push(item);
         } else if (item.type === 'term_definition') {
             itemsByTypes.termDefinitions.push(item);
+        } else if (item.type === 'training_course') {
+            itemsByTypes.trainingCourses.push(item);
         }
     }
 
@@ -240,6 +243,7 @@ const processInvalidation = async (req, res) => {
         await invalidateArticles(itemsByTypes, KCDetails, res);
         await invalidateScenarios(itemsByTypes, KCDetails, res);
         await invalidateMultiple(itemsByTypes, KCDetails, 'topics', res);
+        await invalidateMultiple(itemsByTypes, KCDetails, 'trainingCourses', res);
         await sendPurgeToGeneralPages(itemsByTypes, req, res);
 
         if (app.appInsights) {

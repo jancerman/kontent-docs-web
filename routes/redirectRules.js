@@ -8,7 +8,6 @@ router.get('*', async (req, res, next) => {
     const rules = await handleCache.evaluateSingle(res, 'redirectRules', async () => {
         return await commonContent.getRedirectRules(res);
     });
-
     const normalizedUrlPath = req.originalUrl.toLowerCase().split('?')[0];
 
     if (rules) {

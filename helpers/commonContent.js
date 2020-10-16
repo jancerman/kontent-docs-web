@@ -1,7 +1,7 @@
 const requestDelivery = require('./requestDelivery');
 const getUrlMap = require('./urlMap');
 const ensureSingle = require('./ensureSingle');
-const isPreview = require('../helpers/isPreview');
+const isPreview = require('./isPreview');
 
 const commonContent = {
     getKCDetails: (res) => {
@@ -12,6 +12,8 @@ const commonContent = {
             host: res.locals.host,
             protocol: res.locals.protocol,
             isPreview: isPreview(res.locals.previewapikey),
+            isKenticoIP: res.locals.isKenticoIP,
+            UIMessages: res.locals.UIMessages
         };
     },
     getTree: async (contentType, depth, res) => {
@@ -91,6 +93,12 @@ const commonContent = {
     getCertification: async (res) => {
         return await requestDelivery({
             type: 'certification',
+            ...commonContent.getKCDetails(res)
+        });
+    },
+    getTraniningCourse: async (res) => {
+        return await requestDelivery({
+            type: 'training_course',
             ...commonContent.getKCDetails(res)
         });
     },

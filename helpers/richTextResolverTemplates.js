@@ -380,7 +380,7 @@ const richTextResolverTemplates = {
 
         return codeExamples;
     },
-    releaseNote: (item, showEditLink, res) => {
+    releaseNote: (item, config) => {
         const isPlanned = (new Date(item.release_date.value)).getTime() > (new Date()).getTime();
         const severityCodename = item.severity.value.length ? item.severity.value[0].codename : '';
         const severityName = item.severity.value.length ? item.severity.value[0].name : '';
@@ -400,7 +400,7 @@ const richTextResolverTemplates = {
                     <a href="#${id}" class="anchor-copy" aria-hidden="true"></a>
                     ${item.title.value}
                 </h2>
-                ${showEditLink ? `<a href="${`https://app.kontent.ai/goto/edit-item/project/${res.locals.projectid}/variant-codename/default/item/${item.system.id}`}" target="_blank" rel="noopener" class="edit-link edit-link--move-up">Edit</a>` : ''}
+                ${helper.showEditLink(config.isPreview, config.isKenticoIP) ? `<a href="${`https://app.kontent.ai/goto/edit-item/project/${config.projectid}/variant-codename/default/item/${item.system.id}`}" target="_blank" rel="noopener" class="edit-link edit-link--move-up">Edit</a>` : ''}
                 <div class="article__info-bar">
                     <time class="article__date article__date--body" datetime="${moment(item.release_date.value).format('YYYY-MM-DD')}">${isPlanned ? 'Planned for ' : ''}${moment(item.release_date.value).format('MMMM D, YYYY')}</time>
                     ${displaySeverity || services ? `
@@ -413,14 +413,14 @@ const richTextResolverTemplates = {
             </div>
         `;
     },
-    termDefinition: (item, showEditLink, res) => {
+    termDefinition: (item, config) => {
         const id = `a-${helper.generateAnchor(item.term.value)}`;
         return `
             <h2 id="${id}">
                 <a href="#${id}" class="anchor-copy" aria-hidden="true"></a>
                 ${item.term.value}
             </h2>
-            ${showEditLink ? `<a href="${`https://app.kontent.ai/goto/edit-item/project/${res.locals.projectid}/variant-codename/default/item/${item.system.id}`}" target="_blank" rel="noopener" class="edit-link edit-link--move-up">Edit</a>` : ''}
+            ${helper.showEditLink(config.isPreview, config.isKenticoIP) ? `<a href="${`https://app.kontent.ai/goto/edit-item/project/${config.projectid}/variant-codename/default/item/${item.system.id}`}" target="_blank" rel="noopener" class="edit-link edit-link--move-up">Edit</a>` : ''}
             ${item.definition.value}
         `
     },
@@ -429,6 +429,35 @@ const richTextResolverTemplates = {
     },
     terminology: () => {
         return '<div id="terminology-resolve"></div>';
+    },
+    trainingCourse: (item, config) => {
+        const id = `a-${helper.generateAnchor(item.title.value)}`;
+        const persona = item.persona.value.length ? item.persona.value[0].name : null;
+        const urlMapItem = config.urlMap.filter(itemUrlMap => itemUrlMap.codename === item.system.codename);
+        const url = urlMapItem.length ? urlMapItem[0].url : null
+
+        return `
+            <div class="article__teaser">
+                <h3 class="article__h2-h3" id="${id}">
+                    <a href="#${id}" class="anchor-copy" aria-hidden="true"></a>
+                    ${item.title.value}
+                </h3>
+                ${helper.showEditLink(config.isPreview, config.isKenticoIP) ? `<a href="${`https://app.kontent.ai/goto/edit-item/project/${config.projectid}/variant-codename/default/item/${item.system.id}`}" target="_blank" rel="noopener" class="edit-link edit-link--move-up">Edit</a>` : ''}
+                <div class="article__info-bar">
+                    ${persona ? `
+                        <ul class="article__tags">
+                            <li class="article__tags-item article__tags-item--green">${persona}</li>
+                        </ul>` : ''}
+                </div>
+                ${item.introduction.value}
+                ${url && config.UIMessages && config.UIMessages.training___view_details ? `
+                    <a href="${url}" class="call-to-action">
+                        <span>${config.UIMessages.training___view_details.value}</span>
+                        <span></span>
+                    </a>
+                ` : ''} 
+            </div>
+        `;
     }
 };
 

@@ -11,11 +11,6 @@ nav.navigation
                 each item in navigation
                     li.navigation__item
                         a(href=`${item.system.type === 'navigation_link' ? '' : '/'}${item.url.value}`, class=`navigation__link${req.originalUrl.startsWith(`/${item.url.value}`) ? ' navigation__link--active' : ''}`) !{item.title.value}
-                li.navigation__item
-                    if (req.user)
-                        a.navigation__link(href="/logout") Log out
-                    else
-                        a.navigation__link(href="/login") Log in
         .navigation__right(data-search-target='')
             if isNotHome
                 .navigation__search-wrapper

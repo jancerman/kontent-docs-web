@@ -3,11 +3,14 @@ const commonContent = require('./commonContent');
 const handleCache = require('./handleCache');
 const richTextResolverTemplates = require('./richTextResolverTemplates');
 const isPreview = require('./isPreview');
-const helper = require('./helperFunctions');
 
 const resolveChangelog = async ($, req, res) => {
     const $elem = $('#changelog-resolve');
-    const showEditLink = isPreview(res.locals.previewapikey) || helper.isKenticoIP(req);
+    const config = {
+        isPreview: isPreview(res.locals.previewapikey),
+        isKenticoIP: res.locals.isKenticoIP,
+        projectid: res.locals.projectid
+    };
 
     if (!$elem.length) return;
 
@@ -18,7 +21,7 @@ const resolveChangelog = async ($, req, res) => {
     let html = '';
 
     for (let i = 0; i < releaseNotes.length; i++) {
-        html += richTextResolverTemplates.releaseNote(releaseNotes[i], showEditLink, res);
+        html += richTextResolverTemplates.releaseNote(releaseNotes[i], config);
     }
 
     $elem.html(html);
@@ -26,7 +29,11 @@ const resolveChangelog = async ($, req, res) => {
 
 const resolveTerminology = async ($, req, res) => {
     const $elem = $('#terminology-resolve');
-    const showEditLink = isPreview(res.locals.previewapikey) || helper.isKenticoIP(req);
+    const config = {
+        isPreview: isPreview(res.locals.previewapikey),
+        isKenticoIP: res.locals.isKenticoIP,
+        projectid: res.locals.projectid
+    };
 
     if (!$elem.length) return;
 
@@ -37,7 +44,7 @@ const resolveTerminology = async ($, req, res) => {
     let html = '';
 
     for (let i = 0; i < termDefinitions.length; i++) {
-        html += richTextResolverTemplates.termDefinition(termDefinitions[i], showEditLink, res);
+        html += richTextResolverTemplates.termDefinition(termDefinitions[i], config);
     }
 
     $elem.html(html);

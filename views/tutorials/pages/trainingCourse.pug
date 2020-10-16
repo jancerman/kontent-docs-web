@@ -1,0 +1,15 @@
+extends ../includes/layout.pug
+block content
+    main(id='main')
+        .article
+            .article__left
+            .article__right
+                .article__content 
+                    h1 !{content.title.value}
+                    .article__notes
+                      span !{UIMessages.training___estimated_duration.value} !{content.duration.value} !{content.duration.value === 1 ? 'hour' : `hours`}
+                      if (content.persona.value.length)
+                        ul.article__tags
+                          li.article__tags-item.article__tags-item--green !{content.persona.value[0].name}
+                    | !{minify(content.introduction.value)}
+                    | !{minify(content.description.value)}

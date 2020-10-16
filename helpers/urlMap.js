@@ -245,24 +245,24 @@ const handleNode = async (settings) => {
     return await createUrlMap(settings.item, settings.isSitemap, settings.url, settings.urlMap, settings.res);
 };
 
-const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
+const queryDeliveryType = async(type, depth, deliveryClient) => {
     let error;
     const query = deliveryClient.items()
-        .type('article');
+        .type(type)
+        .depthParameter(depth);
 
-    let articles = await query
+    let items = await query
         .toPromise()
         .catch(err => {
             error = err;
         });
 
-    // Retry in case of stale content
     const temps = [0];
     for await (let temp of temps) {
-        if ((!error && ((articles && articles.hasStaleContent) || !articles)) || error) {
+        if ((!error && ((items && items.hasStaleContent) || !items)) || error) {
             error = null;
             await helper.sleep(5000);
-            articles = await query
+            items = await query
                 .toPromise()
                 .catch(err => {
                     error = err;
@@ -273,9 +273,17 @@ const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
             }
         }
     }
+    return {
+        items: items,
+        error: error
+    };
+}
 
-    if (articles && articles.items) {
-        articles.items.forEach((articleItem) => {
+const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
+    const { items, error } = await queryDeliveryType('articles', 1, deliveryClient);
+
+    if (items && items.items) {
+        items.items.forEach((articleItem) => {
             let isInUrlMap = false;
             urlMap.forEach((mapItem) => {
                 if (articleItem.system.codename === mapItem.codename) {
@@ -302,6 +310,30 @@ const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
     return urlMap;
 };
 
+const addTrainingCoursesToUrlMap = async(deliveryClient, urlMap) => {
+    const eLearningItem = urlMap.filter(item => item.codename === 'e_learning');
+    const eLearningItemUrl = eLearningItem.length ? eLearningItem[0].url : null;
+    if (!eLearningItemUrl) return urlMap;
+
+    const { items, error } = await queryDeliveryType('training_course', 1, deliveryClient);
+
+    items.items.forEach((courseItem) => {
+        urlMap.push(getMapItem({
+            codename: courseItem.system.codename,
+            url: `${eLearningItemUrl}/${courseItem.url.value}`,
+            date: courseItem.system.lastModified,
+            visibility: courseItem.visibility && courseItem.visibility.value.length ? courseItem.visibility.value : null,
+            type: courseItem.system.type
+        }, fields));
+    });
+
+    if (error && app.appInsights) {
+        app.appInsights.defaultClient.trackTrace({ message: 'DELIVERY_API_ERROR: ' + error.message });
+    }
+
+    return urlMap;
+};
+
 const getUrlMap = async (res, isSitemap) => {
     // globalConfig = config;
     deliveryConfig.projectId = res.locals.projectid;
@@ -320,34 +352,7 @@ const getUrlMap = async (res, isSitemap) => {
 
     const deliveryClient = new DeliveryClient(deliveryConfig);
 
-    let error;
-    const query = deliveryClient.items()
-        .type('home')
-        .depthParameter(5);
-
-    let response = await query
-        .toPromise()
-        .catch(err => {
-            error = err;
-        });
-
-    // Retry in case of stale content
-    const temps = [0];
-    for await (let temp of temps) {
-        if ((!error && ((response && response.hasStaleContent) || !response)) || error) {
-            error = null;
-            await helper.sleep(5000);
-            response = await query
-                .toPromise()
-                .catch(err => {
-                    error = err;
-                });
-
-            if (temp < 5) {
-                temps.push(++temp);
-            }
-        }
-    }
+    const { items, error } = await queryDeliveryType('home', 5, deliveryClient);
 
     if (isSitemap) {
         fields = ['codename', 'url', 'date', 'visibility', 'type'];
@@ -360,8 +365,9 @@ const getUrlMap = async (res, isSitemap) => {
         app.appInsights.defaultClient.trackTrace({ message: 'DELIVERY_API_ERROR: ' + error.message });
     }
 
-    let urlMap = await createUrlMap(response, isSitemap, [], [], res);
+    let urlMap = await createUrlMap(items, isSitemap, [], [], res);
     urlMap = await addUnusedArtilesToUrlMap(deliveryClient, urlMap);
+    urlMap = await addTrainingCoursesToUrlMap(deliveryClient, urlMap);
     return urlMap;
 };
 

@@ -121,6 +121,9 @@ const componentsResolvers = [{
 }, {
     type: 'terminology',
     resolver: richTextResolverTemplates.terminology
+}, {
+    type: 'training_course',
+    resolver: richTextResolverTemplates.trainingCourse
 }];
 
 const resolveRichText = (item, config) => {

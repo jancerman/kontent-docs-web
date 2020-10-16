@@ -173,6 +173,9 @@ const helper = {
             req.connection.socket.remoteAddress;
         return ip === process.env.KenticoUserIp;
     },
+    showEditLink: (isPreview, isKenticoIP) => {
+        return isPreview || isKenticoIP
+    },
     addTitlesToLinks: (content, urlMap, articles) => {
         const $ = cheerio.load(content);
         const $links = $('a:not(.call-to-action)');
