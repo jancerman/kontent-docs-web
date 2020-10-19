@@ -10,6 +10,7 @@ const helper = require('../helpers/helperFunctions');
 const handleCache = require('../helpers/handleCache');
 const platforms = require('../helpers/platforms');
 const getUrlMap = require('../helpers/urlMap');
+const getTrainingCourseInfo = require('../helpers/trainingCourse');
 const customRichTextResolver = require('../helpers/customRichTextResolver');
 
 let cookiesPlatform;
@@ -106,6 +107,7 @@ const getContent = async (req, res) => {
     let content = await getContentLevel(currentLevel, itemCodename, urlMap, req, res);
     let view = 'tutorials/pages/article';
     let availablePlatforms;
+    let trainingCourseInfo;
 
     const queryHash = req.url.split('?')[1];
     const platformsConfig = await platforms.getPlatformsConfig(res);
@@ -121,6 +123,8 @@ const getContent = async (req, res) => {
                 view = 'tutorials/pages/certification';
             } else if (content[0].system.type === 'training_course') {
                 view = 'tutorials/pages/trainingCourse';
+                trainingCourseInfo = await getTrainingCourseInfo(content[0], req, res);
+
             } else if (content[0].system.type === 'scenario') {
                 view = 'tutorials/pages/scenario';
             }
@@ -237,7 +241,8 @@ const getContent = async (req, res) => {
         getFormValue: helper.getFormValue,
         preselectedPlatform: preselectedPlatform,
         containsChangelog: containsChangelog,
-        releaseNoteContentType: releaseNoteContentType
+        releaseNoteContentType: releaseNoteContentType,
+        trainingCourseInfo: trainingCourseInfo
     };
 };
 

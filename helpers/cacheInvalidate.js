@@ -221,6 +221,11 @@ const sendPurgeToGeneralPages = async (itemsByTypes, req, res) => {
     }
 };
 
+const invalidateElearning = async (itemsByTypes, KCDetails, res) => {
+    await invalidateMultiple(itemsByTypes, KCDetails, 'trainingCourses', res);
+    await requestItemAndDeleteCacheKey('e_learning_overview', KCDetails, res);
+};
+
 const processInvalidation = async (req, res) => {
     const items = cache.get('webhook-payload-pool') || [];
     if (items.length) {
@@ -243,7 +248,7 @@ const processInvalidation = async (req, res) => {
         await invalidateArticles(itemsByTypes, KCDetails, res);
         await invalidateScenarios(itemsByTypes, KCDetails, res);
         await invalidateMultiple(itemsByTypes, KCDetails, 'topics', res);
-        await invalidateMultiple(itemsByTypes, KCDetails, 'trainingCourses', res);
+        await invalidateElearning(itemsByTypes, KCDetails, res);
         await sendPurgeToGeneralPages(itemsByTypes, req, res);
 
         if (app.appInsights) {

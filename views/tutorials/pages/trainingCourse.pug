@@ -13,3 +13,6 @@ block content
                           li.article__tags-item.article__tags-item--green !{content.persona.value[0].name}
                     | !{minify(content.introduction.value)}
                     | !{minify(content.description.value)}
+                    a.call-to-action(href= trainingCourseInfo.url)
+                      span !{trainingCourseInfo.text}
+                      span

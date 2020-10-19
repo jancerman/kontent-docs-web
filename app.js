@@ -123,7 +123,7 @@ app.use(cacheControl({
 }));
 
 app.use((req, res, next) => {
-  if (isPreview(process.env['KC.PreviewApiKey']) || (req.originalUrl.indexOf('/cache-invalidate') > -1)) {
+  if (isPreview(process.env['KC.PreviewApiKey']) || (req.originalUrl.startsWith('/cache-invalidate')) || (req.originalUrl.startsWith('/e-learning'))) {
     res.cacheControl = {
       noCache: true
     };
