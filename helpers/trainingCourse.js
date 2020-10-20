@@ -1,6 +1,8 @@
 const axios = require('axios');
+const consola = require('consola');
 const commonContent = require('./commonContent');
 const handleCache = require('./handleCache');
+const lms = require('./lms')
 
 const isCourseAvailable = (user) => {
   if (user.email.endsWith('@kentico.com')) {
@@ -29,6 +31,7 @@ const getTrainingCourseInfo = async (content, req, res) => {
 
   const UIMessages = UIMessagesObj && UIMessagesObj.length ? UIMessagesObj[0] : null
 
+  // If user is not authenticated
   if (!req.user) {
     req.session.returnTo = req.originalUrl;
     return {
@@ -37,10 +40,24 @@ const getTrainingCourseInfo = async (content, req, res) => {
     };
   }
 
-  const user = await axios.get(`https://subscription-service-qa.azurewebsites.net/api/internal/cs-services-user/${req.user.emails[0].value}/`, {
-    headers: { Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlIjpbImNzc2VydmljZXNyZWFkZXIiXSwiaXNzIjoia2VudGljb2Nsb3VkIiwiYXVkIjoic3Vic2NyaXB0aW9uc2VydmljZSIsImV4cCI6MTYwOTUwMjQwMCwibmJmIjoxNDkzOTAxNTgwfQ.pg51UWooxD-xyKAYhqr-_EHOQ5ljIg0jdkdDU3NmLxY' }
-  });
+  // Get additional info about authenticated user
+  let user;
+  try {
+    user = await axios.get(`${process.env['SubscriptionService.Url']}${req.user.emails[0].value}/`, {
+      headers: { Authorization: `Bearer ${process.env['SubscriptionService.Bearer']}` }
+    });
+  } catch (error) {
+    consola.error(error.response.data);
+  }
 
+  if (!user) {
+    return {
+      text: 'User is not available in the subscription service',
+      url: '#'
+    };
+  }
+
+  // If user has access to courses
   if (!isCourseAvailable(user.data)) {
     return {
       text: UIMessages.training___cta_buy_course.value,
@@ -48,12 +65,26 @@ const getTrainingCourseInfo = async (content, req, res) => {
     };
   }
 
-  console.log(user.data);
+  // Register user in LMS and course and get info about course url and completion
+  const courseInfo = await lms.handleTrainingCourse(user.data, content.talentlms_course_id.value);
+  let text = '';
+
+  if (courseInfo.completion === 0) {
+    text = UIMessages.training___cta_start_course.value;
+  } else if (courseInfo.completion === 100) {
+    text = UIMessages.training___cta_revisit_course.value;
+  } else if (courseInfo.completion === 101) {
+    text = 'User info is not available in LMS';
+  } else if (courseInfo.completion === 102) {
+    text = 'Course info is not available in LMS';
+  } else {
+    text = UIMessages.training___cta_resume_course.value;
+  }
 
   return {
-    text: 'Signed in',
-    url: '#'
+    text: text,
+    url: courseInfo.url
   };
-};  
+};
 
 module.exports = getTrainingCourseInfo;

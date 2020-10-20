@@ -1,3 +1,5 @@
+/* eslint no-unused-vars: 0 */
+
 const axios = require('axios');
 const generator = require('generate-password');
 const consola = require('consola');
@@ -8,10 +10,16 @@ const settings = {
         password: ''
     },
     registerUrl: 'https://kontent-kentico.talentlms.com/api/v1/usersignup',
-    addToCourseUrl: 'https://kontent-kentico.talentlms.com/api/v1/addusertocourse'
+    addToCourseUrl: 'https://kontent-kentico.talentlms.com/api/v1/addusertocourse',
+    getUserByEmailUrl: 'https://kontent-kentico.talentlms.com/api/v1/users/email',
+    editUserUrl: 'https://kontent-kentico.talentlms.com/api/v1/edituser',
+    statusUrl: 'https://kontent-kentico.talentlms.com/api/v1/getuserstatusincourse',
+    goToUrl: 'https://kontent-kentico.talentlms.com/api/v1/gotocourse'
 };
 
-const register = async (data) => {
+const registerUser = async (data) => {
+    let userCreated = true;
+
     try {
         await axios({
             method: 'post',
@@ -20,13 +28,13 @@ const register = async (data) => {
             auth: settings.auth
         });
     } catch (error) {
-        consola.error(error.response.data);
+        userCreated = false;
     }
 
-    return false;
+    return userCreated;
 };
 
-const add = async (data) => {
+const addUserToCourse = async (data) => {
     let addedToCourse;
 
     try {
@@ -46,7 +54,68 @@ const add = async (data) => {
     }
 
     return addedToCourse;
-}
+};
+
+const getUserByEmail = async (email) => {
+    let user = {};
+
+    try {
+        user = await axios({
+            method: 'get',
+            url: `${settings.getUserByEmailUrl}:${email}`,
+            auth: settings.auth
+        });
+    } catch (error) {
+        consola.error(error.response.data);
+    }
+
+    return user.data;
+};
+
+const updateUser = async (data) => {
+    try {
+        await axios({
+            method: 'post',
+            url: settings.editUserUrl,
+            data: data,
+            auth: settings.auth
+        });
+    } catch (error) {
+        consola.error(error.response.data);
+    }
+};
+
+const getStatus = async (courseId, userId) => {
+    let status = {};
+
+    try {
+        status = await axios({
+            method: 'get',
+            url: `${settings.statusUrl}/course_id:${courseId},user_id:${userId}`,
+            auth: settings.auth
+        });
+    } catch (error) {
+        consola.error(error.response.data);
+    }
+
+    return status.data;
+};
+
+const getGoTo = async (courseId, userId) => {
+    let status = {};
+
+    try {
+        status = await axios({
+            method: 'get',
+            url: `${settings.goToUrl}/user_id:${userId},course_id:${courseId}`,
+            auth: settings.auth
+        });
+    } catch (error) {
+        consola.error(error.response.data);
+    }
+
+    return status.data;
+};
 
 const lms = {
     registerAddtoCourse: async (data) => {
@@ -58,10 +127,10 @@ const lms = {
 
         // Register user to LMS or get to know the user is already registered
         // Do not need to check the result as the outcome is a registered user
-        await register(data);
+        await registerUser(data);
 
         // Add the user to a course by email
-        const addedToCourse = await add(data);
+        const addedToCourse = await addUserToCourse(data);
 
         // If user already enrolled to the course
         if (addedToCourse.error) {
@@ -69,6 +138,61 @@ const lms = {
         }
 
         return false;
+    },
+    handleTrainingCourse: async (data, courseId) => {
+        const user = {};
+        user.login = data.email;
+        user.email = data.email;
+        user.first_name = data.firstName;
+        user.last_name = data.lastName;
+        user.password = generator.generate({
+            length: 8,
+            numbers: true
+        });
+
+        const userCreated = await registerUser(user);
+        const userLMS = await getUserByEmail(user.login);
+
+        if (!userLMS) {
+            return {
+                url: '#',
+                completion: 101
+            }
+        }
+
+        const userToBeUpdated = !userCreated && userLMS && (data.firstName !== userLMS.first_name || data.lastName !== userLMS.last_name);
+
+        if (userToBeUpdated) {
+            const userUpdateData = {
+                user_id: userLMS.id,
+                first_name: user.first_name,
+                last_name: user.last_name
+            };
+
+            // TBD: the edit user endpoint returns error 'Invalid arguments provided'
+            // console.log(userUpdateData);
+            // await updateUser(userUpdateData);
+        }
+
+        await addUserToCourse({
+            email: user.email,
+            course_id: courseId
+        });
+
+        const status = await getStatus(courseId, userLMS.id);
+        const goTo = await getGoTo(courseId, userLMS.id);
+
+        if (!status || !goTo) {
+            return {
+                url: '#',
+                completion: 102
+            }
+        }
+
+        return {
+            url: goTo.goto_url,
+            completion: parseInt(status.completion_percentage)
+        }
     }
 }
 

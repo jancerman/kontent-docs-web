@@ -124,7 +124,6 @@ const getContent = async (req, res) => {
             } else if (content[0].system.type === 'training_course') {
                 view = 'tutorials/pages/trainingCourse';
                 trainingCourseInfo = await getTrainingCourseInfo(content[0], req, res);
-
             } else if (content[0].system.type === 'scenario') {
                 view = 'tutorials/pages/scenario';
             }
