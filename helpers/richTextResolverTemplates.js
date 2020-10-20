@@ -435,6 +435,7 @@ const richTextResolverTemplates = {
         const persona = item.persona.value.length ? item.persona.value[0].name : null;
         const urlMapItem = config.urlMap.filter(itemUrlMap => itemUrlMap.codename === item.system.codename);
         const url = urlMapItem.length ? urlMapItem[0].url : null
+        const image = item.thumbnail.value.length ? item.thumbnail.value[0].url : null
 
         return `
             <div class="article__teaser">
@@ -449,7 +450,12 @@ const richTextResolverTemplates = {
                             <li class="article__tags-item article__tags-item--green">${persona}</li>
                         </ul>` : ''}
                 </div>
-                ${item.introduction.value}
+                <div class="article__introduction">
+                    <div class="article__introduction-text">
+                        ${item.introduction.value}
+                    </div>
+                    ${image ? `<div class="article__introduction-image"><img src="${image}" alt="" /></div>` : ''}
+                </div>
                 ${url && config.UIMessages && config.UIMessages.training___view_details ? `
                     <a href="${url}" class="call-to-action">
                         <span>${config.UIMessages.training___view_details.value}</span>

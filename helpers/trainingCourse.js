@@ -1,3 +1,5 @@
+/* eslint no-unused-vars: 0 */
+
 const axios = require('axios');
 const consola = require('consola');
 const commonContent = require('./commonContent');
@@ -41,14 +43,13 @@ const getTrainingCourseInfo = async (content, req, res) => {
   }
 
   // Get additional info about authenticated user
-  let user;
-  try {
-    user = await axios.get(`${process.env['SubscriptionService.Url']}${req.user.emails[0].value}/`, {
-      headers: { Authorization: `Bearer ${process.env['SubscriptionService.Bearer']}` }
-    });
-  } catch (error) {
-    consola.error(error.response.data);
-  }
+  const user = await axios({
+    method: 'get',
+    url: `${process.env['SubscriptionService.Url']}${req.user.emails[0].value}/`,
+    headers: {
+      Authorization: `Bearer ${process.env['SubscriptionService.Bearer']}`
+    }
+  });
 
   if (!user) {
     return {
@@ -83,7 +84,9 @@ const getTrainingCourseInfo = async (content, req, res) => {
 
   return {
     text: text,
-    url: courseInfo.url
+    url: courseInfo.url,
+    completion: courseInfo.completion.toString(),
+    certificate: courseInfo.certificate
   };
 };
 

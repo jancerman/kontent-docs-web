@@ -44,7 +44,6 @@ const form = require('./routes/form');
 const redirectRules = require('./routes/redirectRules');
 const generatePDF = require('./routes/generatePDF');
 const auth = require('./routes/auth');
-const elearning = require('./routes/elearning');
 
 const app = express();
 
@@ -184,7 +183,6 @@ app.use('/rss', rss);
 app.use('/robots.txt', robots);
 app.use('/pdf', generatePDF);
 app.get('/urlmap', urlMap);
-app.use('/', elearning);
 app.use('/', auth);
 
 // Dynamic routing setup

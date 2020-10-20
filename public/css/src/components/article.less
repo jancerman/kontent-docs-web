@@ -470,6 +470,37 @@
     &__heading-introduction {
         display: none;
     }
+
+    &__introduction {
+        @media screen and (min-width: 480px) {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+
+    &__introduction-image {
+        width: 120px;
+        padding: 1em 0;
+
+        @media screen and (min-width: 480px) {
+            padding: 1em 0 0 1em;
+        }
+    }
+
+    &__introduction-text {
+        @media screen and (min-width: 480px) {
+            width: ~"calc(100% - 120px)";
+        }
+    }
+
+    &__row-links {
+        display: flex;
+        align-items: center;
+        
+        & > * {
+            margin-left: 1em;
+        }
+    }
 }
 
 .article__content--language-selector {

@@ -11,8 +11,13 @@ block content
                       if (content.persona.value.length)
                         ul.article__tags
                           li.article__tags-item.article__tags-item--green !{content.persona.value[0].name}
+                      if (trainingCourseInfo.completion)
+                        span !{trainingCourseInfo.completion}% complete
                     | !{minify(content.introduction.value)}
                     | !{minify(content.description.value)}
-                    a.call-to-action(href= trainingCourseInfo.url)
-                      span !{trainingCourseInfo.text}
-                      span
+                    .article__row-links
+                      a.call-to-action(href= trainingCourseInfo.url)
+                        span !{trainingCourseInfo.text}
+                        span
+                      if (trainingCourseInfo.certificate)
+                        a.link(href= trainingCourseInfo.certificate, target='_blank') !{UIMessages.training___download_certificate.value}

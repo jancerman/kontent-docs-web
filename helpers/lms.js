@@ -49,7 +49,6 @@ const addUserToCourse = async (data) => {
         });
         addedToCourse = inCourse.data;
     } catch (error) {
-        consola.error(error.response.data);
         addedToCourse = error.response.data;
     }
 
@@ -57,17 +56,11 @@ const addUserToCourse = async (data) => {
 };
 
 const getUserByEmail = async (email) => {
-    let user = {};
-
-    try {
-        user = await axios({
-            method: 'get',
-            url: `${settings.getUserByEmailUrl}:${email}`,
-            auth: settings.auth
-        });
-    } catch (error) {
-        consola.error(error.response.data);
-    }
+    const user = await axios({
+        method: 'get',
+        url: `${settings.getUserByEmailUrl}:${email}`,
+        auth: settings.auth
+    });
 
     return user.data;
 };
@@ -86,35 +79,47 @@ const updateUser = async (data) => {
 };
 
 const getStatus = async (courseId, userId) => {
-    let status = {};
-
-    try {
-        status = await axios({
-            method: 'get',
-            url: `${settings.statusUrl}/course_id:${courseId},user_id:${userId}`,
-            auth: settings.auth
-        });
-    } catch (error) {
-        consola.error(error.response.data);
-    }
+    const status = await axios({
+        method: 'get',
+        url: `${settings.statusUrl}/course_id:${courseId},user_id:${userId}`,
+        auth: settings.auth
+    });
 
     return status.data;
 };
 
 const getGoTo = async (courseId, userId) => {
-    let status = {};
+    const goto = await axios({
+        method: 'get',
+        url: `${settings.goToUrl}/user_id:${userId},course_id:${courseId}`,
+        auth: settings.auth
+    });
 
-    try {
-        status = await axios({
-            method: 'get',
-            url: `${settings.goToUrl}/user_id:${userId},course_id:${courseId}`,
-            auth: settings.auth
-        });
-    } catch (error) {
-        consola.error(error.response.data);
+    return goto.data;
+};
+
+const getDate = (date) => {
+    const dateSplit = date.split('/');
+    const validDate = `${dateSplit[1]}/${dateSplit[0]}/${dateSplit[2]}`;
+
+    return (new Date(validDate)).getTime();
+};
+
+const getCertificate = (user, courseId) => {
+    if (!user.certifications) return null;
+    courseId = courseId.toString();
+
+    for (let i = 0; i < user.certifications.length; i++) {
+        if (user.certifications[i].course_id === courseId) {
+            const expDate = getDate(user.certifications[i].expiration_date);
+
+            if (expDate > (new Date()).getTime()) {
+                return user.certifications[i].public_url;
+            }
+        }
     }
 
-    return status.data;
+    return null;
 };
 
 const lms = {
@@ -181,6 +186,7 @@ const lms = {
 
         const status = await getStatus(courseId, userLMS.id);
         const goTo = await getGoTo(courseId, userLMS.id);
+        const certificate = getCertificate(userLMS, courseId)
 
         if (!status || !goTo) {
             return {
@@ -191,7 +197,8 @@ const lms = {
 
         return {
             url: goTo.goto_url,
-            completion: parseInt(status.completion_percentage)
+            completion: parseInt(status.completion_percentage),
+            certificate: certificate
         }
     }
 }
