@@ -1,20 +1,18 @@
-/* eslint no-unused-vars: 0 */
-
 const axios = require('axios');
 const generator = require('generate-password');
 const consola = require('consola');
+const FormData = require('form-data');
 
 const settings = {
     auth: {
         username: process.env['LMS.id'] || '',
         password: ''
     },
-    registerUrl: 'https://kontent-kentico.talentlms.com/api/v1/usersignup',
-    addToCourseUrl: 'https://kontent-kentico.talentlms.com/api/v1/addusertocourse',
-    getUserByEmailUrl: 'https://kontent-kentico.talentlms.com/api/v1/users/email',
-    editUserUrl: 'https://kontent-kentico.talentlms.com/api/v1/edituser',
-    statusUrl: 'https://kontent-kentico.talentlms.com/api/v1/getuserstatusincourse',
-    goToUrl: 'https://kontent-kentico.talentlms.com/api/v1/gotocourse'
+    registerUrl: `https://${process.env['LMS.host']}/api/v1/usersignup`,
+    addToCourseUrl: `https://${process.env['LMS.host']}/api/v1/addusertocourse`,
+    getUserByEmailUrl: `https://${process.env['LMS.host']}/api/v1/users/email`,
+    statusUrl: `https://${process.env['LMS.host']}/api/v1/getuserstatusincourse`,
+    goToUrl: `https://${process.env['LMS.host']}/api/v1/gotocourse`
 };
 
 const registerUser = async (data) => {
@@ -65,17 +63,20 @@ const getUserByEmail = async (email) => {
     return user.data;
 };
 
-const updateUser = async (data) => {
-    try {
-        await axios({
-            method: 'post',
-            url: settings.editUserUrl,
-            data: data,
-            auth: settings.auth
-        });
-    } catch (error) {
-        consola.error(error.response.data);
-    }
+const updateUser = async (userLMS, user) => {
+    const userUpdateData = new FormData();
+    userUpdateData.append('user_id', userLMS.id);
+    userUpdateData.append('first_name', user.first_name);
+    userUpdateData.append('last_name', user.last_name);
+
+    userUpdateData.submit({
+        host: process.env['LMS.host'],
+        path: '/api/v1/edituser',
+        auth: `${settings.auth.username}:`
+    }, function(err, res) {
+        if (err) consola.log(err);
+        res.resume();
+    });
 };
 
 const getStatus = async (courseId, userId) => {
@@ -98,22 +99,13 @@ const getGoTo = async (courseId, userId) => {
     return goto.data;
 };
 
-const getDate = (date) => {
-    const dateSplit = date.split('/');
-    const validDate = `${dateSplit[1]}/${dateSplit[0]}/${dateSplit[2]}`;
-
-    return (new Date(validDate)).getTime();
-};
-
 const getCertificate = (user, courseId) => {
     if (!user.certifications) return null;
     courseId = courseId.toString();
 
     for (let i = 0; i < user.certifications.length; i++) {
         if (user.certifications[i].course_id === courseId) {
-            const expDate = getDate(user.certifications[i].expiration_date);
-
-            if (expDate > (new Date()).getTime()) {
+            if ((new Date(user.certifications[i].expiration_date)).getTime() > (new Date()).getTime()) {
                 return user.certifications[i].public_url;
             }
         }
@@ -166,17 +158,8 @@ const lms = {
         }
 
         const userToBeUpdated = !userCreated && userLMS && (data.firstName !== userLMS.first_name || data.lastName !== userLMS.last_name);
-
         if (userToBeUpdated) {
-            const userUpdateData = {
-                user_id: userLMS.id,
-                first_name: user.first_name,
-                last_name: user.last_name
-            };
-
-            // TBD: the edit user endpoint returns error 'Invalid arguments provided'
-            // console.log(userUpdateData);
-            // await updateUser(userUpdateData);
+            await updateUser(userLMS, user);
         }
 
         await addUserToCourse({
@@ -198,7 +181,8 @@ const lms = {
         return {
             url: goTo.goto_url,
             completion: parseInt(status.completion_percentage),
-            certificate: certificate
+            certificate: certificate,
+            target: '_blank'
         }
     }
 }

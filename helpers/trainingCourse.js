@@ -1,7 +1,4 @@
-/* eslint no-unused-vars: 0 */
-
 const axios = require('axios');
-const consola = require('consola');
 const commonContent = require('./commonContent');
 const handleCache = require('./handleCache');
 const lms = require('./lms')
@@ -86,7 +83,8 @@ const getTrainingCourseInfo = async (content, req, res) => {
     text: text,
     url: courseInfo.url,
     completion: courseInfo.completion.toString(),
-    certificate: courseInfo.certificate
+    certificate: courseInfo.certificate,
+    target: courseInfo.target
   };
 };
 
