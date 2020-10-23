@@ -439,22 +439,22 @@ const richTextResolverTemplates = {
 
         return `
             <div class="article__teaser">
-                <h3 class="article__h2-h3" id="${id}">
+                <h3 id="${id}">
                     <a href="#${id}" class="anchor-copy" aria-hidden="true"></a>
                     ${item.title.value}
                 </h3>
                 ${helper.showEditLink(config.isPreview, config.isKenticoIP) ? `<a href="${`https://app.kontent.ai/goto/edit-item/project/${config.projectid}/variant-codename/default/item/${item.system.id}`}" target="_blank" rel="noopener" class="edit-link edit-link--move-up">Edit</a>` : ''}
-                <div class="article__info-bar">
-                    ${persona ? `
-                        <ul class="article__tags">
-                            <li class="article__tags-item article__tags-item--green">${persona}</li>
-                        </ul>` : ''}
-                </div>
                 <div class="article__introduction">
-                    <div class="article__introduction-text">
+                    ${image ? `<div class="article__introduction-image"><img src="${image}" alt="" /></div>` : ''}
+                    <div class="article__introduction-content">
+                        <div class="article__info-bar">
+                            ${persona ? `
+                                <ul class="article__tags">
+                                    <li class="article__tags-item article__tags-item--green">${persona}</li>
+                                </ul>` : ''}
+                        </div>
                         ${item.introduction.value}
                     </div>
-                    ${image ? `<div class="article__introduction-image"><img src="${image}" alt="" /></div>` : ''}
                 </div>
                 ${url && config.UIMessages && config.UIMessages.training___view_details ? `
                     <a href="${url}" class="call-to-action">
