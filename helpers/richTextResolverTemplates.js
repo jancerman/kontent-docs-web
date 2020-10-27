@@ -187,7 +187,7 @@ const richTextResolverTemplates = {
     },
     signpostItem: (item, config) => {
         const urlMap = config.urlMap;
-        let resolvedUrl = '';
+        let resolvedUrl = '/page-not-found';
         const imageWidth = item.image.value[0] ? item.image.value[0].width || 0 : 0;
         const imageHeight = item.image.value[0] ? item.image.value[0].height || 0 : 0;
         const placeholderSrc = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1" width="${imageWidth}" height="${imageHeight}"></svg>`;
@@ -211,7 +211,7 @@ const richTextResolverTemplates = {
 
         return `
             <li class="selection__item">
-                ${resolvedUrl ? `<a class="selection__link" href="${resolvedUrl}"${resolvedUrl.indexOf('tech={tech}') > -1 ? ' rel="nofollow"' : ''}>` : '<div class="selection__link">'}
+                <a class="selection__link" href="${resolvedUrl}"${resolvedUrl.indexOf('tech={tech}') > -1 ? ' rel="nofollow"' : ''}>
                     ${item.image.value[0] ? `
                         <div class="selection__img-sizer">
                             <img class="selection__img lazy lazy--exclude-dnt" data-dpr data-lazy-onload src='${placeholderSrc}' data-src="${imageSrc}"${imageWidth && imageHeight ? `width="${imageWidth}" height="${imageHeight}"` : ''}>
@@ -222,7 +222,7 @@ const richTextResolverTemplates = {
                     ` : ''}
                     ${item.title.value ? `<div class="selection__title">${item.title.value}</div>` : ''}
                     ${helper.isNotEmptyRichText(item.description.value) ? `<div class="selection__description">${item.description.value}</div>` : ''}
-                ${resolvedUrl ? '</a>' : '</div>'}
+                </a>
             </li>
         `;
     },
