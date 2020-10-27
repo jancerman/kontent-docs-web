@@ -378,18 +378,6 @@ body {
     padding: 1em 2em;
     margin-bottom: 1em;
     border-radius: 24px 24px 8px 24px;
-
-    [class*="ExampleValue"] {
-      background-color: #f3f3f3;
-      color: #F05A22;
-    }
-
-    [class*="PrismDiv"] {
-      code {
-        background-color: #f3f3f3;
-        color: #F05A22;
-      }
-    }
   }
 
   [class*="InnerPropertiesWrap"] {
@@ -1140,6 +1128,67 @@ h1, h2, h3, h4, strong {
 [class*="panels__DarkRightPanel"] {
   background-color: #fff !important;
 }
+
+[class*="PrismDiv"] {
+  & > *:not([class*="code-sample"]) {
+    code {
+      background-color: #f3f3f3 !important;
+      border-radius: 0 !important;
+      border: none !important;
+      line-height: 1.375em !important;
+      padding: 0.125em 0.375em !important;
+      color: #231F20 !important;
+
+      [class*="PropertiesTable"] & {
+        /*background-color: #fff !important;*/
+      }
+    }
+
+    a code {
+      color: #F05A22 !important;
+    }
+
+    &.callout {
+      code {
+        background-color: #f3f3f3 !important;
+      }
+    }
+
+    &.callout--info {
+      code {
+        color: #5160c0 !important;
+      }
+    }
+    &.callout--tip {
+      code {
+        color: #45a485 !important;
+      }
+    }
+    &.callout--warning {
+      code {
+        color: #e85a20 !important;
+      }
+    }
+    &.callout--note {
+      code {
+        color: #894da7 !important;
+      }
+    }
+  }
+}
+
+[class*="PropertiesTable"] {
+  [class*="ExampleValue"] {
+    /*background-color: #fff !important;*/
+    background-color: #f3f3f3 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    line-height: 1.375em !important;
+    padding: 0.125em 0.375em !important;
+    color: #231F20 !important;
+  }
+}
+  
 
 [class*="PrismDiv"][class*="StyledPre"],
 [class*="PrismDiv"][class*="JsonViewer"] code {
