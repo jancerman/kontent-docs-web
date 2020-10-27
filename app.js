@@ -110,7 +110,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(serveStatic(path.join(__dirname, 'public'), {
-  maxAge: 2592000,
+  maxAge: 31536000000,
   setHeaders: (res) => {
     res.setHeader('Access-Control-Allow-Origin', 'https://tracker.kontent.ai');
   }
@@ -118,13 +118,14 @@ app.use(serveStatic(path.join(__dirname, 'public'), {
 app.use(slashes(false));
 
 app.use(cacheControl({
-  maxAge: 300
+  noCache: true
 }));
 
 app.use((req, res, next) => {
-  if (isPreview(process.env['KC.PreviewApiKey']) || (req.originalUrl.startsWith('/cache-invalidate')) || (req.originalUrl.startsWith('/e-learning'))) {
+  if (req.originalUrl.startsWith('/cache-invalidate')) {
     res.cacheControl = {
-      noCache: true
+      noStore: true,
+      private: true
     };
   }
   return next();

@@ -8,10 +8,6 @@ const a2pClient = new Api2Pdf(process.env['Api2Pdf.ApiKey']);
 const download = require('download');
 
 router.get('/', asyncHandler(async (req, res, next) => {
-    res.cacheControl = {
-        noCache: true
-    };
-
     let url = req.query.url;
 
     if (!url) return res.end();
