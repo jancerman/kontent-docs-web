@@ -92,7 +92,7 @@ const getStatus = async (courseId, userId) => {
 const getGoTo = async (courseId, userId) => {
     const goto = await axios({
         method: 'get',
-        url: `${settings.goToUrl}/user_id:${userId},course_id:${courseId}`,
+        url: `${settings.goToUrl}/user_id:${userId},course_id:${courseId},header_hidden_options:courseName;units;sharedFiles;moreOptions`,
         auth: settings.auth
     });
 
