@@ -25,6 +25,9 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 main () {
+    touch deployment_info
+    echo "Build: $TRAVIS_BUILD_ID; Branch: $TRAVIS_BRANCH; Commit: $TRAVIS_COMMIT" > deployment_info
+    
     rm -rf .git
     {
         git config --global user.email "$GIT_USER_EMAIL" \
@@ -46,6 +49,7 @@ main () {
     } || {
         exit 1
     }
+
     if [ "$TRAVIS_BRANCH" == "develop" ]; then
         rm -rf .git
         {
