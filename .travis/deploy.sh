@@ -26,7 +26,7 @@ fi
 
 main () {
     touch deployment_info
-    echo "Build: $TRAVIS_BUILD_ID; Branch: $TRAVIS_BRANCH; Commit: $TRAVIS_COMMIT" > deployment_info
+    echo "Build: $TRAVIS_BUILD_NUMBER; Branch: $TRAVIS_BRANCH; Commit: $TRAVIS_COMMIT" > deployment_info
     
     rm -rf .git
     {
