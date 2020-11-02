@@ -1140,7 +1140,11 @@ h1, h2, h3, h4, strong {
       color: #231F20 !important;
 
       [class*="PropertiesTable"] & {
-        /*background-color: #fff !important;*/
+        background-color: #e8e8e8 !important;
+      }
+
+      [class*="PropertiesTable"] [class*="PropertiesTable"] & {
+        background-color: #f3f3f3 !important;
       }
     }
 
@@ -1179,13 +1183,18 @@ h1, h2, h3, h4, strong {
 
 [class*="PropertiesTable"] {
   [class*="ExampleValue"] {
-    /*background-color: #fff !important;*/
-    background-color: #f3f3f3 !important;
+    background-color: #e8e8e8 !important;
     border-radius: 0 !important;
     border: none !important;
     line-height: 1.375em !important;
     padding: 0.125em 0.375em !important;
     color: #231F20 !important;
+  }
+
+  [class*="PropertiesTable"] {
+    [class*="ExampleValue"] {
+      background-color: #f3f3f3 !important;
+    }
   }
 }
   
