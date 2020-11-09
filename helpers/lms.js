@@ -96,6 +96,10 @@ const getGoTo = async (courseId, userId) => {
         auth: settings.auth
     });
 
+    if (goto.data.goto_url) {
+        goto.data.goto_url = goto.data.goto_url.replace('//training.kentico.com', '//kontent.training.kentico.com');
+    }
+
     return goto.data;
 };
 
@@ -169,7 +173,7 @@ const lms = {
 
         const status = await getStatus(courseId, userLMS.id);
         const goTo = await getGoTo(courseId, userLMS.id);
-        const certificate = getCertificate(userLMS, courseId)
+        const certificate = getCertificate(userLMS, courseId);
 
         if (!status || !goTo) {
             return {
