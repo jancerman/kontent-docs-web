@@ -1,3 +1,4 @@
+const cache = require('memory-cache');
 const requestDelivery = require('./requestDelivery');
 const getUrlMap = require('./urlMap');
 const ensureSingle = require('./ensureSingle');
@@ -5,6 +6,14 @@ const isPreview = require('./isPreview');
 
 const commonContent = {
     getKCDetails: (res) => {
+        let UIMessages = res.locals.UIMessages
+        if (!UIMessages) {
+            const UIMessagesCached = cache.get(`UIMessages_${res.locals.projectid}`);
+            if (UIMessagesCached && UIMessagesCached.length) {
+                UIMessages = UIMessagesCached[0];
+            }
+        }
+
         return {
             projectid: res.locals.projectid,
             previewapikey: res.locals.previewapikey,
@@ -13,7 +22,7 @@ const commonContent = {
             protocol: res.locals.protocol,
             isPreview: isPreview(res.locals.previewapikey),
             isKenticoIP: res.locals.isKenticoIP,
-            UIMessages: res.locals.UIMessages
+            UIMessages: UIMessages
         };
     },
     getTree: async (contentType, depth, res) => {

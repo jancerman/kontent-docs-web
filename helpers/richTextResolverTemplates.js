@@ -436,7 +436,7 @@ const richTextResolverTemplates = {
         const urlMapItem = config.urlMap.filter(itemUrlMap => itemUrlMap.codename === item.system.codename);
         const url = urlMapItem.length ? urlMapItem[0].url : null
         const image = item.thumbnail.value.length ? item.thumbnail.value[0].url : null
-
+        console.log(!!config.UIMessages, config.UIMessages.training___view_details)
         return `
             <div class="article__teaser">
                 <h3 id="${id}">
@@ -457,10 +457,12 @@ const richTextResolverTemplates = {
                     </div>
                 </div>
                 ${url && config.UIMessages && config.UIMessages.training___view_details ? `
-                    <a href="${url}" class="call-to-action">
-                        <span>${config.UIMessages.training___view_details.value}</span>
-                        <span></span>
-                    </a>
+                    <div class="align-right">    
+                        <a href="${url}" class="call-to-action call-to-action--small">
+                            <span>${config.UIMessages.training___view_details.value}</span>
+                            <span></span>
+                        </a>
+                    </div>
                 ` : ''} 
             </div>
         `;
