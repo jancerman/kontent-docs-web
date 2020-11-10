@@ -436,7 +436,7 @@ const richTextResolverTemplates = {
         const urlMapItem = config.urlMap.filter(itemUrlMap => itemUrlMap.codename === item.system.codename);
         const url = urlMapItem.length ? urlMapItem[0].url : null
         const image = item.thumbnail.value.length ? item.thumbnail.value[0].url : null
-        console.log(!!config.UIMessages, config.UIMessages.training___view_details)
+
         return `
             <div class="article__teaser">
                 <h3 id="${id}">
