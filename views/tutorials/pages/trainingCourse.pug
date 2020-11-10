@@ -10,7 +10,8 @@ block content
                       span !{UIMessages.training___estimated_duration.value} !{content.duration.value} !{content.duration.value === 1 ? 'hour' : `hours`}
                       if (content.persona.value.length)
                         ul.article__tags
-                          li.article__tags-item.article__tags-item--green !{content.persona.value[0].name}
+                          each item in content.persona.value
+                            li.article__tags-item.article__tags-item--green !{item.name}
                       if (trainingCourseInfo.completion)
                         span !{trainingCourseInfo.completion}% complete
                     | !{minify(content.introduction.value)}

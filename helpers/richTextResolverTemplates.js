@@ -432,7 +432,7 @@ const richTextResolverTemplates = {
     },
     trainingCourse: (item, config) => {
         const id = `a-${helper.generateAnchor(item.title.value)}`;
-        const persona = item.persona.value.length ? item.persona.value[0].name : null;
+        const personas = item.persona.value;
         const urlMapItem = config.urlMap.filter(itemUrlMap => itemUrlMap.codename === item.system.codename);
         const url = urlMapItem.length ? urlMapItem[0].url : null
         const image = item.thumbnail.value.length ? item.thumbnail.value[0].url : null
@@ -448,10 +448,9 @@ const richTextResolverTemplates = {
                     ${image ? `<div class="article__introduction-image"><img src="${image}" alt="" /></div>` : ''}
                     <div class="article__introduction-content">
                         <div class="article__info-bar">
-                            ${persona ? `
-                                <ul class="article__tags">
-                                    <li class="article__tags-item article__tags-item--green">${persona}</li>
-                                </ul>` : ''}
+                            ${personas.length ? '<ul class="article__tags">' : ''}
+                            ${personas.map(item => `<li class="article__tags-item article__tags-item--green">${item.name}</li>`).join('')}
+                            ${personas.length ? '</ul>' : ''}
                         </div>
                         ${item.introduction.value}
                     </div>
