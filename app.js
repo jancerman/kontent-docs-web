@@ -51,13 +51,16 @@ const app = express();
 // Session
 const sess = {
   secret: 'XuDYKakmy67fTbSd',
-  cookie: {},
+  cookie: { sameSite: false },
   resave: false,
   saveUninitialized: true
 };
 
+// https://github.com/auth0/passport-auth0/issues/70#issuecomment-570004407
 if (!process.env.baseURL.includes('localhost')) {
   sess.cookie.secure = true;
+  sess.proxy = true
+  app.set('trust proxy', 1)
 }
 
 app.use(session(sess));
