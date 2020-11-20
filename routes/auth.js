@@ -30,7 +30,7 @@ router.get('/callback', (req, res, next) => {
             }
           });
       }
-    
+
       return res.redirect('/login');
     }
     req.logIn(user, (err) => {
