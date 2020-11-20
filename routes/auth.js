@@ -4,6 +4,7 @@ const passport = require('passport');
 const util = require('util');
 const url = require('url');
 const querystring = require('querystring');
+const app = require('../app');
 
 // Perform the login, after login Auth0 will redirect to callback
 router.get('/login', passport.authenticate('auth0', {
