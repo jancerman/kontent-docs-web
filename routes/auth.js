@@ -4,6 +4,7 @@ const passport = require('passport');
 const util = require('util');
 const url = require('url');
 const querystring = require('querystring');
+const app = require('../app');
 
 // Perform the login, after login Auth0 will redirect to callback
 router.get('/login', passport.authenticate('auth0', {
@@ -19,6 +20,17 @@ router.get('/callback', (req, res, next) => {
       return next(err);
     }
     if (!user) {
+      if (app && app.appInsights) {
+        app.appInsights.defaultClient.trackTrace(
+          {
+            message: 'LOGIN_FAILURE_USER',
+            properties: {
+              user: JSON.stringify(user),
+              info: JSON.stringify(info)
+            }
+          });
+      }
+    
       return res.redirect('/login');
     }
     req.logIn(user, (err) => {
