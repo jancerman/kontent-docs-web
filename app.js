@@ -50,7 +50,7 @@ const app = express();
 // Auth0 authentication setup
 // Session
 const sess = {
-  secret: 'XuDYKakmy67fTbSd',
+  secret: process.env.AUTH0_SESSION_SECRET,
   cookie: { sameSite: false },
   resave: false,
   saveUninitialized: true
