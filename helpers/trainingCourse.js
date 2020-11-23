@@ -31,7 +31,7 @@ const getTrainingCourseInfo = async (content, req, res) => {
   const UIMessages = UIMessagesObj && UIMessagesObj.length ? UIMessagesObj[0] : null
 
   // If user is not authenticated
-  if (!req.user) {
+  if (!req.oidc.isAuthenticated()) {
     req.session.returnTo = req.originalUrl;
     return {
       text: UIMessages.training___sign_in.value,
@@ -42,7 +42,7 @@ const getTrainingCourseInfo = async (content, req, res) => {
   // Get additional info about authenticated user
   const user = await axios({
     method: 'get',
-    url: `${process.env['SubscriptionService.Url']}${req.user.emails[0].value}/`,
+    url: `${process.env['SubscriptionService.Url']}${req.oidc.user.email}/`,
     headers: {
       Authorization: `Bearer ${process.env['SubscriptionService.Bearer']}`
     }
