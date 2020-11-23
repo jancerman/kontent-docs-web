@@ -57,8 +57,8 @@ const sess = {
 // https://github.com/auth0/passport-auth0/issues/70#issuecomment-570004407
 if (!process.env.baseURL.includes('localhost')) {
   sess.cookie.secure = true;
-  sess.proxy = true
-  app.set('trust proxy', 1)
+  sess.proxy = true;
+  app.set('trust proxy', 1);
 }
 
 app.use(session(sess));
@@ -69,7 +69,7 @@ const config = {
   auth0Logout: true,
   baseURL: process.env.baseUrl,
   clientID: process.env.AUTH0_CLIENT_ID,
-  issuerBaseURL: helper.ensureProtocol(process.env.AUTH0_ISSUER_BASE_URL),
+  issuerBaseURL: helper.ensureProtocol(process.env.AUTH0_DOMAIN),
   secret: process.env.AUTH0_SESSION_SECRET,
   routes: {
     login: false
