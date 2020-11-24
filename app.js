@@ -67,7 +67,7 @@ app.use(session(sess));
 const config = {
   authRequired: false,
   auth0Logout: true,
-  baseURL: process.env.baseUrl,
+  baseURL: process.env.AUTH0_BASE_URL,
   clientID: process.env.AUTH0_CLIENT_ID,
   issuerBaseURL: helper.ensureProtocol(process.env.AUTH0_DOMAIN),
   secret: process.env.AUTH0_SESSION_SECRET,
