@@ -22,3 +22,5 @@ block content
                         span
                       if (trainingCourseInfo.certificate)
                         a.link(href= trainingCourseInfo.certificate, target='_blank') !{UIMessages.training___download_certificate.value}
+                      if (trainingCourseInfo.signedIn)
+                        a.link(href='/logout') !{UIMessages.sign_out_button.value}

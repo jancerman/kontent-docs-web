@@ -34,7 +34,7 @@ const getTrainingCourseInfo = async (content, req, res) => {
   if (!req.oidc.isAuthenticated()) {
     req.session.returnTo = req.originalUrl;
     return {
-      text: UIMessages.training___sign_in.value,
+      text: UIMessages.sign_in_button.value,
       url: '/login'
     };
   }
@@ -84,7 +84,8 @@ const getTrainingCourseInfo = async (content, req, res) => {
     url: courseInfo.url,
     completion: courseInfo.completion.toString(),
     certificate: courseInfo.certificate,
-    target: courseInfo.target
+    target: courseInfo.target,
+    signedIn: true
   };
 };
 
