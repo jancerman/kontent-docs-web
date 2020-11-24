@@ -244,6 +244,9 @@ const helper = {
     },
     isNotEmptyRichText: (text) => {
         return text && text !== '<p><br></p>';
+    },
+    ensureProtocol: (url) => {
+        return !/^https?:\/\//i.test(url) ? `https://${url}` : url;
     }
 };
 

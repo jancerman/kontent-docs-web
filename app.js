@@ -16,15 +16,13 @@ const cache = require('memory-cache');
 const util = require('util');
 const { setIntervalAsync } = require('set-interval-async/dynamic')
 const session = require('express-session');
-const passport = require('passport');
-const Auth0Strategy = require('passport-auth0');
+const { auth } = require('express-openid-connect');
 
 const helper = require('./helpers/helperFunctions');
 const appHelper = require('./helpers/app');
 const handleCache = require('./helpers/handleCache');
 const commonContent = require('./helpers/commonContent');
 const isPreview = require('./helpers/isPreview');
-const userInViews = require('./helpers/userInViews');
 
 const home = require('./routes/home');
 const tutorials = require('./routes/tutorials');
@@ -43,7 +41,7 @@ const error = require('./routes/error');
 const form = require('./routes/form');
 const redirectRules = require('./routes/redirectRules');
 const generatePDF = require('./routes/generatePDF');
-const auth = require('./routes/auth');
+const authorize = require('./routes/auth');
 
 const app = express();
 
@@ -51,7 +49,7 @@ const app = express();
 // Session
 const sess = {
   secret: process.env.AUTH0_SESSION_SECRET,
-  cookie: { sameSite: false },
+  cookie: { sameSite: true },
   resave: false,
   saveUninitialized: true
 };
@@ -59,37 +57,26 @@ const sess = {
 // https://github.com/auth0/passport-auth0/issues/70#issuecomment-570004407
 if (!process.env.baseURL.includes('localhost')) {
   sess.cookie.secure = true;
-  sess.proxy = true
-  app.set('trust proxy', 1)
+  sess.proxy = true;
+  app.set('trust proxy', 1);
 }
 
 app.use(session(sess));
 
 // Auth0
-const strategy = new Auth0Strategy({
-    domain: process.env.AUTH0_DOMAIN,
-    clientID: process.env.AUTH0_CLIENT_ID,
-    clientSecret: process.env.AUTH0_CLIENT_SECRET,
-    callbackURL:
-      process.env.AUTH0_CALLBACK_URL
-  },
-  function (accessToken, refreshToken, extraParams, profile, done) {
-    return done(null, profile);
+const config = {
+  authRequired: false,
+  auth0Logout: true,
+  baseURL: process.env.AUTH0_BASE_URL,
+  clientID: process.env.AUTH0_CLIENT_ID,
+  issuerBaseURL: helper.ensureProtocol(process.env.AUTH0_DOMAIN),
+  secret: process.env.AUTH0_SESSION_SECRET,
+  routes: {
+    login: false
   }
-);
+};
 
-passport.use(strategy);
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(userInViews());
-
-passport.serializeUser(function (user, done) {
-  done(null, user);
-});
-
-passport.deserializeUser(function (user, done) {
-  done(null, user);
-});
+app.use(auth(config));
 
 // Azure Application Insights monitors
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
@@ -187,7 +174,7 @@ app.use('/rss', rss);
 app.use('/robots.txt', robots);
 app.use('/pdf', generatePDF);
 app.get('/urlmap', urlMap);
-app.use('/', auth);
+app.use('/', authorize);
 
 // Dynamic routing setup
 app.use('/', async (req, res, next) => {
