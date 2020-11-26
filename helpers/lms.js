@@ -4,6 +4,7 @@ const consola = require('consola');
 const FormData = require('form-data');
 
 const settings = {
+    branchId: '5',
     auth: {
         username: process.env['LMS.id'] || '',
         password: ''
@@ -12,7 +13,8 @@ const settings = {
     addToCourseUrl: `https://${process.env['LMS.host']}/api/v1/addusertocourse`,
     getUserByEmailUrl: `https://${process.env['LMS.host']}/api/v1/users/email`,
     statusUrl: `https://${process.env['LMS.host']}/api/v1/getuserstatusincourse`,
-    goToUrl: `https://${process.env['LMS.host']}/api/v1/gotocourse`
+    goToUrl: `https://${process.env['LMS.host']}/api/v1/gotocourse`,
+    addUserToBranch: `https://${process.env['LMS.host']}/api/v1/addusertobranch`,
 };
 
 const registerUser = async (data) => {
@@ -51,6 +53,27 @@ const addUserToCourse = async (data) => {
     }
 
     return addedToCourse;
+};
+
+const userIsInBranch = (user) => {
+    let isInBranch = false;
+    if (!user) return isInBranch;
+
+    for (let i = 0; i < user.branches.length; i++) {
+        if (user.branches[i].id === settings.branchId) {
+            isInBranch = true;
+        }
+    }
+
+    return isInBranch;
+};
+
+const addUserToBranch = async (userId) => {
+    await axios({
+        method: 'post',
+        url: `${settings.addUserToBranch}/user_id:${userId},branch_id:${settings.branchId}`,
+        auth: settings.auth
+    });
 };
 
 const getUserByEmail = async (email) => {
@@ -164,6 +187,10 @@ const lms = {
         const userToBeUpdated = !userCreated && userLMS && (data.firstName !== userLMS.first_name || data.lastName !== userLMS.last_name);
         if (userToBeUpdated) {
             await updateUser(userLMS, user);
+        }
+
+        if (userLMS && !userIsInBranch(userLMS)) {
+            await addUserToBranch(userLMS.id);
         }
 
         await addUserToCourse({

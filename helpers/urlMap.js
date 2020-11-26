@@ -280,7 +280,7 @@ const queryDeliveryType = async(type, depth, deliveryClient) => {
 }
 
 const addUnusedArtilesToUrlMap = async (deliveryClient, urlMap) => {
-    const { items, error } = await queryDeliveryType('articles', 1, deliveryClient);
+    const { items, error } = await queryDeliveryType('article', 1, deliveryClient);
 
     if (items && items.items) {
         items.items.forEach((articleItem) => {
