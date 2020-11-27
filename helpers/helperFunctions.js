@@ -247,6 +247,17 @@ const helper = {
     },
     ensureProtocol: (url) => {
         return !/^https?:\/\//i.test(url) ? `https://${url}` : url;
+    },
+    isCodenameInMultipleChoice: (data, codename) => {
+        let isIn = false;
+
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].codename === codename) {
+                isIn = true;
+            }
+        }
+
+        return isIn;
     }
 };
 

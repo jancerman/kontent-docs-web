@@ -17,9 +17,12 @@ block content
                     | !{minify(content.introduction.value)}
                     | !{minify(content.description.value)}
                     .article__row-links
-                      a.call-to-action(href= trainingCourseInfo.url, target= trainingCourseInfo.target ? trainingCourseInfo.target : '_self')
+                      if (trainingCourseInfo.renderAs === 'button')
+                        a.call-to-action(href= trainingCourseInfo.url, target= trainingCourseInfo.target ? trainingCourseInfo.target : '_self')
+                          span !{trainingCourseInfo.text}
+                          span
+                      else
                         span !{trainingCourseInfo.text}
-                        span
                       if (trainingCourseInfo.certificate)
                         a.link(href= trainingCourseInfo.certificate, target='_blank') !{UIMessages.training___download_certificate.value}
                       if (trainingCourseInfo.signedIn)

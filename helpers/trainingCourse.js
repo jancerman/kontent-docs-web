@@ -1,6 +1,7 @@
 const axios = require('axios');
 const commonContent = require('./commonContent');
 const handleCache = require('./handleCache');
+const helper = require('./helperFunctions');
 const lms = require('./lms')
 
 const isCourseAvailable = (user) => {
@@ -35,7 +36,8 @@ const getTrainingCourseInfo = async (content, req, res) => {
     req.session.returnTo = req.originalUrl;
     return {
       text: UIMessages.sign_in_button.value,
-      url: '/login'
+      url: '/login',
+      renderAs: 'button'
     };
   }
 
@@ -51,7 +53,16 @@ const getTrainingCourseInfo = async (content, req, res) => {
   if (!user) {
     return {
       text: 'User is not available in the subscription service',
-      url: '#'
+      renderAs: 'text',
+      signedIn: true
+    };
+  }
+
+  if (helper.isCodenameInMultipleChoice(content.display_options.value, 'hide_cta')) {
+    return {
+      text: UIMessages.training___cta_coming_soon.value,
+      renderAs: 'text',
+      signedIn: true
     };
   }
 
@@ -59,22 +70,30 @@ const getTrainingCourseInfo = async (content, req, res) => {
   if (!isCourseAvailable(user.data)) {
     return {
       text: UIMessages.training___cta_buy_course.value,
-      url: UIMessages.training___cta_buy_link.value
+      url: UIMessages.training___cta_buy_link.value,
+      renderAs: 'button',
+      signedIn: true
     };
   }
 
   // Register user in LMS and course and get info about course url and completion
   const courseInfo = await lms.handleTrainingCourse(user.data, content.talentlms_course_id.value);
   let text = '';
+  let renderAs = 'button';
 
   if (courseInfo.completion === 0) {
     text = UIMessages.training___cta_start_course.value;
   } else if (courseInfo.completion === 100) {
     text = UIMessages.training___cta_revisit_course.value;
   } else if (courseInfo.completion === 101) {
-    text = 'User info is not available in LMS';
+    text = 'User info is not available in LMS.';
+    renderAs = 'text';
   } else if (courseInfo.completion === 102) {
-    text = 'Course info is not available in LMS';
+    text = 'Course info is not available in LMS.';
+    renderAs = 'text';
+  } else if (courseInfo.completion === 103) {
+    text = 'Course ID does not exist in LMS.';
+    renderAs = 'text';
   } else {
     text = UIMessages.training___cta_resume_course.value;
   }
@@ -85,7 +104,8 @@ const getTrainingCourseInfo = async (content, req, res) => {
     completion: courseInfo.completion.toString(),
     certificate: courseInfo.certificate,
     target: courseInfo.target,
-    signedIn: true
+    signedIn: true,
+    renderAs: renderAs
   };
 };
 
