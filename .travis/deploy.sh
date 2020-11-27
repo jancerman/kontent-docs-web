@@ -26,7 +26,8 @@ fi
 
 main () {
     touch deployment_info
-    echo "Build: $TRAVIS_BUILD_NUMBER; Branch: $TRAVIS_BRANCH; Commit: $TRAVIS_COMMIT" > deployment_info
+    now="`date +%c`"
+    echo "Time: $now; Build: $TRAVIS_BUILD_NUMBER; Branch: $TRAVIS_BRANCH; Commit: $TRAVIS_COMMIT" > deployment_info
     
     rm -rf .git
     {
