@@ -438,7 +438,7 @@ const richTextResolverTemplates = {
         const image = item.thumbnail.value.length ? item.thumbnail.value[0].url : null
 
         return `
-            <div class="article__teaser">
+            <div class="article__teaser mix ${personas.map(item => `${item.codename}`).join(' ')}">
                 <h3 id="${id}">
                     <a href="#${id}" class="anchor-copy" aria-hidden="true"></a>
                     ${item.title.value}

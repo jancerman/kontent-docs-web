@@ -141,6 +141,13 @@ const commonContent = {
             ...commonContent.getKCDetails(res)
         });
     },
+    getTrainingCourseType: async (res) => {
+        return await requestDelivery({
+            data: 'type',
+            type: 'training_course',
+            ...commonContent.getKCDetails(res)
+        });
+    },
     getReleaseNoteType: async (res) => {
         return await requestDelivery({
             data: 'type',

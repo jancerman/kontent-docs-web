@@ -101,6 +101,8 @@ router.get('/keys/:key/invalidate', asyncHandler(async (req, res) => {
             path = req.app.locals.changelogPath;
         } else if (codename === 'termDefinitions' && req.app.locals.terminologyPath) {
             path = req.app.locals.terminologyPath;
+        } else if (codename === 'trainingCourses' && req.app.locals.elearningPath) {
+            path = req.app.locals.elearningPath;
         } else {
             await handleCache.sendFastlySoftPurge(codename, res);
         }

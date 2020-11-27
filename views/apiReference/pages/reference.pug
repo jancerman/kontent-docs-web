@@ -39,7 +39,8 @@ block content
                                     ul.filter__list(data-filter-group='services')
                                         each item, index in releaseNoteContentType.elements.filter(elem => elem.codename === 'affected_services')[0].options
                                             li.filter__item(data-toggle=`.${item.codename}`) !{item.name}
-
+                    if (containsTrainingCourse && trainingCourseContentType)
+                        div XXXXX
                     if (platform && !availablePlatforms.length)
                         .language-selector.language-selector--unprocessed
                             ul.language-selector__list
