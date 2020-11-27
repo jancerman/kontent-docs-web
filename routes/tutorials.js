@@ -241,7 +241,9 @@ const getContent = async (req, res) => {
         preselectedPlatform: preselectedPlatform,
         containsChangelog: containsChangelog,
         releaseNoteContentType: releaseNoteContentType,
-        trainingCourseInfo: trainingCourseInfo
+        trainingCourseInfo: trainingCourseInfo,
+        hideAuthorLastModified: content && content.length && content[0].display_options ? helper.isCodenameInMultipleChoice(content[0].display_options.value, 'hide_metadata') : false,
+        hideFeedback: content && content.length && content[0].display_options? helper.isCodenameInMultipleChoice(content[0].display_options.value, 'hide_feedback') : false
     };
 };
 

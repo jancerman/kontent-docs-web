@@ -115,6 +115,8 @@ const handleArticle = async (settings, req, res) => {
     settings.renderSettings.data.projectId = res.locals.projectid;
     settings.renderSettings.data.containsChangelog = containsChangelog;
     settings.renderSettings.data.releaseNoteContentType = releaseNoteContentType;
+    settings.renderSettings.data.hideAuthorLastModified = settings.content && settings.content.length && settings.content[0].display_options ? helper.isCodenameInMultipleChoice(settings.content[0].display_options.value, 'hide_metadata') : false;
+    settings.renderSettings.data.hideFeedback = settings.content && settings.content.length && settings.content[0].display_options? helper.isCodenameInMultipleChoice(settings.content[0].display_options.value, 'hide_feedback') : false;
 
     return settings.renderSettings;
 };

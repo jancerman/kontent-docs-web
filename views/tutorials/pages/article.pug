@@ -15,14 +15,15 @@ block content
                     if (!containsChangelog || isPreview)
                         .article__notes
                             if (!containsChangelog)
-                                time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
-                                .article__author 
-                                    if (content.author.value && content.author.value.length)
-                                        each author, index in content.author.value
-                                            - let separator = ''; if (index < content.author.value.length - 2) {separator = ', ';} if (index === content.author.value.length - 2) {separator = ' and '}
-                                            | !{author.name.value}!{separator}                                  
-                                    else
-                                        | !{UIMessages.article___no_author.value}
+                                if (!hideAuthorLastModified)
+                                    time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
+                                    .article__author 
+                                        if (content.author.value && content.author.value.length)
+                                            each author, index in content.author.value
+                                                - let separator = ''; if (index < content.author.value.length - 2) {separator = ', ';} if (index === content.author.value.length - 2) {separator = ' and '}
+                                                | !{author.name.value}!{separator}                                  
+                                        else
+                                            | !{UIMessages.article___no_author.value}
                                 if (req.query.pdf)
                                     .article__tech(data-platform-note)
                             if ((isPreview || isKenticoIP) && !req.query.pdf)
@@ -71,10 +72,11 @@ block content
                     if (nextSteps.value !== '<p><br></p>')
                         h2.table-of-contents__whatsnext(id='a-whats-next') !{UIMessages && UIMessages.article___next_steps.value}
                         | !{minify(nextSteps.value)}
-                    if (!containsChangelog)
+                    if (!containsChangelog && !hideFeedback)
                         div(data-aside-container='feedback')
                             div(data-aside='feedback')
                                 include ../includes/feedback.pug
             aside.article__aside
                 .aside
-    include ../includes/feedback-form.pug
+    if (!hideFeedback)
+        include ../includes/feedback-form.pug

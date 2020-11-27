@@ -13,12 +13,13 @@ block content
                             .term-tooltip-arrow
                     h1 !{content.title.value}
                     .article__notes
-                        time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
-                        .article__author
-                            if (content.author && content.author.value.length)
-                                | !{content.author.value[0].name.value}
-                            else
-                                | !{UIMessages.article___no_author.value}
+                        if (!hideAuthorLastModified)
+                            time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
+                            .article__author
+                                if (content.author && content.author.value.length)
+                                    | !{content.author.value[0].name.value}
+                                else
+                                    | !{UIMessages.article___no_author.value}
                         if ((isPreview || isKenticoIP) && !req.query.pdf)
                             a(href=`https://app.kontent.ai/goto/edit-item/project/${projectId}/variant-codename/default/item/${content.system.id}`, target='_blank', rel='noopener') Edit
                     if (introduction && introduction !== '<p><br></p>')
@@ -27,9 +28,11 @@ block content
                         div(data-aside='table-of-contents')
                             include ../includes/table-of-contents.pug
                     | !{minify(content.content.value)}
-                    div(data-aside-container='feedback')
-                        div(data-aside='feedback')
-                            include ../includes/feedback.pug
+                    if (!hideFeedback)
+                        div(data-aside-container='feedback')
+                            div(data-aside='feedback')
+                                include ../includes/feedback.pug
             aside.article__aside
                 .aside
-    include ../includes/feedback-form.pug
+    if (!hideFeedback)
+        include ../includes/feedback-form.pug
