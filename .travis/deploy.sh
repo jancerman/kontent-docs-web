@@ -29,17 +29,19 @@ main () {
     now="`date +%c`"
     echo "Time: $now; Build: $TRAVIS_BUILD_NUMBER; Branch: $TRAVIS_BRANCH; Commit: $TRAVIS_COMMIT" > deployment_info
     
-    rm -rf .git
-    {
-        git config --global user.email "$GIT_USER_EMAIL" \
-          && git config --global user.name "$GIT_USER_NAME" \
-          && git init \
-          && git add -A \
-          && git commit --message "$TRAVIS_COMMIT_MESSAGE" \
-          && git push --quiet --force --set-upstream "https://$GIT_USER_NAME:$GIT_PASSWORD@$GIT_DESTINATION_PREVIEW" master
-    } || {
-        exit 1
-    }
+    if [ "${GIT_DESTINATION_PREVIEW}" ]; then
+        rm -rf .git
+        {
+            git config --global user.email "$GIT_USER_EMAIL" \
+            && git config --global user.name "$GIT_USER_NAME" \
+            && git init \
+            && git add -A \
+            && git commit --message "$TRAVIS_COMMIT_MESSAGE" \
+            && git push --quiet --force --set-upstream "https://$GIT_USER_NAME:$GIT_PASSWORD@$GIT_DESTINATION_PREVIEW" master
+        } || {
+            exit 1
+        }
+    fi
 
     rm -rf .git
     {
