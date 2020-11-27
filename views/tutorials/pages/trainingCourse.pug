@@ -1,4 +1,20 @@
 extends ../includes/layout.pug
+mixin lmsInfo(environment)
+  - var lmsInfoEnv = trainingCourseInfo[environment]
+  - var isPreview = environment === 'preview'
+  - var prefix = isPreview ? '(Preview) ' : ''
+  if (lmsInfoEnv)
+    .article__row-links
+      if (lmsInfoEnv.renderAs === 'button')
+        a.call-to-action(href= lmsInfoEnv.url, target= lmsInfoEnv.target ? lmsInfoEnv.target : '_self')
+          span !{prefix}!{lmsInfoEnv.text}
+          span
+      else
+        span !{prefix}!{lmsInfoEnv.text}
+      if (lmsInfoEnv.certificate)
+        a.link(href= lmsInfoEnv.certificate, target='_blank') !{UIMessages.training___download_certificate.value}
+      if (!isPreview && lmsInfoEnv.signedIn)
+        a.link(href='/logout') !{UIMessages.sign_out_button.value}
 block content
     main(id='main')
         .article
@@ -12,18 +28,11 @@ block content
                         ul.article__tags
                           each item in content.persona.value
                             li.article__tags-item.article__tags-item--green !{item.name}
-                      if (trainingCourseInfo.completion)
-                        span !{trainingCourseInfo.completion}% complete
+                      if (trainingCourseInfo['production'] && trainingCourseInfo['production'].completion)
+                        span !{trainingCourseInfo['production'].completion}% complete
                     | !{minify(content.introduction.value)}
                     | !{minify(content.description.value)}
-                    .article__row-links
-                      if (trainingCourseInfo.renderAs === 'button')
-                        a.call-to-action(href= trainingCourseInfo.url, target= trainingCourseInfo.target ? trainingCourseInfo.target : '_self')
-                          span !{trainingCourseInfo.text}
-                          span
-                      else
-                        span !{trainingCourseInfo.text}
-                      if (trainingCourseInfo.certificate)
-                        a.link(href= trainingCourseInfo.certificate, target='_blank') !{UIMessages.training___download_certificate.value}
-                      if (trainingCourseInfo.signedIn)
-                        a.link(href='/logout') !{UIMessages.sign_out_button.value}
+                    +lmsInfo('general')
+                    +lmsInfo('production')
+                    +lmsInfo('preview')
+                    
