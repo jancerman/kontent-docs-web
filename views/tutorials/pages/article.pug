@@ -12,22 +12,20 @@ block content
                             .term-tooltip-close
                             .term-tooltip-arrow
                     h1 !{content.title.value}
-                    if (!containsChangelog || isPreview)
-                        .article__notes
-                            if (!containsChangelog)
-                                if (!hideAuthorLastModified)
-                                    time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
-                                    .article__author 
-                                        if (content.author.value && content.author.value.length)
-                                            each author, index in content.author.value
-                                                - let separator = ''; if (index < content.author.value.length - 2) {separator = ', ';} if (index === content.author.value.length - 2) {separator = ' and '}
-                                                | !{author.name.value}!{separator}                                  
-                                        else
-                                            | !{UIMessages.article___no_author.value}
-                                if (req.query.pdf)
-                                    .article__tech(data-platform-note)
-                            if ((isPreview || isKenticoIP) && !req.query.pdf)
-                                a(href=`https://app.kontent.ai/goto/edit-item/project/${projectId}/variant-codename/default/item/${content.system.id}`, target='_blank', rel='noopener') Edit
+                    .article__notes
+                        if (!hideAuthorLastModified)
+                            time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
+                            .article__author 
+                                if (content.author.value && content.author.value.length)
+                                    each author, index in content.author.value
+                                        - let separator = ''; if (index < content.author.value.length - 2) {separator = ', ';} if (index === content.author.value.length - 2) {separator = ' and '}
+                                        | !{author.name.value}!{separator}                                  
+                                else
+                                    | !{UIMessages.article___no_author.value}
+                        if (req.query.pdf)
+                            .article__tech(data-platform-note)
+                        if ((isPreview || isKenticoIP) && !req.query.pdf)
+                            a(href=`https://app.kontent.ai/goto/edit-item/project/${projectId}/variant-codename/default/item/${content.system.id}`, target='_blank', rel='noopener') Edit
                     if (containsChangelog && releaseNoteContentType)
                         div(data-aside-container='filter')
                             .article__filter(data-aside='filter')
@@ -75,12 +73,15 @@ block content
                             .container 
                                 | !{minify(content.content.value)}
                             .mixitup-page-list
+                        else if (containsTrainingCourse)
+                            .container
+                                | !{minify(content.content.value)}
                         else
                             | !{minify(content.content.value)}
                     if (nextSteps.value !== '<p><br></p>')
                         h2.table-of-contents__whatsnext(id='a-whats-next') !{UIMessages && UIMessages.article___next_steps.value}
                         | !{minify(nextSteps.value)}
-                    if (!containsChangelog && !hideFeedback)
+                    if (!hideFeedback)
                         div(data-aside-container='feedback')
                             div(data-aside='feedback')
                                 include ../includes/feedback.pug

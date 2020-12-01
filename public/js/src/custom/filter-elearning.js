@@ -51,7 +51,7 @@
         }
     };
 
-    window.mixitup('.article__content', {
+    window.mixitup('.article__content .container', {
         animation: {
             enable: false
         },
