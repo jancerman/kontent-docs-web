@@ -250,6 +250,16 @@
             padding-left: 32px;
             margin-left: -32px;
             z-index: 1;
+
+            a {
+                color: #231F20;
+                text-decoration: none;
+
+                &:hover,
+                &:active {
+                    text-decoration: underline;
+                }
+            }
         }
         
         p {
@@ -492,6 +502,12 @@
 
         @media screen and (min-width: 480px) {
             padding: 1em 1.5em 1em 0;
+        }
+
+        img {
+            @media screen and (min-width: 480px) {
+                margin-bottom: 40px;
+            } 
         }
     }
 
