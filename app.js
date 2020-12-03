@@ -88,6 +88,7 @@ if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
 app.locals.deployVersion = (new Date()).getTime();
 app.locals.changelogPath = '';
 app.locals.terminologyPath = '';
+app.locals.elearningPath = '';
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

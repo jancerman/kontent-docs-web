@@ -137,8 +137,6 @@ const platforms = {
             if (tempPlatforms && tempPlatforms.length) {
                 preselectedPlatform = tempPlatforms[0].system.codename;
                 cookiesPlatform = preselectedPlatform;
-            } else {
-                return null;
             }
         }
 

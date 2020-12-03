@@ -190,10 +190,13 @@ const getContent = async (req, res) => {
 
     let containsChangelog;
     let containsTerminology;
+    let containsTrainingCourse;
     let releaseNoteContentType;
+    let trainingCourseContentType;
     if (content && content.length && content[0].content) {
         containsChangelog = helper.hasLinkedItemOfType(content[0].content, 'changelog');
         containsTerminology = helper.hasLinkedItemOfType(content[0].content, 'terminology');
+        containsTrainingCourse = helper.hasLinkedItemOfType(content[0].content, 'training_course');
 
         if (containsChangelog) {
             req.app.locals.changelogPath = helper.getPathWithoutQS(req.originalUrl);
@@ -204,6 +207,13 @@ const getContent = async (req, res) => {
 
         if (containsTerminology) {
             req.app.locals.terminologyPath = helper.getPathWithoutQS(req.originalUrl);
+        }
+
+        if (containsTrainingCourse) {
+            req.app.locals.elearningPath = helper.getPathWithoutQS(req.originalUrl);
+            trainingCourseContentType = await handleCache.evaluateSingle(res, 'trainingCourseContentType', async () => {
+                return await commonContent.getTrainingCourseType(res);
+            });
         }
 
         content[0].content.value = await customRichTextResolver(content[0].content.value, req, res);
@@ -241,7 +251,11 @@ const getContent = async (req, res) => {
         preselectedPlatform: preselectedPlatform,
         containsChangelog: containsChangelog,
         releaseNoteContentType: releaseNoteContentType,
-        trainingCourseInfo: trainingCourseInfo
+        containsTrainingCourse: containsTrainingCourse,
+        trainingCourseContentType: trainingCourseContentType,
+        trainingCourseInfo: trainingCourseInfo,
+        hideAuthorLastModified: content && content.length && content[0].display_options ? helper.isCodenameInMultipleChoice(content[0].display_options.value, 'hide_metadata') : false,
+        hideFeedback: content && content.length && content[0].display_options? helper.isCodenameInMultipleChoice(content[0].display_options.value, 'hide_feedback') : false
     };
 };
 

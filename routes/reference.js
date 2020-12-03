@@ -37,12 +37,15 @@ const handleArticle = async (settings, req, res) => {
     let availablePlatforms;
     let preselectedPlatform;
     let releaseNoteContentType;
+    let trainingCourseContentType;
     let containsChangelog;
     let containsTerminology;
+    let containsTrainingCourse;
 
     if (settings.content && settings.content.length) {
         containsChangelog = helper.hasLinkedItemOfType(settings.content[0].content, 'changelog');
         containsTerminology = helper.hasLinkedItemOfType(settings.content[0].content, 'terminology');
+        containsTrainingCourse = helper.hasLinkedItemOfType(settings.content[0].content, 'training_course');
 
         if (containsChangelog) {
             req.app.locals.changelogPath = helper.getPathWithoutQS(req.originalUrl);
@@ -53,6 +56,13 @@ const handleArticle = async (settings, req, res) => {
 
         if (containsTerminology) {
             req.app.locals.terminologyPath = helper.getPathWithoutQS(req.originalUrl);
+        }
+
+        if (containsTrainingCourse) {
+            req.app.locals.elearningPath = helper.getPathWithoutQS(req.originalUrl);
+            trainingCourseContentType = await handleCache.evaluateSingle(res, 'trainingCourseContentType', async () => {
+                return await commonContent.getTrainingCourseType(res);
+            });
         }
 
         settings.content[0].content.value = await customRichTextResolver(settings.content[0].content.value, req, res);
@@ -115,6 +125,10 @@ const handleArticle = async (settings, req, res) => {
     settings.renderSettings.data.projectId = res.locals.projectid;
     settings.renderSettings.data.containsChangelog = containsChangelog;
     settings.renderSettings.data.releaseNoteContentType = releaseNoteContentType;
+    settings.renderSettings.data.containsTrainingCourse = containsTrainingCourse;
+    settings.renderSettings.data.trainingCourseContentType = trainingCourseContentType;
+    settings.renderSettings.data.hideAuthorLastModified = settings.content && settings.content.length && settings.content[0].display_options ? helper.isCodenameInMultipleChoice(settings.content[0].display_options.value, 'hide_metadata') : false;
+    settings.renderSettings.data.hideFeedback = settings.content && settings.content.length && settings.content[0].display_options? helper.isCodenameInMultipleChoice(settings.content[0].display_options.value, 'hide_feedback') : false;
 
     return settings.renderSettings;
 };

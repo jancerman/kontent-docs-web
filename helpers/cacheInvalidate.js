@@ -43,6 +43,13 @@ const revalidateReleaseNoteType = async (KCDetails, res) => {
     handleCache.putCache(key, releaseNoteType, KCDetails);
 };
 
+const revalidateTrainingCourseType = async (KCDetails, res) => {
+    const key = 'trainingCourseContentType';
+    handleCache.deleteCache(key, KCDetails);
+    const trainingCourseType = await commonContent.getTrainingCourseType(res);
+    handleCache.putCache(key, trainingCourseType, KCDetails);
+};
+
 const splitPayloadByContentType = (items) => {
     const itemsByTypes = {
         footer: [],
@@ -150,6 +157,7 @@ const invalidateMultiple = async (itemsByTypes, KCDetails, type, res) => {
 const invalidateArticles = async (itemsByTypes, KCDetails, res) => {
     if (itemsByTypes.articles.length) {
         await revalidateReleaseNoteType(KCDetails, res);
+        await revalidateTrainingCourseType(KCDetails, res);
         await deleteSpecificKeys(KCDetails, itemsByTypes.articles, res);
         handleCache.deleteCache('articles', KCDetails);
         await handleCache.evaluateCommon(res, ['articles']);
@@ -217,13 +225,20 @@ const sendPurgeToGeneralPages = async (itemsByTypes, req, res) => {
             if (itemsByTypes.termDefinitions.length && req.app.locals.terminologyPath) {
                 await handleCache.axiosFastlySoftPurge(`${axiosDomain}${req.app.locals.terminologyPath}`);
             }
+
+            if (itemsByTypes.trainingCourses.length && req.app.locals.elearningPath) {
+                await handleCache.axiosFastlySoftPurge(`${axiosDomain}${req.app.locals.elearningPath}`);
+            }
         }
     }
 };
 
 const invalidateElearning = async (itemsByTypes, KCDetails, res) => {
-    await invalidateMultiple(itemsByTypes, KCDetails, 'trainingCourses', res);
-    await requestItemAndDeleteCacheKey('e_learning_overview', KCDetails, res);
+    if (itemsByTypes.trainingCourses.length) {
+        await invalidateMultiple(itemsByTypes, KCDetails, 'trainingCourses', res);
+        await revalidateTrainingCourseType(KCDetails, res);
+        await requestItemAndDeleteCacheKey('e_learning_overview', KCDetails, res);
+    }
 };
 
 const processInvalidation = async (req, res) => {

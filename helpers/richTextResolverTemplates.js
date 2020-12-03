@@ -431,21 +431,19 @@ const richTextResolverTemplates = {
         return '<div id="terminology-resolve"></div>';
     },
     trainingCourse: (item, config) => {
-        const id = `a-${helper.generateAnchor(item.title.value)}`;
         const personas = item.persona.value;
         const urlMapItem = config.urlMap.filter(itemUrlMap => itemUrlMap.codename === item.system.codename);
         const url = urlMapItem.length ? urlMapItem[0].url : null
         const image = item.thumbnail.value.length ? item.thumbnail.value[0].url : null
 
         return `
-            <div class="article__teaser">
-                <h3 id="${id}">
-                    <a href="#${id}" class="anchor-copy" aria-hidden="true"></a>
-                    ${item.title.value}
-                </h3>
+            <div class="article__teaser mix ${personas.map(item => `${item.codename}`).join(' ')}">
+                <h3>${url ? `<a href="${url}">${item.title.value}</a>` : `${item.title.value}`}</h3>
                 ${helper.showEditLink(config.isPreview, config.isKenticoIP) ? `<a href="${`https://app.kontent.ai/goto/edit-item/project/${config.projectid}/variant-codename/default/item/${item.system.id}`}" target="_blank" rel="noopener" class="edit-link edit-link--move-up">Edit</a>` : ''}
                 <div class="article__introduction">
-                    ${image ? `<div class="article__introduction-image"><img src="${image}" alt="" /></div>` : ''}
+                    ${image ? `
+                        ${url ? `<a href="${url}" class="article__introduction-image"><img src="${image}" alt="" /></a>` : `<div class="article__introduction-image"><img src="${image}" alt="" /></div>`}
+                    ` : ''}
                     <div class="article__introduction-content">
                         <div class="article__info-bar">
                             ${personas.length ? '<ul class="article__tags">' : ''}
@@ -453,16 +451,14 @@ const richTextResolverTemplates = {
                             ${personas.length ? '</ul>' : ''}
                         </div>
                         ${item.introduction.value}
+                        ${url && config.UIMessages && config.UIMessages.training___view_details ? `  
+                            <a href="${url}" class="call-to-action call-to-action--small">
+                                <span>${config.UIMessages.training___view_details.value}</span>
+                                <span></span>
+                            </a>
+                        ` : ''}
                     </div>
                 </div>
-                ${url && config.UIMessages && config.UIMessages.training___view_details ? `
-                    <div class="align-right">    
-                        <a href="${url}" class="call-to-action call-to-action--small">
-                            <span>${config.UIMessages.training___view_details.value}</span>
-                            <span></span>
-                        </a>
-                    </div>
-                ` : ''} 
             </div>
         `;
     }

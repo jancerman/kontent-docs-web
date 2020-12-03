@@ -12,19 +12,20 @@ block content
                             .term-tooltip-close
                             .term-tooltip-arrow
                     h1 !{content.title.value}
-                    if (!containsChangelog || isPreview)
-                        .article__notes
-                            if (!containsChangelog)
-                                time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
-                                .article__author 
-                                    if (content.author.value && content.author.value.length)
-                                        | !{content.author.value[0].name.value}
-                                    else
-                                        | !{UIMessages.article___no_author.value}
-                                if (req.query.pdf)
-                                    .article__tech(data-platform-note)
-                            if ((isPreview || isKenticoIP) && !req.query.pdf)
-                                a(href=`https://app.kontent.ai/goto/edit-item/project/${projectId}/variant-codename/default/item/${content.system.id}`, target='_blank', rel='noopener') Edit
+                    .article__notes
+                        if (!hideAuthorLastModified)
+                            time.article__date(datetime= moment(content.system.lastModified).format('YYYY-MM-DD')) !{moment(content.system.lastModified).format('MMMM D, YYYY')}
+                            .article__author 
+                                if (content.author.value && content.author.value.length)
+                                    each author, index in content.author.value
+                                        - let separator = ''; if (index < content.author.value.length - 2) {separator = ', ';} if (index === content.author.value.length - 2) {separator = ' and '}
+                                        | !{author.name.value}!{separator}                                  
+                                else
+                                    | !{UIMessages.article___no_author.value}
+                        if (req.query.pdf)
+                            .article__tech(data-platform-note)
+                        if ((isPreview || isKenticoIP) && !req.query.pdf)
+                            a(href=`https://app.kontent.ai/goto/edit-item/project/${projectId}/variant-codename/default/item/${content.system.id}`, target='_blank', rel='noopener') Edit
                     if (containsChangelog && releaseNoteContentType)
                         div(data-aside-container='filter')
                             .article__filter(data-aside='filter')
@@ -38,7 +39,14 @@ block content
                                     ul.filter__list(data-filter-group='services')
                                         each item, index in releaseNoteContentType.elements.filter(elem => elem.codename === 'affected_services')[0].options
                                             li.filter__item(data-toggle=`.${item.codename}`) !{item.name}
-
+                    if (containsTrainingCourse && trainingCourseContentType)
+                        div(data-aside-container='filter')
+                            .article__filter(data-aside='filter')
+                                .filter
+                                    .filter-label !{UIMessages && UIMessages.training___personas_selector_title.value}
+                                    ul.filter__list(data-filter-group='personas')
+                                        each item, index in trainingCourseContentType.elements.filter(elem => elem.codename === 'persona')[0].options
+                                            li.filter__item(data-toggle=`.${item.codename}`) !{item.name}
                     if (platform && !availablePlatforms.length)
                         .language-selector.language-selector--unprocessed
                             ul.language-selector__list
@@ -63,15 +71,19 @@ block content
                             .container 
                                 | !{minify(content.content.value)}
                             .mixitup-page-list
+                        else if (containsTrainingCourse)
+                            .container
+                                | !{minify(content.content.value)}
                         else
                             | !{minify(content.content.value)}
                     if (nextSteps && nextSteps.value !== '<p><br></p>')
                         h2.table-of-contents__whatsnext(id='a-whats-next') !{UIMessages && UIMessages.article___next_steps.value}
                         | !{minify(nextSteps.value)}
-                    if (!containsChangelog)
+                    if (!hideFeedback)
                         div(data-aside-container='feedback')
                             div(data-aside='feedback')
                                 include ../../tutorials/includes/feedback.pug
             aside.article__aside
                 .aside
-    include ../../tutorials/includes/feedback-form.pug
+    if (!hideFeedback)
+        include ../../tutorials/includes/feedback-form.pug

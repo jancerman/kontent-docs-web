@@ -9,6 +9,7 @@ const settings = {
         username: process.env['LMS.id'] || '',
         password: ''
     },
+    coursesUrl: `https://${process.env['LMS.host']}/api/v1/courses`,
     registerUrl: `https://${process.env['LMS.host']}/api/v1/usersignup`,
     addToCourseUrl: `https://${process.env['LMS.host']}/api/v1/addusertocourse`,
     getUserByEmailUrl: `https://${process.env['LMS.host']}/api/v1/users/email`,
@@ -32,6 +33,22 @@ const registerUser = async (data) => {
     }
 
     return userCreated;
+};
+
+const courseExists = async (courseId) => {
+    let exists = true;
+
+    try {
+        await axios({
+            method: 'post',
+            url: `${settings.coursesUrl}/id:${courseId}`,
+            auth: settings.auth
+        });
+    } catch (error) {
+        exists = false;
+    }
+
+    return exists;
 };
 
 const addUserToCourse = async (data) => {
@@ -191,6 +208,14 @@ const lms = {
 
         if (userLMS && !userIsInBranch(userLMS)) {
             await addUserToBranch(userLMS.id);
+        }
+
+        const courseExistsInLMS = await courseExists(courseId);
+        if (!courseExistsInLMS) {
+            return {
+                url: '#',
+                completion: 103
+            }
         }
 
         await addUserToCourse({

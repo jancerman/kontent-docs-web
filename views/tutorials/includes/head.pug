@@ -49,6 +49,8 @@ script(src='https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js', def
 script(src='/js/app.min.js?v=' + deployVersion, defer='', onload='initGTM()')
 if (containsChangelog)
     script(src='/js/changelog.min.js?v=' + deployVersion, defer='')
+if (containsTrainingCourse)
+    script(src='/js/elearning.min.js?v=' + deployVersion, defer='')
 if canonicalUrl
     link(rel='canonical', href=`${canonicalUrl}`)
 link(rel='apple-touch-icon', sizes='57x57', href='/img/favicon/apple-icon-57x57.png')
