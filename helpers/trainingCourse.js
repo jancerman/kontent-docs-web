@@ -74,7 +74,13 @@ const getTrainingCourseInfo = async (content, req, res) => {
 
   // If user is not authenticated
   if (!req.oidc.isAuthenticated()) {
-    if (!hideCta) {
+    if (hideCta) {
+      renderGeneralMessage = true;
+      generalMessage = {
+        text: UIMessages.training___cta_coming_soon.value,
+        renderAs: 'text'
+      };
+    } else {
       req.session.returnTo = req.originalUrl;
       renderGeneralMessage = true;
       generalMessage = {

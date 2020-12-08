@@ -72,7 +72,8 @@ const config = {
   issuerBaseURL: helper.ensureProtocol(process.env.AUTH0_DOMAIN),
   secret: process.env.AUTH0_SESSION_SECRET,
   routes: {
-    login: false
+    login: false,
+    postLogoutRedirect: '/e-learning/overview'
   }
 };
 
