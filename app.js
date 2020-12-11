@@ -45,6 +45,13 @@ const authorize = require('./routes/auth');
 
 const app = express();
 
+// Azure Application Insights monitors
+if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
+  appInsights.setup();
+  appInsights.start();
+  exports.appInsights = appInsights;
+}
+
 // Auth0 authentication setup
 // Session
 const sess = {
@@ -78,13 +85,6 @@ const config = {
 };
 
 app.use(auth(config));
-
-// Azure Application Insights monitors
-if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
-  appInsights.setup();
-  appInsights.start();
-  exports.appInsights = appInsights;
-}
 
 app.locals.deployVersion = (new Date()).getTime();
 app.locals.changelogPath = '';
