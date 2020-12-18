@@ -262,7 +262,7 @@ window.initSearch = (() => {
 
         const searchTerm = window.location.pathname.split('/').pop().replace(/-/g, ' ');
 
-        tutorials.search(searchTerm).then(({ hits }) => {
+        searchIndexName.search(searchTerm).then(({ hits }) => {
             const iterations = hits.length > 5 ? 5 : hits.length;
             if (iterations > 0) {
                 let suggestionsHTML = '<ul>';
