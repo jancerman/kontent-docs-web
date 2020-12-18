@@ -10,7 +10,7 @@ window.initSearch = (() => {
     window.searchAPI.indexname = window.helper.getParameterByName('searchindexname') || window.searchAPI.indexname;
 
     const client = window.algoliasearch(window.searchAPI.appid, window.searchAPI.apikey);
-    const tutorials = client.initIndex(window.searchAPI.indexname);
+    const searchIndexName = client.initIndex(window.searchAPI.indexname);
     const searchWrapper = document.querySelector('.navigation__search-wrapper');
     const searchOverlay = document.querySelector('.search-overlay');
     const searchTrigger = document.querySelector('[data-search-trigger]');
@@ -37,13 +37,6 @@ window.initSearch = (() => {
         return content;
     };
 
-    const formatSuggestionContent = (suggestion) => {
-        const ellipsisText = '&hellip;';
-        suggestion._snippetResult.content.value = `${ellipsisText}${suggestion._snippetResult.content.value}${ellipsisText}`
-
-        return suggestion;
-    };
-
     const formatSuggestion = (suggestion) => {
         // Store current search input value for use of querystring that is used in Google Analytics search terms
         searchTerm = encodeURIComponent(searchInput.value);
@@ -52,7 +45,7 @@ window.initSearch = (() => {
         const suggestionUrl = window.urlMap.filter(item => item.codename === suggestion.codename);
 
         // Add an anchor to the url if available
-        let anchor = suggestion._highlightResult.heading.value ? `#a-${suggestion._highlightResult.heading.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g, '-').replace(/[-]+/g, '-')}` : '';
+        let anchor = suggestion._highlightResult.title.value ? `#a-${suggestion._highlightResult.title.value.replace(/<\/?[^>]+(>|$)/g, '').toLowerCase().replace(/\W/g, '-').replace(/[-]+/g, '-')}` : '';
         // Keep anchors only for references, changelog, and terminology
         if (suggestion.codename !== 'terminology' && suggestion.codename !== 'product_changelog') {
             anchor = '';
@@ -207,12 +200,8 @@ window.initSearch = (() => {
     const getSuggestionsSource = (hitsSource, query, callback) => {
         hitsSource(query, (suggestions) => {
             searchResultsNumber = suggestions.length;
-            const formattedSuggestions = [];
 
-            for (let i = 0; i < suggestions.length; i++) {
-                formattedSuggestions.push(formatSuggestionContent(suggestions[i]))
-            }
-            callback(formattedSuggestions);
+            callback(suggestions);
         });
     };
 
@@ -226,7 +215,7 @@ window.initSearch = (() => {
     const getAutocompleteTemplates = () => {
         return {
             header: () => {
-                return `<div class="aa-header">${searchResultsNumber} results for '<strong>${window.filterXSS(decodeURIComponent(searchTerm))}</strong>'</div>`;
+                return `<div class="aa-header">Showing ${searchResultsNumber} results for '<strong>${window.filterXSS(decodeURIComponent(searchTerm))}</strong>'</div>`;
             },
             suggestion: (suggestion) => {
                 return formatSuggestion(suggestion);
@@ -239,10 +228,8 @@ window.initSearch = (() => {
 
     // Init Algolia
     const initAutocomplete = () => {
-        // Init autocomplete and set maximum of suggested search items
-        var hitsSource = window.autocomplete.sources.hits(tutorials, {
-            hitsPerPage: 50
-        });
+        // Init autocomplete
+        var hitsSource = window.autocomplete.sources.hits(searchIndexName, {});
 
         let searchInputIsFocused = false;
         if (searchInput === document.activeElement) {
