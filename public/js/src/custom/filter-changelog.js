@@ -69,6 +69,32 @@
         return page;
     };
 
+    var mixer = window.mixitup('.container', {
+        animation: {
+            enable: false
+        },
+        classNames: {
+            modifierActive: ' filter__item--active'
+        },
+        multifilter: {
+            enable: true
+        },
+        pagination: {
+            limit: pageSize,
+            hidePageListIfSinglePage: true,
+        },
+        templates: {
+            pagerPrev: '<button type="button" class="filter__prev" data-page="prev"></button>',
+            pagerNext: '<button type="button" class="filter__next" data-page="next"></button>'
+        },
+        callbacks: {
+            onMixEnd: function () {
+                var state = mixer.getState();
+                updateUrl(getActiveServices(), getBreaking(), state.activePagination.page);
+            }
+        }
+    });
+
     var setFilterOnLoad = function (url) {
         var show = helper.getParameterByName('show', url);
         var breaking = helper.getParameterByName('breaking', url);
@@ -102,37 +128,10 @@
             item.click();
         }
 
-        item = document.querySelector(`.mixitup-page-list [data-page="${page > 1 ? page : '1'}"]`);
-        if (item) {
-            item.click();
+        if (mixer) {
+            mixer.paginate(page);
         }
     };
-
-    var mixer = window.mixitup('.container', {
-        animation: {
-            enable: false
-        },
-        classNames: {
-            modifierActive: ' filter__item--active'
-        },
-        multifilter: {
-            enable: true
-        },
-        pagination: {
-            limit: pageSize,
-            hidePageListIfSinglePage: true,
-        },
-        templates: {
-            pagerPrev: '<button type="button" class="filter__prev" data-page="prev"></button>',
-            pagerNext: '<button type="button" class="filter__next" data-page="next"></button>'
-        },
-        callbacks: {
-            onMixEnd: function () {
-                var state = mixer.getState();
-                updateUrl(getActiveServices(), getBreaking(), state.activePagination.page);
-            }
-        }
-    });
 
     setFilterOnLoad();
 })();
