@@ -43,6 +43,8 @@ const redirectRules = require('./routes/redirectRules');
 const generatePDF = require('./routes/generatePDF');
 const authorize = require('./routes/auth');
 
+const instantsearch = require('./routes/instantsearch');
+
 const app = express();
 
 // Azure Application Insights monitors
@@ -177,6 +179,7 @@ app.use('/robots.txt', robots);
 app.use('/pdf', generatePDF);
 app.get('/urlmap', urlMap);
 app.use('/', authorize);
+app.use('/instantsearch', instantsearch)
 
 // Dynamic routing setup
 app.use('/', async (req, res, next) => {

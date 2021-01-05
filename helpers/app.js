@@ -21,7 +21,8 @@ const urlWhitelist = [
   '/logout',
   '/callback',
   '/elearning',
-  '/elearning/*'
+  '/elearning/*',
+  '/instantsearch'
 ];
 
 const appHelper = {

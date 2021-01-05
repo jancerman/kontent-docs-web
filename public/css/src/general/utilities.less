@@ -153,6 +153,10 @@ code {
     line-height: 1.375em;
 }
 
+#autocomplete {
+    position: relative;
+}
+
 .aa-dropdown-menu {
     background: #fff;
     right: 0 !important;
@@ -161,6 +165,12 @@ code {
     max-height: 500px;
     overflow: auto;
     border-radius: .5em .5em .5em 1.875em;
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
 
     &::-webkit-scrollbar-track {
         background-color: #f5f5f5;
@@ -179,6 +189,10 @@ code {
         border-radius: 4px;
         background-color: #ccc;
     }
+
+    &--visible {
+        display: block;
+    }
 }
 
 .algolia-autocomplete {
@@ -195,6 +209,11 @@ code {
         @media screen and (min-width: 768px) {
             padding: 1.25em 2em 1.25em;
         }
+    }
+
+    mark {
+        color: #F05A22;
+        background-color: transparent;
     }
 }
 
